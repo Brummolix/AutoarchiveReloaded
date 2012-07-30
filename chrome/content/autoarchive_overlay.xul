@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet href="chrome://filemail/skin/overlay.css" type="text/css"?>
 <!DOCTYPE overlay SYSTEM "chrome://filemail/locale/overlay.dtd">
-<overlay id="filemail-overlay" xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
+<overlay id="autoarchive-overlay" xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
   <script type="application/x-javascript" src="chrome://autoarchive/content/overlay.js"/>
 </overlay>

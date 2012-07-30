@@ -14,6 +14,8 @@ if (typeof autoarchive == "undefined") {
             autoarchive.messages.push(dbHdr);
         },
         onSearchDone: function (status) {
+            if (autoarchive.messages.length > 0)
+                autoarchive.msgHdrsArchive(autoarchive.messages);
         },
         onNewSearch: function () {
         }
@@ -99,9 +101,6 @@ if (typeof autoarchive == "undefined") {
             searchSession.registerListener(autoarchive.searchListener);
             searchSession.search(null);
         }
-
-        if (autoarchive.messages.length > 0)
-            autoarchive.msgHdrsArchive(autoarchive.messages);
     }
 
     autoarchive.init = function () {
