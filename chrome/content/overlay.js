@@ -121,9 +121,6 @@ if (typeof autoarchive == "undefined") {
         },
 
         archive:function () {
-            if (!autoarchive.prefs.getBoolPref("initPrefs"))
-                autoarchive.initPrefs();
-
             for each(account in autoarchive.accounts)
             {
                 autoarchive.inboxFolders = [];
@@ -138,22 +135,6 @@ if (typeof autoarchive == "undefined") {
                         autoarchive.doArchive(account.incomingServer.getIntValue("archiveTaggedDays"), folder, 2);
                 }
             }
-        },
-
-        initPrefs: function () {
-            for each(account in autoarchive.accounts)
-            {
-                var identities = account.identities;
-                account.incomingServer.setBoolValue("archiveMessages", true);
-                account.incomingServer.setIntValue("archiveMessagesDays", 21);
-
-                account.incomingServer.setBoolValue("archiveStarred", false);
-                account.incomingServer.setIntValue("archiveStarredDays", 0);
-
-                account.incomingServer.setBoolValue("archiveTagged", true);
-                account.incomingServer.setIntValue("archiveTaggedDays", 90);
-            }
-            autoarchive.prefs.setBoolPref("initPrefs", true);
         },
 
         init:function () {
