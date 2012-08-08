@@ -1,2 +1,1 @@
-pref("extensions.autoarchive.archiveMarked", true);
-pref("extensions.autoarchive.age", 21);
+pref("extensions.autoarchive.initPrefs", false);

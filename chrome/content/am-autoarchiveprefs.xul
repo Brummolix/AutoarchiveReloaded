@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE window SYSTEM "chrome://autoarchive/locale/autoarchive.dtd">
+<?xml-stylesheet href="chrome://messenger/skin/accountManage.css" type="text/css"?>
+
+<page xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
+      onload="parent.onPanelLoaded('am-autoarchiveprefs.xul');">
+    <script type="application/x-javascript" src="chrome://autoarchive/content/am-autoarchiveprefs.js"/>
+    <vbox>
+        <hbox>
+            <checkbox
+                    id="archiveMessages"
+                    label="&archiveMessages;"
+                    prefstring="mail.identity.%identitykey%.archiveMessages"
+                    preftype="bool"
+                    prefattribute="value"
+                    oncommand="document.getElementById('archiveMessagesDays').disabled = !this.checked;"/>
+            <textbox
+                    id="archiveMessagesDays"
+                    size="1"
+                    prefstring="mail.identity.%identitykey%.archiveMessagesDays"
+                    preftype="int"
+                    prefattribute="value"/> &days;
+        </hbox>
+        <hbox>
+            <checkbox
+                    id="archiveStarred"
+                    label="&archiveStarred;"
+                    prefstring="mail.identity.%identitykey%.archiveStarred"
+                    preftype="bool"
+                    prefattribute="value"
+                    oncommand="document.getElementById('archiveStarredDays').disabled = !this.checked;"/>
+            <textbox
+                    id="archiveStarredDays"
+                    size="1"
+                    prefstring="mail.identity.%identitykey%.archiveStarredDays"
+                    preftype="int"
+                    prefattribute="value"/> &days;
+        </hbox>
+        <hbox>
+            <checkbox
+                    id="archiveTagged"
+                    label="&archiveTagged;"
+                    prefstring="mail.identity.%identitykey%.archiveTagged"
+                    preftype="bool"
+                    prefattribute="value"
+                    oncommand="document.getElementById('archiveTaggedDays').disabled = !this.checked;"/>
+            <textbox
+                    id="archiveTaggedDays"
+                    size="1"
+                    prefstring="mail.identity.%identitykey%.archiveTaggedDays"
+                    preftype="int"
+                    prefattribute="value"/> &days;
+        </hbox>
+    </vbox>
+</page>
