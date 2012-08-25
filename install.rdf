@@ -4,7 +4,7 @@
     <em:id>{b3a22f77-26b5-43d1-bd2f-9337488eacef}</em:id>
     <em:type>2</em:type>
     <em:name>Autoarchive</em:name>
-    <em:version>0.2</em:version>
+    <em:version>0.2.2</em:version>
     <em:creator>Alexey Egorov</em:creator>
     <em:contributor></em:contributor>
     <em:description>Automatically archives old mails</em:description>

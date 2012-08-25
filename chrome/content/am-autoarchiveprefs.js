@@ -1,3 +1,4 @@
+"use strict";
 function onPreInit(account, accountValues) {
     autoarchiveprefs.server = account.incomingServer;
 }
@@ -17,7 +18,7 @@ function UpdatePage() {
 }
 
 if (typeof(autoarchiveprefs) == 'undefined') {
-    autoarchiveprefs = {
+    var autoarchiveprefs = {
         server:null,
         onInit:function () {
             document.getElementById("archiveMessages").checked = this.server.getBoolValue("archiveMessages");

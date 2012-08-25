@@ -1,3 +1,4 @@
+"use strict";
 if (typeof autoarchive == "undefined") {
 
     var autoarchive = {
@@ -121,11 +122,11 @@ if (typeof autoarchive == "undefined") {
         },
 
         archive:function () {
-            for each(account in autoarchive.accounts)
+            for each(var account in autoarchive.accounts)
             {
                 autoarchive.inboxFolders = [];
                 autoarchive.getFolders(account.incomingServer.rootFolder);
-                for each(folder in autoarchive.inboxFolders)
+                for each(var folder in autoarchive.inboxFolders)
                 {
                     if (account.incomingServer.getBoolValue("archiveMessages"))
                         autoarchive.doArchive(account.incomingServer.getIntValue("archiveMessagesDays"), folder, 0);
