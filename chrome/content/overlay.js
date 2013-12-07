@@ -209,13 +209,20 @@ if (typeof autoarchive == "undefined") {
     } ,
 
     init:function () {
+		autoarchive.logToConsole("init");
+
       window.setTimeout( function () {
           autoarchive.archive();
         }, 10000);
         window.setInterval(function () {
           autoarchive.archive();
         },86400000);
-    }
+    },
+
+	logToConsole:function(str)
+	{
+		Application.console.log("AUTOARCHIVER: " + str);  
+	}
   };
 
   autoarchive.init();
