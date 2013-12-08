@@ -110,15 +110,32 @@ if (typeof autoarchive == "undefined")
 			this.onNewSearch = function () {};
 		},
 
+		//determine all folders (recursive, starting with param folder), which we want to archive
+		//write output to inboxFolders array
 		getFolders: function (folder, inboxFolders)
 		{
 			try
 			{
-				var isInbox = folder.getFlag(Ci.nsMsgFolderFlags.ImapBox) && !folder.getFlag(Ci.nsMsgFolderFlags.Trash);
-				if (isInbox)
-				{
-					inboxFolders.push(folder);
-				}
+				//attention do not try to get the folderURL for IMAP account (it crashes or may crash)
+			
+				//Do not archive some special folders (and also no subfolders in there)
+				//Inbox - yes
+				//SentMail - yes, sure
+				//Drafts - no, because you want to send them?
+				//Trash - no, trash is trash
+				//Templates - no, because you want to use it
+				//Junk - no junk is junk
+				//Archive - no, we do archive
+				//Queue - no, must be sent?
+				if (folder.getFlag(Ci.nsMsgFolderFlags.Trash) || folder.getFlag(Ci.nsMsgFolderFlags.Junk) 
+				    || folder.getFlag(Ci.nsMsgFolderFlags.Queue) || folder.getFlag(Ci.nsMsgFolderFlags.Drafts) 
+					|| folder.getFlag(Ci.nsMsgFolderFlags.Templates) || folder.getFlag(Ci.nsMsgFolderFlags.Archive) )
+					return;
+					
+				//a Feed account (RSS Feeds) will be listed here, but it is kicked out later because it does not have archive options...
+				
+				inboxFolders.push(folder);
+
 				if (folder.hasSubFolders)
 				{
 					for each(var subFolder in fixIterator(folder.subFolders, Ci.nsIMsgFolder))
