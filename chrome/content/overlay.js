@@ -3,9 +3,6 @@ if (typeof autoarchive == "undefined")
 {
 	var autoarchive = 
 	{
-		//TODO: Ci.nsMsgFolderFlags.Archive? or is it not known in all TB versions?
-		nsMsgFolderFlags_Archive: 0x00004000,
-		
 		nsIAP: Components.interfaces.nsIActivityProcess,
 		nsIAM: Components.interfaces.nsIActivityManager,
 		nsIAE: Components.interfaces.nsIActivityEvent,
@@ -45,12 +42,6 @@ if (typeof autoarchive == "undefined")
 			}
 		},
 
-		//TODO: remove, archive folder is kicked out earlier
-		msgHdrIsArchive: function (msgHdr)
-		{
-			msgHdr.folder.getFlag(autoarchive.nsMsgFolderFlags_Archive);
-		},
-
 		getMail3Pane: function ()
 		{
 			return Cc["@mozilla.org/appshell/window-mediator;1"]
@@ -71,38 +62,41 @@ if (typeof autoarchive == "undefined")
 			this.folder = folder;
 			this.activity = activity;
 
-			//TODO: remove param? use this.messages
-			this.msgHdrsArchive = function (msgHdrs)
+			this.msgHdrsArchive = function()
 			{
 				var mail3PaneWindow = autoarchive.getMail3Pane();
 				var batchMover = new mail3PaneWindow.BatchMessageMover();
-				var filter = msgHdrs.filter(
-					function (x)!autoarchive.msgHdrIsArchive(x) && autoarchive.getMail3Pane().getIdentityForHeader(x).archiveEnabled
-				);
-
+				
 				try
 				{
-					//autoarchive.logToConsole("archive " + filter);
-					batchMover.archiveMessages(filter);
-					return filter.length;
+					batchMover.archiveMessages(this.messages);
+					return this.messages.length;
 				}
 				catch (e)
 				{ 
-					//if no Mail3Pane
-					Components.utils.reportError(
-						"Error during archive messages in folder " + msgHdrs[0].folder.name +
-						". Error: " + e + ". mail3PaneWindow = " + mail3PaneWindow
-					);
-					return "0 (error occurs)";
+					//if no Mail3Pane?
+					Components.utils.reportError("Error during archive messages in folder " + this.folder.name + ". Error: " + e + ". mail3PaneWindow = " + mail3PaneWindow);
+					return "? (error occured)";
 				}
 			};
 			
 			//collect all messages
 			this.onSearchHit = function (dbHdr, folder)
 			{
-				//autoarchive.logToConsole("found " + dbHdr.subject);
-				//TODO: can't we do the archiveEnabled check here (instead of doint it in msgHdrsArchive)? or is it because of getMail3Pane?
-				this.messages.push(dbHdr);
+				try
+				{
+					//TODO: actual it is not clear how to get the archiveEnabled for the identity in the beginning and not for every message
+					if (autoarchive.getMail3Pane().getIdentityForHeader(dbHdr).archiveEnabled)
+					{
+						autoarchive.logToConsole("found " + dbHdr.subject);
+						this.messages.push(dbHdr);
+					}
+				}
+				catch (e)
+				{ 
+					//Mail3Pane?
+					Components.utils.reportError("Error during checking for archive messages in folder " + folder.name + ". Error: " + e);
+				}
 			};
 
 			//after the search was done, archive all messages
@@ -110,7 +104,7 @@ if (typeof autoarchive == "undefined")
 			{
 				var actual = 0;
 				if (this.messages.length > 0)
-					actual = this.msgHdrsArchive(this.messages);
+					actual = this.msgHdrsArchive();
 				if (this.activity != null)
 					autoarchive.stopActivity(folder, activity, actual);
 			};
