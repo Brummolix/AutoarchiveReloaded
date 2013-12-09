@@ -148,6 +148,7 @@ if (typeof autoarchive == "undefined")
 			}
 			catch (e)
 			{
+				//TODO: crashes for IRC account > Fehler: Error check folder: IRC - testsdasdasdasdasd@chat.freenode.net name[Exception... "'JavaScript component does not have a method named: "getFlag"' when calling method: [nsIMsgFolder::getFlag]"  nsresult: "0x80570030 (NS_ERROR_XPC_JSOBJECT_HAS_NO_FUNCTION_NAMED)"  location: "JS frame :: chrome://autoarchive/content/overlay.js :: autoarchive.getFolders :: line 132"  data: no]
 				Components.utils.reportError("Error check folder: " + folder.name + e);
 			}
 		},
@@ -160,7 +161,7 @@ if (typeof autoarchive == "undefined")
 			var searchSession = Cc["@mozilla.org/messenger/searchSession;1"].createInstance(Ci.nsIMsgSearchSession);
 			searchSession.addScopeTerm(Ci.nsMsgSearchScope.offlineMail, folder);
 
-			//TODO: why using value?
+			//attention: the strange value copy syntax is needed
 			
 			//AgeInDays > age
 			var searchByAge = searchSession.createTerm();
@@ -176,8 +177,7 @@ if (typeof autoarchive == "undefined")
 			var activity = null;
 
 			//TODO: why is activity only for one type?
-			//TODO: comment, change names of type
-			//TODO: refactor to methods?
+			//TODO: change names of type
 			
 			if (type == 0) //"unmarked messages"
 			{
@@ -185,68 +185,61 @@ if (typeof autoarchive == "undefined")
 				activity = autoarchive.startActivity(folder);
 
 				//no keywords
-				var searchByTags = searchSession.createTerm();
-				searchByTags.attrib = Ci.nsMsgSearchAttrib.Keywords;
-				var value = searchByTags.value;
-				value.attrib = Ci.nsMsgSearchAttrib.Keywords;
-				searchByTags.value = value;
-				searchByTags.op = Ci.nsMsgSearchOp.IsEmpty;
-				searchByTags.booleanAnd = true;
-				searchSession.appendTerm(searchByTags);
+				searchSession.appendTerm(this.getKeywordSearchTerm(searchSession,false));
 
 				//MsgStatus not marked
-				var searchByLabel = searchSession.createTerm();
-				searchByLabel.attrib = Ci.nsMsgSearchAttrib.MsgStatus;
-				var value = searchByLabel.value;
-				value.attrib = Ci.nsMsgSearchAttrib.MsgStatus;
-				value.status = Ci.nsMsgMessageFlags.Marked;
-				searchByLabel.value = value;
-				searchByLabel.op = Ci.nsMsgSearchOp.Isnt;
-				searchByLabel.booleanAnd = true;
-				searchSession.appendTerm(searchByLabel);
+				searchSession.appendTerm(this.getMarkedSearchTerm(searchSession,false));
 			}
 			else if (type == 1) //"starred messages" (marked with a star)
 			{
 				autoarchive.logToConsole("starred messages");
 				//MsgStatus marked
-				var searchByLabel = searchSession.createTerm();
-				searchByLabel.attrib = Ci.nsMsgSearchAttrib.MsgStatus;
-				var value = searchByLabel.value;
-				value.attrib = Ci.nsMsgSearchAttrib.MsgStatus;
-				value.status = Ci.nsMsgMessageFlags.Marked;
-				searchByLabel.value = value;
-				searchByLabel.op = Ci.nsMsgSearchOp.Is;
-				searchByLabel.booleanAnd = true;
-				searchSession.appendTerm(searchByLabel);
+				searchSession.appendTerm(this.getMarkedSearchTerm(searchSession,true));
 			}
 			else if (type == 2) //"tagged messages"
 			{
 				autoarchive.logToConsole("tagged messages");
 				//has keywords
-				var searchByTags = searchSession.createTerm();
-				searchByTags.attrib = Ci.nsMsgSearchAttrib.Keywords;
-				var value = searchByTags.value;
-				value.attrib = Ci.nsMsgSearchAttrib.Keywords;
-				searchByTags.value = value;
-				searchByTags.op = Ci.nsMsgSearchOp.IsntEmpty;
-				searchByTags.booleanAnd = true;
-				searchSession.appendTerm(searchByTags);
+				searchSession.appendTerm(this.getKeywordSearchTerm(searchSession,true));
 
 				//MsgStatus not marked
-				var searchByLabel = searchSession.createTerm();
-				searchByLabel.attrib = Ci.nsMsgSearchAttrib.MsgStatus;
-				var value = searchByLabel.value;
-				value.attrib = Ci.nsMsgSearchAttrib.MsgStatus;
-				value.status = Ci.nsMsgMessageFlags.Marked;
-				searchByLabel.value = value;
-				searchByLabel.op = Ci.nsMsgSearchOp.Isnt;
-				searchByLabel.booleanAnd = true;
-				searchSession.appendTerm(searchByLabel);
+				searchSession.appendTerm(this.getMarkedSearchTerm(searchSession,false));
 			}
 
 			//the real archiving is done on the searchListener
 			searchSession.registerListener(new autoarchive.searchListener(folder, activity));
 			searchSession.search(null);
+		},
+		
+		getKeywordSearchTerm: function (searchSession,searchForNonEmptyKeywords)
+		{
+			var searchByTags = searchSession.createTerm();
+			searchByTags.attrib = Ci.nsMsgSearchAttrib.Keywords;
+			var value = searchByTags.value;
+			value.attrib = Ci.nsMsgSearchAttrib.Keywords;
+			searchByTags.value = value;
+			if (searchForNonEmptyKeywords)
+				searchByTags.op = Ci.nsMsgSearchOp.IsntEmpty;
+			else
+				searchByTags.op = Ci.nsMsgSearchOp.IsEmpty;
+			searchByTags.booleanAnd = true;
+			return searchByTags;
+		},
+		
+		getMarkedSearchTerm: function (searchSession,searchForMarked)
+		{
+			var searchByLabel = searchSession.createTerm();
+			searchByLabel.attrib = Ci.nsMsgSearchAttrib.MsgStatus;
+			var value = searchByLabel.value;
+			value.attrib = Ci.nsMsgSearchAttrib.MsgStatus;
+			value.status = Ci.nsMsgMessageFlags.Marked;
+			searchByLabel.value = value;
+			if (searchForMarked)
+				searchByLabel.op = Ci.nsMsgSearchOp.Is;
+			else
+				searchByLabel.op = Ci.nsMsgSearchOp.Isnt;
+			searchByLabel.booleanAnd = true;
+			return searchByLabel;
 		},
 
 		//archive messages for all accounts
