@@ -3,8 +3,9 @@ if (typeof autoarchive == "undefined")
 {
 	var autoarchive = 
 	{
+		//TODO: Ci.nsMsgFolderFlags.Archive? or is it not known in all TB versions?
 		nsMsgFolderFlags_Archive: 0x00004000,
-
+		
 		nsIAP: Components.interfaces.nsIActivityProcess,
 		nsIAM: Components.interfaces.nsIActivityManager,
 		nsIAE: Components.interfaces.nsIActivityEvent,
@@ -44,6 +45,7 @@ if (typeof autoarchive == "undefined")
 			}
 		},
 
+		//TODO: remove, archive folder is kicked out earlier
 		msgHdrIsArchive: function (msgHdr)
 		{
 			msgHdr.folder.getFlag(autoarchive.nsMsgFolderFlags_Archive);
@@ -69,6 +71,7 @@ if (typeof autoarchive == "undefined")
 			this.folder = folder;
 			this.activity = activity;
 
+			//TODO: remove param? use this.messages
 			this.msgHdrsArchive = function (msgHdrs)
 			{
 				var mail3PaneWindow = autoarchive.getMail3Pane();
@@ -79,6 +82,7 @@ if (typeof autoarchive == "undefined")
 
 				try
 				{
+					//autoarchive.logToConsole("archive " + filter);
 					batchMover.archiveMessages(filter);
 					return filter.length;
 				}
@@ -93,11 +97,15 @@ if (typeof autoarchive == "undefined")
 				}
 			};
 			
+			//collect all messages
 			this.onSearchHit = function (dbHdr, folder)
 			{
+				//autoarchive.logToConsole("found " + dbHdr.subject);
+				//TODO: can't we do the archiveEnabled check here (instead of doint it in msgHdrsArchive)? or is it because of getMail3Pane?
 				this.messages.push(dbHdr);
 			};
 
+			//after the search was done, archive all messages
 			this.onSearchDone = function (status)
 			{
 				var actual = 0;
@@ -152,9 +160,15 @@ if (typeof autoarchive == "undefined")
 
 		doArchive: function (age, folder, type)
 		{
+			autoarchive.logToConsole("start archiving  " + folder.prettiestName);
+	
+			//build a search for the messages to archive
 			var searchSession = Cc["@mozilla.org/messenger/searchSession;1"].createInstance(Ci.nsIMsgSearchSession);
 			searchSession.addScopeTerm(Ci.nsMsgSearchScope.offlineMail, folder);
 
+			//TODO: why using value?
+			
+			//AgeInDays > age
 			var searchByAge = searchSession.createTerm();
 			searchByAge.attrib = Ci.nsMsgSearchAttrib.AgeInDays;
 			var value = searchByAge.value;
@@ -167,10 +181,16 @@ if (typeof autoarchive == "undefined")
 
 			var activity = null;
 
-			if (type == 0)
+			//TODO: why is activity only for one type?
+			//TODO: comment, change names of type
+			//TODO: refactor to methods?
+			
+			if (type == 0) //"unmarked messages"
 			{
+				autoarchive.logToConsole("unmarked messages");
 				activity = autoarchive.startActivity(folder);
 
+				//no keywords
 				var searchByTags = searchSession.createTerm();
 				searchByTags.attrib = Ci.nsMsgSearchAttrib.Keywords;
 				var value = searchByTags.value;
@@ -180,6 +200,7 @@ if (typeof autoarchive == "undefined")
 				searchByTags.booleanAnd = true;
 				searchSession.appendTerm(searchByTags);
 
+				//MsgStatus not marked
 				var searchByLabel = searchSession.createTerm();
 				searchByLabel.attrib = Ci.nsMsgSearchAttrib.MsgStatus;
 				var value = searchByLabel.value;
@@ -190,8 +211,10 @@ if (typeof autoarchive == "undefined")
 				searchByLabel.booleanAnd = true;
 				searchSession.appendTerm(searchByLabel);
 			}
-			else if (type == 1)
+			else if (type == 1) //"starred messages" (marked with a star)
 			{
+				autoarchive.logToConsole("starred messages");
+				//MsgStatus marked
 				var searchByLabel = searchSession.createTerm();
 				searchByLabel.attrib = Ci.nsMsgSearchAttrib.MsgStatus;
 				var value = searchByLabel.value;
@@ -202,8 +225,10 @@ if (typeof autoarchive == "undefined")
 				searchByLabel.booleanAnd = true;
 				searchSession.appendTerm(searchByLabel);
 			}
-			else if (type == 2)
+			else if (type == 2) //"tagged messages"
 			{
+				autoarchive.logToConsole("tagged messages");
+				//has keywords
 				var searchByTags = searchSession.createTerm();
 				searchByTags.attrib = Ci.nsMsgSearchAttrib.Keywords;
 				var value = searchByTags.value;
@@ -213,6 +238,7 @@ if (typeof autoarchive == "undefined")
 				searchByTags.booleanAnd = true;
 				searchSession.appendTerm(searchByTags);
 
+				//MsgStatus not marked
 				var searchByLabel = searchSession.createTerm();
 				searchByLabel.attrib = Ci.nsMsgSearchAttrib.MsgStatus;
 				var value = searchByLabel.value;
@@ -224,10 +250,13 @@ if (typeof autoarchive == "undefined")
 				searchSession.appendTerm(searchByLabel);
 			}
 
+			//the real archiving is done on the searchListener
 			searchSession.registerListener(new autoarchive.searchListener(folder, activity));
 			searchSession.search(null);
 		},
 
+		//archive messages for all accounts
+		//(depending on the autoarchive options of the account)
 		archive: function ()
 		{
 			for each(var account in autoarchive.accounts)
@@ -236,6 +265,9 @@ if (typeof autoarchive == "undefined")
 				autoarchive.getFolders(account.incomingServer.rootFolder, inboxFolders);
 				for each(var folder in inboxFolders)
 				{
+					//autoarchive.logToConsole("archive  " + folder.prettiestName);
+
+					//TODO: maybe rename option values?
 					if (account.incomingServer.getBoolValue("archiveMessages"))
 						autoarchive.doArchive(account.incomingServer.getIntValue("archiveMessagesDays"), folder, 0);
 					if (account.incomingServer.getBoolValue("archiveStarred"))
