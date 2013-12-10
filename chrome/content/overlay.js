@@ -54,11 +54,6 @@ if (typeof autoarchive == "undefined")
 			return Cc["@mozilla.org/appshell/window-mediator;1"].getService(Ci.nsIWindowMediator).getMostRecentWindow("mail:3pane");
 		},
 
-		/*
-		prefs: (Components.classes["@mozilla.org/preferences-service;1"].
-		getService(Components.interfaces.nsIPrefService).
-		getBranch("extensions.autoarchive.")),
-		*/
 		accounts: fixIterator(MailServices.accounts.accounts, Ci.nsIMsgAccount),
 
 		searchListener: function (folder, activity)
@@ -270,7 +265,7 @@ if (typeof autoarchive == "undefined")
 
 		init: function ()
 		{
-			autoarchive.logToConsole("init");
+			//autoarchive.logToConsole("init");
 
 			window.setTimeout(function ()
 			{
