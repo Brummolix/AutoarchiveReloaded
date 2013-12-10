@@ -88,7 +88,6 @@ if (typeof autoarchive == "undefined")
 					//TODO: actual it is not clear how to get the archiveEnabled for the identity in the beginning and not for every message
 					if (autoarchive.getMail3Pane().getIdentityForHeader(dbHdr).archiveEnabled)
 					{
-						autoarchive.logToConsole("found " + dbHdr.subject);
 						this.messages.push(dbHdr);
 					}
 				}
