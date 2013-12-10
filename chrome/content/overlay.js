@@ -7,7 +7,7 @@ if (typeof autoarchive == "undefined")
 		{
 			this.folder = folder;
 			this.description = description;
-			this.startProcess;
+			this.startProcess = null;
 			
 			this.start = function ()
 			{
@@ -67,7 +67,7 @@ if (typeof autoarchive == "undefined")
 			this.folder = folder;
 			this.activity = activity;
 
-			this.msgHdrsArchive = function()
+			this.archiveMessages = function()
 			{
 				var mail3PaneWindow = autoarchive.getMail3Pane();
 				var batchMover = new mail3PaneWindow.BatchMessageMover();
@@ -107,10 +107,10 @@ if (typeof autoarchive == "undefined")
 			//after the search was done, archive all messages
 			this.onSearchDone = function (status)
 			{
-				var actual = 0;
+				var result = 0;
 				if (this.messages.length > 0)
-					actual = this.msgHdrsArchive();
-				this.activity.stopAndSetFinal(actual);
+					result = this.archiveMessages();
+				this.activity.stopAndSetFinal(result);
 			};
 
 			this.onNewSearch = function () {};
@@ -118,7 +118,7 @@ if (typeof autoarchive == "undefined")
 
 		//determine all folders (recursive, starting with param folder), which we want to archive
 		//write output to inboxFolders array
-		getFolders: function (folder, inboxFolders)
+		getFolders: function (folder, outInboxFolders)
 		{
 			try
 			{
@@ -140,13 +140,13 @@ if (typeof autoarchive == "undefined")
 					
 				//a Feed account (RSS Feeds) will be listed here, but it is kicked out later because it does not have archive options...
 				
-				inboxFolders.push(folder);
+				outInboxFolders.push(folder);
 
 				if (folder.hasSubFolders)
 				{
 					for each(var subFolder in fixIterator(folder.subFolders, Ci.nsIMsgFolder))
 					{
-						autoarchive.getFolders(subFolder, inboxFolders);
+						autoarchive.getFolders(subFolder, outInboxFolders);
 					}
 				}
 			}
@@ -157,10 +157,12 @@ if (typeof autoarchive == "undefined")
 			}
 		},
 
+		archiveTypeOther : 0,
+		archiveTypeMarked : 1,
+		archiveTypeTagged : 2,
+		
 		doArchive: function (age, folder, type)
 		{
-			autoarchive.logToConsole("start archiving  " + folder.prettiestName);
-	
 			//build a search for the messages to archive
 			var searchSession = Cc["@mozilla.org/messenger/searchSession;1"].createInstance(Ci.nsIMsgSearchSession);
 			searchSession.addScopeTerm(Ci.nsMsgSearchScope.offlineMail, folder);
@@ -179,12 +181,8 @@ if (typeof autoarchive == "undefined")
 			searchSession.appendTerm(searchByAge);
 
 			var activity;
-
-			//TODO: change names of type
-			
-			if (type == 0) //"unmarked messages"
+			if (type == autoarchive.archiveTypeOther)
 			{
-				autoarchive.logToConsole("unmarked messages");
 				activity = new autoarchive.archiveActivityManager(folder,"unmarked and non-tagged messages");
 
 				//no keywords
@@ -193,16 +191,14 @@ if (typeof autoarchive == "undefined")
 				//MsgStatus not marked
 				searchSession.appendTerm(this.getMarkedSearchTerm(searchSession,false));
 			}
-			else if (type == 1) //"starred messages" (marked with a star)
+			else if (type == autoarchive.archiveTypeMarked) //(marked with a star)
 			{
-				autoarchive.logToConsole("starred messages");
 				activity = new autoarchive.archiveActivityManager(folder,"marked messages");
 				//MsgStatus marked
 				searchSession.appendTerm(this.getMarkedSearchTerm(searchSession,true));
 			}
-			else if (type == 2) //"tagged messages"
+			else if (type == autoarchive.archiveTypeTagged)
 			{
-				autoarchive.logToConsole("tagged messages");
 				activity = new autoarchive.archiveActivityManager(folder,"unmarked and tagged messages");
 				//has keywords
 				searchSession.appendTerm(this.getKeywordSearchTerm(searchSession,true));
@@ -258,15 +254,13 @@ if (typeof autoarchive == "undefined")
 				autoarchive.getFolders(account.incomingServer.rootFolder, inboxFolders);
 				for each(var folder in inboxFolders)
 				{
-					//autoarchive.logToConsole("archive  " + folder.prettiestName);
-
-					//TODO: maybe rename option values?
+					//we take the same option names as the original extension
 					if (account.incomingServer.getBoolValue("archiveMessages"))
-						autoarchive.doArchive(account.incomingServer.getIntValue("archiveMessagesDays"), folder, 0);
+						autoarchive.doArchive(account.incomingServer.getIntValue("archiveMessagesDays"), folder, autoarchive.archiveTypeOther);
 					if (account.incomingServer.getBoolValue("archiveStarred"))
-						autoarchive.doArchive(account.incomingServer.getIntValue("archiveStarredDays"), folder, 1);
+						autoarchive.doArchive(account.incomingServer.getIntValue("archiveStarredDays"), folder, autoarchive.archiveTypeMarked);
 					if (account.incomingServer.getBoolValue("archiveTagged"))
-						autoarchive.doArchive(account.incomingServer.getIntValue("archiveTaggedDays"), folder, 2);
+						autoarchive.doArchive(account.incomingServer.getIntValue("archiveTaggedDays"), folder, autoarchive.archiveTypeTagged);
 				}
 			}
 		},
