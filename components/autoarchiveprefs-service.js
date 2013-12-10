@@ -6,7 +6,7 @@ function AutoarchiveManagerExtension() {
 
 AutoarchiveManagerExtension.prototype = {
     name:"autoarchiveprefs",
-    chromePackageName:'autoarchive',
+    chromePackageName:'autoarchiveReloaded',
     classID:Components.ID("{ac4f0da9-5240-487e-992c-7cf3c622a9ad}"),
     classDescription:"Autoarchive Account Manager Extension Service",
     contractID:"@mozilla.org/accountmanager/extension;1?name=autoarchiveprefs",

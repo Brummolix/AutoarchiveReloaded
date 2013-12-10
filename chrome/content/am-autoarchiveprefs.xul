@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE window SYSTEM "chrome://autoarchive/locale/autoarchive.dtd">
+<!DOCTYPE window SYSTEM "chrome://autoarchiveReloaded/locale/autoarchive.dtd">
 <?xml-stylesheet href="chrome://messenger/skin/accountManage.css" type="text/css"?>
 
 <page xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
       onload="parent.onPanelLoaded('am-autoarchiveprefs.xul');">
-    <script type="application/x-javascript" src="chrome://autoarchive/content/am-autoarchiveprefs.js"/>
+    <script type="application/x-javascript" src="chrome://autoarchiveReloaded/content/am-autoarchiveprefs.js"/>
     <vbox>
         <hbox>
             <checkbox

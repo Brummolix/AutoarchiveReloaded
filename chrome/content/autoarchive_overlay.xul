@@ -1,4 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<overlay id="autoarchive-overlay" xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
-  <script type="application/x-javascript" src="chrome://autoarchive/content/overlay.js"/>
+<overlay id="autoarchiveReloaded-overlay" xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
+  <script type="application/x-javascript" src="chrome://autoarchiveReloaded/content/overlay.js"/>
 </overlay>

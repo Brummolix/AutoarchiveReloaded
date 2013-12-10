@@ -1,7 +1,10 @@
 "use strict";
-if (typeof autoarchive == "undefined")
+
+Components.utils.import("resource://gre/modules/AddonManager.jsm");
+
+if (typeof autoarchiveReloaded == "undefined")
 {
-	var autoarchive = 
+	var autoarchiveReloaded = 
 	{
 		archiveActivityManager: function (folder, description)
 		{
@@ -14,7 +17,7 @@ if (typeof autoarchive == "undefined")
 				var activityManager = this.getActivityManager();
 				this.startProcess = Components.classes["@mozilla.org/activity-process;1"].createInstance(Components.interfaces.nsIActivityProcess);
 
-				this.startProcess.init("AutoarchiverNextGen: Archiving folder " + this.folder.prettiestName + " (" + this.description + ")", null);
+				this.startProcess.init("autoarchiveReloaded: Archiving folder " + this.folder.prettiestName + " (" + this.description + ")", null);
 				this.startProcess.contextType = "account"; // group this activity by account
 				this.startProcess.contextObj = this.folder.server; // account in question
 
@@ -30,9 +33,9 @@ if (typeof autoarchive == "undefined")
 				if (typeof actual == "string" || actual > 0)
 				{
 					let event = Components.classes["@mozilla.org/activity-event;1"].createInstance(Components.interfaces.nsIActivityEvent);
-					event.init("AutoarchiverNextGen: archived folder " + this.folder.prettiestName + " (" + this.description + ")",
+					event.init("autoarchiveReloaded: folder " + this.folder.prettiestName + " (" + this.description + ")",
 						null,
-						 + actual + " messages archived",
+						 + actual + " messages will be archived",
 						this.startProcess.startTime, // start time
 						Date.now() // completion time
 					);
@@ -64,7 +67,7 @@ if (typeof autoarchive == "undefined")
 
 			this.archiveMessages = function()
 			{
-				var mail3PaneWindow = autoarchive.getMail3Pane();
+				var mail3PaneWindow = autoarchiveReloaded.getMail3Pane();
 				var batchMover = new mail3PaneWindow.BatchMessageMover();
 				
 				try
@@ -86,7 +89,7 @@ if (typeof autoarchive == "undefined")
 				try
 				{
 					//TODO: actual it is not clear how to get the archiveEnabled for the identity in the beginning and not for every message
-					if (autoarchive.getMail3Pane().getIdentityForHeader(dbHdr).archiveEnabled)
+					if (autoarchiveReloaded.getMail3Pane().getIdentityForHeader(dbHdr).archiveEnabled)
 					{
 						this.messages.push(dbHdr);
 					}
@@ -140,7 +143,7 @@ if (typeof autoarchive == "undefined")
 				{
 					for each(var subFolder in fixIterator(folder.subFolders, Ci.nsIMsgFolder))
 					{
-						autoarchive.getFolders(subFolder, outInboxFolders);
+						autoarchiveReloaded.getFolders(subFolder, outInboxFolders);
 					}
 				}
 			}
@@ -174,9 +177,9 @@ if (typeof autoarchive == "undefined")
 			searchSession.appendTerm(searchByAge);
 
 			var activity;
-			if (type == autoarchive.archiveTypeOther)
+			if (type == autoarchiveReloaded.archiveTypeOther)
 			{
-				activity = new autoarchive.archiveActivityManager(folder,"unmarked and non-tagged messages");
+				activity = new autoarchiveReloaded.archiveActivityManager(folder,"unmarked and non-tagged messages");
 
 				//no keywords
 				searchSession.appendTerm(this.getKeywordSearchTerm(searchSession,false));
@@ -184,15 +187,15 @@ if (typeof autoarchive == "undefined")
 				//MsgStatus not marked
 				searchSession.appendTerm(this.getMarkedSearchTerm(searchSession,false));
 			}
-			else if (type == autoarchive.archiveTypeMarked) //(marked with a star)
+			else if (type == autoarchiveReloaded.archiveTypeMarked) //(marked with a star)
 			{
-				activity = new autoarchive.archiveActivityManager(folder,"marked messages");
+				activity = new autoarchiveReloaded.archiveActivityManager(folder,"marked messages");
 				//MsgStatus marked
 				searchSession.appendTerm(this.getMarkedSearchTerm(searchSession,true));
 			}
-			else if (type == autoarchive.archiveTypeTagged)
+			else if (type == autoarchiveReloaded.archiveTypeTagged)
 			{
-				activity = new autoarchive.archiveActivityManager(folder,"unmarked and tagged messages");
+				activity = new autoarchiveReloaded.archiveActivityManager(folder,"unmarked and tagged messages");
 				//has keywords
 				searchSession.appendTerm(this.getKeywordSearchTerm(searchSession,true));
 
@@ -202,7 +205,7 @@ if (typeof autoarchive == "undefined")
 
 			//the real archiving is done on the searchListener
 			activity.start();
-			searchSession.registerListener(new autoarchive.searchListener(folder, activity));
+			searchSession.registerListener(new autoarchiveReloaded.searchListener(folder, activity));
 			searchSession.search(null);
 		},
 		
@@ -241,46 +244,61 @@ if (typeof autoarchive == "undefined")
 		//(depending on the autoarchive options of the account)
 		archive: function ()
 		{
-			for each(var account in autoarchive.accounts)
+			for each(var account in autoarchiveReloaded.accounts)
 			{
 				//ignore IRC accounts
 				if (account.incomingServer.localStoreType == "mailbox" || account.incomingServer.localStoreType == "imap" || account.incomingServer.localStoreType == "news")
 				{
 					var inboxFolders = [];
-					autoarchive.getFolders(account.incomingServer.rootFolder, inboxFolders);
+					autoarchiveReloaded.getFolders(account.incomingServer.rootFolder, inboxFolders);
 					for each(var folder in inboxFolders)
 					{
 						//we take the same option names as the original extension
 						if (account.incomingServer.getBoolValue("archiveMessages"))
-							autoarchive.doArchive(account.incomingServer.getIntValue("archiveMessagesDays"), folder, autoarchive.archiveTypeOther);
+							autoarchiveReloaded.doArchive(account.incomingServer.getIntValue("archiveMessagesDays"), folder, autoarchiveReloaded.archiveTypeOther);
 						if (account.incomingServer.getBoolValue("archiveStarred"))
-							autoarchive.doArchive(account.incomingServer.getIntValue("archiveStarredDays"), folder, autoarchive.archiveTypeMarked);
+							autoarchiveReloaded.doArchive(account.incomingServer.getIntValue("archiveStarredDays"), folder, autoarchiveReloaded.archiveTypeMarked);
 						if (account.incomingServer.getBoolValue("archiveTagged"))
-							autoarchive.doArchive(account.incomingServer.getIntValue("archiveTaggedDays"), folder, autoarchive.archiveTypeTagged);
+							autoarchiveReloaded.doArchive(account.incomingServer.getIntValue("archiveTaggedDays"), folder, autoarchiveReloaded.archiveTypeTagged);
 					}
 				}
 			}
 		},
+	
+		//we do not start if you have the original version of Autoarchiver installed
+		initIfValid: function ()
+		{
+			AddonManager.getAddonByID("{b3a22f77-26b5-43d1-bd2f-9337488eacef}", function(addon) 
+			{
+				autoarchiveReloaded.logToConsole(addon);
+				if (addon!=null)
+				{
+					//inform user about plugins
+					var promptService = Components.classes["@mozilla.org/embedcomp/prompt-service;1"].getService(Components.interfaces.nsIPromptService);
+					promptService.alert(null, "AutoarchiverReloaded incompatible with Autoarchiver", "It looks like you have installed the extensions 'Autoarchiver' and 'AutoarchiverReloaded'. You should decide for one. AutoarchiverReloaded will not work until you have uninstalled the original Autoarchiver.");
+
+					return;
+				}
+
+				autoarchiveReloaded.init();
+			});
+		},
 
 		init: function ()
 		{
-			//autoarchive.logToConsole("init");
-
-			window.setTimeout(function ()
-			{
-				autoarchive.archive();
-			}, 10000);
-			window.setInterval(function ()
-			{
-				autoarchive.archive();
-			}, 86400000);
+			autoarchiveReloaded.logToConsole("init");
+			
+			window.setTimeout(autoarchiveReloaded.archive,9000);
+			//repeat after one day (if someone has open Thunderbird all the time)
+			window.setInterval(autoarchiveReloaded.archive,86400000);
 		},
 
 		logToConsole: function (str)
 		{
-			Application.console.log("AUTOARCHIVER: " + str);
+			Application.console.log("autoarchiveReloaded: " + str);
 		}
 	};
 
-	autoarchive.init();
+	//wait a second before starting, because otherwise the check message from initIfValid is behind Thunderbird
+	window.setTimeout(autoarchiveReloaded.initIfValid,1000);
 }

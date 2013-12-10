@@ -1,8 +1,10 @@
-content   autoarchive                 chrome/content/
-locale autoarchive        en-US       chrome/locale/en-US/
-locale autoarchive        ru-RU       chrome/locale/ru-RU/
+content   autoarchiveReloaded                 chrome/content/
+locale autoarchiveReloaded        en-US       chrome/locale/en-US/
 
-overlay	chrome://messenger/content/messenger.xul	chrome://autoarchive/content/autoarchive_overlay.xul
+#remove it now because I can not maintain the russian version
+#locale autoarchiveReloaded        ru-RU       chrome/locale/ru-RU/
+
+overlay	chrome://messenger/content/messenger.xul	chrome://autoarchiveReloaded/content/autoarchive_overlay.xul
 
 # Preference Service
 component {ac4f0da9-5240-487e-992c-7cf3c622a9ad} components/autoarchiveprefs-service.js

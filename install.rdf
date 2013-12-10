@@ -1,19 +1,35 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <RDF xmlns="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:em="http://www.mozilla.org/2004/em-rdf#">
   <Description about="urn:mozilla:install-manifest">
-    <em:id>{b3a22f77-26b5-43d1-bd2f-9337488eacef}</em:id>
+    <!--TODO: set real id -->
+	<em:id>AutoarchiveReloaded@idontknow.com</em:id>
     <em:type>2</em:type>
-    <em:name>Autoarchive</em:name>
-    <em:version>0.2.2</em:version>
-    <em:creator>Alexey Egorov</em:creator>
+	
+    <em:name>AutoarchiveReloaded</em:name>
+    <em:version>0.9</em:version>
+	
+   	<!--TODO: name -->
+    <em:creator>(originally created by Alexey Egorov)</em:creator>
     <em:contributor></em:contributor>
     <em:description>Automatically archives old mails</em:description>
-    <em:homepageURL>http://code.google.com/p/autoarchive/</em:homepageURL>
+
+	<!--TODO: url -->
+    <em:homepageURL>http://TODO.com/TODO/</em:homepageURL>
+
+	<em:localized>
+		<Description>
+			<em:locale>de-DE</em:locale>
+			<em:name>AutoarchiveReloaded</em:name>
+			<em:description>Archiviert alte E-Mails automatisch</em:description>
+			<em:creator>Matthias (Originalversion von Alexey Egorov)</em:creator>
+		</Description>
+	</em:localized>
+	
     <em:targetApplication>
       <Description>
         <em:id>{3550f703-e582-4d05-9a08-453d09bdfdc6}</em:id> <!-- Thunderbird -->
         <em:minVersion>3.0</em:minVersion>
-        <em:maxVersion>14.0</em:maxVersion>
+        <em:maxVersion>24.*</em:maxVersion>
       </Description>
     </em:targetApplication>
   </Description>
