@@ -152,7 +152,6 @@ if (typeof autoarchive == "undefined")
 			}
 			catch (e)
 			{
-				//TODO: crashes for IRC account > Fehler: Error check folder: IRC - testsdasdasdasdasd@chat.freenode.net name[Exception... "'JavaScript component does not have a method named: "getFlag"' when calling method: [nsIMsgFolder::getFlag]"  nsresult: "0x80570030 (NS_ERROR_XPC_JSOBJECT_HAS_NO_FUNCTION_NAMED)"  location: "JS frame :: chrome://autoarchive/content/overlay.js :: autoarchive.getFolders :: line 132"  data: no]
 				Components.utils.reportError("Error check folder: " + folder.name + e);
 			}
 		},
@@ -250,17 +249,21 @@ if (typeof autoarchive == "undefined")
 		{
 			for each(var account in autoarchive.accounts)
 			{
-				var inboxFolders = [];
-				autoarchive.getFolders(account.incomingServer.rootFolder, inboxFolders);
-				for each(var folder in inboxFolders)
+				//ignore IRC accounts
+				if (account.incomingServer.localStoreType == "mailbox" || account.incomingServer.localStoreType == "imap" || account.incomingServer.localStoreType == "news")
 				{
-					//we take the same option names as the original extension
-					if (account.incomingServer.getBoolValue("archiveMessages"))
-						autoarchive.doArchive(account.incomingServer.getIntValue("archiveMessagesDays"), folder, autoarchive.archiveTypeOther);
-					if (account.incomingServer.getBoolValue("archiveStarred"))
-						autoarchive.doArchive(account.incomingServer.getIntValue("archiveStarredDays"), folder, autoarchive.archiveTypeMarked);
-					if (account.incomingServer.getBoolValue("archiveTagged"))
-						autoarchive.doArchive(account.incomingServer.getIntValue("archiveTaggedDays"), folder, autoarchive.archiveTypeTagged);
+					var inboxFolders = [];
+					autoarchive.getFolders(account.incomingServer.rootFolder, inboxFolders);
+					for each(var folder in inboxFolders)
+					{
+						//we take the same option names as the original extension
+						if (account.incomingServer.getBoolValue("archiveMessages"))
+							autoarchive.doArchive(account.incomingServer.getIntValue("archiveMessagesDays"), folder, autoarchive.archiveTypeOther);
+						if (account.incomingServer.getBoolValue("archiveStarred"))
+							autoarchive.doArchive(account.incomingServer.getIntValue("archiveStarredDays"), folder, autoarchive.archiveTypeMarked);
+						if (account.incomingServer.getBoolValue("archiveTagged"))
+							autoarchive.doArchive(account.incomingServer.getIntValue("archiveTaggedDays"), folder, autoarchive.archiveTypeTagged);
+					}
 				}
 			}
 		},
