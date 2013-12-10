@@ -3,50 +3,55 @@ if (typeof autoarchive == "undefined")
 {
 	var autoarchive = 
 	{
-		nsIAP: Components.interfaces.nsIActivityProcess,
-		nsIAM: Components.interfaces.nsIActivityManager,
-		nsIAE: Components.interfaces.nsIActivityEvent,
-
-		startActivity: function (folder)
+		archiveActivityManager: function (folder, description)
 		{
-			let gActivityManager = Components.classes["@mozilla.org/activity-manager;1"].getService(autoarchive.nsIAM);
-			let process = Components.classes["@mozilla.org/activity-process;1"].createInstance(autoarchive.nsIAP);
-
-			process.init("Archiving folder: " + folder.prettiestName, null);
-			process.contextType = "account"; // group this activity by account
-			process.contextObj = folder.server; // account in question
-
-			gActivityManager.addActivity(process);
-			return process;
-		},
-
-		stopActivity: function (folder, process, actual)
-		{
-			let gActivityManager = Components.classes["@mozilla.org/activity-manager;1"].getService(autoarchive.nsIAM);
-			process.state = Components.interfaces.nsIActivityProcess.STATE_COMPLETED;
-			gActivityManager.removeActivity(process.id);
-
-			if (typeof actual == "string" || actual > 0)
+			this.folder = folder;
+			this.description = description;
+			this.startProcess;
+			
+			this.start = function ()
 			{
-				let event = Components.classes["@mozilla.org/activity-event;1"].createInstance(autoarchive.nsIAE);
-				event.init(folder.prettiestName + " is archived.",
-					null,
-					"Archiving " + actual + " messages.",
-					process.startTime, // start time
-					Date.now() // completion time
-				);
+				var activityManager = this.getActivityManager();
+				this.startProcess = Components.classes["@mozilla.org/activity-process;1"].createInstance(Components.interfaces.nsIActivityProcess);
 
-				event.contextType = process.contextType; // optional
-				event.contextObj = process.contextObj; // optional
-				gActivityManager.addActivity(event);
+				this.startProcess.init("AutoarchiverNextGen: Archiving folder " + this.folder.prettiestName + " (" + this.description + ")", null);
+				this.startProcess.contextType = "account"; // group this activity by account
+				this.startProcess.contextObj = this.folder.server; // account in question
+
+				activityManager.addActivity(this.startProcess);
+			},
+
+			this.stopAndSetFinal = function (actual)
+			{
+				var activityManager = this.getActivityManager();
+				this.startProcess.state = Components.interfaces.nsIActivityProcess.STATE_COMPLETED;
+				activityManager.removeActivity(this.startProcess.id);
+
+				if (typeof actual == "string" || actual > 0)
+				{
+					let event = Components.classes["@mozilla.org/activity-event;1"].createInstance(Components.interfaces.nsIActivityEvent);
+					event.init("AutoarchiverNextGen: archived folder " + this.folder.prettiestName + " (" + this.description + ")",
+						null,
+						 + actual + " messages archived",
+						this.startProcess.startTime, // start time
+						Date.now() // completion time
+					);
+
+					event.contextType = this.startProcess.contextType; // optional
+					event.contextObj = this.startProcess.contextObj; // optional
+					activityManager.addActivity(event);
+				}
+			},
+			
+			this.getActivityManager = function ()
+			{
+				return Components.classes["@mozilla.org/activity-manager;1"].getService(Components.interfaces.nsIActivityManager);
 			}
 		},
 
 		getMail3Pane: function ()
 		{
-			return Cc["@mozilla.org/appshell/window-mediator;1"]
-				.getService(Ci.nsIWindowMediator)
-				.getMostRecentWindow("mail:3pane");
+			return Cc["@mozilla.org/appshell/window-mediator;1"].getService(Ci.nsIWindowMediator).getMostRecentWindow("mail:3pane");
 		},
 
 		/*
@@ -105,8 +110,7 @@ if (typeof autoarchive == "undefined")
 				var actual = 0;
 				if (this.messages.length > 0)
 					actual = this.msgHdrsArchive();
-				if (this.activity != null)
-					autoarchive.stopActivity(folder, activity, actual);
+				this.activity.stopAndSetFinal(actual);
 			};
 
 			this.onNewSearch = function () {};
@@ -174,15 +178,14 @@ if (typeof autoarchive == "undefined")
 			searchByAge.booleanAnd = true;
 			searchSession.appendTerm(searchByAge);
 
-			var activity = null;
+			var activity;
 
-			//TODO: why is activity only for one type?
 			//TODO: change names of type
 			
 			if (type == 0) //"unmarked messages"
 			{
 				autoarchive.logToConsole("unmarked messages");
-				activity = autoarchive.startActivity(folder);
+				activity = new autoarchive.archiveActivityManager(folder,"unmarked and non-tagged messages");
 
 				//no keywords
 				searchSession.appendTerm(this.getKeywordSearchTerm(searchSession,false));
@@ -193,12 +196,14 @@ if (typeof autoarchive == "undefined")
 			else if (type == 1) //"starred messages" (marked with a star)
 			{
 				autoarchive.logToConsole("starred messages");
+				activity = new autoarchive.archiveActivityManager(folder,"marked messages");
 				//MsgStatus marked
 				searchSession.appendTerm(this.getMarkedSearchTerm(searchSession,true));
 			}
 			else if (type == 2) //"tagged messages"
 			{
 				autoarchive.logToConsole("tagged messages");
+				activity = new autoarchive.archiveActivityManager(folder,"unmarked and tagged messages");
 				//has keywords
 				searchSession.appendTerm(this.getKeywordSearchTerm(searchSession,true));
 
@@ -207,6 +212,7 @@ if (typeof autoarchive == "undefined")
 			}
 
 			//the real archiving is done on the searchListener
+			activity.start();
 			searchSession.registerListener(new autoarchive.searchListener(folder, activity));
 			searchSession.search(null);
 		},
