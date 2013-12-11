@@ -1,4 +1,5 @@
-<!ENTITY archiveMessages "Archive unmarked messages older than ">
-<!ENTITY archiveTagged "Archive tagged messages older than ">
-<!ENTITY archiveStarred "Archive starred messages older than ">
+<!ENTITY settingsHeadline "AutoarchiveReloaded settings">
+<!ENTITY archiveMessages "Archive other messages older than ">
+<!ENTITY archiveTagged "Archive tagged (with keywords) messages older than ">
+<!ENTITY archiveStarred "Archive messages marked (with a star) older than ">
 <!ENTITY days "days">

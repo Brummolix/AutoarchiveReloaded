@@ -1,26 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE window SYSTEM "chrome://autoarchiveReloaded/locale/autoarchive.dtd">
 <?xml-stylesheet href="chrome://messenger/skin/accountManage.css" type="text/css"?>
-
 <page xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
       onload="parent.onPanelLoaded('am-autoarchiveprefs.xul');">
+	<stringbundleset id="stringbundleset">
+	  <stringbundle id="strings"
+		src="chrome://autoarchiveReloaded/locale/autoarchive.properties" />
+	</stringbundleset>
     <script type="application/x-javascript" src="chrome://autoarchiveReloaded/content/am-autoarchiveprefs.js"/>
+	<script type="application/x-javascript">
+			var strbundle = document.getElementById("strings");
+	</script>
     <vbox>
-        <hbox>
-            <checkbox
-                    id="archiveMessages"
-                    label="&archiveMessages;"
-                    prefstring="mail.identity.%identitykey%.archiveMessages"
-                    preftype="bool"
-                    prefattribute="value"
-                    oncommand="document.getElementById('archiveMessagesDays').disabled = !this.checked;"/>
-            <textbox
-                    id="archiveMessagesDays"
-                    size="1"
-                    prefstring="mail.identity.%identitykey%.archiveMessagesDays"
-                    preftype="int"
-                    prefattribute="value"/> &days;
-        </hbox>
+		<description style="font-size:15pt;font-weight:bold;" value="&settingsHeadline;"/>
+		<description/>
+
         <hbox>
             <checkbox
                     id="archiveStarred"
@@ -51,5 +45,29 @@
                     preftype="int"
                     prefattribute="value"/> &days;
         </hbox>
+        <hbox>
+            <checkbox
+                    id="archiveMessages"
+                    label="&archiveMessages;"
+                    prefstring="mail.identity.%identitykey%.archiveMessages"
+                    preftype="bool"
+                    prefattribute="value"
+                    oncommand="document.getElementById('archiveMessagesDays').disabled = !this.checked;"/>
+            <textbox
+                    id="archiveMessagesDays"
+                    size="1"
+                    prefstring="mail.identity.%identitykey%.archiveMessagesDays"
+                    preftype="int"
+                    prefattribute="value"/> &days;
+        </hbox>
+		
+		<description/>
+		<description id="description"/>
+		<script type="application/x-javascript">
+		//we must set the element this way, otherwise the text is not multiline
+		//sad, sad...
+		document.getElementById('description').textContent = strbundle.getString("settingsDescription");
+		</script>
+
     </vbox>
 </page>
