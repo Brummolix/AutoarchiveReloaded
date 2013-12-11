@@ -2,10 +2,32 @@
 
 Components.utils.import("resource://gre/modules/AddonManager.jsm");
 
+//see http://stackoverflow.com/questions/610406/javascript-equivalent-to-printf-string-format
+if (!String.format) 
+{
+  String.format = function(format) 
+  {
+    var args = Array.prototype.slice.call(arguments, 1);
+    return format.replace(/{(\d+)}/g, function(match, number) 
+	{
+      return typeof args[number] != 'undefined' 
+        ? args[number] 
+        : match
+      ;
+    });
+  };
+}
+
 if (typeof autoarchiveReloaded == "undefined")
 {
 	var autoarchiveReloaded = 
 	{
+		getStringBundle: function ()
+		{
+			var stringBundleService = Cc["@mozilla.org/intl/stringbundle;1"].getService(Ci.nsIStringBundleService);
+			return stringBundleService.createBundle("chrome://autoarchiveReloaded/locale/autoarchive.properties");
+		},
+		
 		archiveActivityManager: function (folder, description)
 		{
 			this.folder = folder;
@@ -17,7 +39,7 @@ if (typeof autoarchiveReloaded == "undefined")
 				var activityManager = this.getActivityManager();
 				this.startProcess = Components.classes["@mozilla.org/activity-process;1"].createInstance(Components.interfaces.nsIActivityProcess);
 
-				this.startProcess.init("autoarchiveReloaded: Archiving folder " + this.folder.prettiestName + " (" + this.description + ")", null);
+				this.startProcess.init(String.format(autoarchiveReloaded.getStringBundle().GetStringFromName("activityStart"),this.folder.prettiestName ,this.description), null);
 				this.startProcess.contextType = "account"; // group this activity by account
 				this.startProcess.contextObj = this.folder.server; // account in question
 
@@ -32,10 +54,10 @@ if (typeof autoarchiveReloaded == "undefined")
 
 				if (typeof actual == "string" || actual > 0)
 				{
-					let event = Components.classes["@mozilla.org/activity-event;1"].createInstance(Components.interfaces.nsIActivityEvent);
-					event.init("autoarchiveReloaded: folder " + this.folder.prettiestName + " (" + this.description + ")",
+					var event = Components.classes["@mozilla.org/activity-event;1"].createInstance(Components.interfaces.nsIActivityEvent);
+					event.init(String.format(autoarchiveReloaded.getStringBundle().GetStringFromName("activityDone"),this.folder.prettiestName ,this.description),
 						null,
-						 + actual + " messages will be archived",
+						String.format(autoarchiveReloaded.getStringBundle().GetStringFromName("activityMessagesToArchive"),actual),
 						this.startProcess.startTime, // start time
 						Date.now() // completion time
 					);
@@ -179,7 +201,7 @@ if (typeof autoarchiveReloaded == "undefined")
 			var activity;
 			if (type == autoarchiveReloaded.archiveTypeOther)
 			{
-				activity = new autoarchiveReloaded.archiveActivityManager(folder,"unmarked and non-tagged messages");
+				activity = new autoarchiveReloaded.archiveActivityManager(folder,autoarchiveReloaded.getStringBundle().GetStringFromName("unmarkedMessages"));
 
 				//no keywords
 				searchSession.appendTerm(this.getKeywordSearchTerm(searchSession,false));
@@ -189,13 +211,13 @@ if (typeof autoarchiveReloaded == "undefined")
 			}
 			else if (type == autoarchiveReloaded.archiveTypeMarked) //(marked with a star)
 			{
-				activity = new autoarchiveReloaded.archiveActivityManager(folder,"marked messages");
+				activity = new autoarchiveReloaded.archiveActivityManager(folder,autoarchiveReloaded.getStringBundle().GetStringFromName("markedMessages"));
 				//MsgStatus marked
 				searchSession.appendTerm(this.getMarkedSearchTerm(searchSession,true));
 			}
 			else if (type == autoarchiveReloaded.archiveTypeTagged)
 			{
-				activity = new autoarchiveReloaded.archiveActivityManager(folder,"unmarked and tagged messages");
+				activity = new autoarchiveReloaded.archiveActivityManager(folder,autoarchiveReloaded.getStringBundle().GetStringFromName("taggedMessages"));
 				//has keywords
 				searchSession.appendTerm(this.getKeywordSearchTerm(searchSession,true));
 
@@ -270,13 +292,11 @@ if (typeof autoarchiveReloaded == "undefined")
 		{
 			AddonManager.getAddonByID("{b3a22f77-26b5-43d1-bd2f-9337488eacef}", function(addon) 
 			{
-				autoarchiveReloaded.logToConsole(addon);
 				if (addon!=null)
 				{
 					//inform user about plugins
 					var promptService = Components.classes["@mozilla.org/embedcomp/prompt-service;1"].getService(Components.interfaces.nsIPromptService);
-					promptService.alert(null, "AutoarchiverReloaded incompatible with Autoarchiver", "It looks like you have installed the extensions 'Autoarchiver' and 'AutoarchiverReloaded'. You should decide for one. AutoarchiverReloaded will not work until you have uninstalled the original Autoarchiver.");
-
+					promptService.alert(null, autoarchiveReloaded.getStringBundle().GetStringFromName("warningOldAutoarchiverTitle"), autoarchiveReloaded.getStringBundle().GetStringFromName("warningOldAutoarchiver"));
 					return;
 				}
 
@@ -286,7 +306,7 @@ if (typeof autoarchiveReloaded == "undefined")
 
 		init: function ()
 		{
-			autoarchiveReloaded.logToConsole("init");
+			//autoarchiveReloaded.logToConsole("init");
 			
 			window.setTimeout(autoarchiveReloaded.archive,9000);
 			//repeat after one day (if someone has open Thunderbird all the time)
