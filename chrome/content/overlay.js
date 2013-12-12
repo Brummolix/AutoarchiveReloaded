@@ -5,18 +5,30 @@ Components.utils.import("resource://gre/modules/AddonManager.jsm");
 	//singleton class for getting string resources
 	var AutoarchiveReloadedStringBundle = Cc["@mozilla.org/intl/stringbundle;1"].getService(Ci.nsIStringBundleService).createBundle("chrome://autoarchiveReloaded/locale/autoarchive.properties");
 
-//------------------------------------------------------------------------------
-	
-	//main class
-	function AutoarchiveReloaded()
+//-----------------------------------------------------------------------------------------------------	
+	//singleton class for logging
+	var AutoarchiveLogger = new function ()
 	{
-		//properties:
-		this.accounts = fixIterator(MailServices.accounts.accounts, Ci.nsIMsgAccount);
+		this.logToConsole = function(str)
+		{
+			Application.console.log("AutoarchiveReloaded: " + str);
+		};
+	};
+
+//-------------------------------------------------------------------------------------
+
+	//singleton with global helper
+	var AutoarchiveReloadedHelper = new function()
+	{
+		this.getMail3Pane = function ()
+		{
+			return Cc["@mozilla.org/appshell/window-mediator;1"].getService(Ci.nsIWindowMediator).getMostRecentWindow("mail:3pane");
+		};
 	}
-	
+
 //------------------------------------------------------------------------------
 
-	//TODO: move somewhere else
+	//for managing the activities in activity view
 	function AutoarchiveActivityManager (folder, description)
 	{
 		this.folder = folder;
@@ -64,17 +76,7 @@ Components.utils.import("resource://gre/modules/AddonManager.jsm");
 	
 //-------------------------------------------------------------------------------------
 
-	//TODO: move somewhere else
-	var AutoarchiveReloadedHelper = new function()
-	{
-		this.getMail3Pane = function ()
-		{
-			return Cc["@mozilla.org/appshell/window-mediator;1"].getService(Ci.nsIWindowMediator).getMostRecentWindow("mail:3pane");
-		};
-	}
-
-//-------------------------------------------------------------------------------------
-
+	//for collecting the searched mails and start real archiving
 	function SearchListener (folder, activity)
 	{
 		this.messages = [];
@@ -106,7 +108,6 @@ Components.utils.import("resource://gre/modules/AddonManager.jsm");
 		try
 		{
 			var mail3PaneWindow = AutoarchiveReloadedHelper.getMail3Pane();
-			AutoarchiveLogger.logToConsole(mail3PaneWindow);
 
 			//TODO: actual it is not clear how to get the archiveEnabled for the identity in the beginning and not for every message
 			if (mail3PaneWindow.getIdentityForHeader(dbHdr).archiveEnabled)
@@ -133,6 +134,12 @@ Components.utils.import("resource://gre/modules/AddonManager.jsm");
 	SearchListener.prototype.onNewSearch = function () {};
 
 //-------------------------------------------------------------------------------------
+	//main class
+	function AutoarchiveReloaded()
+	{
+		//properties:
+		this.accounts = fixIterator(MailServices.accounts.accounts, Ci.nsIMsgAccount);
+	}
 	
 	//determine all folders (recursive, starting with param folder), which we want to archive
 	//write output to inboxFolders array
@@ -310,17 +317,6 @@ Components.utils.import("resource://gre/modules/AddonManager.jsm");
 		window.setTimeout(this.archiveAccounts.bind(this),9000);
 		//repeat after one day (if someone has open Thunderbird all the time)
 		window.setInterval(this.archiveAccounts.bind(this),86400000);
-	};
-
-//-----------------------------------------------------------------------------------------------------	
-	//TODO: move up
-	//singleton class for logging
-	var AutoarchiveLogger = new function ()
-	{
-		this.logToConsole = function(str)
-		{
-			Application.console.log("AutoarchiveReloaded: " + str);
-		};
 	};
 
 //-----------------------------------------------------------------------------------------------------	
