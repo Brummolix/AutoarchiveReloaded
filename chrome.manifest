@@ -1,8 +1,6 @@
 content   autoarchiveReloaded                 chrome/content/
 locale autoarchiveReloaded        en-US       chrome/locale/en-US/
-
-#remove it now because I can not maintain the russian version
-#locale autoarchiveReloaded        ru-RU       chrome/locale/ru-RU/
+locale autoarchiveReloaded        de-DE       chrome/locale/de-DE/
 
 overlay	chrome://messenger/content/messenger.xul	chrome://autoarchiveReloaded/content/autoarchive_overlay.xul
 
