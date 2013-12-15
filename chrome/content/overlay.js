@@ -270,49 +270,6 @@ AutoarchiveReloaded.prototype.archiveFolder = function (folder, settings)
     searchSession.search(null);
 };
 
-/*
-AutoarchiveReloaded.prototype.getKeywordSearchTerm = function (searchSession, searchForNonEmptyKeywords)
-{
-    var searchByTags = searchSession.createTerm();
-    searchByTags.attrib = Ci.nsMsgSearchAttrib.Keywords;
-    var value = searchByTags.value;
-    value.attrib = Ci.nsMsgSearchAttrib.Keywords;
-    searchByTags.value = value;
-    if (searchForNonEmptyKeywords)
-        searchByTags.op = Ci.nsMsgSearchOp.IsntEmpty;
-    else
-        searchByTags.op = Ci.nsMsgSearchOp.IsEmpty;
-    searchByTags.booleanAnd = true;
-    return searchByTags;
-};
-
-AutoarchiveReloaded.prototype.getMarkedSearchTerm = function (searchSession, searchForMarked)
-{
-	return this.getMsgStatusSearchTerm(searchSession,Ci.nsMsgMessageFlags.Marked,searchForMarked);
-};
-
-AutoarchiveReloaded.prototype.getMsgStatusSearchTerm = function (searchSession,messageFlag,searchForFlag)
-{
-    var searchByLabel = searchSession.createTerm();
-    searchByLabel.attrib = Ci.nsMsgSearchAttrib.MsgStatus;
-    var value = searchByLabel.value;
-    value.attrib = Ci.nsMsgSearchAttrib.MsgStatus;
-    value.status = messageFlag;
-    searchByLabel.value = value;
-    if (searchForFlag)
-        searchByLabel.op = Ci.nsMsgSearchOp.Is;
-    else
-        searchByLabel.op = Ci.nsMsgSearchOp.Isnt;
-    searchByLabel.booleanAnd = true;
-    return searchByLabel;
-};
-
-AutoarchiveReloaded.prototype.getReadStatusSearchTerm = function (searchSession, searchReaded)
-{
-	return this.getMsgStatusSearchTerm(searchSession,Ci.nsMsgMessageFlags.Read,searchReaded);
-}
-*/
-
 //archive messages for all accounts
 //(depending on the autoarchive options of the account)
 AutoarchiveReloaded.prototype.archiveAccounts = function ()
