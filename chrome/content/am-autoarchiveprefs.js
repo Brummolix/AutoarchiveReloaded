@@ -32,7 +32,11 @@ if (typeof(autoarchiveprefs) == 'undefined') {
             document.getElementById("archiveTagged").checked = this.server.getBoolValue("archiveTagged");
             document.getElementById("archiveTaggedDays").disabled = !document.getElementById("archiveTagged").checked;
             document.getElementById("archiveTaggedDays").value = this.server.getIntValue("archiveTaggedDays");
-        },
+
+            document.getElementById("archiveUnread").checked = this.server.getBoolValue("archiveUnread");
+            document.getElementById("archiveUnreadDays").disabled = !document.getElementById("archiveUnread").checked;
+            document.getElementById("archiveUnreadDays").value = this.server.getIntValue("archiveUnreadDays");
+		},
         onSave:function () {
             this.server.setBoolValue("archiveMessages", document.getElementById("archiveMessages").checked);
             this.server.setIntValue("archiveMessagesDays", document.getElementById("archiveMessagesDays").value);
@@ -42,6 +46,9 @@ if (typeof(autoarchiveprefs) == 'undefined') {
 
             this.server.setBoolValue("archiveTagged", document.getElementById("archiveTagged").checked);
             this.server.setIntValue("archiveTaggedDays", document.getElementById("archiveTaggedDays").value);
+
+            this.server.setBoolValue("archiveUnread", document.getElementById("archiveUnread").checked);
+            this.server.setIntValue("archiveUnreadDays", document.getElementById("archiveUnreadDays").value);
         }
     }
 }

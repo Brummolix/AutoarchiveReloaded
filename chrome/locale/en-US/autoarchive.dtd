@@ -1,5 +1,7 @@
 <!ENTITY settingsHeadline "AutoarchiveReloaded settings">
-<!ENTITY archiveMessages "Archive other messages older than ">
+<!ENTITY archiveMessages "Archive all other messages older than ">
 <!ENTITY archiveTagged "Archive tagged (with keywords) messages older than ">
 <!ENTITY archiveStarred "Archive messages marked (with a star) older than ">
+<!ENTITY archiveUnread "Archive unread messages older than ">
+
 <!ENTITY days "days">

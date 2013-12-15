@@ -17,6 +17,21 @@
 
         <hbox>
             <checkbox
+                    id="archiveUnread"
+                    label="&archiveUnread;"
+                    prefstring="mail.identity.%identitykey%.archiveUnread"
+                    preftype="bool"
+                    prefattribute="value"
+                    oncommand="document.getElementById('archiveUnreadDays').disabled = !this.checked;"/>
+            <textbox
+                    id="archiveUnreadDays"
+                    size="1"
+                    prefstring="mail.identity.%identitykey%.archiveUnreadDays"
+                    preftype="int"
+                    prefattribute="value"/> &days;
+        </hbox>
+        <hbox>
+            <checkbox
                     id="archiveStarred"
                     label="&archiveStarred;"
                     prefstring="mail.identity.%identitykey%.archiveStarred"

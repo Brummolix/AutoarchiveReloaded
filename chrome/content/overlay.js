@@ -26,15 +26,28 @@ var AutoarchiveReloadedHelper = new function ()
             return Cc["@mozilla.org/appshell/window-mediator;1"].getService(Ci.nsIWindowMediator)
                 .getMostRecentWindow("mail:3pane");
         };
+		
+		this.messageHasKeywords = function (msgDbHeader)
+		{
+			var keywords = msgDbHeader.getStringProperty("keywords");
+			return (keywords && keywords.length>0);
+		};
+		
+		this.messageGetAgeInDays = function (msgDbHeader)
+		{
+			var now = new Date();
+			var ageInSeconds = (now.getTime()/1000) - msgDbHeader.dateInSeconds;
+			var ageInDays = ageInSeconds/(60*60*24);
+			return ageInDays;
+		}
     };
 
 //------------------------------------------------------------------------------
 
 //for managing the activities in activity view
-function AutoarchiveActivityManager(folder, description)
+function AutoarchiveActivityManager(folder)
 {
     this.folder = folder;
-    this.description = description;
     this.startProcess = null;
 };
 
@@ -43,7 +56,7 @@ AutoarchiveActivityManager.prototype.start = function ()
     var activityManager = this.getActivityManager();
     this.startProcess = Components.classes["@mozilla.org/activity-process;1"].createInstance(Components.interfaces.nsIActivityProcess);
 
-    this.startProcess.init(AutoarchiveReloadedStringBundle.formatStringFromName("activityStart", [this.folder.prettiestName, this.description], 2), null);
+    this.startProcess.init(AutoarchiveReloadedStringBundle.formatStringFromName("activityStart", [this.folder.prettiestName], 1), null);
     this.startProcess.contextType = "account"; // group this activity by account
     this.startProcess.contextObj = this.folder.server; // account in question
 
@@ -59,7 +72,7 @@ AutoarchiveActivityManager.prototype.stopAndSetFinal = function (actual)
     if (typeof actual == "string" || actual > 0)
     {
         var event = Components.classes["@mozilla.org/activity-event;1"].createInstance(Components.interfaces.nsIActivityEvent);
-        event.init(AutoarchiveReloadedStringBundle.formatStringFromName("activityDone", [this.folder.prettiestName, this.description], 2),
+        event.init(AutoarchiveReloadedStringBundle.formatStringFromName("activityDone", [this.folder.prettiestName], 1),
             null,
             AutoarchiveReloadedStringBundle.formatStringFromName("activityMessagesToArchive", [actual], 1),
             this.startProcess.startTime, // start time
@@ -79,11 +92,12 @@ AutoarchiveActivityManager.prototype.getActivityManager = function ()
 //-------------------------------------------------------------------------------------
 
 //for collecting the searched mails and start real archiving
-function SearchListener(folder, activity)
+function SearchListener(folder, activity,settings)
 {
     this.messages = [];
     this.folder = folder;
     this.activity = activity;
+	this.settings = settings;
 }
 
 SearchListener.prototype.archiveMessages = function ()
@@ -107,11 +121,57 @@ SearchListener.prototype.archiveMessages = function ()
 //collect all messages
 SearchListener.prototype.onSearchHit = function (dbHdr, folder)
 {
+	//determine ageInDays
+	
+	var ageInDays = 0;
+	var other = true;
+	
+	//unread
+	if (!dbHdr.isRead)
+	{
+		if (!this.settings.bArchiveUnread)
+			return;
+			
+		other = false;
+		ageInDays = Math.max(ageInDays,this.settings.daysUnread);
+	}
+
+	//marked (starred)
+	if (dbHdr.isFlagged)
+	{
+		if (!this.settings.bArchiveMarked)
+			return;
+			
+		other = false;
+		ageInDays = Math.max(ageInDays,this.settings.daysMarked);
+	}
+		
+	//tagged
+	if (AutoarchiveReloadedHelper.messageHasKeywords(dbHdr))
+	{
+		if (!this.settings.bArchiveTagged)
+			return;
+			
+		other = false;
+		ageInDays = Math.max(ageInDays,this.settings.daysTagged);
+	}
+
+	if (other)
+	{
+		if (!this.settings.bArchiveOther)
+			return;
+		
+		ageInDays = Math.max(ageInDays,this.settings.daysOther);
+	}
+	
+	if (AutoarchiveReloadedHelper.messageGetAgeInDays(dbHdr) <= ageInDays)
+		return;
+		
     try
     {
-        var mail3PaneWindow = AutoarchiveReloadedHelper.getMail3Pane();
-
+		//check if archive is possible for this message/in this account
         //TODO: actual it is not clear how to get the archiveEnabled for the identity in the beginning and not for every message
+        var mail3PaneWindow = AutoarchiveReloadedHelper.getMail3Pane();
         if (mail3PaneWindow.getIdentityForHeader(dbHdr)
             .archiveEnabled)
         {
@@ -182,62 +242,35 @@ AutoarchiveReloaded.prototype.getFolders = function (folder, outInboxFolders)
     }
 };
 
-AutoarchiveReloaded.archiveTypeOther = 0;
-AutoarchiveReloaded.archiveTypeMarked = 1;
-AutoarchiveReloaded.archiveTypeTagged = 2;
-
-AutoarchiveReloaded.prototype.archiveFolder = function (age, folder, type)
+AutoarchiveReloaded.prototype.archiveFolder = function (folder, settings)
 {
     //build a search for the messages to archive
     var searchSession = Cc["@mozilla.org/messenger/searchSession;1"].createInstance(Ci.nsIMsgSearchSession);
     searchSession.addScopeTerm(Ci.nsMsgSearchScope.offlineMail, folder);
 
-    //attention: the strange value copy syntax is needed
+    //attention: the strange value copy syntax is needed!
 
+	//find only messages with interesting age
     //AgeInDays > age
     var searchByAge = searchSession.createTerm();
     searchByAge.attrib = Ci.nsMsgSearchAttrib.AgeInDays;
     var value = searchByAge.value;
     value.attrib = Ci.nsMsgSearchAttrib.AgeInDays;
-    value.age = age;
+    value.age = settings.getMinAge();
     searchByAge.value = value;
     searchByAge.op = Ci.nsMsgSearchOp.IsGreaterThan;
     searchByAge.booleanAnd = true;
     searchSession.appendTerm(searchByAge);
 
-    var activity;
-    if (type == AutoarchiveReloaded.archiveTypeOther)
-    {
-        activity = new AutoarchiveActivityManager(folder, AutoarchiveReloadedStringBundle.GetStringFromName("unmarkedMessages"));
-
-        //no keywords
-        searchSession.appendTerm(this.getKeywordSearchTerm(searchSession, false));
-
-        //MsgStatus not marked
-        searchSession.appendTerm(this.getMarkedSearchTerm(searchSession, false));
-    }
-    else if (type == AutoarchiveReloaded.archiveTypeMarked) //(marked with a star)
-    {
-        activity = new AutoarchiveActivityManager(folder, AutoarchiveReloadedStringBundle.GetStringFromName("markedMessages"));
-        //MsgStatus marked
-        searchSession.appendTerm(this.getMarkedSearchTerm(searchSession, true));
-    }
-    else if (type == AutoarchiveReloaded.archiveTypeTagged)
-    {
-        activity = new AutoarchiveActivityManager(folder, AutoarchiveReloadedStringBundle.GetStringFromName("taggedMessages"));
-        //has keywords
-        searchSession.appendTerm(this.getKeywordSearchTerm(searchSession, true));
-
-        //MsgStatus not marked
-        searchSession.appendTerm(this.getMarkedSearchTerm(searchSession, false));
-    }
-
-    //the real archiving is done on the SearchListener
+	//the other search parameters will be done in the listener itself, we can not create such a search
+    //also the real archiving is done on the SearchListener...
+	var activity = new AutoarchiveActivityManager(folder);
     activity.start();
-    searchSession.registerListener(new SearchListener(folder, activity));
+    searchSession.registerListener(new SearchListener(folder, activity,settings));
     searchSession.search(null);
 };
 
+/*
 AutoarchiveReloaded.prototype.getKeywordSearchTerm = function (searchSession, searchForNonEmptyKeywords)
 {
     var searchByTags = searchSession.createTerm();
@@ -255,19 +288,30 @@ AutoarchiveReloaded.prototype.getKeywordSearchTerm = function (searchSession, se
 
 AutoarchiveReloaded.prototype.getMarkedSearchTerm = function (searchSession, searchForMarked)
 {
+	return this.getMsgStatusSearchTerm(searchSession,Ci.nsMsgMessageFlags.Marked,searchForMarked);
+};
+
+AutoarchiveReloaded.prototype.getMsgStatusSearchTerm = function (searchSession,messageFlag,searchForFlag)
+{
     var searchByLabel = searchSession.createTerm();
     searchByLabel.attrib = Ci.nsMsgSearchAttrib.MsgStatus;
     var value = searchByLabel.value;
     value.attrib = Ci.nsMsgSearchAttrib.MsgStatus;
-    value.status = Ci.nsMsgMessageFlags.Marked;
+    value.status = messageFlag;
     searchByLabel.value = value;
-    if (searchForMarked)
+    if (searchForFlag)
         searchByLabel.op = Ci.nsMsgSearchOp.Is;
     else
         searchByLabel.op = Ci.nsMsgSearchOp.Isnt;
     searchByLabel.booleanAnd = true;
     return searchByLabel;
 };
+
+AutoarchiveReloaded.prototype.getReadStatusSearchTerm = function (searchSession, searchReaded)
+{
+	return this.getMsgStatusSearchTerm(searchSession,Ci.nsMsgMessageFlags.Read,searchReaded);
+}
+*/
 
 //archive messages for all accounts
 //(depending on the autoarchive options of the account)
@@ -278,18 +322,17 @@ AutoarchiveReloaded.prototype.archiveAccounts = function ()
         //ignore IRC accounts
         if (account.incomingServer.localStoreType == "mailbox" || account.incomingServer.localStoreType == "imap" || account.incomingServer.localStoreType == "news")
         {
-            var inboxFolders = [];
-            this.getFolders(account.incomingServer.rootFolder, inboxFolders);
-            for each(var folder in inboxFolders)
-            {
-                //we take the same option names as the original extension
-                if (account.incomingServer.getBoolValue("archiveMessages"))
-                    this.archiveFolder(account.incomingServer.getIntValue("archiveMessagesDays"), folder, AutoarchiveReloaded.archiveTypeOther);
-                if (account.incomingServer.getBoolValue("archiveStarred"))
-                    this.archiveFolder(account.incomingServer.getIntValue("archiveStarredDays"), folder, AutoarchiveReloaded.archiveTypeMarked);
-                if (account.incomingServer.getBoolValue("archiveTagged"))
-                    this.archiveFolder(account.incomingServer.getIntValue("archiveTaggedDays"), folder, AutoarchiveReloaded.archiveTypeTagged);
-            }
+			var settings = new AutoarchiveSettings(account);
+			if (settings.isArchivingSomething())
+			{
+				var inboxFolders = [];
+				this.getFolders(account.incomingServer.rootFolder, inboxFolders);
+				for each(var folder in inboxFolders)
+				{
+					//we take the same option names as the original extension
+					this.archiveFolder(folder,settings);
+				}
+			}
         }
     }
 };
@@ -320,6 +363,70 @@ AutoarchiveReloaded.prototype.init = function ()
     window.setInterval(this.archiveAccounts.bind(this), 86400000);
 };
 
+//-----------------------------------------------------------------------------------------------------	
+
+function AutoarchiveSettings (account)
+	{
+		this.account = account;
+		
+		this.bArchiveOther;
+		this.daysOther;
+		this.bArchiveMarked;
+		this.daysMarked;
+		this.bArchiveTagged;
+		this.daysTagged;
+		this.bArchiveUnread;
+		this.daysUnread;
+		
+		this.read();
+		//this.logToConsole();
+	};
+
+AutoarchiveSettings.prototype.read = function()
+{
+	var server = this.account.incomingServer;
+	this.bArchiveOther = server.getBoolValue("archiveMessages");
+	this.daysOther = server.getIntValue("archiveMessagesDays");
+	this.bArchiveMarked = server.getBoolValue("archiveStarred");
+	this.daysMarked = server.getIntValue("archiveStarredDays");
+	this.bArchiveTagged = server.getBoolValue("archiveTagged");
+	this.daysTagged = server.getIntValue("archiveTaggedDays");
+	this.bArchiveUnread = server.getBoolValue("archiveUnread");
+	this.daysUnread = server.getIntValue("archiveUnreadDays");
+};
+
+AutoarchiveSettings.prototype.isArchivingSomething = function()
+{
+	return (this.bArchiveOther || this.bArchiveMarked || this.bArchiveTagged || this.bArchiveUnread);
+}
+
+AutoarchiveSettings.prototype.getMinAge = function()
+{
+	var minAge = Number.MAX_VALUE;
+	if (this.bArchiveOther)
+		minAge = Math.min(this.daysOther,minAge);
+	if (this.bArchiveMarked)
+		minAge = Math.min(this.daysMarked,minAge);
+	if (this.bArchiveTagged)
+		minAge = Math.min(this.daysTagged,minAge);
+	if (this.bArchiveUnread)
+		minAge = Math.min(this.daysUnread,minAge);
+		
+	return minAge;
+}
+
+AutoarchiveSettings.prototype.logToConsole = function()
+{
+	AutoarchiveLogger.logToConsole("Settings for " + this.account.incomingServer.constructedPrettyName);
+	AutoarchiveLogger.logToConsole("archive other " + this.bArchiveOther);
+	AutoarchiveLogger.logToConsole("days other " + this.daysOther);
+	AutoarchiveLogger.logToConsole("archive marked " + this.bArchiveMarked);
+	AutoarchiveLogger.logToConsole("days marked " + this.daysMarked);
+	AutoarchiveLogger.logToConsole("archive tagged " + this.bArchiveTagged);
+	AutoarchiveLogger.logToConsole("days taged " + this.daysTagged);
+	AutoarchiveLogger.logToConsole("archive unread " + this.bArchiveUnread);
+	AutoarchiveLogger.logToConsole("days unread " + this.daysUnread);
+}
 //-----------------------------------------------------------------------------------------------------	
 
 //wait a second before starting, because otherwise the check message from initIfValid is *behind* Thunderbird
