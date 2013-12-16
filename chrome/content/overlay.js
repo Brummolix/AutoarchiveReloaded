@@ -263,6 +263,17 @@ AutoarchiveReloaded.prototype.archiveFolder = function (folder, settings)
     searchByAge.booleanAnd = true;
     searchSession.appendTerm(searchByAge);
 
+	//do not search for (marked as) deleted messages
+	var termNoDeleted = searchSession.createTerm();
+    value = termNoDeleted.value;
+    value.status = Ci.nsMsgMessageFlags.IMAPDeleted;
+    value.attrib = Ci.nsMsgSearchAttrib.MsgStatus;
+    termNoDeleted.value = value;
+    termNoDeleted.attrib = nsMsgSearchAttrib.MsgStatus;
+    termNoDeleted.op = nsMsgSearchOp.Isnt;
+    termNoDeleted.booleanAnd = true;
+	searchSession.appendTerm(termNoDeleted);
+	
 	//the other search parameters will be done in the listener itself, we can not create such a search
     //also the real archiving is done on the SearchListener...
 	var activity = new AutoarchiveActivityManager(folder);
@@ -381,7 +392,7 @@ AutoarchiveSettings.prototype.logToConsole = function()
 	AutoarchiveLogger.logToConsole("archive marked " + this.bArchiveMarked);
 	AutoarchiveLogger.logToConsole("days marked " + this.daysMarked);
 	AutoarchiveLogger.logToConsole("archive tagged " + this.bArchiveTagged);
-	AutoarchiveLogger.logToConsole("days taged " + this.daysTagged);
+	AutoarchiveLogger.logToConsole("days tagged " + this.daysTagged);
 	AutoarchiveLogger.logToConsole("archive unread " + this.bArchiveUnread);
 	AutoarchiveLogger.logToConsole("days unread " + this.daysUnread);
 }
