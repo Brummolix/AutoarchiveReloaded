@@ -33,7 +33,8 @@ AutoarchiveReloadedOverlay.Logger = new function ()
     {
         this.logToConsole = function (str)
         {
-            Application.console.log("AutoarchiveReloaded: " + str);
+			var date = new Date();
+            Application.console.log(date. toLocaleString() + " - AutoarchiveReloaded: " + str);
         };
     };
 
@@ -368,7 +369,7 @@ AutoarchiveReloadedOverlay.Settings = function(account)
 		this.daysUnread;
 		
 		this.read();
-		this.logToConsole();
+		//this.logToConsole();
 	};
 
 AutoarchiveReloadedOverlay.Settings.prototype.read = function()
