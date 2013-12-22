@@ -10,7 +10,7 @@
     <em:creator>Brummolix (original version created by Alexey Egorov)</em:creator>
     <em:contributor></em:contributor>
     <em:description>Automatically archives old mails</em:description>
-    <em:homepageURL>https://github.com/Brummolix/AutoarchiveReloaded</em:homepageURL>
+    <em:homepageURL>http://brummolix.github.io/AutoarchiveReloaded/</em:homepageURL>
 
 	<em:localized>
 		<Description>
@@ -18,7 +18,7 @@
 			<em:name>AutoarchiveReloaded</em:name>
 			<em:description>Archiviert alte E-Mails automatisch</em:description>
 			<em:creator>Brummolix (Originalversion von Alexey Egorov)</em:creator>
-			<em:homepageURL>https://github.com/Brummolix/AutoarchiveReloaded</em:homepageURL>
+			<em:homepageURL>http://brummolix.github.io/AutoarchiveReloaded/</em:homepageURL>
 		</Description>
 	</em:localized>
 	
