@@ -22,13 +22,13 @@ Copyright 2012 Alexey Egorov (original version Autoarchive, http://code.google.c
 <?xml-stylesheet href="chrome://messenger/skin/accountManage.css" type="text/css"?>
 <page xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
       onload="parent.onPanelLoaded('am-autoarchiveprefs.xul');">
-	<stringbundleset id="stringbundleset">
-	  <stringbundle id="strings"
+	<stringbundleset id="autoarchiveReloadedStringbundleSet">
+	  <stringbundle id="autoarchiveReloadedStrings"
 		src="chrome://autoarchiveReloaded/locale/autoarchive.properties" />
 	</stringbundleset>
     <script type="application/x-javascript" src="chrome://autoarchiveReloaded/content/am-autoarchiveprefs.js"/>
 	<script type="application/x-javascript">
-			var strbundle = document.getElementById("strings");
+			var strbundle = document.getElementById("autoarchiveReloadedStrings");
 	</script>
     <vbox>
 		<description style="font-size:15pt;font-weight:bold;" value="&settingsHeadline;"/>
