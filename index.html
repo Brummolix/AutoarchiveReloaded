@@ -42,7 +42,7 @@
         <h3>
 <a name="welcome-to-the-home-of-autoarchivereloaded" class="anchor" href="#welcome-to-the-home-of-autoarchivereloaded"><span class="octicon octicon-link"></span></a>Welcome to the Home of AutoarchiveReloaded</h3>
 
-<p>AutoarchiveReloaded is a Thunderbird AddOn. At this page you find the source of it. You can get the addon itself at <a href="https://addons.mozilla.org/de/firefox/addon/autoarchivereloaded/">https://addons.mozilla.org/de/firefox/addon/autoarchivereloaded/</a></p>
+<p>AutoarchiveReloaded is a Thunderbird AddOn. You can get/install it from <a href="https://addons.mozilla.org/de/firefox/addon/autoarchivereloaded/">https://addons.mozilla.org/de/firefox/addon/autoarchivereloaded/</a></p>
 
 <p>Thunderbird can archive messages but you have to do it manually for every message.
 This add-on helps you and archives your messages automatically after the time you have configured.
@@ -57,11 +57,13 @@ You can use it for example if you want to archive your mails from an IMAP accoun
 <li>Set up Autoarchive settings (right click at an account, choose properties, choose "Autoarchive settings")
 <img src="myimages/AutoarchiveReloaded_ENG.png">
 <ul>
-<li>You can set up after if you want to autoarchive and after how many days a message is archived automatically</li>
+<li>You can set up if you want to enable autoarchiving and after how many days a message is archived automatically</li>
 <li>You can have different settings for unread messages, starred messages (marked with a star) or messages with keywords (the settings will also be combined if a message is both or all of that)</li>
 </ul>
 </li>
-<li>Autoarchiving is started (after some seconds) every time you start Thunderbird. Then your mails are archived automatically according to your setttings. You find some infos under the menu Extras\Activities</li>
+<li>Autoarchiving is started every time you start Thunderbird (after some seconds). Then your mails are archived automatically according to your settings. 
+All folders of the account will be archived except Draft,Trash,Templates,Junk,Archive,Queue.
+You find progress infos under the menu Extras\Activities</li>
 </ul><h3>
 <a name="original-version" class="anchor" href="#original-version"><span class="octicon octicon-link"></span></a>Original version</h3>
 
@@ -71,6 +73,7 @@ You can use it for example if you want to archive your mails from an IMAP accoun
 <p>Improvements:</p>
 
 <ul>
+<li>does not only archive Inbox but also other folders like Sent (Junk, Trash, Drafts, Templates,Outbox and Archiv will be still ignored)</li>
 <li>handle subfolders</li>
 <li>configure unread mails separately (besides marked messages and messages with keywords)</li>
 <li>improve handling if a message for example is marked and has keywords</li>
