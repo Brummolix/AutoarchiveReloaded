@@ -320,7 +320,6 @@ AutoarchiveReloadedOverlay.Autoarchiver.prototype.archiveAccounts = function ()
 				this.getFolders(account.incomingServer.rootFolder, inboxFolders);
 				for each(var folder in inboxFolders)
 				{
-					//we take the same option names as the original extension
 					this.archiveFolder(folder,settings);
 				}
 			}
@@ -375,6 +374,7 @@ AutoarchiveReloadedOverlay.Settings = function(account)
 AutoarchiveReloadedOverlay.Settings.prototype.read = function()
 {
 	var server = this.account.incomingServer;
+	//we take the same option names as the original extension
 	this.bArchiveOther = server.getBoolValue("archiveMessages");
 	this.daysOther = server.getIntValue("archiveMessagesDays");
 	this.bArchiveMarked = server.getBoolValue("archiveStarred");
