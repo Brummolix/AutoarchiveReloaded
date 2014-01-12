@@ -126,9 +126,13 @@ AutoarchiveReloadedOverlay.SearchListener.prototype.archiveMessages = function (
 {
     var mail3PaneWindow = AutoarchiveReloadedOverlay.Helper.getMail3Pane();
     var batchMover = new mail3PaneWindow.BatchMessageMover();
-
+	
     try
     {
+		//TODO: do not archive if a imap server is offline (otherwise the archive is done locally but not on the server, if you start next time (and you are online) it may be archived again
+		//-> problem: how to detect imap server problems/problems with i-net connection? (we do not talk about online/offline mode here which you can handle with  MailOfflineMgr!)
+		//I have also reported the real bug to TB: see https://bugzilla.mozilla.org/show_bug.cgi?id=956598
+		
         batchMover.archiveMessages(this.messages);
         return this.messages.length;
     }
