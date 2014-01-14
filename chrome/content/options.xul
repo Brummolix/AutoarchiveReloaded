@@ -1,0 +1,55 @@
+<?xml version="1.0"?>
+<!--
+Copyright 2014 Brummolix (AutoarchiveReloaded, https://github.com/Brummolix/AutoarchiveReloaded )
+
+ This file is part of AutoarchiveReloaded.
+
+    AutoarchiveReloaded is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    AutoarchiveReloaded is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with AutoarchiveReloaded.  If not, see <http://www.gnu.org/licenses/>.
+-->
+<!DOCTYPE mydialog SYSTEM "chrome://autoarchiveReloaded/locale/autoarchive.dtd">
+<?xml-stylesheet href="chrome://global/skin/" type="text/css"?>
+<prefwindow id="autoarchiveReloadedPreferences"
+     title="&settingsHeadline;"
+     xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
+	
+	<stringbundleset id="autoarchiveReloadedStringbundleSet">
+	  <stringbundle id="autoarchiveReloadedStrings"
+		src="chrome://autoarchiveReloaded/locale/autoarchive.properties" />
+	</stringbundleset>
+
+	<prefpane id="autoarchiveReloadedPreferences-pane" label="&settingsHeadline;" style="max-width:500px;">
+		<preferences>
+			<preference id="archiveType" name="extensions.AutoarchiveReloaded.archiveType" type="string"/>
+		</preferences>
+
+		<description id="description"/><description/>
+		<groupbox>
+			<caption label="&archiveTypeTitle;" />
+			<radiogroup preference="archiveType">
+				<radio value="manual" label="&archiveTypeManual;"/>
+				<radio value="startup" label="&archiveTypeStartup;"/>
+			</radiogroup>
+		</groupbox>
+		<description id="startupdescription" style="height:60px"/><description/>
+		<!-- height set explicitly for now, otherwise content is wrapped. XUL is a pain... -->
+	</prefpane>
+
+	<script type="application/x-javascript">
+	var strbundle = document.getElementById("autoarchiveReloadedStrings");
+	//we must set this elements this way, otherwise the text is not multiline (automatic word wrap)
+	//sad, sad...
+	document.getElementById('description').textContent = strbundle.getString("globalSettingsDescription");
+	document.getElementById('startupdescription').textContent = strbundle.getString("globalSettingsStartupDescription");
+	</script>
+</prefwindow>

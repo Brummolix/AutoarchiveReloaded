@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-Copyright 2013 Brummolix (new version AutoarchiveReloaded, https://github.com/Brummolix/AutoarchiveReloaded )
+Copyright 2013-2014 Brummolix (new version AutoarchiveReloaded, https://github.com/Brummolix/AutoarchiveReloaded )
 Copyright 2012 Alexey Egorov (original version Autoarchive, http://code.google.com/p/autoarchive/ )
 
  This file is part of AutoarchiveReloaded.
@@ -18,6 +18,11 @@ Copyright 2012 Alexey Egorov (original version Autoarchive, http://code.google.c
     You should have received a copy of the GNU General Public License
     along with AutoarchiveReloaded.  If not, see <http://www.gnu.org/licenses/>.
 -->
+<!DOCTYPE window SYSTEM "chrome://autoarchiveReloaded/locale/autoarchive.dtd">
 <overlay id="autoarchiveReloaded-overlay" xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
-  <script type="application/x-javascript" src="chrome://autoarchiveReloaded/content/overlay.js"/>
+	<script type="application/x-javascript" src="chrome://autoarchiveReloaded/content/overlay.js"/>
+
+	<menupopup id="taskPopup">
+		<menuitem id="autoarchiveReloaded-menu" oncommand="AutoarchiveReloadedOverlay.Global.onArchiveManually();" label="&menuArchive;"/>
+	</menupopup>
 </overlay>

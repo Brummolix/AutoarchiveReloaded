@@ -1,5 +1,5 @@
 /*
-Copyright 2013 Brummolix (new version AutoarchiveReloaded, https://github.com/Brummolix/AutoarchiveReloaded )
+Copyright 2013-2014 Brummolix (new version AutoarchiveReloaded, https://github.com/Brummolix/AutoarchiveReloaded )
 Copyright 2012 Alexey Egorov (original version Autoarchive, http://code.google.com/p/autoarchive/ )
 
  This file is part of AutoarchiveReloaded.
@@ -62,6 +62,13 @@ AutoarchiveReloadedOverlay.Helper = new function ()
 			var ageInDays = ageInSeconds/(60*60*24);
 			return ageInDays;
 		}
+
+		this.getPreferences = function()
+		{
+			// Get the root branch
+			var prefs = Components.classes["@mozilla.org/preferences-service;1"].getService(Components.interfaces.nsIPrefBranch);
+			return prefs.getBranch("extensions.AutoarchiveReloaded.");
+		}
     };
 
 //------------------------------------------------------------------------------
@@ -114,12 +121,13 @@ AutoarchiveReloadedOverlay.ActivityManager.prototype.getActivityManager = functi
 //-------------------------------------------------------------------------------------
 
 //for collecting the searched mails and start real archiving
-AutoarchiveReloadedOverlay.SearchListener = function(folder, activity,settings)
+AutoarchiveReloadedOverlay.SearchListener = function(folder, activity,settings,onFolderArchivedEvent)
 {
     this.messages = [];
     this.folder = folder;
     this.activity = activity;
 	this.settings = settings;
+	this.onFolderArchivedEvent = onFolderArchivedEvent;
 }
 
 AutoarchiveReloadedOverlay.SearchListener.prototype.archiveMessages = function ()
@@ -218,16 +226,20 @@ AutoarchiveReloadedOverlay.SearchListener.prototype.onSearchDone = function (sta
     if (this.messages.length > 0)
         result = this.archiveMessages();
     this.activity.stopAndSetFinal(result);
+	this.onFolderArchivedEvent();
 };
 
 AutoarchiveReloadedOverlay.SearchListener.prototype.onNewSearch = function () {};
 
 //-------------------------------------------------------------------------------------
 //main class
-AutoarchiveReloadedOverlay.Autoarchiver = function()
+AutoarchiveReloadedOverlay.Autoarchiver = function(onDoneEvent)
 {
     //properties:
     this.accounts = fixIterator(MailServices.accounts.accounts, Ci.nsIMsgAccount);
+	this.foldersToArchive = 0;
+	this.foldersArchived = 0;
+	this.onDoneEvent = onDoneEvent;
 }
 
 //determine all folders (recursive, starting with param folder), which we want to archive
@@ -304,7 +316,12 @@ AutoarchiveReloadedOverlay.Autoarchiver.prototype.archiveFolder = function (fold
     //also the real archiving is done on the SearchListener...
 	var activity = new AutoarchiveReloadedOverlay.ActivityManager(folder);
     activity.start();
-    searchSession.registerListener(new AutoarchiveReloadedOverlay.SearchListener(folder, activity,settings));
+	
+	var thisForEvent = this;
+    searchSession.registerListener(new AutoarchiveReloadedOverlay.SearchListener(folder, activity,settings,function ()
+	{
+		thisForEvent.foldersArchived++;
+	}));
     searchSession.search(null);
 };
 
@@ -312,6 +329,9 @@ AutoarchiveReloadedOverlay.Autoarchiver.prototype.archiveFolder = function (fold
 //(depending on the autoarchive options of the account)
 AutoarchiveReloadedOverlay.Autoarchiver.prototype.archiveAccounts = function ()
 {
+	this.foldersArchived = 0;
+
+	var inboxFolders = [];
     for each(var account in this.accounts)
     {
         //ignore IRC accounts
@@ -320,42 +340,114 @@ AutoarchiveReloadedOverlay.Autoarchiver.prototype.archiveAccounts = function ()
 			var settings = new AutoarchiveReloadedOverlay.Settings(account);
 			if (settings.isArchivingSomething())
 			{
-				var inboxFolders = [];
 				this.getFolders(account.incomingServer.rootFolder, inboxFolders);
-				for each(var folder in inboxFolders)
-				{
-					this.archiveFolder(folder,settings);
-				}
 			}
         }
-    }
+	}
+	
+	this.foldersToArchive = inboxFolders.length;
+
+	for each(var folder in inboxFolders)
+		this.archiveFolder(folder,settings);
+	
+	this.checkForArchiveDone();
 };
 
-//we do not start if you have the original version of Autoarchiver installed
-AutoarchiveReloadedOverlay.Autoarchiver.prototype.initIfValid = function ()
+AutoarchiveReloadedOverlay.Autoarchiver.prototype.checkForArchiveDone = function ()
 {
-    var thisForEvent = this;
-    AddonManager.getAddonByID("{b3a22f77-26b5-43d1-bd2f-9337488eacef}", function (addon)
+	//wait until all accounts are ready
+	if (this.foldersArchived == this.foldersToArchive)
+	{
+		//fire event
+		this.onDoneEvent();
+	}
+	else
+	{
+		window.setTimeout(this.checkForArchiveDone.bind(this), 500);
+	}
+}
+
+
+//-------------------------------------------------------------------------------------
+
+//singleton with global status/startup/ui functions
+AutoarchiveReloadedOverlay.Global = new function ()
     {
-        if (addon != null)
-        {
-            //inform user about plugins
-            var promptService = Components.classes["@mozilla.org/embedcomp/prompt-service;1"].getService(Components.interfaces.nsIPromptService);
-            promptService.alert(null, AutoarchiveReloadedOverlay.StringBundle.GetStringFromName("warningOldAutoarchiverTitle"), AutoarchiveReloadedOverlay.StringBundle.GetStringFromName("warningOldAutoarchiver"));
-            return;
-        }
-        thisForEvent.init();
-    });
-};
+		this.UNINITIALZED = 0; //also if you use the old autoarchive plugin
+		this.READY_FOR_WORK = 1;
+		this.IN_PROGRESS = 2;
+		this.status = this.UNINITIALZED;
 
-AutoarchiveReloadedOverlay.Autoarchiver.prototype.init = function ()
-{
-    //AutoarchiveReloadedOverlay.Logger.logToConsole("init");
+		//we do not start if you have the original version of Autoarchiver installed
+		this.startupIfValid = function ()
+		{
+			var thisForEvent = this;
+			AddonManager.getAddonByID("{b3a22f77-26b5-43d1-bd2f-9337488eacef}", function (addon)
+			{
+				if (addon != null)
+				{
+					//inform user about plugins
+					var promptService = Components.classes["@mozilla.org/embedcomp/prompt-service;1"].getService(Components.interfaces.nsIPromptService);
+					promptService.alert(null, AutoarchiveReloadedOverlay.StringBundle.GetStringFromName("warningOldAutoarchiverTitle"), AutoarchiveReloadedOverlay.StringBundle.GetStringFromName("warningOldAutoarchiver"));
+					return;
+				}
+				thisForEvent.startup();
+			});
+		};
+		
+		this.startup = function ()
+		{
+			this.status = this.READY_FOR_WORK;
 
-    window.setTimeout(this.archiveAccounts.bind(this), 9000);
-    //repeat after one day (if someone has open Thunderbird all the time)
-    window.setInterval(this.archiveAccounts.bind(this), 86400000);
-};
+			if (AutoarchiveReloadedOverlay.Helper.getPreferences().getCharPref("archiveType")=="startup")
+			{
+				//wait some time to give TB time to connect and everything
+				window.setTimeout(this.onDoArchiveAutomatic.bind(this), 9000);
+				
+				//repeat after one day (if someone has open Thunderbird all the time)
+				window.setInterval(this.onDoArchiveAutomatic.bind(this), 86400000);
+			}
+		};
+		
+		this.onDoArchiveAutomatic = function ()
+		{
+			if (this.status != this.READY_FOR_WORK)
+			{
+				//busy: wait 5 seconds
+				window.setTimeout(this.onDoArchiveAutomatic.bind(this), 5000);
+			}
+			else
+				this.onDoArchive();
+		}
+		
+		this.onDoArchive = function ()
+		{
+			this.status = this.IN_PROGRESS;
+			var autoarchiveReloaded = new AutoarchiveReloadedOverlay.Autoarchiver(this.onArchiveDone.bind(this));
+			autoarchiveReloaded.archiveAccounts();
+		}
+		
+		this.onArchiveDone = function ()
+		{
+			this.status = this.READY_FOR_WORK;
+		}
+		
+		this.onArchiveManually = function ()
+		{
+			if (this.status == this.UNINITIALZED)
+			{
+				alert(AutoarchiveReloadedOverlay.StringBundle.GetStringFromName("waitForInit"));
+				return;
+			}
+			if (this.status == this.IN_PROGRESS)
+			{
+				alert(AutoarchiveReloadedOverlay.StringBundle.GetStringFromName("waitForArchive"));
+				return;
+			}
+			
+			this.onDoArchive();
+		};
+	};
 
 //-----------------------------------------------------------------------------------------------------	
 AutoarchiveReloadedOverlay.Settings = function(account)
@@ -427,6 +519,5 @@ AutoarchiveReloadedOverlay.Settings.prototype.logToConsole = function()
 //wait a second before starting, because otherwise the check message from initIfValid is *behind* Thunderbird
 window.setTimeout(function ()
 {
-    var autoarchiveReloaded = new AutoarchiveReloadedOverlay.Autoarchiver();
-    autoarchiveReloaded.initIfValid();
+    AutoarchiveReloadedOverlay.Global.startupIfValid();
 }, 1000);

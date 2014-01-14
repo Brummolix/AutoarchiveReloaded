@@ -6,3 +6,9 @@
 <!ENTITY archiveUnread "Archiviere ungelesene Nachrichten älter als ">
 
 <!ENTITY days "Tage">
+
+<!ENTITY archiveTypeTitle "Autoarchiv Zeitpunkt">
+<!ENTITY archiveTypeManual "nur manuell (mit Menü) - empfohlen">
+<!ENTITY archiveTypeStartup "bei jedem Start von Thunderbird">
+
+<!ENTITY menuArchive "Jetzt Autoarchivieren">

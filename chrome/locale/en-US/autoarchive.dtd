@@ -1,3 +1,4 @@
+﻿<?xml version="1.0"  encoding="UTF-8"?>
 <!ENTITY settingsHeadline "AutoarchiveReloaded settings">
 <!ENTITY archiveMessages "Archive all other messages older than ">
 <!ENTITY archiveTagged "Archive tagged (with keywords) messages older than ">
@@ -5,3 +6,9 @@
 <!ENTITY archiveUnread "Archive unread messages older than ">
 
 <!ENTITY days "days">
+
+<!ENTITY archiveTypeTitle "Autoarchive time">
+<!ENTITY archiveTypeManual "manually only (via menu) - recommended">
+<!ENTITY archiveTypeStartup "at every Thunderbird startup">
+
+<!ENTITY menuArchive "Autoarchive now">
