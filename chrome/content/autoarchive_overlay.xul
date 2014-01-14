@@ -19,10 +19,17 @@ Copyright 2012 Alexey Egorov (original version Autoarchive, http://code.google.c
     along with AutoarchiveReloaded.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <!DOCTYPE window SYSTEM "chrome://autoarchiveReloaded/locale/autoarchive.dtd">
+<?xml-stylesheet href="chrome://autoarchiveReloaded/skin/toolbarstyle.css" type="text/css"?>
 <overlay id="autoarchiveReloaded-overlay" xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
 	<script type="application/x-javascript" src="chrome://autoarchiveReloaded/content/overlay.js"/>
 
 	<menupopup id="taskPopup">
-		<menuitem id="autoarchiveReloaded-menu" oncommand="AutoarchiveReloadedOverlay.Global.onArchiveManually();" label="&menuArchive;"/>
+		<menuitem id="autoarchiveReloadedArchiveNowMenu" oncommand="AutoarchiveReloadedOverlay.Global.onArchiveManually();" label="&menuArchive;"/>
 	</menupopup>
+	
+	<toolbarpalette id="MailToolbarPalette">
+		<toolbarbutton id="autoarchiveReloadedArchiveNowButton" class="toolbarbutton-1"
+		label="&toolbarArchive;" tooltiptext="&toolbarArchiveTooltip;"
+		oncommand="AutoarchiveReloadedOverlay.Global.onArchiveManually();"/>
+	</toolbarpalette>	
 </overlay>

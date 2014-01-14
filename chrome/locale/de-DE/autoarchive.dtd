@@ -12,3 +12,5 @@
 <!ENTITY archiveTypeStartup "bei jedem Start von Thunderbird">
 
 <!ENTITY menuArchive "Jetzt Autoarchivieren">
+<!ENTITY toolbarArchive "Autoarchiv">
+<!ENTITY toolbarArchiveTooltip "Jetzt Autoarchivieren">
