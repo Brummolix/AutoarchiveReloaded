@@ -49,6 +49,11 @@ AutoarchiveReloadedOverlay.Helper = new function ()
                 .getMostRecentWindow("mail:3pane");
         };
 		
+		this.getPromptService = function()
+		{
+			return Components.classes["@mozilla.org/embedcomp/prompt-service;1"].getService(Components.interfaces.nsIPromptService);
+		}
+		
 		this.messageHasKeywords = function (msgDbHeader)
 		{
 			var keywords = msgDbHeader.getStringProperty("keywords");
@@ -387,8 +392,7 @@ AutoarchiveReloadedOverlay.Global = new function ()
 				if (addon != null)
 				{
 					//inform user about plugins
-					var promptService = Components.classes["@mozilla.org/embedcomp/prompt-service;1"].getService(Components.interfaces.nsIPromptService);
-					promptService.alert(null, AutoarchiveReloadedOverlay.StringBundle.GetStringFromName("warningOldAutoarchiverTitle"), AutoarchiveReloadedOverlay.StringBundle.GetStringFromName("warningOldAutoarchiver"));
+					AutoarchiveReloadedOverlay.Helper.getPromptService().alert(null, AutoarchiveReloadedOverlay.StringBundle.GetStringFromName("warningOldAutoarchiverTitle"), AutoarchiveReloadedOverlay.StringBundle.GetStringFromName("warningOldAutoarchiver"));
 					return;
 				}
 				thisForEvent.startup();
@@ -434,18 +438,22 @@ AutoarchiveReloadedOverlay.Global = new function ()
 		
 		this.onArchiveManually = function ()
 		{
+			AutoarchiveReloadedOverlay.Logger.logToConsole("Hello Archiv 1");
 			if (this.status == this.UNINITIALZED)
 			{
 				alert(AutoarchiveReloadedOverlay.StringBundle.GetStringFromName("waitForInit"));
 				return;
 			}
-			if (this.status == this.IN_PROGRESS)
-			{
-				alert(AutoarchiveReloadedOverlay.StringBundle.GetStringFromName("waitForArchive"));
-				return;
-			}
 			
-			this.onDoArchive();
+			if (AutoarchiveReloadedOverlay.Helper.getPromptService().confirm(null, AutoarchiveReloadedOverlay.StringBundle.GetStringFromName("dialogTitle"),  AutoarchiveReloadedOverlay.StringBundle.GetStringFromName("dialogStartManualText")))
+			{
+				if (this.status == this.IN_PROGRESS)
+				{
+					alert(AutoarchiveReloadedOverlay.StringBundle.GetStringFromName("waitForArchive"));
+					return;
+				}
+				this.onDoArchive();
+			}
 		};
 	};
 
