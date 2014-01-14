@@ -8,7 +8,7 @@
 <!ENTITY days "Tage">
 
 <!ENTITY archiveTypeTitle "Autoarchiv Zeitpunkt">
-<!ENTITY archiveTypeManual "nur manuell (mit Menü) - empfohlen">
+<!ENTITY archiveTypeManual "nur manuell (mit Menü/Symbolleiste) - empfohlen">
 <!ENTITY archiveTypeStartup "bei jedem Start von Thunderbird">
 
 <!ENTITY menuArchive "Jetzt Autoarchivieren">
