@@ -9,9 +9,9 @@
 
 <!ENTITY archiveTypeTitle "Autoarchive time">
 <!ENTITY archiveTypeManual "manually only (via menu/toolbar) - recommended">
-<!ENTITY archiveTypeStartup "at every Thunderbird startup">
+<!ENTITY archiveTypeStartup "at every Thunderbird startup (and repeated after every day)">
 
-<!ENTITY menuArchive "Autoarchive now">
-<!ENTITY toolbarArchive "Autoarchive">
+<!ENTITY menuArchive "Autoarchive now...">
+<!ENTITY toolbarArchive "Autoarchive...">
 <!ENTITY toolbarArchiveTooltip "Autoarchive now">
 
