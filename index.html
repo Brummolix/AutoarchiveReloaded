@@ -61,9 +61,16 @@ You can use it for example if you want to archive your mails from an IMAP accoun
 <li>You can have different settings for unread messages, starred messages (marked with a star) or messages with keywords (the settings will also be combined if a message is both or all of that)</li>
 </ul>
 </li>
-<li>Autoarchiving is started every time you start Thunderbird (after some seconds). Then your mails are archived automatically according to your settings. 
+<li>Choose "Extras\Autoarchive" now to start autoarchiving. Then your mails are archived automatically according to your settings. 
 All folders of the account will be archived except Draft,Trash,Templates,Junk,Archive,Queue.
-You find progress infos under the menu Extras\Activities</li>
+You find progress infos under the menu Extras\Activities.<BR>
+You can also use a button in the toolbar. You have to edit your toolbar and add the button first.
+<li>
+<B>Important change in 0.9.1</B><BR>
+In the options of AutoarchiveReloaded you can also choose to autoarchive every time you start Thunderbird (after some seconds). 
+Because of a bug in Thunderbird this may lead to duplicate messages if you use IMAP accounts and archiving is done when your internet connection is broken. See <a href="https://bugzilla.mozilla.org/show_bug.cgi?id=956598">https://bugzilla.mozilla.org/show_bug.cgi?id=956598</a> for details. Therefore I have decided to let the <b>manual start be the default</B>!
+<img src="myimages/AutoarchiveReloadedSettings_ENG.png">
+</li>
 </ul><h3>
 <a name="original-version" class="anchor" href="#original-version"><span class="octicon octicon-link"></span></a>Original version</h3>
 
@@ -78,6 +85,8 @@ You find progress infos under the menu Extras\Activities</li>
 <li>configure unread mails separately (besides marked messages and messages with keywords)</li>
 <li>improve handling if a message for example is marked and has keywords</li>
 <li>show activities in activity window</li>
+<li>archiving via menu/toolbar</li>
+<li>you can select if you want autoarchiving at every start of Thunderbird or manual only</li>
 <li>...</li>
 </ul>
 
