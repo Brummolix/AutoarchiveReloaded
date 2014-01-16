@@ -1,5 +1,5 @@
 /*
-Copyright 2013 Brummolix (new version AutoarchiveReloaded, https://github.com/Brummolix/AutoarchiveReloaded )
+Copyright 2013-2014 Brummolix (new version AutoarchiveReloaded, https://github.com/Brummolix/AutoarchiveReloaded )
 Copyright 2012 Alexey Egorov (original version Autoarchive, http://code.google.com/p/autoarchive/ )
 
  This file is part of AutoarchiveReloaded.
@@ -21,10 +21,12 @@ Copyright 2012 Alexey Egorov (original version Autoarchive, http://code.google.c
 "use strict";
 Components.utils.import("resource://gre/modules/XPCOMUtils.jsm");
 
-function AutoarchiveManagerExtension() {
+function AutoarchiveManagerExtension() 
+{
 }
 
-AutoarchiveManagerExtension.prototype = {
+AutoarchiveManagerExtension.prototype = 
+{
     name:"autoarchiveprefs",
     chromePackageName:'autoarchiveReloaded',
     classID:Components.ID("{ac4f0da9-5240-487e-992c-7cf3c622a9ad}"),
@@ -35,13 +37,15 @@ AutoarchiveManagerExtension.prototype = {
             category:"mailnews-accountmanager-extensions"
         }
     ],
-    showPanel:function (server) {
+    showPanel:function (server) 
+	{
         // show Autoarchive panel for POP3, IMAP, NNTP and "movemail" (unix) account types
         switch (server.type) {
             case "nntp":
             case "imap":
             case "pop3":
             case "movemail":
+			case "rss":
                 return true;
         }
         return false;
@@ -49,16 +53,19 @@ AutoarchiveManagerExtension.prototype = {
     QueryInterface:XPCOMUtils.generateQI([Components.interfaces.nsIMsgAccountManagerExtension])
 };
 
-if (XPCOMUtils.generateNSGetFactory) {
+if (XPCOMUtils.generateNSGetFactory) 
+{
     // Gecko >= 2.0
     const NSGetFactory = XPCOMUtils.generateNSGetFactory([AutoarchiveManagerExtension]);
 }
-else {
+else 
+{
     // Gecko <= 1.9.x
     var NSGetModule = XPCOMUtils.generateNSGetModule([AutoarchiveManagerExtension], postModuleRegisterCallback);
 
 }
 
-function postModuleRegisterCallback (compMgr, fileSpec, componentsArray) {
+function postModuleRegisterCallback (compMgr, fileSpec, componentsArray) 
+{
     dump("Autoarchive account manager extension registered\n");
 }
