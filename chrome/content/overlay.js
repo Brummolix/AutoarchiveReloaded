@@ -253,6 +253,7 @@ AutoarchiveReloadedOverlay.Autoarchiver.prototype.getFolders = function (folder,
 {
     try
     {
+		
         //attention do not try to get the folderURL for IMAP account (it crashes or may crash)
 
         //Do not archive some special folders (and also no subfolders in there)
@@ -335,8 +336,9 @@ AutoarchiveReloadedOverlay.Autoarchiver.prototype.archiveFolder = function (fold
 AutoarchiveReloadedOverlay.Autoarchiver.prototype.archiveAccounts = function ()
 {
 	this.foldersArchived = 0;
-
-	var inboxFolders = [];
+	
+	var foldersToArchive = 0;
+	
     for each(var account in this.accounts)
     {
         //ignore IRC accounts
@@ -345,30 +347,29 @@ AutoarchiveReloadedOverlay.Autoarchiver.prototype.archiveAccounts = function ()
 			var settings = new AutoarchiveReloadedOverlay.Settings(account);
 			if (settings.isArchivingSomething())
 			{
+				var inboxFolders = [];
 				this.getFolders(account.incomingServer.rootFolder, inboxFolders);
+				foldersToArchive += inboxFolders.length;
+				for each(var folder in inboxFolders)
+					this.archiveFolder(folder,settings);
 			}
         }
 	}
-	
-	this.foldersToArchive = inboxFolders.length;
 
-	for each(var folder in inboxFolders)
-		this.archiveFolder(folder,settings);
-	
-	this.checkForArchiveDone();
+	this.checkForArchiveDone(foldersToArchive);
 };
 
-AutoarchiveReloadedOverlay.Autoarchiver.prototype.checkForArchiveDone = function ()
+AutoarchiveReloadedOverlay.Autoarchiver.prototype.checkForArchiveDone = function (foldersToArchive)
 {
 	//wait until all accounts are ready
-	if (this.foldersArchived == this.foldersToArchive)
+	if (this.foldersArchived == foldersToArchive)
 	{
 		//fire event
 		this.onDoneEvent();
 	}
 	else
 	{
-		window.setTimeout(this.checkForArchiveDone.bind(this), 500);
+		window.setTimeout(this.checkForArchiveDone.bind(this,foldersToArchive), 500);
 	}
 }
 
