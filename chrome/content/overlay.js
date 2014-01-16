@@ -194,7 +194,7 @@ AutoarchiveReloadedOverlay.SearchListener.prototype.onSearchHit = function (dbHd
 		other = false;
 		ageInDays = Math.max(ageInDays,this.settings.daysTagged);
 	}
-
+	
 	if (other)
 	{
 		if (!this.settings.bArchiveOther)
@@ -211,8 +211,7 @@ AutoarchiveReloadedOverlay.SearchListener.prototype.onSearchHit = function (dbHd
 		//check if archive is possible for this message/in this account
         //TODO: actual it is not clear how to get the archiveEnabled for the identity in the beginning and not for every message
         var mail3PaneWindow = AutoarchiveReloadedOverlay.Helper.getMail3Pane();
-        if (mail3PaneWindow.getIdentityForHeader(dbHdr)
-            .archiveEnabled)
+        if (mail3PaneWindow.getIdentityForHeader(dbHdr).archiveEnabled)
         {
             this.messages.push(dbHdr);
         }
@@ -439,7 +438,6 @@ AutoarchiveReloadedOverlay.Global = new function ()
 		
 		this.onArchiveManually = function ()
 		{
-			AutoarchiveReloadedOverlay.Logger.logToConsole("Hello Archiv 1");
 			if (this.status == this.UNINITIALZED)
 			{
 				alert(AutoarchiveReloadedOverlay.StringBundle.GetStringFromName("waitForInit"));
