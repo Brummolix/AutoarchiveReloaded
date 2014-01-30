@@ -20,6 +20,7 @@ Copyright 2012 Alexey Egorov (original version Autoarchive, http://code.google.c
 
 "use strict";
 Components.utils.import("resource://gre/modules/AddonManager.jsm");
+Components.utils.import("chrome://autoarchiveReloaded/content/thunderbird-stdlib/msgHdrUtils.js");
 
 var AutoarchiveReloadedOverlay = AutoarchiveReloadedOverlay || {};
 
@@ -54,10 +55,10 @@ AutoarchiveReloadedOverlay.Helper = new function ()
 			return Components.classes["@mozilla.org/embedcomp/prompt-service;1"].getService(Components.interfaces.nsIPromptService);
 		}
 		
-		this.messageHasKeywords = function (msgDbHeader)
+		this.messageHasTags = function (msgDbHeader)
 		{
-			var keywords = msgDbHeader.getStringProperty("keywords");
-			return (keywords && keywords.length>0);
+			var tags = msgHdrGetTags(msgDbHeader);
+			return (tags && tags.length>0);
 		};
 		
 		this.messageGetAgeInDays = function (msgDbHeader)
@@ -186,7 +187,7 @@ AutoarchiveReloadedOverlay.SearchListener.prototype.onSearchHit = function (dbHd
 	}
 		
 	//tagged
-	if (AutoarchiveReloadedOverlay.Helper.messageHasKeywords(dbHdr))
+	if (AutoarchiveReloadedOverlay.Helper.messageHasTags(dbHdr))
 	{
 		if (!this.settings.bArchiveTagged)
 			return;
