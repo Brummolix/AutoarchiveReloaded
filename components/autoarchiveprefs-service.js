@@ -39,16 +39,7 @@ AutoarchiveManagerExtension.prototype =
     ],
     showPanel:function (server) 
 	{
-        // show Autoarchive panel for POP3, IMAP, NNTP and "movemail" (unix) account types
-        switch (server.type) {
-            case "nntp":
-            case "imap":
-            case "pop3":
-            case "movemail":
-			case "rss":
-                return true;
-        }
-        return false;
+		return true;
     },
     QueryInterface:XPCOMUtils.generateQI([Components.interfaces.nsIMsgAccountManagerExtension])
 };
