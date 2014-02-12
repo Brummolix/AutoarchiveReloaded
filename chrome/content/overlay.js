@@ -32,6 +32,30 @@ AutoarchiveReloadedOverlay.StringBundle = Cc["@mozilla.org/intl/stringbundle;1"]
 //singleton class for logging
 AutoarchiveReloadedOverlay.Logger = new function ()
     {
+		//private
+		this.LEVEL_INFO = 0;
+		this.LEVEL_ERROR = 1;
+		
+		//public
+		this.level = this.LEVEL_INFO;
+		
+		this.info = function(str)
+		{
+			this.log(this.LEVEL_INFO,str);
+		};
+		
+		this.error = function(str)
+		{
+			this.log(this.LEVEL_ERROR,str);
+		};
+		
+		//private
+		this.log = function(levelToLog,str)
+		{
+			if (levelToLog >= this.level)
+				this.logToConsole(str);
+		};
+		
         this.logToConsole = function (str)
         {
 			var date = new Date();
@@ -138,6 +162,7 @@ AutoarchiveReloadedOverlay.SearchListener = function(folder, activity,settings,o
 
 AutoarchiveReloadedOverlay.SearchListener.prototype.archiveMessages = function ()
 {
+	AutoarchiveReloadedOverlay.Logger.info("start real archiving of '" + this.folder.prettiestName + "' (" + this.messages.length + " messages)");
     var mail3PaneWindow = AutoarchiveReloadedOverlay.Helper.getMail3Pane();
     var batchMover = new mail3PaneWindow.BatchMessageMover();
 	
@@ -227,6 +252,7 @@ AutoarchiveReloadedOverlay.SearchListener.prototype.onSearchHit = function (dbHd
 //after the search was done, archive all messages
 AutoarchiveReloadedOverlay.SearchListener.prototype.onSearchDone = function (status)
 {
+	AutoarchiveReloadedOverlay.Logger.info("message search done for '" + this.folder.prettiestName + "' in account '" + this.folder.server.prettyName + "' -> " + this.messages.length + " messages found to archive");
     var result = 0;
     if (this.messages.length > 0)
         result = this.archiveMessages();
@@ -253,7 +279,6 @@ AutoarchiveReloadedOverlay.Autoarchiver.prototype.getFolders = function (folder,
 {
     try
     {
-		
         //attention do not try to get the folderURL for IMAP account (it crashes or may crash)
 
         //Do not archive some special folders (and also no subfolders in there)
@@ -267,7 +292,10 @@ AutoarchiveReloadedOverlay.Autoarchiver.prototype.getFolders = function (folder,
         //Queue - no, must be sent?
 		//Virtual - no, it is virtual :)
         if (folder.getFlag(Ci.nsMsgFolderFlags.Trash) || folder.getFlag(Ci.nsMsgFolderFlags.Junk) || folder.getFlag(Ci.nsMsgFolderFlags.Queue) || folder.getFlag(Ci.nsMsgFolderFlags.Drafts) || folder.getFlag(Ci.nsMsgFolderFlags.Templates) || folder.getFlag(Ci.nsMsgFolderFlags.Archive) || folder.getFlag(Ci.nsMsgFolderFlags.Virtual) )
+		{
+			AutoarchiveReloadedOverlay.Logger.info("ignore folder '" + folder.prettiestName + "'");
             return;
+		}
 
         //a Feed account (RSS Feeds) will be listed here, but it is kicked out later because it does not have archive options...
 
@@ -289,6 +317,7 @@ AutoarchiveReloadedOverlay.Autoarchiver.prototype.getFolders = function (folder,
 
 AutoarchiveReloadedOverlay.Autoarchiver.prototype.archiveFolder = function (folder, settings)
 {
+	AutoarchiveReloadedOverlay.Logger.info("start searching messages to archive in folder '" + folder.prettiestName + "' in account '" + folder.server.prettyName + "'");
     //build a search for the messages to archive
     var searchSession = Cc["@mozilla.org/messenger/searchSession;1"].createInstance(Ci.nsIMsgSearchSession);
     searchSession.addScopeTerm(Ci.nsMsgSearchScope.offlineMail, folder);
@@ -341,6 +370,7 @@ AutoarchiveReloadedOverlay.Autoarchiver.prototype.archiveAccounts = function ()
 	
     for each(var account in this.accounts)
     {
+		AutoarchiveReloadedOverlay.Logger.info("check account '" + account.incomingServer.prettyName + "'");
         //ignore IRC accounts
         if (account.incomingServer.localStoreType == "mailbox" || account.incomingServer.localStoreType == "imap" || account.incomingServer.localStoreType == "news")
         {
@@ -348,12 +378,17 @@ AutoarchiveReloadedOverlay.Autoarchiver.prototype.archiveAccounts = function ()
 			if (settings.isArchivingSomething())
 			{
 				var inboxFolders = [];
+				AutoarchiveReloadedOverlay.Logger.info("getting folders to archive in account '" + account.incomingServer.prettyName + "'");
 				this.getFolders(account.incomingServer.rootFolder, inboxFolders);
 				foldersToArchive += inboxFolders.length;
 				for each(var folder in inboxFolders)
 					this.archiveFolder(folder,settings);
 			}
+			else
+				AutoarchiveReloadedOverlay.Logger.info("autoarchive disabled, ignore account '" + account.incomingServer.prettyName + "'");
         }
+		else
+			AutoarchiveReloadedOverlay.Logger.info("ignore account '" + account.incomingServer.prettyName + "'");
 	}
 
 	this.checkForArchiveDone(foldersToArchive);
@@ -393,6 +428,7 @@ AutoarchiveReloadedOverlay.Global = new function ()
 				if (addon != null)
 				{
 					//inform user about plugins
+					AutoarchiveReloadedOverlay.Logger.info("invalid because of old autoarchiver");
 					AutoarchiveReloadedOverlay.Helper.getPromptService().alert(null, AutoarchiveReloadedOverlay.StringBundle.GetStringFromName("warningOldAutoarchiverTitle"), AutoarchiveReloadedOverlay.StringBundle.GetStringFromName("warningOldAutoarchiver"));
 					return;
 				}
@@ -403,21 +439,28 @@ AutoarchiveReloadedOverlay.Global = new function ()
 		this.startup = function ()
 		{
 			this.status = this.READY_FOR_WORK;
+			AutoarchiveReloadedOverlay.Logger.info("read for work");
 
 			if (AutoarchiveReloadedOverlay.Helper.getPreferences().getCharPref("archiveType")=="startup")
 			{
+				AutoarchiveReloadedOverlay.Logger.info("archive type at startup");
+				
 				//wait some time to give TB time to connect and everything
 				window.setTimeout(this.onDoArchiveAutomatic.bind(this), 9000);
 				
 				//repeat after one day (if someone has open Thunderbird all the time)
 				window.setInterval(this.onDoArchiveAutomatic.bind(this), 86400000);
 			}
+			else
+				AutoarchiveReloadedOverlay.Logger.info("archive type manually");
 		};
 		
 		this.onDoArchiveAutomatic = function ()
 		{
+			AutoarchiveReloadedOverlay.Logger.info("try automatic archive");
 			if (this.status != this.READY_FOR_WORK)
 			{
+				AutoarchiveReloadedOverlay.Logger.info("automatic archive busy, wait");
 				//busy: wait 5 seconds
 				window.setTimeout(this.onDoArchiveAutomatic.bind(this), 5000);
 			}
@@ -427,6 +470,7 @@ AutoarchiveReloadedOverlay.Global = new function ()
 		
 		this.onDoArchive = function ()
 		{
+			AutoarchiveReloadedOverlay.Logger.info("start archiving");
 			this.status = this.IN_PROGRESS;
 			var autoarchiveReloaded = new AutoarchiveReloadedOverlay.Autoarchiver(this.onArchiveDone.bind(this));
 			autoarchiveReloaded.archiveAccounts();
@@ -434,13 +478,16 @@ AutoarchiveReloadedOverlay.Global = new function ()
 		
 		this.onArchiveDone = function ()
 		{
+			AutoarchiveReloadedOverlay.Logger.info("archive (searching messages to archive) done");
 			this.status = this.READY_FOR_WORK;
 		}
 		
 		this.onArchiveManually = function ()
 		{
+			AutoarchiveReloadedOverlay.Logger.info("try manual archive");
 			if (this.status == this.UNINITIALZED)
 			{
+				AutoarchiveReloadedOverlay.Logger.info("not initialized, cancel");
 				alert(AutoarchiveReloadedOverlay.StringBundle.GetStringFromName("waitForInit"));
 				return;
 			}
@@ -449,11 +496,14 @@ AutoarchiveReloadedOverlay.Global = new function ()
 			{
 				if (this.status == this.IN_PROGRESS)
 				{
+					AutoarchiveReloadedOverlay.Logger.info("busy with other archive..., cancel");
 					alert(AutoarchiveReloadedOverlay.StringBundle.GetStringFromName("waitForArchive"));
 					return;
 				}
 				this.onDoArchive();
 			}
+			else
+				AutoarchiveReloadedOverlay.Logger.info("manual archive canceled by user");
 		};
 	};
 
@@ -472,7 +522,7 @@ AutoarchiveReloadedOverlay.Settings = function(account)
 		this.daysUnread;
 		
 		this.read();
-		//this.logToConsole();
+		this.log();
 	};
 
 AutoarchiveReloadedOverlay.Settings.prototype.read = function()
@@ -509,22 +559,24 @@ AutoarchiveReloadedOverlay.Settings.prototype.getMinAge = function()
 	return minAge;
 };
 
-AutoarchiveReloadedOverlay.Settings.prototype.logToConsole = function()
+AutoarchiveReloadedOverlay.Settings.prototype.log = function()
 {
-	AutoarchiveReloadedOverlay.Logger.logToConsole("Settings for " + this.account.incomingServer.constructedPrettyName);
-	AutoarchiveReloadedOverlay.Logger.logToConsole("archive other " + this.bArchiveOther);
-	AutoarchiveReloadedOverlay.Logger.logToConsole("days other " + this.daysOther);
-	AutoarchiveReloadedOverlay.Logger.logToConsole("archive marked " + this.bArchiveMarked);
-	AutoarchiveReloadedOverlay.Logger.logToConsole("days marked " + this.daysMarked);
-	AutoarchiveReloadedOverlay.Logger.logToConsole("archive tagged " + this.bArchiveTagged);
-	AutoarchiveReloadedOverlay.Logger.logToConsole("days tagged " + this.daysTagged);
-	AutoarchiveReloadedOverlay.Logger.logToConsole("archive unread " + this.bArchiveUnread);
-	AutoarchiveReloadedOverlay.Logger.logToConsole("days unread " + this.daysUnread);
+	AutoarchiveReloadedOverlay.Logger.info("Settings for '" + this.account.incomingServer.prettyName + "':");
+	AutoarchiveReloadedOverlay.Logger.info("- archive other " + this.bArchiveOther);
+	AutoarchiveReloadedOverlay.Logger.info("- days other " + this.daysOther);
+	AutoarchiveReloadedOverlay.Logger.info("- archive marked " + this.bArchiveMarked);
+	AutoarchiveReloadedOverlay.Logger.info("- days marked " + this.daysMarked);
+	AutoarchiveReloadedOverlay.Logger.info("- archive tagged " + this.bArchiveTagged);
+	AutoarchiveReloadedOverlay.Logger.info("- days tagged " + this.daysTagged);
+	AutoarchiveReloadedOverlay.Logger.info("- archive unread " + this.bArchiveUnread);
+	AutoarchiveReloadedOverlay.Logger.info("- days unread " + this.daysUnread);
 };
 
 //-----------------------------------------------------------------------------------------------------	
 
 //wait a second before starting, because otherwise the check message from initIfValid is *behind* Thunderbird
+AutoarchiveReloadedOverlay.Logger.info("start...");
+
 window.setTimeout(function ()
 {
     AutoarchiveReloadedOverlay.Global.startupIfValid();
