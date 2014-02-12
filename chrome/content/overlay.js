@@ -48,18 +48,32 @@ AutoarchiveReloadedOverlay.Logger = new function ()
 		{
 			this.log(this.LEVEL_ERROR,str);
 		};
+
+		this.errorException = function(e)
+		{
+			this.error(e + "; Source: '" + e.fileName + "'; Line: " + e.lineNumber);
+		};
 		
 		//private
 		this.log = function(levelToLog,str)
 		{
-			if (levelToLog >= this.level)
-				this.logToConsole(str);
+			if (levelToLog < this.level)
+				return;
+			
+			this.logToConsole(levelToLog,str);
 		};
 		
-        this.logToConsole = function (str)
+        this.logToConsole = function (levelToLog,str)
         {
 			var date = new Date();
-            Application.console.log(date. toLocaleString() + " - AutoarchiveReloaded: " + str);
+			var strToLog = date. toLocaleString() + " - AutoarchiveReloaded - ";
+			if (levelToLog==this.LEVEL_INFO)
+				strToLog += "INFO";
+			else
+				strToLog += "ERROR";
+			strToLog += ": " + str
+
+            Application.console.log(strToLog);
         };
     };
 
