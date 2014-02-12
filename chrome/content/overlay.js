@@ -126,34 +126,50 @@ AutoarchiveReloadedOverlay.ActivityManager = function(folder)
 
 AutoarchiveReloadedOverlay.ActivityManager.prototype.start = function ()
 {
-    var activityManager = this.getActivityManager();
-    this.startProcess = Components.classes["@mozilla.org/activity-process;1"].createInstance(Components.interfaces.nsIActivityProcess);
+	try
+	{
+		var activityManager = this.getActivityManager();
+		this.startProcess = Components.classes["@mozilla.org/activity-process;1"].createInstance(Components.interfaces.nsIActivityProcess);
 
-    this.startProcess.init(AutoarchiveReloadedOverlay.StringBundle.formatStringFromName("activityStart", [this.folder.prettiestName], 1), null);
-    this.startProcess.contextType = "account"; // group this activity by account
-    this.startProcess.contextObj = this.folder.server; // account in question
+		this.startProcess.init(AutoarchiveReloadedOverlay.StringBundle.formatStringFromName("activityStart", [this.folder.prettiestName], 1), null);
+		this.startProcess.contextType = "account"; // group this activity by account
+		this.startProcess.contextObj = this.folder.server; // account in question
 
-    activityManager.addActivity(this.startProcess);
+		activityManager.addActivity(this.startProcess);
+	}
+    catch (e)
+    {
+		AutoarchiveReloadedOverlay.Logger.errorException(e);
+		throw e;
+    }
 };
 
 AutoarchiveReloadedOverlay.ActivityManager.prototype.stopAndSetFinal = function (actual)
 {
-    var activityManager = this.getActivityManager();
-    this.startProcess.state = Components.interfaces.nsIActivityProcess.STATE_COMPLETED;
-    activityManager.removeActivity(this.startProcess.id);
+	try
+	{
+		var activityManager = this.getActivityManager();
+		this.startProcess.state = Components.interfaces.nsIActivityProcess.STATE_COMPLETED;
+		activityManager.removeActivity(this.startProcess.id);
 
-    if (typeof actual == "string" || actual > 0)
+		if (typeof actual == "string" || actual > 0)
+		{
+			var event = Components.classes["@mozilla.org/activity-event;1"].createInstance(Components.interfaces.nsIActivityEvent);
+			event.init(AutoarchiveReloadedOverlay.StringBundle.formatStringFromName("activityDone", [this.folder.prettiestName], 1),
+				null,
+				AutoarchiveReloadedOverlay.StringBundle.formatStringFromName("activityMessagesToArchive", [actual], 1),
+				this.startProcess.startTime, // start time
+				Date.now() // completion time
+			);
+			event.contextType = this.startProcess.contextType; // optional
+			event.contextObj = this.startProcess.contextObj; // optional
+			activityManager.addActivity(event);
+		}
+	}
+    catch (e)
     {
-        var event = Components.classes["@mozilla.org/activity-event;1"].createInstance(Components.interfaces.nsIActivityEvent);
-        event.init(AutoarchiveReloadedOverlay.StringBundle.formatStringFromName("activityDone", [this.folder.prettiestName], 1),
-            null,
-            AutoarchiveReloadedOverlay.StringBundle.formatStringFromName("activityMessagesToArchive", [actual], 1),
-            this.startProcess.startTime, // start time
-            Date.now() // completion time
-        );
-        event.contextType = this.startProcess.contextType; // optional
-        event.contextObj = this.startProcess.contextObj; // optional
-        activityManager.addActivity(event);
+		AutoarchiveReloadedOverlay.Logger.errorException(e);
+		throw e;
     }
 };
 
@@ -176,12 +192,12 @@ AutoarchiveReloadedOverlay.SearchListener = function(folder, activity,settings,o
 
 AutoarchiveReloadedOverlay.SearchListener.prototype.archiveMessages = function ()
 {
-	AutoarchiveReloadedOverlay.Logger.info("start real archiving of '" + this.folder.prettiestName + "' (" + this.messages.length + " messages)");
-    var mail3PaneWindow = AutoarchiveReloadedOverlay.Helper.getMail3Pane();
-    var batchMover = new mail3PaneWindow.BatchMessageMover();
+	try
+	{
+		AutoarchiveReloadedOverlay.Logger.info("start real archiving of '" + this.folder.prettiestName + "' (" + this.messages.length + " messages)");
+		var mail3PaneWindow = AutoarchiveReloadedOverlay.Helper.getMail3Pane();
+		var batchMover = new mail3PaneWindow.BatchMessageMover();
 	
-    try
-    {
 		//TODO: do not archive if a imap server is offline (otherwise the archive is done locally but not on the server, if you start next time (and you are online) it may be archived again
 		//-> problem: how to detect imap server problems/problems with i-net connection? (we do not talk about online/offline mode here which you can handle with  MailOfflineMgr!)
 		//I have also reported the real bug to TB: see https://bugzilla.mozilla.org/show_bug.cgi?id=956598
@@ -191,8 +207,7 @@ AutoarchiveReloadedOverlay.SearchListener.prototype.archiveMessages = function (
     }
     catch (e)
     {
-        //if no Mail3Pane?
-        Components.utils.reportError("Error during archive messages in folder " + this.folder.name + ". Error: " + e + ". mail3PaneWindow = " + mail3PaneWindow);
+		AutoarchiveReloadedOverlay.Logger.errorException(e);
         return "? (error occured)";
     }
 };
@@ -200,54 +215,54 @@ AutoarchiveReloadedOverlay.SearchListener.prototype.archiveMessages = function (
 //collect all messages
 AutoarchiveReloadedOverlay.SearchListener.prototype.onSearchHit = function (dbHdr, folder)
 {
-	//determine ageInDays
-	
-	var ageInDays = 0;
-	var other = true;
-	
-	//unread
-	if (!dbHdr.isRead)
-	{
-		if (!this.settings.bArchiveUnread)
-			return;
-			
-		other = false;
-		ageInDays = Math.max(ageInDays,this.settings.daysUnread);
-	}
-
-	//marked (starred)
-	if (dbHdr.isFlagged)
-	{
-		if (!this.settings.bArchiveMarked)
-			return;
-			
-		other = false;
-		ageInDays = Math.max(ageInDays,this.settings.daysMarked);
-	}
-		
-	//tagged
-	if (AutoarchiveReloadedOverlay.Helper.messageHasTags(dbHdr))
-	{
-		if (!this.settings.bArchiveTagged)
-			return;
-			
-		other = false;
-		ageInDays = Math.max(ageInDays,this.settings.daysTagged);
-	}
-	
-	if (other)
-	{
-		if (!this.settings.bArchiveOther)
-			return;
-		
-		ageInDays = Math.max(ageInDays,this.settings.daysOther);
-	}
-	
-	if (AutoarchiveReloadedOverlay.Helper.messageGetAgeInDays(dbHdr) <= ageInDays)
-		return;
-		
     try
     {
+		//determine ageInDays
+		
+		var ageInDays = 0;
+		var other = true;
+		
+		//unread
+		if (!dbHdr.isRead)
+		{
+			if (!this.settings.bArchiveUnread)
+				return;
+				
+			other = false;
+			ageInDays = Math.max(ageInDays,this.settings.daysUnread);
+		}
+
+		//marked (starred)
+		if (dbHdr.isFlagged)
+		{
+			if (!this.settings.bArchiveMarked)
+				return;
+				
+			other = false;
+			ageInDays = Math.max(ageInDays,this.settings.daysMarked);
+		}
+			
+		//tagged
+		if (AutoarchiveReloadedOverlay.Helper.messageHasTags(dbHdr))
+		{
+			if (!this.settings.bArchiveTagged)
+				return;
+				
+			other = false;
+			ageInDays = Math.max(ageInDays,this.settings.daysTagged);
+		}
+		
+		if (other)
+		{
+			if (!this.settings.bArchiveOther)
+				return;
+			
+			ageInDays = Math.max(ageInDays,this.settings.daysOther);
+		}
+		
+		if (AutoarchiveReloadedOverlay.Helper.messageGetAgeInDays(dbHdr) <= ageInDays)
+			return;
+		
 		//check if archive is possible for this message/in this account
         //TODO: actual it is not clear how to get the archiveEnabled for the identity in the beginning and not for every message
         var mail3PaneWindow = AutoarchiveReloadedOverlay.Helper.getMail3Pane();
@@ -258,8 +273,8 @@ AutoarchiveReloadedOverlay.SearchListener.prototype.onSearchHit = function (dbHd
     }
     catch (e)
     {
-        //Mail3Pane?
-        Components.utils.reportError("Error during checking for archive messages in folder " + folder.name + ". Error: " + e);
+		AutoarchiveReloadedOverlay.Logger.errorException(e);
+		throw e;
     }
 };
 
@@ -325,87 +340,104 @@ AutoarchiveReloadedOverlay.Autoarchiver.prototype.getFolders = function (folder,
     }
     catch (e)
     {
-        Components.utils.reportError("Error check folder: " + folder.name + e);
+		AutoarchiveReloadedOverlay.Logger.errorException(e);
+		throw e;
     }
 };
 
 AutoarchiveReloadedOverlay.Autoarchiver.prototype.archiveFolder = function (folder, settings)
 {
-	AutoarchiveReloadedOverlay.Logger.info("start searching messages to archive in folder '" + folder.prettiestName + "' in account '" + folder.server.prettyName + "'");
-    //build a search for the messages to archive
-    var searchSession = Cc["@mozilla.org/messenger/searchSession;1"].createInstance(Ci.nsIMsgSearchSession);
-    searchSession.addScopeTerm(Ci.nsMsgSearchScope.offlineMail, folder);
-
-    //attention: the strange value copy syntax is needed!
-
-	//find only messages with interesting age
-    //AgeInDays > age
-    var searchByAge = searchSession.createTerm();
-    searchByAge.attrib = Ci.nsMsgSearchAttrib.AgeInDays;
-    var value = searchByAge.value;
-    value.attrib = Ci.nsMsgSearchAttrib.AgeInDays;
-    value.age = settings.getMinAge();
-    searchByAge.value = value;
-    searchByAge.op = Ci.nsMsgSearchOp.IsGreaterThan;
-    searchByAge.booleanAnd = true;
-    searchSession.appendTerm(searchByAge);
-
-	//do not search for (marked as) deleted messages
-	var termNoDeleted = searchSession.createTerm();
-    value = termNoDeleted.value;
-    value.status = Ci.nsMsgMessageFlags.IMAPDeleted;
-    value.attrib = Ci.nsMsgSearchAttrib.MsgStatus;
-    termNoDeleted.value = value;
-    termNoDeleted.attrib = nsMsgSearchAttrib.MsgStatus;
-    termNoDeleted.op = nsMsgSearchOp.Isnt;
-    termNoDeleted.booleanAnd = true;
-	searchSession.appendTerm(termNoDeleted);
-	
-	//the other search parameters will be done in the listener itself, we can not create such a search
-    //also the real archiving is done on the SearchListener...
-	var activity = new AutoarchiveReloadedOverlay.ActivityManager(folder);
-    activity.start();
-	
-	var thisForEvent = this;
-    searchSession.registerListener(new AutoarchiveReloadedOverlay.SearchListener(folder, activity,settings,function ()
+	try
 	{
-		thisForEvent.foldersArchived++;
-	}));
-    searchSession.search(null);
+		AutoarchiveReloadedOverlay.Logger.info("start searching messages to archive in folder '" + folder.prettiestName + "' in account '" + folder.server.prettyName + "'");
+		//build a search for the messages to archive
+		var searchSession = Cc["@mozilla.org/messenger/searchSession;1"].createInstance(Ci.nsIMsgSearchSession);
+		searchSession.addScopeTerm(Ci.nsMsgSearchScope.offlineMail, folder);
+
+		//attention: the strange value copy syntax is needed!
+
+		//find only messages with interesting age
+		//AgeInDays > age
+		var searchByAge = searchSession.createTerm();
+		searchByAge.attrib = Ci.nsMsgSearchAttrib.AgeInDays;
+		var value = searchByAge.value;
+		value.attrib = Ci.nsMsgSearchAttrib.AgeInDays;
+		value.age = settings.getMinAge();
+		searchByAge.value = value;
+		searchByAge.op = Ci.nsMsgSearchOp.IsGreaterThan;
+		searchByAge.booleanAnd = true;
+		searchSession.appendTerm(searchByAge);
+
+		//do not search for (marked as) deleted messages
+		var termNoDeleted = searchSession.createTerm();
+		value = termNoDeleted.value;
+		value.status = Ci.nsMsgMessageFlags.IMAPDeleted;
+		value.attrib = Ci.nsMsgSearchAttrib.MsgStatus;
+		termNoDeleted.value = value;
+		termNoDeleted.attrib = nsMsgSearchAttrib.MsgStatus;
+		termNoDeleted.op = nsMsgSearchOp.Isnt;
+		termNoDeleted.booleanAnd = true;
+		searchSession.appendTerm(termNoDeleted);
+		
+		//the other search parameters will be done in the listener itself, we can not create such a search
+		//also the real archiving is done on the SearchListener...
+		var activity = new AutoarchiveReloadedOverlay.ActivityManager(folder);
+		activity.start();
+		
+		var thisForEvent = this;
+		searchSession.registerListener(new AutoarchiveReloadedOverlay.SearchListener(folder, activity,settings,function ()
+		{
+			thisForEvent.foldersArchived++;
+		}));
+		searchSession.search(null);
+	}
+    catch (e)
+    {
+		AutoarchiveReloadedOverlay.Logger.errorException(e);
+		throw e;
+    }
 };
 
 //archive messages for all accounts
 //(depending on the autoarchive options of the account)
 AutoarchiveReloadedOverlay.Autoarchiver.prototype.archiveAccounts = function ()
 {
-	this.foldersArchived = 0;
-	
-	var foldersToArchive = 0;
-	
-    for each(var account in this.accounts)
-    {
-		AutoarchiveReloadedOverlay.Logger.info("check account '" + account.incomingServer.prettyName + "'");
-        //ignore IRC accounts
-        if (account.incomingServer.localStoreType == "mailbox" || account.incomingServer.localStoreType == "imap" || account.incomingServer.localStoreType == "news")
-        {
-			var settings = new AutoarchiveReloadedOverlay.Settings(account);
-			if (settings.isArchivingSomething())
+	try
+	{
+		this.foldersArchived = 0;
+		
+		var foldersToArchive = 0;
+		
+		for each(var account in this.accounts)
+		{
+			AutoarchiveReloadedOverlay.Logger.info("check account '" + account.incomingServer.prettyName + "'");
+			//ignore IRC accounts
+			if (account.incomingServer.localStoreType == "mailbox" || account.incomingServer.localStoreType == "imap" || account.incomingServer.localStoreType == "news")
 			{
-				var inboxFolders = [];
-				AutoarchiveReloadedOverlay.Logger.info("getting folders to archive in account '" + account.incomingServer.prettyName + "'");
-				this.getFolders(account.incomingServer.rootFolder, inboxFolders);
-				foldersToArchive += inboxFolders.length;
-				for each(var folder in inboxFolders)
-					this.archiveFolder(folder,settings);
+				var settings = new AutoarchiveReloadedOverlay.Settings(account);
+				if (settings.isArchivingSomething())
+				{
+					var inboxFolders = [];
+					AutoarchiveReloadedOverlay.Logger.info("getting folders to archive in account '" + account.incomingServer.prettyName + "'");
+					this.getFolders(account.incomingServer.rootFolder, inboxFolders);
+					foldersToArchive += inboxFolders.length;
+					for each(var folder in inboxFolders)
+						this.archiveFolder(folder,settings);
+				}
+				else
+					AutoarchiveReloadedOverlay.Logger.info("autoarchive disabled, ignore account '" + account.incomingServer.prettyName + "'");
 			}
 			else
-				AutoarchiveReloadedOverlay.Logger.info("autoarchive disabled, ignore account '" + account.incomingServer.prettyName + "'");
-        }
-		else
-			AutoarchiveReloadedOverlay.Logger.info("ignore account '" + account.incomingServer.prettyName + "'");
-	}
+				AutoarchiveReloadedOverlay.Logger.info("ignore account '" + account.incomingServer.prettyName + "'");
+		}
 
-	this.checkForArchiveDone(foldersToArchive);
+		this.checkForArchiveDone(foldersToArchive);
+	}
+    catch (e)
+    {
+		AutoarchiveReloadedOverlay.Logger.errorException(e);
+		throw e;
+    }
 };
 
 AutoarchiveReloadedOverlay.Autoarchiver.prototype.checkForArchiveDone = function (foldersToArchive)
@@ -436,18 +468,26 @@ AutoarchiveReloadedOverlay.Global = new function ()
 		//we do not start if you have the original version of Autoarchiver installed
 		this.startupIfValid = function ()
 		{
-			var thisForEvent = this;
-			AddonManager.getAddonByID("{b3a22f77-26b5-43d1-bd2f-9337488eacef}", function (addon)
+			try
 			{
-				if (addon != null)
+				var thisForEvent = this;
+				AddonManager.getAddonByID("{b3a22f77-26b5-43d1-bd2f-9337488eacef}", function (addon)
 				{
-					//inform user about plugins
-					AutoarchiveReloadedOverlay.Logger.info("invalid because of old autoarchiver");
-					AutoarchiveReloadedOverlay.Helper.getPromptService().alert(null, AutoarchiveReloadedOverlay.StringBundle.GetStringFromName("warningOldAutoarchiverTitle"), AutoarchiveReloadedOverlay.StringBundle.GetStringFromName("warningOldAutoarchiver"));
-					return;
-				}
-				thisForEvent.startup();
-			});
+					if (addon != null)
+					{
+						//inform user about plugins
+						AutoarchiveReloadedOverlay.Logger.info("invalid because of old autoarchiver");
+						AutoarchiveReloadedOverlay.Helper.getPromptService().alert(null, AutoarchiveReloadedOverlay.StringBundle.GetStringFromName("warningOldAutoarchiverTitle"), AutoarchiveReloadedOverlay.StringBundle.GetStringFromName("warningOldAutoarchiver"));
+						return;
+					}
+					thisForEvent.startup();
+				});
+			}
+			catch (e)
+			{
+				AutoarchiveReloadedOverlay.Logger.errorException(e);
+				throw e;
+			}
 		};
 		
 		this.startup = function ()
@@ -541,16 +581,24 @@ AutoarchiveReloadedOverlay.Settings = function(account)
 
 AutoarchiveReloadedOverlay.Settings.prototype.read = function()
 {
-	var server = this.account.incomingServer;
-	//we take the same option names as the original extension
-	this.bArchiveOther = server.getBoolValue("archiveMessages");
-	this.daysOther = server.getIntValue("archiveMessagesDays");
-	this.bArchiveMarked = server.getBoolValue("archiveStarred");
-	this.daysMarked = server.getIntValue("archiveStarredDays");
-	this.bArchiveTagged = server.getBoolValue("archiveTagged");
-	this.daysTagged = server.getIntValue("archiveTaggedDays");
-	this.bArchiveUnread = server.getBoolValue("archiveUnread");
-	this.daysUnread = server.getIntValue("archiveUnreadDays");
+	try
+	{
+		var server = this.account.incomingServer;
+		//we take the same option names as the original extension
+		this.bArchiveOther = server.getBoolValue("archiveMessages");
+		this.daysOther = server.getIntValue("archiveMessagesDays");
+		this.bArchiveMarked = server.getBoolValue("archiveStarred");
+		this.daysMarked = server.getIntValue("archiveStarredDays");
+		this.bArchiveTagged = server.getBoolValue("archiveTagged");
+		this.daysTagged = server.getIntValue("archiveTaggedDays");
+		this.bArchiveUnread = server.getBoolValue("archiveUnread");
+		this.daysUnread = server.getIntValue("archiveUnreadDays");
+	}
+    catch (e)
+    {
+		AutoarchiveReloadedOverlay.Logger.errorException(e);
+		throw e;
+    }
 };
 
 AutoarchiveReloadedOverlay.Settings.prototype.isArchivingSomething = function()
@@ -590,8 +638,8 @@ AutoarchiveReloadedOverlay.Settings.prototype.log = function()
 
 //wait a second before starting, because otherwise the check message from initIfValid is *behind* Thunderbird
 AutoarchiveReloadedOverlay.Logger.info("start...");
-
 window.setTimeout(function ()
 {
     AutoarchiveReloadedOverlay.Global.startupIfValid();
 }, 1000);
+
