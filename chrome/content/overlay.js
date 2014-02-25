@@ -21,6 +21,8 @@ Copyright 2012 Alexey Egorov (original version Autoarchive, http://code.google.c
 "use strict";
 Components.utils.import("resource://gre/modules/AddonManager.jsm");
 Components.utils.import("chrome://autoarchiveReloaded/content/thunderbird-stdlib/msgHdrUtils.js");
+Components.utils.import("resource://gre/modules/FileUtils.jsm");
+Components.utils.import("resource://gre/modules/NetUtil.jsm");
 
 var AutoarchiveReloadedOverlay = AutoarchiveReloadedOverlay || {};
 
@@ -51,7 +53,12 @@ AutoarchiveReloadedOverlay.Logger = new function ()
 
 		this.errorException = function(e)
 		{
-			this.error(e + "; Source: '" + e.fileName + "'; Line: " + e.lineNumber);
+			this.error(this.getExceptionInfo(e));
+		};
+		
+		this.getExceptionInfo= function(e)
+		{
+			return e + "; Source: '" + e.fileName + "'; Line: " + e.lineNumber;
 		};
 		
 		//private
@@ -60,10 +67,10 @@ AutoarchiveReloadedOverlay.Logger = new function ()
 			if (levelToLog < this.level)
 				return;
 			
-			this.logToConsole(levelToLog,str);
+			this.DoLog(levelToLog,str);
 		};
 		
-        this.logToConsole = function (levelToLog,str)
+        this.DoLog = function (levelToLog,str)
         {
 			var date = new Date();
 			var strToLog = date. toLocaleString() + " - AutoarchiveReloaded - ";
@@ -74,7 +81,32 @@ AutoarchiveReloadedOverlay.Logger = new function ()
 			strToLog += ": " + str
 
             Application.console.log(strToLog);
+			this.writeToFile(strToLog);
         };
+		
+		this.writeToFile = function (str)
+		{
+			try
+			{
+				//see https://developer.mozilla.org/en-US/Add-ons/Code_snippets/File_I_O
+			
+				// get file in the profile directory ("ProfD")
+				var file = FileUtils.getFile("ProfD", ["AutoarchiveReloadedLog.txt"]);
+
+				var foStream = Components.classes["@mozilla.org/network/file-output-stream;1"].createInstance(Components.interfaces.nsIFileOutputStream);
+				foStream.init(file, 0x02 | 0x08 | 0x10, 0x0666, 0); 
+
+				var converter = Components.classes["@mozilla.org/intl/converter-output-stream;1"].createInstance(Components.interfaces.nsIConverterOutputStream);
+				converter.init(foStream, "UTF-8", 0, 0);
+				converter.writeString(str + "\r\n");
+				converter.close(); // this closes foStream
+			}
+			catch (e)
+			{
+				Application.console.log("error writing to log file " + this.getExceptionInfo(e));
+				//trotzdem weitermachen, ist ja nur logging...
+			}
+		};
     };
 
 //-------------------------------------------------------------------------------------
