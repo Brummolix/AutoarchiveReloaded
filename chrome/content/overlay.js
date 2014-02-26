@@ -58,7 +58,7 @@ AutoarchiveReloadedOverlay.Logger = new function ()
 		
 		this.getExceptionInfo= function(e)
 		{
-			return e + "; Source: '" + e.fileName + "'; Line: " + e.lineNumber;
+			return e + "; Source: '" + e.fileName + "'; Line: " + e.lineNumber + "; code: " + e.toSource() + "; stack: " + e.stack;
 		};
 		
 		//private
