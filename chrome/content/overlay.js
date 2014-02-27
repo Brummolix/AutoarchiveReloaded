@@ -94,7 +94,7 @@ AutoarchiveReloadedOverlay.Logger = new function ()
 				var file = FileUtils.getFile("ProfD", ["AutoarchiveReloadedLog.txt"]);
 
 				var foStream = Components.classes["@mozilla.org/network/file-output-stream;1"].createInstance(Components.interfaces.nsIFileOutputStream);
-				foStream.init(file, 0x02 | 0x08 | 0x10, 0x0666, 0); 
+				foStream.init(file, 0x02 | 0x08 | 0x10, -1, 0); //-1 = default 0664, but 0664 does not work, maybe 664...
 
 				var converter = Components.classes["@mozilla.org/intl/converter-output-stream;1"].createInstance(Components.interfaces.nsIConverterOutputStream);
 				converter.init(foStream, "UTF-8", 0, 0);
