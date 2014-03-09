@@ -10,6 +10,7 @@
 <!ENTITY archiveTypeTitle "Autoarchive time">
 <!ENTITY archiveTypeManual "manually only (via menu/toolbar) - recommended">
 <!ENTITY archiveTypeStartup "at every Thunderbird startup (and repeated after every day)">
+<!ENTITY enableInfoLoggingOption "activate extended Logging (error console and file AutoarchiveReloadedLog.txt in your profile directory)">
 
 <!ENTITY menuArchive "Autoarchive now...">
 <!ENTITY toolbarArchive "Autoarchive...">

@@ -30,7 +30,46 @@ var AutoarchiveReloadedOverlay = AutoarchiveReloadedOverlay || {};
 AutoarchiveReloadedOverlay.StringBundle = Cc["@mozilla.org/intl/stringbundle;1"].getService(Ci.nsIStringBundleService)
     .createBundle("chrome://autoarchiveReloaded/locale/autoarchive.properties");
 
+//-------------------------------------------------------------------------------------
+
+//singleton with global helper
+//(must be defined BEFORE the logger because of the Preferences function)
+AutoarchiveReloadedOverlay.Helper = new function ()
+    {
+        this.getMail3Pane = function ()
+        {
+            return Cc["@mozilla.org/appshell/window-mediator;1"].getService(Ci.nsIWindowMediator)
+                .getMostRecentWindow("mail:3pane");
+        };
+		
+		this.getPromptService = function()
+		{
+			return Components.classes["@mozilla.org/embedcomp/prompt-service;1"].getService(Components.interfaces.nsIPromptService);
+		};
+		
+		this.messageHasTags = function (msgDbHeader)
+		{
+			var tags = msgHdrGetTags(msgDbHeader);
+			return (tags && tags.length>0);
+		};
+		
+		this.messageGetAgeInDays = function (msgDbHeader)
+		{
+			var now = new Date();
+			var ageInSeconds = (now.getTime()/1000) - msgDbHeader.dateInSeconds;
+			var ageInDays = ageInSeconds/(60*60*24);
+			return ageInDays;
+		};
+
+		this.getPreferences = function()
+		{
+			var prefs = Components.classes["@mozilla.org/preferences-service;1"].getService(Components.interfaces.nsIPrefService);
+			return prefs.getBranch("extensions.AutoarchiveReloaded.");
+		};
+    };
+
 //-----------------------------------------------------------------------------------------------------	
+
 //singleton class for logging
 AutoarchiveReloadedOverlay.Logger = new function ()
     {
@@ -38,9 +77,33 @@ AutoarchiveReloadedOverlay.Logger = new function ()
 		this.LEVEL_INFO = 0;
 		this.LEVEL_ERROR = 1;
 		
-		//public
-		this.level = this.LEVEL_INFO;
+		this.getLogLevelFromPref = function()
+		{
+			if (AutoarchiveReloadedOverlay.Helper.getPreferences().getBoolPref("enableInfoLogging"))				
+				return this.LEVEL_INFO;
+			
+			return this.LEVEL_ERROR;
+		};
 		
+		//public
+		this.level = this.getLogLevelFromPref();
+		
+		//------------------------------------------
+		//Preference Listener
+		//see https://developer.mozilla.org/en-US/Add-ons/Overlay_Extensions/XUL_School/Handling_Preferences#Preference_listeners
+		this.observe = function(aSubject, aTopic, aData)
+		{
+			this.level = this.getLogLevelFromPref();
+			this.info("Logging changed");
+		};
+
+		var _prefService = Cc["@mozilla.org/preferences-service;1"].getService(Ci.nsIPrefBranch);
+		_prefService.QueryInterface(Ci.nsIPrefBranch2);
+		_prefService.addObserver("extensions.AutoarchiveReloaded.enableInfoLogging", this, false);
+		_prefService.QueryInterface(Ci.nsIPrefBranch);
+		
+		//------------------------------------------
+					
 		this.info = function(str)
 		{
 			this.log(this.LEVEL_INFO,str);
@@ -107,44 +170,6 @@ AutoarchiveReloadedOverlay.Logger = new function ()
 				//trotzdem weitermachen, ist ja nur logging...
 			}
 		};
-    };
-
-//-------------------------------------------------------------------------------------
-
-//singleton with global helper
-AutoarchiveReloadedOverlay.Helper = new function ()
-    {
-        this.getMail3Pane = function ()
-        {
-            return Cc["@mozilla.org/appshell/window-mediator;1"].getService(Ci.nsIWindowMediator)
-                .getMostRecentWindow("mail:3pane");
-        };
-		
-		this.getPromptService = function()
-		{
-			return Components.classes["@mozilla.org/embedcomp/prompt-service;1"].getService(Components.interfaces.nsIPromptService);
-		}
-		
-		this.messageHasTags = function (msgDbHeader)
-		{
-			var tags = msgHdrGetTags(msgDbHeader);
-			return (tags && tags.length>0);
-		};
-		
-		this.messageGetAgeInDays = function (msgDbHeader)
-		{
-			var now = new Date();
-			var ageInSeconds = (now.getTime()/1000) - msgDbHeader.dateInSeconds;
-			var ageInDays = ageInSeconds/(60*60*24);
-			return ageInDays;
-		}
-
-		this.getPreferences = function()
-		{
-			// Get the root branch
-			var prefs = Components.classes["@mozilla.org/preferences-service;1"].getService(Components.interfaces.nsIPrefBranch);
-			return prefs.getBranch("extensions.AutoarchiveReloaded.");
-		}
     };
 
 //------------------------------------------------------------------------------

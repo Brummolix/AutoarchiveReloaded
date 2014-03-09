@@ -21,7 +21,9 @@ Copyright 2014 Brummolix (AutoarchiveReloaded, https://github.com/Brummolix/Auto
 <?xml-stylesheet href="chrome://global/skin/" type="text/css"?>
 <prefwindow id="autoarchiveReloadedPreferences"
      title="&settingsHeadline;"
-     xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
+     xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
+	 onload="onLoad()"
+	 >
 	
 	<stringbundleset id="autoarchiveReloadedStringbundleSet">
 	  <stringbundle id="autoarchiveReloadedStrings"
@@ -31,18 +33,21 @@ Copyright 2014 Brummolix (AutoarchiveReloaded, https://github.com/Brummolix/Auto
 	<prefpane id="autoarchiveReloadedPreferences-pane" label="&settingsHeadline;" style="max-width:500px;">
 		<preferences>
 			<preference id="archiveType" name="extensions.AutoarchiveReloaded.archiveType" type="string"/>
+			<preference id="enableInfoLogging" name="extensions.AutoarchiveReloaded.enableInfoLogging" type="bool"/>
 		</preferences>
 
-		<description id="description"/><description/>
-		<groupbox>
-			<caption label="&archiveTypeTitle;" />
-			<radiogroup preference="archiveType">
-				<radio value="manual" label="&archiveTypeManual;"/>
-				<radio value="startup" label="&archiveTypeStartup;"/>
-			</radiogroup>
-		</groupbox>
-		<description id="startupdescription" style="height:60px"/><description/>
-		<!-- height set explicitly for now, otherwise content is wrapped. XUL is a pain... -->
+		<vbox id="vbox">
+			<description id="description"/><description/>
+			<groupbox>
+				<caption label="&archiveTypeTitle;" />
+				<radiogroup preference="archiveType">
+					<radio value="manual" label="&archiveTypeManual;"/>
+					<radio value="startup" label="&archiveTypeStartup;"/>
+				</radiogroup>
+			</groupbox>
+			<description id="startupdescription" multiline="true"/><description/>
+			<checkbox id="enableInfoLogging" label="&enableInfoLoggingOption;" preference="enableInfoLogging"/>
+		</vbox>
 	</prefpane>
 
 	<script type="application/x-javascript">
@@ -51,5 +56,14 @@ Copyright 2014 Brummolix (AutoarchiveReloaded, https://github.com/Brummolix/Auto
 	//sad, sad...
 	document.getElementById('description').textContent = strbundle.getString("globalSettingsDescription");
 	document.getElementById('startupdescription').textContent = strbundle.getString("globalSettingsStartupDescription");
+	
+	function onLoad()
+	{
+		//HACK to set repair the height (XUL height is not right because of the multiline descriptions
+		sizeToContent();
+		var vbox = document.getElementById('vbox');
+		vbox.height = vbox.boxObject.height;
+		sizeToContent();
+	}
 	</script>
 </prefwindow>
