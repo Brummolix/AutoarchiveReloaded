@@ -701,6 +701,7 @@ AutoarchiveReloadedOverlay.AppInfoLogger.prototype.log = function()
 {
 	this.logAppInfo();
 	this.logAddonInfo();
+	this.logAccountInfo();
 }
 
 AutoarchiveReloadedOverlay.AppInfoLogger.prototype.logAppInfo = function()
@@ -708,7 +709,9 @@ AutoarchiveReloadedOverlay.AppInfoLogger.prototype.logAppInfo = function()
 	try
 	{
 		var appInfo = Components.classes["@mozilla.org/xre/app-info;1"].getService(Components.interfaces.nsIXULAppInfo);
-		AutoarchiveReloadedOverlay.Logger.info("ApplicationInfo ID:" + appInfo.ID + "; Version:" + appInfo.version + "; BuildID:" + appInfo.appBuildID + "; PlatformVersion:" + appInfo.platformVersion + "; PlatformBuildID:" + appInfo.platformBuildID);
+		AutoarchiveReloadedOverlay.Logger.info("ApplicationInfo ID:" + appInfo.ID + "; Version:" + appInfo.version + "; BuildID:" + appInfo.appBuildID + "; PlatformVersion:" + appInfo.platformVersion + "; PlatformBuildID:" + appInfo.platformBuildID + "; language: " + window.navigator.language);
+		
+		AutoarchiveReloadedOverlay.Logger.info("SystemInfo " + window.navigator.oscpu + "| " + window.navigator.platform + "| " + window.navigator.userAgent);
 	}
     catch (e)
     {
@@ -736,6 +739,24 @@ AutoarchiveReloadedOverlay.AppInfoLogger.prototype.logAddonInfo = function()
     }
 };
 
+AutoarchiveReloadedOverlay.AppInfoLogger.prototype.logAccountInfo = function()
+{
+	try
+	{
+		var accounts = fixIterator(MailServices.accounts.accounts, Ci.nsIMsgAccount);
+		for each(var account in accounts)
+		{
+			AutoarchiveReloadedOverlay.Logger.info("Account Info: '" + account.incomingServer.prettyName + "'; type: " + 
+				account.incomingServer.type + "; localStoreType: " + account.incomingServer.localStoreType + "; " + account.incomingServer.serverURI);
+		}
+	}
+    catch (e)
+    {
+		AutoarchiveReloadedOverlay.Logger.errorException(e);
+		//don't throw... this method is only info logging...
+    }
+};
+
 //wait a second before starting, because otherwise the check message from initIfValid is *behind* Thunderbird
 AutoarchiveReloadedOverlay.Logger.info("start...");
 var appInfoLogger = new AutoarchiveReloadedOverlay.AppInfoLogger();
@@ -745,4 +766,3 @@ window.setTimeout(function ()
 {
     AutoarchiveReloadedOverlay.Global.startupIfValid();
 }, 1000);
-
