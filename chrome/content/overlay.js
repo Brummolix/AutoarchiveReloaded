@@ -550,7 +550,7 @@ AutoarchiveReloadedOverlay.Global = new function ()
 		this.startup = function ()
 		{
 			this.status = this.READY_FOR_WORK;
-			AutoarchiveReloadedOverlay.Logger.info("read for work");
+			AutoarchiveReloadedOverlay.Logger.info("ready for work");
 
 			if (AutoarchiveReloadedOverlay.Helper.getPreferences().getCharPref("archiveType")=="startup")
 			{
@@ -692,9 +692,55 @@ AutoarchiveReloadedOverlay.Settings.prototype.log = function()
 };
 
 //-----------------------------------------------------------------------------------------------------	
+//-----------------------------------------------------------------------------------------------------	
+AutoarchiveReloadedOverlay.AppInfoLogger = function()
+	{
+	};
+
+AutoarchiveReloadedOverlay.AppInfoLogger.prototype.log = function()
+{
+	this.logAppInfo();
+	this.logAddonInfo();
+}
+
+AutoarchiveReloadedOverlay.AppInfoLogger.prototype.logAppInfo = function()
+{
+	try
+	{
+		var appInfo = Components.classes["@mozilla.org/xre/app-info;1"].getService(Components.interfaces.nsIXULAppInfo);
+		AutoarchiveReloadedOverlay.Logger.info("ApplicationInfo ID:" + appInfo.ID + "; Version:" + appInfo.version + "; BuildID:" + appInfo.appBuildID + "; PlatformVersion:" + appInfo.platformVersion + "; PlatformBuildID:" + appInfo.platformBuildID);
+	}
+    catch (e)
+    {
+		AutoarchiveReloadedOverlay.Logger.errorException(e);
+		//don't throw... this method is only info logging...
+    }
+};
+
+AutoarchiveReloadedOverlay.AppInfoLogger.prototype.logAddonInfo = function()
+{
+	try
+	{
+		AddonManager.getAllAddons(function(addons){
+			for (var n=0;n<addons.length;n++)
+			{
+				var addon = addons[n];
+				AutoarchiveReloadedOverlay.Logger.info("Installed Addon-Info: " + addon.name + " (" + addon.id + ") version " + addon.version + "; active: " + addon.isActive);
+			}
+		});
+	}
+    catch (e)
+    {
+		AutoarchiveReloadedOverlay.Logger.errorException(e);
+		//don't throw... this method is only info logging...
+    }
+};
 
 //wait a second before starting, because otherwise the check message from initIfValid is *behind* Thunderbird
 AutoarchiveReloadedOverlay.Logger.info("start...");
+var appInfoLogger = new AutoarchiveReloadedOverlay.AppInfoLogger();
+appInfoLogger.log();
+
 window.setTimeout(function ()
 {
     AutoarchiveReloadedOverlay.Global.startupIfValid();
