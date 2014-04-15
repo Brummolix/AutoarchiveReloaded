@@ -253,6 +253,24 @@ AutoarchiveReloadedOverlay.SearchListener.prototype.archiveMessages = function (
 	{
 		AutoarchiveReloadedOverlay.Logger.info("start real archiving of '" + this.folder.prettiestName + "' (" + this.messages.length + " messages)");
 		var mail3PaneWindow = AutoarchiveReloadedOverlay.Helper.getMail3Pane();
+		
+		//TB jumps to the end (after finishing the archiving) if no message is selected 
+		//> select the first message (unfortunately it will become unread...)
+		//(but only select the first message if the messages being archived are from the current folder)
+		if (this.messages.length>0)
+		{
+			AutoarchiveReloadedOverlay.Logger.info("msg folder: " + this.messages[0].folder);
+			AutoarchiveReloadedOverlay.Logger.info("current folder: " + mail3PaneWindow.gFolderDisplay.displayedFolder);
+			if (this.messages[0].folder == mail3PaneWindow.gFolderDisplay.displayedFolder)
+			{
+				AutoarchiveReloadedOverlay.Logger.info("archive folder");
+				if (mail3PaneWindow.gFolderDisplay.selectedCount <= 0)
+				{
+					mail3PaneWindow.gFolderDisplay.navigate(Components.interfaces.nsMsgNavigationType.firstMessage);
+				}
+			}
+		}
+		
 		var batchMover = new mail3PaneWindow.BatchMessageMover();
 	
 		//TODO: do not archive if a imap server is offline (otherwise the archive is done locally but not on the server, if you start next time (and you are online) it may be archived again
