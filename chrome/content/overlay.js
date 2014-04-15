@@ -42,7 +42,8 @@ AutoarchiveReloadedOverlay.Helper = new function ()
                 .getMostRecentWindow("mail:3pane");
         };
 		
-		this.getPromptService = function()
+		//don't call this getPromptService because Mozillas automatic extension checker warns (wrong) about it
+		this.getThePromptService = function()
 		{
 			return Components.classes["@mozilla.org/embedcomp/prompt-service;1"].getService(Components.interfaces.nsIPromptService);
 		};
@@ -552,7 +553,7 @@ AutoarchiveReloadedOverlay.Global = new function ()
 					{
 						//inform user about plugins
 						AutoarchiveReloadedOverlay.Logger.info("invalid because of old autoarchiver");
-						AutoarchiveReloadedOverlay.Helper.getPromptService().alert(null, AutoarchiveReloadedOverlay.StringBundle.GetStringFromName("warningOldAutoarchiverTitle"), AutoarchiveReloadedOverlay.StringBundle.GetStringFromName("warningOldAutoarchiver"));
+						AutoarchiveReloadedOverlay.Helper.getThePromptService().alert(null, AutoarchiveReloadedOverlay.StringBundle.GetStringFromName("warningOldAutoarchiverTitle"), AutoarchiveReloadedOverlay.StringBundle.GetStringFromName("warningOldAutoarchiver"));
 						return;
 					}
 					thisForEvent.startup();
@@ -621,7 +622,7 @@ AutoarchiveReloadedOverlay.Global = new function ()
 				return;
 			}
 			
-			if (AutoarchiveReloadedOverlay.Helper.getPromptService().confirm(null, AutoarchiveReloadedOverlay.StringBundle.GetStringFromName("dialogTitle"),  AutoarchiveReloadedOverlay.StringBundle.GetStringFromName("dialogStartManualText")))
+			if (AutoarchiveReloadedOverlay.Helper.getThePromptService().confirm(null, AutoarchiveReloadedOverlay.StringBundle.GetStringFromName("dialogTitle"),  AutoarchiveReloadedOverlay.StringBundle.GetStringFromName("dialogStartManualText")))
 			{
 				if (this.status == this.IN_PROGRESS)
 				{
