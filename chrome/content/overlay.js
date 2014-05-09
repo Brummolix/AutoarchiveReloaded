@@ -260,11 +260,8 @@ AutoarchiveReloadedOverlay.SearchListener.prototype.archiveMessages = function (
 		//(but only select the first message if the messages being archived are from the current folder)
 		if (this.messages.length>0)
 		{
-			AutoarchiveReloadedOverlay.Logger.info("msg folder: " + this.messages[0].folder);
-			AutoarchiveReloadedOverlay.Logger.info("current folder: " + mail3PaneWindow.gFolderDisplay.displayedFolder);
 			if (this.messages[0].folder == mail3PaneWindow.gFolderDisplay.displayedFolder)
 			{
-				AutoarchiveReloadedOverlay.Logger.info("archive folder");
 				if (mail3PaneWindow.gFolderDisplay.selectedCount <= 0)
 				{
 					mail3PaneWindow.gFolderDisplay.navigate(Components.interfaces.nsMsgNavigationType.firstMessage);
