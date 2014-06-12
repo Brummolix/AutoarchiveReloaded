@@ -1,6 +1,9 @@
 content   autoarchiveReloaded                 chrome/content/
 locale autoarchiveReloaded        en-US       chrome/locale/en-US/
 locale autoarchiveReloaded        de-DE       chrome/locale/de-DE/
+locale autoarchiveReloaded        es-ES       chrome/locale/es-ES/
+locale autoarchiveReloaded        es-MX       chrome/locale/es-MX/
+locale autoarchiveReloaded        es-AR       chrome/locale/es-AR/
 
 overlay	chrome://messenger/content/messenger.xul	chrome://autoarchiveReloaded/content/autoarchive_overlay.xul
 

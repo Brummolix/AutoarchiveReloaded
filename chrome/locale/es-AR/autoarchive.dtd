@@ -1,0 +1,18 @@
+﻿<?xml version="1.0"  encoding="UTF-8"?>
+<!ENTITY settingsHeadline "Configuración de auto-archivado">
+<!ENTITY archiveMessages "Archivar todos los otros mensajes mas viejos que ">
+<!ENTITY archiveTagged "Archivar los mensajes etiquetados mas viejos que ">
+<!ENTITY archiveStarred "Archivar los mensajes destacados mas viejos que ">
+<!ENTITY archiveUnread "Archivar los mensajes no leídos mas viejos que ">
+
+<!ENTITY days "días">
+
+<!ENTITY archiveTypeTitle "Modo de autoarchivado">
+<!ENTITY archiveTypeManual "Únicamente manual (via menú o barra de herramientas) - recomendado">
+<!ENTITY archiveTypeStartup "Al iniciar Thunderbird (y repetir cada día)">
+<!ENTITY enableInfoLoggingOption "Activar extensión de rastreo (Los errores de consola se guardarán en el archivo AutoarchiveReloadedLog.txt en tu directorio de perfil)">
+
+<!ENTITY menuArchive "Autoarchivar ahora...">
+<!ENTITY toolbarArchive "Autoarchivar...">
+<!ENTITY toolbarArchiveTooltip "Autoarchivar ahora">
+
