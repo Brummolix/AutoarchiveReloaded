@@ -271,10 +271,36 @@ AutoarchiveReloadedOverlay.SearchListener.prototype.archiveMessages = function (
 		
 		var batchMover = new mail3PaneWindow.BatchMessageMover();
 	
+		//There are several issues with "this.view.dbView is null" inside "chrome://messenger/content/folderDisplay.js", 1359
+		//see https://github.com/Brummolix/AutoarchiveReloaded/issues/1
+		//see https://github.com/Brummolix/AutoarchiveReloaded/issues/5
+		//see https://github.com/Brummolix/AutoarchiveReloaded/issues/7
+		//something is wrong inside the TB stuff at this moment
+		//the null pointer exception is described here: https://bugzilla.mozilla.org/show_bug.cgi?id=978559 but the Mozilla guys have not done anything about it until now
+		//
+		//one reason is, if no folder is selected (for example if the account is selected only)
+		//therefore we try to select some folder if we find the dbView is null
+		if (mail3PaneWindow.gFolderDisplay)
+		{
+			if (mail3PaneWindow.gFolderDisplay.view)
+			{
+				if (!mail3PaneWindow.gFolderDisplay.view.dbView)
+				{
+					AutoarchiveReloadedOverlay.Logger.info("mail3PaneWindow.gFolderDisplay.dbView is null > batchMessageMover will not work");
+					var folderToSelect = this.folder;
+					if (folderToSelect)
+					{
+						AutoarchiveReloadedOverlay.Logger.info("> try to select folder " + folderToSelect.prettiestName + " " + folderToSelect.URI);
+						mail3PaneWindow.gFolderTreeView.selectFolder(folderToSelect);
+					}
+				}
+			}
+		}
+		
 		//TODO: do not archive if a imap server is offline (otherwise the archive is done locally but not on the server, if you start next time (and you are online) it may be archived again
 		//-> problem: how to detect imap server problems/problems with i-net connection? (we do not talk about online/offline mode here which you can handle with  MailOfflineMgr!)
 		//I have also reported the real bug to TB: see https://bugzilla.mozilla.org/show_bug.cgi?id=956598
-		
+
         batchMover.archiveMessages(this.messages);
         return this.messages.length;
     }
