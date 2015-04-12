@@ -1,5 +1,8 @@
 ﻿<?xml version="1.0"  encoding="UTF-8"?>
 <!ENTITY settingsHeadline "AutoarchiveReloaded Einstellungen">
+<!ENTITY settingsDescription "In den globalen Einstellungen des AddOns können Sie festlegen, wann die Autoarchiverung durchgeführt wird.">
+<!ENTITY settingsDescription2 "Bitte beachten: Neben den Einstellungen hier, müssen auch noch die Thunderbird Archiv Einstellungen unter 'Kopien &amp; Ordner' vorgenommen werden. In Konten für Feeds (z.B. RSS) und lokalen Ordnern sind diese allerdings nicht verfügbar. Dort können Sie nur mit den Standardeinstellungen archivieren (oder die globalen Optionen 'mail.identity.default.archive_granularity' / 'mail.identity.default.archive_keep_folder_structure' manuell setzen).">
+
 <!ENTITY archiveMessages "Archiviere alle anderen Nachrichten älter als ">
 <!ENTITY archiveTagged "Archiviere Nachrichten mit Schlagwörtern älter als ">
 <!ENTITY archiveStarred "Archiviere Nachrichten mit (Stern-)Kennzeichnung älter als ">
@@ -15,3 +18,4 @@
 <!ENTITY menuArchive "Jetzt Autoarchivieren...">
 <!ENTITY toolbarArchive "Autoarchivieren...">
 <!ENTITY toolbarArchiveTooltip "Jetzt Autoarchivieren">
+

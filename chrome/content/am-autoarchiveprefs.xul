@@ -96,13 +96,7 @@ Copyright 2012 Alexey Egorov (original version Autoarchive, http://code.google.c
         </hbox>
 		
 		<description/>
-		<description id="description"/>
-		<description id="description2"/>
-		<script type="application/x-javascript">
-		//we must set this elements this way, otherwise the text is not multiline (automatic word wrap)
-		//sad, sad...
-		document.getElementById('description').textContent = strbundle.getString("settingsDescription");
-		document.getElementById('description2').textContent = strbundle.getString("settingsDescription2");
-		</script>
+		<description>&settingsDescription;</description>
+		<description>&settingsDescription2;</description>
     </vbox>
 </page>
