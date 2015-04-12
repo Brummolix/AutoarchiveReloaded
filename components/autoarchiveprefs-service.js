@@ -47,7 +47,7 @@ AutoarchiveManagerExtension.prototype =
 if (XPCOMUtils.generateNSGetFactory) 
 {
     // Gecko >= 2.0
-    const NSGetFactory = XPCOMUtils.generateNSGetFactory([AutoarchiveManagerExtension]);
+    var NSGetFactory = XPCOMUtils.generateNSGetFactory([AutoarchiveManagerExtension]);
 }
 else 
 {
