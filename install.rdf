@@ -5,7 +5,7 @@
     <em:type>2</em:type>
 	
     <em:name>AutoarchiveReloaded</em:name>
-    <em:version>0.9.8_beta</em:version>
+    <em:version>0.9.8</em:version>
 	
     <em:creator>Brummolix (original version created by Alexey Egorov)</em:creator>
     <em:contributor>Jared González</em:contributor>
@@ -31,7 +31,7 @@
       <Description>
         <em:id>{3550f703-e582-4d05-9a08-453d09bdfdc6}</em:id> <!-- Thunderbird -->
         <em:minVersion>8.0</em:minVersion>
-        <em:maxVersion>31.*</em:maxVersion>
+        <em:maxVersion>38.*</em:maxVersion>
       </Description>
     </em:targetApplication>
 	
