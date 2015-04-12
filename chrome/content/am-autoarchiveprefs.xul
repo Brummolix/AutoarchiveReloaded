@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <!--
-Copyright 2013 Brummolix (new version AutoarchiveReloaded, https://github.com/Brummolix/AutoarchiveReloaded )
+Copyright 2013-2015 Brummolix (new version AutoarchiveReloaded, https://github.com/Brummolix/AutoarchiveReloaded )
 Copyright 2012 Alexey Egorov (original version Autoarchive, http://code.google.com/p/autoarchive/ )
 
  This file is part of AutoarchiveReloaded.
@@ -47,7 +47,8 @@ Copyright 2012 Alexey Egorov (original version Autoarchive, http://code.google.c
                     size="1"
                     prefstring="mail.identity.%identitykey%.archiveUnreadDays"
                     preftype="int"
-                    prefattribute="value"/> &days;
+                    prefattribute="value"
+					type="number"/> &days;
         </hbox>
         <hbox>
             <checkbox
@@ -62,7 +63,8 @@ Copyright 2012 Alexey Egorov (original version Autoarchive, http://code.google.c
                     size="1"
                     prefstring="mail.identity.%identitykey%.archiveStarredDays"
                     preftype="int"
-                    prefattribute="value"/> &days;
+                    prefattribute="value"
+					type="number"/> &days;
         </hbox>
         <hbox>
             <checkbox
@@ -77,7 +79,8 @@ Copyright 2012 Alexey Egorov (original version Autoarchive, http://code.google.c
                     size="1"
                     prefstring="mail.identity.%identitykey%.archiveTaggedDays"
                     preftype="int"
-                    prefattribute="value"/> &days;
+                    prefattribute="value"
+					type="number"/> &days;
         </hbox>
         <hbox>
             <checkbox
@@ -92,7 +95,8 @@ Copyright 2012 Alexey Egorov (original version Autoarchive, http://code.google.c
                     size="1"
                     prefstring="mail.identity.%identitykey%.archiveMessagesDays"
                     preftype="int"
-                    prefattribute="value"/> &days;
+                    prefattribute="value"
+					type="number"/> &days;
         </hbox>
 		
 		<description/>
