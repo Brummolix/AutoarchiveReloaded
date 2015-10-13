@@ -26,6 +26,13 @@
 			<em:creator>Brummolix (versión original creada por Alexey Egorov)</em:creator>
 		</Description>
 	</em:localized>
+	<em:localized>
+		<Description>
+			<em:locale>fr-FR</em:locale>
+			<em:description>Archivez automatiquement les vieux messages</em:description>
+			<em:creator>Brummolix (version originale créée par Alexey Egorov)</em:creator>
+		</Description>
+	</em:localized>
 	
     <em:targetApplication>
       <Description>

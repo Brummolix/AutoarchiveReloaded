@@ -1,0 +1,20 @@
+<?xml version="1.0"  encoding="UTF-8"?>
+<!ENTITY settingsHeadline "Paramètres d'AutoarchiveReloaded">
+<!ENTITY settingsDescription "Vous pouvez sélectionner quand effectuer l'archivage automatique dans les paramètres globaux de l'extension.">
+<!ENTITY settingsDescription2 "Souvenez-vous: En plus de cette option vous devez également configurer les paramètres d'archivage de Thunderbird dans 'Copies &amp; Dossiers'! Note: Ces paramètres ne sont pas disponibles pour les comptes de flux (ex: RSS) ou les dossiers locaux. Vous pouvez seulement les archiver avec les paramètres par défaut (ou en définissant manuellement les préférences globales 'mail.identity.default.archive_granularity' / 'mail.identity.default.archive_keep_folder_structure').">
+
+<!ENTITY archiveMessages "Archiver tous les autres messages de plus de ">
+<!ENTITY archiveTagged "Archives les messages étiquetés (avec des mots-clés) de plus de ">
+<!ENTITY archiveStarred "Archives les messages suivis (avec une étoile) de plus de ">
+<!ENTITY archiveUnread "Archiver les messages non-lus de plus de ">
+
+<!ENTITY days "jours">
+
+<!ENTITY archiveTypeTitle "Archiver automatiquement">
+<!ENTITY archiveTypeManual "manuellement seulement (via le menu/outils) - recommendé">
+<!ENTITY archiveTypeStartup "à chaque démarrage de Thunderbird (et répété après chaque jour)">
+<!ENTITY enableInfoLoggingOption "activer la journalisation étendue (console d'erreurs et fichier AutoarchiveReloadedLog.txt dans le dossier de votre profil)">
+
+<!ENTITY menuArchive "Archiver automatiquement maintenant...">
+<!ENTITY toolbarArchive "Archivage automatique...">
+<!ENTITY toolbarArchiveTooltip "Archiver automatiquement maintenant">
