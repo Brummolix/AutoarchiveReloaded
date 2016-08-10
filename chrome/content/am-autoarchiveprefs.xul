@@ -48,7 +48,8 @@ Copyright 2012 Alexey Egorov (original version Autoarchive, http://code.google.c
                     prefstring="mail.identity.%identitykey%.archiveUnreadDays"
                     preftype="int"
                     prefattribute="value"
-					type="number"/> &days;
+					type="number"/> 
+			<label style="margin-top:6px;" control="archiveUnread">&days;</label>
         </hbox>
         <hbox>
             <checkbox
@@ -64,7 +65,8 @@ Copyright 2012 Alexey Egorov (original version Autoarchive, http://code.google.c
                     prefstring="mail.identity.%identitykey%.archiveStarredDays"
                     preftype="int"
                     prefattribute="value"
-					type="number"/> &days;
+					type="number"/>
+			<label style="margin-top:6px;" control="archiveStarred">&days;</label>
         </hbox>
         <hbox>
             <checkbox
@@ -80,7 +82,8 @@ Copyright 2012 Alexey Egorov (original version Autoarchive, http://code.google.c
                     prefstring="mail.identity.%identitykey%.archiveTaggedDays"
                     preftype="int"
                     prefattribute="value"
-					type="number"/> &days;
+					type="number"/>
+			<label style="margin-top:6px;" control="archiveTagged">&days;</label>
         </hbox>
         <hbox>
             <checkbox
@@ -96,7 +99,8 @@ Copyright 2012 Alexey Egorov (original version Autoarchive, http://code.google.c
                     prefstring="mail.identity.%identitykey%.archiveMessagesDays"
                     preftype="int"
                     prefattribute="value"
-					type="number"/> &days;
+					type="number"/>
+			<label style="margin-top:6px;" control="archiveMessages">&days;</label>
         </hbox>
 		
 		<description/>
