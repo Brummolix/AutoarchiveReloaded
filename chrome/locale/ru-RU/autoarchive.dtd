@@ -10,7 +10,7 @@
 
 <!ENTITY days "дней">
 
-<!ENTITY archiveTypeTitle "Время авто архивирования">
+<!ENTITY archiveTypeTitle "Режим работы авто архивирования">
 <!ENTITY archiveTypeManual "вручную (Инструменты->Архивировать сейчас) - рекомендовано">
 <!ENTITY archiveTypeStartup "при каждом запуске Thunderbird (повторяется каждый день)">
 <!ENTITY enableInfoLoggingOption "активировать расширенный лог (ошибки консоли и файл AutoarchiveReloadedLog.txt поместятся в профиль вашей учетки)">
