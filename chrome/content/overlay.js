@@ -291,7 +291,9 @@ AutoarchiveReloadedOverlay.SearchListener.prototype.archiveMessages = function (
 					if (folderToSelect)
 					{
 						AutoarchiveReloadedOverlay.Logger.info("> try to select folder " + folderToSelect.prettiestName + " " + folderToSelect.URI);
-						mail3PaneWindow.gFolderTreeView.selectFolder(folderToSelect);
+						//When extension TorBirdy was installed gFolderTreeView.selectFolder did not work.
+						//gFolderDisplay.show worked with and without TorBirdy.
+						mail3PaneWindow.gFolderDisplay.show(folderToSelect);
 					}
 				}
 			}
