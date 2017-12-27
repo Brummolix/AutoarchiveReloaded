@@ -77,6 +77,7 @@ AutoarchiveReloadedOverlay.Logger = new function ()
 		//private
 		this.LEVEL_INFO = 0;
 		this.LEVEL_ERROR = 1;
+		this.consoleService = Components.classes["@mozilla.org/consoleservice;1"].getService(Components.interfaces.nsIConsoleService);
 		
 		this.getLogLevelFromPref = function()
 		{
@@ -99,7 +100,7 @@ AutoarchiveReloadedOverlay.Logger = new function ()
 		};
 
 		var _prefService = Cc["@mozilla.org/preferences-service;1"].getService(Ci.nsIPrefBranch);
-		_prefService.QueryInterface(Ci.nsIPrefBranch2);
+		//_prefService.QueryInterface(Ci.nsIPrefBranch2);
 		_prefService.addObserver("extensions.AutoarchiveReloaded.enableInfoLogging", this, false);
 		_prefService.QueryInterface(Ci.nsIPrefBranch);
 		
@@ -144,7 +145,7 @@ AutoarchiveReloadedOverlay.Logger = new function ()
 				strToLog += "ERROR";
 			strToLog += ": " + str
 
-            Application.console.log(strToLog);
+			this.consoleService.logStringMessage(strToLog);
 			this.writeToFile(strToLog);
         };
 		
@@ -433,7 +434,7 @@ AutoarchiveReloadedOverlay.Autoarchiver.prototype.getFolders = function (folder,
 
         if (folder.hasSubFolders)
         {
-            for each(var subFolder in fixIterator(folder.subFolders, Ci.nsIMsgFolder))
+            for (var subFolder of fixIterator(folder.subFolders, Ci.nsIMsgFolder))
             {
                 this.getFolders(subFolder, outInboxFolders);
             }
@@ -509,7 +510,7 @@ AutoarchiveReloadedOverlay.Autoarchiver.prototype.archiveAccounts = function ()
 		
 		var foldersToArchive = 0;
 		
-		for each(var account in this.accounts)
+		for (var account of this.accounts)
 		{
 			AutoarchiveReloadedOverlay.Logger.info("check account '" + account.incomingServer.prettyName + "'");
 			//ignore IRC accounts
@@ -522,7 +523,7 @@ AutoarchiveReloadedOverlay.Autoarchiver.prototype.archiveAccounts = function ()
 					AutoarchiveReloadedOverlay.Logger.info("getting folders to archive in account '" + account.incomingServer.prettyName + "'");
 					this.getFolders(account.incomingServer.rootFolder, inboxFolders);
 					foldersToArchive += inboxFolders.length;
-					for each(var folder in inboxFolders)
+					for (var folder of inboxFolders)
 						this.archiveFolder(folder,settings);
 				}
 				else
@@ -788,7 +789,7 @@ AutoarchiveReloadedOverlay.AppInfoLogger.prototype.logAccountInfo = function()
 	try
 	{
 		var accounts = fixIterator(MailServices.accounts.accounts, Ci.nsIMsgAccount);
-		for each(var account in accounts)
+		for (var account of accounts)
 		{
 			AutoarchiveReloadedOverlay.Logger.info("Account Info: '" + account.incomingServer.prettyName + "'; type: " + 
 				account.incomingServer.type + "; localStoreType: " + account.incomingServer.localStoreType + "; " + account.incomingServer.serverURI);
