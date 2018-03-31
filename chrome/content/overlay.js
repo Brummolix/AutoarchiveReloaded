@@ -818,6 +818,7 @@ AutoarchiveReloadedOverlay.AppInfoLogger.prototype.logAccountInfo = function()
 		AutoarchiveReloadedOverlay.Logger.errorException(e);
 		//don't throw... this method is only info logging...
     }
+};
 
 //startup
 AutoarchiveReloadedOverlay.Global.startup();
