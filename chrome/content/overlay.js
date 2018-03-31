@@ -19,10 +19,13 @@ Copyright 2012 Alexey Egorov (original version Autoarchive, http://code.google.c
 */
 
 "use strict";
+Cu.import("resource://gre/modules/Services.jsm");
 Components.utils.import("resource://gre/modules/AddonManager.jsm");
 Components.utils.import("chrome://autoarchiveReloaded/content/thunderbird-stdlib/msgHdrUtils.js");
 Components.utils.import("resource://gre/modules/FileUtils.jsm");
 Components.utils.import("resource://gre/modules/NetUtil.jsm");
+Cu.import("resource:///modules/iteratorUtils.jsm");
+Cu.import("resource:///modules/mailServices.js");
 Cu.import("resource://gre/modules/Timer.jsm");
 
 var AutoarchiveReloadedOverlay = AutoarchiveReloadedOverlay || {};
