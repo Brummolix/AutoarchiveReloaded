@@ -571,6 +571,19 @@ AutoarchiveReloadedOverlay.Global = new function ()
 		this.IN_PROGRESS = 2;
 		this.status = this.UNINITIALZED;
 
+		this.startup = function ()
+		{
+			AutoarchiveReloadedOverlay.Logger.info("start...");
+			var appInfoLogger = new AutoarchiveReloadedOverlay.AppInfoLogger();
+			appInfoLogger.log();
+
+			//wait a second before starting, because otherwise the check message from startupIfValid is *behind* Thunderbird
+			setTimeout(function ()
+			{
+				AutoarchiveReloadedOverlay.Global.startupIfValid();
+			}, 1000);
+		};
+		
 		//we do not start if you have the original version of Autoarchiver installed
 		this.startupIfValid = function ()
 		{
@@ -586,7 +599,7 @@ AutoarchiveReloadedOverlay.Global = new function ()
 						AutoarchiveReloadedOverlay.Helper.getThePromptService().alert(null, AutoarchiveReloadedOverlay.StringBundle.GetStringFromName("warningOldAutoarchiverTitle"), AutoarchiveReloadedOverlay.StringBundle.GetStringFromName("warningOldAutoarchiver"));
 						return;
 					}
-					thisForEvent.startup();
+					thisForEvent.internalstartup();
 				});
 			}
 			catch (e)
@@ -596,7 +609,8 @@ AutoarchiveReloadedOverlay.Global = new function ()
 			}
 		};
 		
-		this.startup = function ()
+		//real startup
+		this.internalstartup = function ()
 		{
 			this.status = this.READY_FOR_WORK;
 			AutoarchiveReloadedOverlay.Logger.info("ready for work");
@@ -804,14 +818,6 @@ AutoarchiveReloadedOverlay.AppInfoLogger.prototype.logAccountInfo = function()
 		AutoarchiveReloadedOverlay.Logger.errorException(e);
 		//don't throw... this method is only info logging...
     }
-};
 
-//wait a second before starting, because otherwise the check message from initIfValid is *behind* Thunderbird
-AutoarchiveReloadedOverlay.Logger.info("start...");
-var appInfoLogger = new AutoarchiveReloadedOverlay.AppInfoLogger();
-appInfoLogger.log();
-
-setTimeout(function ()
-{
-    AutoarchiveReloadedOverlay.Global.startupIfValid();
-}, 1000);
+//startup
+AutoarchiveReloadedOverlay.Global.startup();
