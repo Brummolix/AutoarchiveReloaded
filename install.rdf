@@ -59,7 +59,7 @@
       </Description>
     </em:targetApplication>
 	
-	<em:optionsType>1</em:optionsType><!--dialog-->
+	<em:optionsType>3</em:optionsType><!--tabs-->
 	<em:optionsURL>chrome://autoarchiveReloaded/content/options.xul</em:optionsURL>
   </Description>
 </RDF>
