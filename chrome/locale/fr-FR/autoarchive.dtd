@@ -15,6 +15,5 @@
 <!ENTITY archiveTypeStartup "à chaque démarrage de Thunderbird (et répété après chaque jour)">
 <!ENTITY enableInfoLoggingOption "activer la journalisation étendue (console d'erreurs et fichier AutoarchiveReloadedLog.txt dans le dossier de votre profil)">
 
-<!ENTITY menuArchive "Archiver automatiquement maintenant...">
 <!ENTITY toolbarArchive "Archivage automatique...">
 <!ENTITY toolbarArchiveTooltip "Archiver automatiquement maintenant">

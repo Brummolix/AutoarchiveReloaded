@@ -15,7 +15,6 @@
 <!ENTITY archiveTypeStartup "bei jedem Start von Thunderbird (und wiederholt nach jeweils 1 Tag)">
 <!ENTITY enableInfoLoggingOption "erweitertes Logging aktivieren (Fehlerkonsole und AutoarchiveReloadedLog.txt Datei in Ihrem Profilordner)">
 
-<!ENTITY menuArchive "Jetzt Autoarchivieren...">
 <!ENTITY toolbarArchive "Autoarchivieren...">
 <!ENTITY toolbarArchiveTooltip "Jetzt Autoarchivieren">
 

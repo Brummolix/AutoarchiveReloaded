@@ -7,12 +7,12 @@ locale autoarchiveReloaded        es-AR       chrome/locale/es-AR/
 locale autoarchiveReloaded        fr-FR       chrome/locale/fr-FR/
 locale autoarchiveReloaded        ru-RU       chrome/locale/ru-RU/
 
-overlay	chrome://messenger/content/messenger.xul	chrome://autoarchiveReloaded/content/autoarchive_overlay.xul
+#overlay	chrome://messenger/content/messenger.xul	chrome://autoarchiveReloaded/content/autoarchive_overlay.xul
 
 # Preference Service
-component {ac4f0da9-5240-487e-992c-7cf3c622a9ad} components/autoarchiveprefs-service.js
-contract @mozilla.org/accountmanager/extension;1?name=autoarchiveprefs {ac4f0da9-5240-487e-992c-7cf3c622a9ad}
-category mailnews-accountmanager-extensions autoarchive-account-manager-extension @mozilla.org/accountmanager/extension;1?name=autoarchiveprefs
+#component {ac4f0da9-5240-487e-992c-7cf3c622a9ad} components/autoarchiveprefs-service.js
+#contract @mozilla.org/accountmanager/extension;1?name=autoarchiveprefs {ac4f0da9-5240-487e-992c-7cf3c622a9ad}
+#category mailnews-accountmanager-extensions autoarchive-account-manager-extension @mozilla.org/accountmanager/extension;1?name=autoarchiveprefs
 
 skin	autoarchiveReloaded	classic/1.0	chrome/skin/
-style chrome://global/content/customizeToolbar.xul chrome://autoarchiveReloaded/skin/toolbarstyle.css
+#style chrome://global/content/customizeToolbar.xul chrome://autoarchiveReloaded/skin/toolbarstyle.css

@@ -15,6 +15,5 @@
 <!ENTITY archiveTypeStartup "при каждом запуске Thunderbird (повторяется каждый день)">
 <!ENTITY enableInfoLoggingOption "активировать расширенный лог (ошибки консоли и файл AutoarchiveReloadedLog.txt поместятся в профиль вашей учетки)">
 
-<!ENTITY menuArchive "Архивировать сейчас...">
 <!ENTITY toolbarArchive "Авто архивирование...">
 <!ENTITY toolbarArchiveTooltip "Архивировать сейчас">

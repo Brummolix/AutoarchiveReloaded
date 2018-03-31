@@ -13,6 +13,9 @@
 	<em:contributor>yavasilek</em:contributor>
     <em:description>Automatically archives old mails</em:description>
     <em:homepageURL>http://brummolix.github.io/AutoarchiveReloaded/</em:homepageURL>
+	
+	<em:bootstrap>true</em:bootstrap>
+	<em:hasEmbeddedWebExtension>true</em:hasEmbeddedWebExtension>
 
 	<em:localized>
 		<Description>
@@ -58,8 +61,5 @@
         <em:maxVersion>58.*</em:maxVersion>
       </Description>
     </em:targetApplication>
-	
-	<em:optionsType>1</em:optionsType><!--dialog-->
-	<em:optionsURL>chrome://autoarchiveReloaded/content/options.xul</em:optionsURL>
   </Description>
 </RDF>

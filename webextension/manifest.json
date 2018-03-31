@@ -1,0 +1,13 @@
+{
+	"manifest_version":2,
+	"version":"0.9.9.5",
+	"name":"AutoarchiveReloaded",
+	
+	"options_ui": 
+	{
+		"page": "options.html",
+		"browser_style":true,
+		"open_in_tab":true
+	},
+	"permissions": ["storage"]
+}
