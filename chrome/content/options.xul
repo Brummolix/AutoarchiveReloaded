@@ -19,6 +19,7 @@ Copyright 2014 Brummolix (AutoarchiveReloaded, https://github.com/Brummolix/Auto
 -->
 <!DOCTYPE mydialog SYSTEM "chrome://autoarchiveReloaded/locale/autoarchive.dtd">
 <?xml-stylesheet href="chrome://global/skin/" type="text/css"?>
+<?xml-stylesheet type="text/css" href="chrome://messenger/skin/preferences/preferences.css"?>
 <prefwindow id="autoarchiveReloadedPreferences"
      title="&settingsHeadline;"
      xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
@@ -60,10 +61,8 @@ Copyright 2014 Brummolix (AutoarchiveReloaded, https://github.com/Brummolix/Auto
 	function onLoad()
 	{
 		//HACK to set repair the height (XUL height is not right because of the multiline descriptions
-		sizeToContent();
 		var vbox = document.getElementById('vbox');
 		vbox.height = vbox.boxObject.height;
-		sizeToContent();
 	}
 	</script>
 </prefwindow>
