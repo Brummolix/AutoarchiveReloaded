@@ -190,7 +190,7 @@ AutoarchiveReloadedOverlay.ActivityManager.prototype.start = function ()
 		var activityManager = this.getActivityManager();
 		this.startProcess = Components.classes["@mozilla.org/activity-process;1"].createInstance(Components.interfaces.nsIActivityProcess);
 
-		this.startProcess.init(AutoarchiveReloadedOverlay.StringBundle.formatStringFromName("activityStart", [this.folder.prettiestName], 1), null);
+		this.startProcess.init(AutoarchiveReloadedOverlay.StringBundle.formatStringFromName("activityStart", [this.folder.name], 1), null);
 		this.startProcess.contextType = "account"; // group this activity by account
 		this.startProcess.contextObj = this.folder.server; // account in question
 
@@ -214,7 +214,7 @@ AutoarchiveReloadedOverlay.ActivityManager.prototype.stopAndSetFinal = function 
 		if (typeof actual == "string" || actual > 0)
 		{
 			var event = Components.classes["@mozilla.org/activity-event;1"].createInstance(Components.interfaces.nsIActivityEvent);
-			event.init(AutoarchiveReloadedOverlay.StringBundle.formatStringFromName("activityDone", [this.folder.prettiestName], 1),
+			event.init(AutoarchiveReloadedOverlay.StringBundle.formatStringFromName("activityDone", [this.folder.name], 1),
 				null,
 				AutoarchiveReloadedOverlay.StringBundle.formatStringFromName("activityMessagesToArchive", [actual], 1),
 				this.startProcess.startTime, // start time
@@ -253,7 +253,7 @@ AutoarchiveReloadedOverlay.SearchListener.prototype.archiveMessages = function (
 {
 	try
 	{
-		AutoarchiveReloadedOverlay.Logger.info("start real archiving of '" + this.folder.prettiestName + "' (" + this.messages.length + " messages)");
+		AutoarchiveReloadedOverlay.Logger.info("start real archiving of '" + this.folder.name + "' (" + this.messages.length + " messages)");
 		var mail3PaneWindow = AutoarchiveReloadedOverlay.Helper.getMail3Pane();
 		
 		//TB jumps to the end (after finishing the archiving) if no message is selected 
@@ -291,7 +291,7 @@ AutoarchiveReloadedOverlay.SearchListener.prototype.archiveMessages = function (
 					var folderToSelect = this.folder;
 					if (folderToSelect)
 					{
-						AutoarchiveReloadedOverlay.Logger.info("> try to select folder " + folderToSelect.prettiestName + " " + folderToSelect.URI);
+						AutoarchiveReloadedOverlay.Logger.info("> try to select folder " + folderToSelect.name + " " + folderToSelect.URI);
 						//When extension TorBirdy was installed gFolderTreeView.selectFolder did not work.
 						//gFolderDisplay.show worked with and without TorBirdy.
 						mail3PaneWindow.gFolderDisplay.show(folderToSelect);
@@ -383,7 +383,7 @@ AutoarchiveReloadedOverlay.SearchListener.prototype.onSearchHit = function (dbHd
 //after the search was done, archive all messages
 AutoarchiveReloadedOverlay.SearchListener.prototype.onSearchDone = function (status)
 {
-	AutoarchiveReloadedOverlay.Logger.info("message search done for '" + this.folder.prettiestName + "' in account '" + this.folder.server.prettyName + "' -> " + this.messages.length + " messages found to archive");
+	AutoarchiveReloadedOverlay.Logger.info("message search done for '" + this.folder.name + "' in account '" + this.folder.server.prettyName + "' -> " + this.messages.length + " messages found to archive");
     var result = 0;
     if (this.messages.length > 0)
         result = this.archiveMessages();
@@ -424,7 +424,7 @@ AutoarchiveReloadedOverlay.Autoarchiver.prototype.getFolders = function (folder,
 		//Virtual - no, it is virtual :)
         if (folder.getFlag(Ci.nsMsgFolderFlags.Trash) || folder.getFlag(Ci.nsMsgFolderFlags.Junk) || folder.getFlag(Ci.nsMsgFolderFlags.Queue) || folder.getFlag(Ci.nsMsgFolderFlags.Drafts) || folder.getFlag(Ci.nsMsgFolderFlags.Templates) || folder.getFlag(Ci.nsMsgFolderFlags.Archive) || folder.getFlag(Ci.nsMsgFolderFlags.Virtual) )
 		{
-			AutoarchiveReloadedOverlay.Logger.info("ignore folder '" + folder.prettiestName + "'");
+			AutoarchiveReloadedOverlay.Logger.info("ignore folder '" + folder.name + "'");
             return;
 		}
 
@@ -451,7 +451,7 @@ AutoarchiveReloadedOverlay.Autoarchiver.prototype.archiveFolder = function (fold
 {
 	try
 	{
-		AutoarchiveReloadedOverlay.Logger.info("start searching messages to archive in folder '" + folder.prettiestName + "' in account '" + folder.server.prettyName + "'");
+		AutoarchiveReloadedOverlay.Logger.info("start searching messages to archive in folder '" + folder.name + "' in account '" + folder.server.prettyName + "'");
 		//build a search for the messages to archive
 		var searchSession = Cc["@mozilla.org/messenger/searchSession;1"].createInstance(Ci.nsIMsgSearchSession);
 		searchSession.addScopeTerm(Ci.nsMsgSearchScope.offlineMail, folder);
