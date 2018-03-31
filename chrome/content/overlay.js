@@ -24,6 +24,7 @@ Components.utils.import("resource://gre/modules/AddonManager.jsm");
 Components.utils.import("chrome://autoarchiveReloaded/content/thunderbird-stdlib/msgHdrUtils.js");
 Components.utils.import("resource://gre/modules/FileUtils.jsm");
 Components.utils.import("resource://gre/modules/NetUtil.jsm");
+Cu.import("resource://gre/modules/Timer.jsm");
 Cu.import("resource:///modules/iteratorUtils.jsm");
 Cu.import("resource:///modules/mailServices.js");
 
@@ -555,7 +556,7 @@ AutoarchiveReloadedOverlay.Autoarchiver.prototype.checkForArchiveDone = function
 	}
 	else
 	{
-		window.setTimeout(this.checkForArchiveDone.bind(this,foldersToArchive), 500);
+		setTimeout(this.checkForArchiveDone.bind(this,foldersToArchive), 500);
 	}
 }
 
@@ -577,7 +578,7 @@ AutoarchiveReloadedOverlay.Global = new function ()
 			appInfoLogger.log();
 
 			//wait a second before starting, because otherwise the check message from startupIfValid is *behind* Thunderbird
-			window.setTimeout(function ()
+			setTimeout(function ()
 			{
 				AutoarchiveReloadedOverlay.Global.startupIfValid();
 			}, 1000);
@@ -619,10 +620,10 @@ AutoarchiveReloadedOverlay.Global = new function ()
 				AutoarchiveReloadedOverlay.Logger.info("archive type at startup");
 				
 				//wait some time to give TB time to connect and everything
-				window.setTimeout(this.onDoArchiveAutomatic.bind(this), 9000);
+				setTimeout(this.onDoArchiveAutomatic.bind(this), 9000);
 				
 				//repeat after one day (if someone has open Thunderbird all the time)
-				window.setInterval(this.onDoArchiveAutomatic.bind(this), 86400000);
+				setInterval(this.onDoArchiveAutomatic.bind(this), 86400000);
 			}
 			else
 				AutoarchiveReloadedOverlay.Logger.info("archive type manually");
@@ -635,7 +636,7 @@ AutoarchiveReloadedOverlay.Global = new function ()
 			{
 				AutoarchiveReloadedOverlay.Logger.info("automatic archive busy, wait");
 				//busy: wait 5 seconds
-				window.setTimeout(this.onDoArchiveAutomatic.bind(this), 5000);
+				setTimeout(this.onDoArchiveAutomatic.bind(this), 5000);
 			}
 			else
 				this.onDoArchive();
