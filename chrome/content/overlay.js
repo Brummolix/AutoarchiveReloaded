@@ -480,8 +480,8 @@ AutoarchiveReloadedOverlay.Autoarchiver.prototype.archiveFolder = function (fold
 		value.status = Ci.nsMsgMessageFlags.IMAPDeleted;
 		value.attrib = Ci.nsMsgSearchAttrib.MsgStatus;
 		termNoDeleted.value = value;
-		termNoDeleted.attrib = nsMsgSearchAttrib.MsgStatus;
-		termNoDeleted.op = nsMsgSearchOp.Isnt;
+		termNoDeleted.attrib = Ci.nsMsgSearchAttrib.MsgStatus;
+		termNoDeleted.op = Ci.nsMsgSearchOp.Isnt;
 		termNoDeleted.booleanAnd = true;
 		searchSession.appendTerm(termNoDeleted);
 		
