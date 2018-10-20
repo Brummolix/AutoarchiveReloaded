@@ -17,13 +17,6 @@ function startup(data, reason) {
     ///   ADDON_UPGRADE
     ///   ADDON_DOWNGRADE
 
-	//TODO: beim erneuten installieren des Addons werden die Änderungen am overlay.js nicht aktiv?
-	//woran liegt das?
-	//Cache?
-	//muss die Version erhöht werden?
-	//muss man im shutdown was machen?
-	//muss man das overlay.js vielleicht doch global reinladen statt innerhalb dieser Funktion?
-	//vielleicht Scriptloader statt import "Services.scriptloader.loadSubScript(addon.getResourceURI(path).spec, self);"
 	Components.utils.import("chrome://autoarchiveReloaded/content/overlay.js");
 	Components.utils.import("chrome://autoarchiveReloaded/content/thunderbird-stdlib/RestartlessMenuItems.js");
 
