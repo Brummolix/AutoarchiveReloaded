@@ -4,6 +4,7 @@ Components.utils.import("resource://gre/modules/Services.jsm");
 
 function startup(data, reason) {
 	console.log("AutoArchiveReloaded - startup");
+
     /// Bootstrap data structure @see https://developer.mozilla.org/en-US/docs/Extensions/Bootstrapped_extensions#Bootstrap_data
     ///   string id
     ///   string version
@@ -16,6 +17,9 @@ function startup(data, reason) {
     ///   ADDON_INSTALL
     ///   ADDON_UPGRADE
     ///   ADDON_DOWNGRADE
+
+	if (data.webExtension)
+		data.webExtension.startup();
 
 	Components.utils.import("chrome://autoarchiveReloaded/content/overlay.js");
 	Components.utils.import("chrome://autoarchiveReloaded/content/thunderbird-stdlib/RestartlessMenuItems.js");

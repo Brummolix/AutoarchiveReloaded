@@ -12,5 +12,12 @@
 		"browser_style":true,
 		"open_in_tab":true
 	},
-	"permissions": ["storage"]
+	
+	"permissions": ["storage"],
+
+	"applications": {
+		"gecko": {
+		  "id": "AutoarchiveReloaded@brummolix.addons.mozilla.org"
+		}
+	}
 }
