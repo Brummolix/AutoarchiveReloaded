@@ -49,7 +49,7 @@ var EXPORTED_SYMBOLS = [
 
 const { classes: Cc, interfaces: Ci, utils: Cu, results: Cr } = Components;
 
-Cu.import("resource:///modules/mailServices.js");
+Cu.import("resource:///modules/MailServices.jsm");
 
 /**
  * Given a msgHdr, return a list of tag objects. This function

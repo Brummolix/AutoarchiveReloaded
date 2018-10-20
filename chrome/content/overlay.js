@@ -30,7 +30,7 @@ Components.utils.import("resource://gre/modules/FileUtils.jsm");
 Components.utils.import("resource://gre/modules/NetUtil.jsm");
 Cu.import("resource://gre/modules/Timer.jsm");
 Cu.import("resource:///modules/iteratorUtils.jsm");
-Cu.import("resource:///modules/mailServices.js");
+Cu.import("resource:///modules/MailServices.jsm");
 Components.utils.import("chrome://autoarchiveReloaded/content/options.js");
 
 var AutoarchiveReloadedOverlay = AutoarchiveReloadedOverlay || {};
