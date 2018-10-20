@@ -18,6 +18,10 @@ Copyright 2012 Alexey Egorov (original version Autoarchive, http://code.google.c
     along with AutoarchiveReloaded.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+var EXPORTED_SYMBOLS = [
+	'AutoarchiveReloadedOverlay'
+]
+
 "use strict";
 Cu.import("resource://gre/modules/Services.jsm");
 Components.utils.import("resource://gre/modules/AddonManager.jsm");
