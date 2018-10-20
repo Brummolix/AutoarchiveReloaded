@@ -1,7 +1,6 @@
 "use strict";
 
 Components.utils.import("resource://gre/modules/Services.jsm");
-Components.utils.import("chrome://autoarchiveReloaded/content/thunderbird-stdlib/RestartlessMenuItems.js");
 
 function startup(data, reason) {
     /// Bootstrap data structure @see https://developer.mozilla.org/en-US/docs/Extensions/Bootstrapped_extensions#Bootstrap_data
@@ -24,7 +23,8 @@ function startup(data, reason) {
 	//muss man im shutdown was machen?
 	//muss man das overlay.js vielleicht doch global reinladen statt innerhalb dieser Funktion?
 	//vielleicht Scriptloader statt import "Services.scriptloader.loadSubScript(addon.getResourceURI(path).spec, self);"
-	ChromeUtils.import("chrome://autoarchiveReloaded/content/overlay.js");
+	Components.utils.import("chrome://autoarchiveReloaded/content/overlay.js");
+	Components.utils.import("chrome://autoarchiveReloaded/content/thunderbird-stdlib/RestartlessMenuItems.js");
 
 	//menuitem
 	//TODO: muss auch wieder entfernt werden?
@@ -100,6 +100,9 @@ function shutdown(data, reason) {
     ///   ADDON_UPGRADE
     ///   ADDON_DOWNGRADE
 	
+	Components.utils.unload("chrome://autoarchiveReloaded/content/overlay.js");
+	Components.utils.unload("chrome://autoarchiveReloaded/content/thunderbird-stdlib/RestartlessMenuItems.js");
+
 	console.info("Hello world shutdown");
 }
 function install(data, reason) {
