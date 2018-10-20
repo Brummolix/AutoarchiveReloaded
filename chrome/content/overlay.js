@@ -662,7 +662,7 @@ AutoarchiveReloadedOverlay.Global = new function ()
 			if (this.status == this.UNINITIALZED)
 			{
 				AutoarchiveReloadedOverlay.Logger.info("not initialized, cancel");
-				alert(AutoarchiveReloadedOverlay.StringBundle.GetStringFromName("waitForInit"));
+				AutoarchiveReloadedOverlay.Helper.getThePromptService().alert(null, AutoarchiveReloadedOverlay.StringBundle.GetStringFromName("dialogTitle"), AutoarchiveReloadedOverlay.StringBundle.GetStringFromName("waitForInit"));
 				return;
 			}
 			
@@ -671,7 +671,7 @@ AutoarchiveReloadedOverlay.Global = new function ()
 				if (this.status == this.IN_PROGRESS)
 				{
 					AutoarchiveReloadedOverlay.Logger.info("busy with other archive..., cancel");
-					alert(AutoarchiveReloadedOverlay.StringBundle.GetStringFromName("waitForArchive"));
+					AutoarchiveReloadedOverlay.Helper.getThePromptService().alert(null, AutoarchiveReloadedOverlay.StringBundle.GetStringFromName("dialogTitle"), AutoarchiveReloadedOverlay.StringBundle.GetStringFromName("waitForArchive"));
 					return;
 				}
 				this.onDoArchive();
