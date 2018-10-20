@@ -27,6 +27,10 @@ Copyright 2012 Alexey Egorov (original version Autoarchive, http://code.google.c
 		<menuitem id="autoarchiveReloadedArchiveNowMenu" oncommand="AutoarchiveReloadedOverlay.Global.onArchiveManually();" label="&menuArchive;"/>
 	</menupopup>
 	
+	<menupopup id="appmenu_taskPopup">
+		<menuitem id="autoarchiveReloadedArchiveNowMenu2" oncommand="AutoarchiveReloadedOverlay.Global.onArchiveManually();" label="&menuArchive;"/>
+	</menupopup>
+	
 	<toolbarpalette id="MailToolbarPalette">
 		<toolbarbutton id="autoarchiveReloadedArchiveNowButton" class="toolbarbutton-1"
 		label="&toolbarArchive;" tooltiptext="&toolbarArchiveTooltip;"
