@@ -17,24 +17,4 @@ Copyright 2018 Brummolix (AutoarchiveReloaded, https://github.com/Brummolix/Auto
     along with AutoarchiveReloaded.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-function saveOptions(e) {
-  var settings = {
-    archiveType: document.querySelector('input[name="archiveType"]:checked').value,
-    enableInfoLogging: document.getElementById("enableInfoLogging").checked
-  };
-
-  AutoarchiveReloadedWeOptionHelper.savePreferencesAndSendToLegacyAddOn(settings,function(){});
-}
-
-function restoreOptions() 
-{
-  AutoarchiveReloadedWeOptionHelper.loadCurrentSettings(function(settings){
-    document.getElementById("enableInfoLogging").checked = settings.enableInfoLogging;
-    document.querySelectorAll('input[name="archiveType"]').forEach(element => {
-      element.checked = (element.value == settings.archiveType);
-    });
-  });
-}
-
-document.addEventListener("DOMContentLoaded", restoreOptions);
-document.getElementById("button").addEventListener("click",saveOptions);
+AutoarchiveReloadedWeOptionHelper.convertLegacyPreferences();

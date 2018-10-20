@@ -27,6 +27,7 @@ Components.utils.import("resource://gre/modules/NetUtil.jsm");
 Cu.import("resource://gre/modules/Timer.jsm");
 Cu.import("resource:///modules/iteratorUtils.jsm");
 Cu.import("resource:///modules/mailServices.js");
+Components.utils.import("chrome://autoarchiveReloaded/content/options.js");
 
 var AutoarchiveReloadedOverlay = AutoarchiveReloadedOverlay || {};
 
@@ -37,7 +38,6 @@ AutoarchiveReloadedOverlay.StringBundle = Cc["@mozilla.org/intl/stringbundle;1"]
 //-------------------------------------------------------------------------------------
 
 //singleton with global helper
-//(must be defined BEFORE the logger because of the Preferences function)
 AutoarchiveReloadedOverlay.Helper = new function ()
     {
         this.getMail3Pane = function ()
@@ -65,12 +65,6 @@ AutoarchiveReloadedOverlay.Helper = new function ()
 			var ageInDays = ageInSeconds/(60*60*24);
 			return ageInDays;
 		};
-
-		this.getPreferences = function()
-		{
-			var prefs = Components.classes["@mozilla.org/preferences-service;1"].getService(Components.interfaces.nsIPrefService);
-			return prefs.getBranch("extensions.AutoarchiveReloaded.");
-		};
     };
 
 //-----------------------------------------------------------------------------------------------------	
@@ -85,31 +79,12 @@ AutoarchiveReloadedOverlay.Logger = new function ()
 		
 		this.getLogLevelFromPref = function()
 		{
-			if (AutoarchiveReloadedOverlay.Helper.getPreferences().getBoolPref("enableInfoLogging"))				
+			if (AutoarchiveReloadedOptions.settings.enableInfoLogging)				
 				return this.LEVEL_INFO;
 			
 			return this.LEVEL_ERROR;
 		};
 		
-		//public
-		this.level = this.getLogLevelFromPref();
-		
-		//------------------------------------------
-		//Preference Listener
-		//see https://developer.mozilla.org/en-US/Add-ons/Overlay_Extensions/XUL_School/Handling_Preferences#Preference_listeners
-		this.observe = function(aSubject, aTopic, aData)
-		{
-			this.level = this.getLogLevelFromPref();
-			this.info("Logging changed");
-		};
-
-		var _prefService = Cc["@mozilla.org/preferences-service;1"].getService(Ci.nsIPrefBranch);
-		//_prefService.QueryInterface(Ci.nsIPrefBranch2);
-		_prefService.addObserver("extensions.AutoarchiveReloaded.enableInfoLogging", this, false);
-		_prefService.QueryInterface(Ci.nsIPrefBranch);
-		
-		//------------------------------------------
-					
 		this.info = function(str)
 		{
 			this.log(this.LEVEL_INFO,str);
@@ -133,7 +108,7 @@ AutoarchiveReloadedOverlay.Logger = new function ()
 		//private
 		this.log = function(levelToLog,str)
 		{
-			if (levelToLog < this.level)
+			if (levelToLog < this.getLogLevelFromPref())
 				return;
 			
 			this.DoLog(levelToLog,str);
@@ -615,7 +590,7 @@ AutoarchiveReloadedOverlay.Global = new function ()
 			this.status = this.READY_FOR_WORK;
 			AutoarchiveReloadedOverlay.Logger.info("ready for work");
 
-			if (AutoarchiveReloadedOverlay.Helper.getPreferences().getCharPref("archiveType")=="startup")
+			if (AutoarchiveReloadedOptions.settings.archiveType=="startup")
 			{
 				AutoarchiveReloadedOverlay.Logger.info("archive type at startup");
 				

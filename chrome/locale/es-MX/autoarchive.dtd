@@ -10,11 +10,6 @@
 
 <!ENTITY days "días">
 
-<!ENTITY archiveTypeTitle "Modo de autoarchivado">
-<!ENTITY archiveTypeManual "Únicamente manual (via menú o barra de herramientas) - recomendado">
-<!ENTITY archiveTypeStartup "Al iniciar Thunderbird (y repetir cada día)">
-<!ENTITY enableInfoLoggingOption "Activar extensión de rastreo (Los errores de consola se guardarán en el archivo AutoarchiveReloadedLog.txt en tu directorio de perfil)">
-
 <!ENTITY toolbarArchive "Autoarchivar...">
 <!ENTITY toolbarArchiveTooltip "Autoarchivar ahora">
 

@@ -1,0 +1,10 @@
+{
+    "settingsHeadline": {"message": "Configuración de auto-archivado"},
+    "globalSettingsDescription": {"message":"Por favor revisa también la configurción de cada cuenta. Sin esto no se archivara automáticamente."},
+    "archiveTypeTitle": {"message":"Modo de autoarchivado"},
+    "archiveTypeManual": {"message": "Únicamente manual (via menú o barra de herramientas) - recomendado"},
+    "archiveTypeStartup": {"message": "Al iniciar Thunderbird (y repetir cada día)"},
+    "enableInfoLoggingOption": {"message": "Activar extensión de rastreo (Los errores de consola se guardarán en el archivo AutoarchiveReloadedLog.txt en tu directorio de perfil)"},
+    "globalSettingsStartupDescription":{"message":"No es recomendado autoarchivar después de iniciar Thunderbird para cuentas IMAP, puede causar problemas si no cuenta con una conexión a Internet o al servidor de IMAP (los mensajes pueden ser duplicados)."},
+    "saveSettings":{"message":"Save settings"}
+}

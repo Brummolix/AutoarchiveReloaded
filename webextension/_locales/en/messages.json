@@ -1,0 +1,10 @@
+{
+    "settingsHeadline": {"message": "AutoarchiveReloaded settings"},
+    "globalSettingsDescription": {"message":"Please see also the settings at every account. Without them nothing will be archived automatically."},
+    "archiveTypeTitle": {"message":"Autoarchive time"},
+    "archiveTypeManual": {"message": "manually only (via menu/toolbar) - recommended"},
+    "archiveTypeStartup": {"message": "at every Thunderbird startup (and repeated after every day)"},
+    "enableInfoLoggingOption": {"message": "activate extended Logging (error console and file AutoarchiveReloadedLog.txt in your profile directory)"},
+    "globalSettingsStartupDescription":{"message":"Autoarchiving after Thunderbird start is not recommended for IMAP accounts, because there may be problems if the server/internet connection is missing (messages are archived twice)."},
+    "saveSettings":{"message":"Save settings"}
+}

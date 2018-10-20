@@ -37,9 +37,35 @@ function startup(data, reason) {
     ///   ADDON_UPGRADE
     ///   ADDON_DOWNGRADE
 
-	if (data.webExtension)
-		data.webExtension.startup();
+	Components.utils.import("chrome://autoarchiveReloaded/content/options.js");
 
+	var browserWebExtension;
+	if (data.webExtension)
+	{
+		data.webExtension.startup().then(api => {
+			const {browser} = api;
+			browserWebExtension = browser;
+		    browser.runtime.onMessage.addListener((msg, sender, sendReply) => {
+				if (msg.id == "sendCurrentPreferencesToLegacyAddOn") //we get the current preferences at start and on every change of preferences
+				{
+					AutoarchiveReloadedOptions.settings = msg.data;
+				}
+				else if (msg.id == "askForLegacyPreferences") //at startup we are asked for legacy preferences
+				{
+					sendReply({data: AutoarchiveReloadedOptions.getLegacyOptions()}); 
+					AutoarchiveReloadedOptions.markLegacySettingsAsMigrated();
+				}
+				else if (msg.id == "webExtensionStartupDone") //after startup we are informed and can go on
+				{
+					initAutoArchiveReloadedOverlay();
+				}
+			});
+		});
+	}
+}
+
+function initAutoArchiveReloadedOverlay()
+{
 	Components.utils.import("chrome://autoarchiveReloaded/content/overlay.js");
 	Components.utils.import("chrome://autoarchiveReloaded/content/thunderbird-stdlib/RestartlessMenuItems.js");
 
@@ -91,17 +117,6 @@ function startup(data, reason) {
 	AutoarchiveReloadedOverlay.Global.startup();
 }
 
-/*
-embedded webextension?
-function startup({webExtension}) {
-	webExtension.startup().then(api => {
-		AutoarchiveReloadedOverlay.Logger.info("webExtension startup");
-		const {browser} = api;
-		browser.runtime.onMessage.addListener(handleMessage);
-	});
-}
-*/
-
 function shutdown(data, reason) {
     /// Bootstrap data structure @see https://developer.mozilla.org/en-US/docs/Extensions/Bootstrapped_extensions#Bootstrap_data
     ///   string id
@@ -122,7 +137,9 @@ function shutdown(data, reason) {
 
 	Components.utils.unload("chrome://autoarchiveReloaded/content/overlay.js");
 	Components.utils.unload("chrome://autoarchiveReloaded/content/thunderbird-stdlib/RestartlessMenuItems.js");
+	Components.utils.unload("chrome://autoarchiveReloaded/content/options.js");
 }
+
 function install(data, reason) {
     /// Bootstrap data structure @see https://developer.mozilla.org/en-US/docs/Extensions/Bootstrapped_extensions#Bootstrap_data
     ///   string id

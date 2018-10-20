@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-<!--TODO: translations -->
 <!--
 Copyright 2014-2018 Brummolix (AutoarchiveReloaded, https://github.com/Brummolix/AutoarchiveReloaded )
 
@@ -21,14 +20,56 @@ Copyright 2014-2018 Brummolix (AutoarchiveReloaded, https://github.com/Brummolix
 <html>
   <head>
     <meta charset="utf-8">
-    <title>Autoarchive Reloaded Settings</title>
+    <title>__MSG_settingsHeadline__</title>
+    <script type="application/javascript" src="./webextensions-lib-l10n/l10n.js"></script>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="bootstrap/css/bootstrap.min.css">
   </head>
 
   <body>
-    <form>
-        <label>Border color<input type="text" id="color" ></label>
-        <button id="button" type="button">Save</button>
-    </form>
+    <div class="container">
+      <div class="m-3"></div>
+      <H3>__MSG_settingsHeadline__</H3>
+      <form>
+        <fieldset class="form-group">
+          <div class="row">
+            <legend class="col-form-label col-sm-2 pt-0">__MSG_archiveTypeTitle__</legend>
+            <div class="col-sm-10">
+              <div class="form-check">
+                <input class="form-check-input" type="radio" name="archiveType" id="archiveTypeManual" value="manual">
+                <label class="form-check-label" for="archiveTypeManual">__MSG_archiveTypeManual__</label>
+              </div>
+              <div class="form-check">
+                <input class="form-check-input" type="radio" name="archiveType" id="archiveTypeStartup" value="startup">
+                <label class="form-check-label" for="archiveTypeStartup">__MSG_archiveTypeStartup__</label>
+              </div>
+              <div class="alert alert-light" role="alert">__MSG_globalSettingsStartupDescription__</div>
+            </div>
+          </div>
+        </fieldset>
+        <div class="form-group row">
+          <div class="col-sm-2">Logging</div>
+          <div class="col-sm-10">      
+            <div class="form-check">
+              <input class="form-check-input" type="checkbox" name="enableInfoLogging" id="enableInfoLogging" value="enableInfoLogging">
+              <label class="form-check-label" for="enableInfoLogging"> __MSG_enableInfoLoggingOption__</label>
+            </div>
+          </div>
+        </div>
+        <div class="form-group row">
+          <div class="col-sm-10">
+            <!-- TODO: disable button and only enable on changes-->
+            <button class="btn btn-primary" id="button" type="button">__MSG_saveSettings__</button>
+          </div>
+        </div>
+      </form>
+
+      <BR>
+      <div class="alert alert-primary" role="alert">__MSG_globalSettingsDescription__</div>
+    </div>
+
+    <script src="optionHelper.js"></script>
     <script src="options.js"></script>
   </body>
 </html>

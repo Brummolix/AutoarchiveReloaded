@@ -19,5 +19,11 @@
 		"gecko": {
 		  "id": "AutoarchiveReloaded@brummolix.addons.mozilla.org"
 		}
-	}
+	},
+
+	"background": {
+		"scripts": ["optionHelper.js","background.js"]
+	},
+
+	"default_locale":"en"
 }
