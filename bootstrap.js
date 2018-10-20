@@ -133,7 +133,8 @@ function shutdown(data, reason) {
 
 	console.log("AutoArchiveReloaded - shutdown");
 
-	RestartlessMenuItems.removeAll();
+	if (RestartlessMenuItems)
+		RestartlessMenuItems.removeAll();
 
 	Components.utils.unload("chrome://autoarchiveReloaded/content/overlay.js");
 	Components.utils.unload("chrome://autoarchiveReloaded/content/thunderbird-stdlib/RestartlessMenuItems.js");
