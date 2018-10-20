@@ -772,6 +772,10 @@ AutoarchiveReloadedOverlay.AppInfoLogger.prototype.logAppInfo = function()
 	try
 	{
 		var appInfo = Components.classes["@mozilla.org/xre/app-info;1"].getService(Components.interfaces.nsIXULAppInfo);
+		
+		//the new extension system does not provide a window > use mail3pane instead
+		if (!window)
+			var window = AutoarchiveReloadedOverlay.Helper.getMail3Pane();
 		AutoarchiveReloadedOverlay.Logger.info("ApplicationInfo ID:" + appInfo.ID + "; Version:" + appInfo.version + "; BuildID:" + appInfo.appBuildID + "; PlatformVersion:" + appInfo.platformVersion + "; PlatformBuildID:" + appInfo.platformBuildID + "; language: " + window.navigator.language);
 		
 		AutoarchiveReloadedOverlay.Logger.info("SystemInfo " + window.navigator.oscpu + "| " + window.navigator.platform + "| " + window.navigator.userAgent);
