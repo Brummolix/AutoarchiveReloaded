@@ -3,6 +3,7 @@
 Components.utils.import("resource://gre/modules/Services.jsm");
 
 function startup(data, reason) {
+	console.log("AutoArchiveReloaded - startup");
     /// Bootstrap data structure @see https://developer.mozilla.org/en-US/docs/Extensions/Bootstrapped_extensions#Bootstrap_data
     ///   string id
     ///   string version
@@ -99,12 +100,12 @@ function shutdown(data, reason) {
     ///   ADDON_UPGRADE
 	///   ADDON_DOWNGRADE
 
+	console.log("AutoArchiveReloaded - shutdown");
+
 	RestartlessMenuItems.removeAll();
 
 	Components.utils.unload("chrome://autoarchiveReloaded/content/overlay.js");
 	Components.utils.unload("chrome://autoarchiveReloaded/content/thunderbird-stdlib/RestartlessMenuItems.js");
-
-	console.info("Hello world shutdown");
 }
 function install(data, reason) {
     /// Bootstrap data structure @see https://developer.mozilla.org/en-US/docs/Extensions/Bootstrapped_extensions#Bootstrap_data
@@ -118,8 +119,9 @@ function install(data, reason) {
     ///   ADDON_UPGRADE
     ///   ADDON_DOWNGRADE
 	
-	console.info("Hello world install");
+	console.log("AutoArchiveReloaded - install");
 }
+
 function uninstall(data, reason) {
     /// Bootstrap data structure @see https://developer.mozilla.org/en-US/docs/Extensions/Bootstrapped_extensions#Bootstrap_data
     ///   string id
@@ -130,7 +132,7 @@ function uninstall(data, reason) {
     /// Reason types:
     ///   ADDON_UNINSTALL
     ///   ADDON_UPGRADE
-    ///   ADDON_DOWNGRADE
+	///   ADDON_DOWNGRADE
 	
-	console.info("Hello world uninstall");
+	console.log("AutoArchiveReloaded - uninstall");
 }
