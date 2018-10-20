@@ -27,7 +27,6 @@ function startup(data, reason) {
 	Components.utils.import("chrome://autoarchiveReloaded/content/thunderbird-stdlib/RestartlessMenuItems.js");
 
 	//menuitem
-	//TODO: muss auch wieder entfernt werden?
 	//TODO: muss das eigentlich bei install gemacht werden oder bei startup?
 	RestartlessMenuItems.add({
 		label: AutoarchiveReloadedOverlay.StringBundle.GetStringFromName("menuArchive"),
@@ -98,8 +97,10 @@ function shutdown(data, reason) {
     ///   ADDON_DISABLE
     ///   ADDON_UNINSTALL
     ///   ADDON_UPGRADE
-    ///   ADDON_DOWNGRADE
-	
+	///   ADDON_DOWNGRADE
+
+	RestartlessMenuItems.removeAll();
+
 	Components.utils.unload("chrome://autoarchiveReloaded/content/overlay.js");
 	Components.utils.unload("chrome://autoarchiveReloaded/content/thunderbird-stdlib/RestartlessMenuItems.js");
 
