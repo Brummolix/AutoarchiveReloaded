@@ -6,6 +6,17 @@
     "archiveTypeStartup": {"message": "при каждом запуске Thunderbird (повторяется каждый день)"},
     "enableInfoLoggingOption": {"message": "активировать расширенный лог (ошибки консоли и файл AutoarchiveReloadedLog.txt поместятся в профиль вашей учетки)"},
     "globalSettingsStartupDescription":{"message":"Авто архивация после старта Thunderbird не рекомендутеся для IMAP аккаутов, так как могут быть проблемы если подключение к серверу отсутствует  (сообщения могу архивироваться дважды)."},
-    "saveSettings":{"message":"Save settings"}
+    "saveSettings":{"message":"Save settings"},
 
+    "settingsDescription2":{"message":"Пожалуйста помните: Помимо этих опций Вы также должны настроить настройки ахивирования в настройках почтового ящика в разделе Копии и Папки! Примечание: Эти настройки не доступны для подписок(RSS) или локальных папок. Вы можете архивировать их только с настройками по умолчанию (или установить в глобальном конфиге вручную 'mail.identity.default.archive_granularity' / 'mail.identity.default.archive_keep_folder_structure')."},
+
+    "archiveMessages":{"message":"Архивировать все сообщения старше "},
+    "archiveTagged":{"message":"Архивировать теггирование сообщения (с меткой) старше "},
+    "archiveStarred":{"message":"Архивировать помеченные сообщения (со звездой) старше "},
+    "archiveUnread":{"message":"Архивировать не прочитанные сообщения старше "},
+
+    "days":{"message":"дней"},
+    "globalSettings":{"message": "General"},
+    "logging":{"message": "Logging"},
+    "accountSettingTitle":{"message": "specific settings for account $$TITLE$$"}
 }

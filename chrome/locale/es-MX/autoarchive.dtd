@@ -1,15 +1,4 @@
 ﻿<?xml version="1.0"  encoding="UTF-8"?>
-<!ENTITY settingsHeadline "Configuración de auto-archivado">
-<!ENTITY settingsDescription "Puedes seleccionar el modo de autoarchivado en la configuración global de la extensión.">
-<!ENTITY settingsDescription2 "Por favor recuerda: ¡A un lado de estas opciones tienes la configuración de archivado de Thunderbird en 'Copias y carpetas'! Estas configuraciones no estan disponibles para cuentas RSS o 'Carpetas locales'. Puedes archivarlos únicamente con la configuración predeterminada (o en el 'Editor de confiuración' en 'Configuración avanzada' modificando manualmente las entradas 'mail.identity.default.archive_granularity' y 'mail.identity.default.archive_keep_folder_structure').">
-
-<!ENTITY archiveMessages "Archivar todos los otros mensajes mas viejos que ">
-<!ENTITY archiveTagged "Archivar los mensajes etiquetados mas viejos que ">
-<!ENTITY archiveStarred "Archivar los mensajes destacados mas viejos que ">
-<!ENTITY archiveUnread "Archivar los mensajes no leídos mas viejos que ">
-
-<!ENTITY days "días">
-
 <!ENTITY toolbarArchive "Autoarchivar...">
 <!ENTITY toolbarArchiveTooltip "Autoarchivar ahora">
 

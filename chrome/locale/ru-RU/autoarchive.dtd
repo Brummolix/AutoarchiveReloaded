@@ -1,14 +1,3 @@
 <?xml version="1.0"  encoding="UTF-8"?>
-<!ENTITY settingsHeadline "Настройки расширения AutoarchiveReloaded">
-<!ENTITY settingsDescription "Вы можете выбрать время автоматического архивирования в глобальных настройках расширения.">
-<!ENTITY settingsDescription2 "Пожалуйста помните: Помимо этих опций Вы также должны настроить настройки ахивирования в настройках почтового ящика в разделе Копии и Папки! Примечание: Эти настройки не доступны для подписок(RSS) или локальных папок. Вы можете архивировать их только с настройками по умолчанию (или установить в глобальном конфиге вручную 'mail.identity.default.archive_granularity' / 'mail.identity.default.archive_keep_folder_structure').">
-
-<!ENTITY archiveMessages "Архивировать все сообщения старше ">
-<!ENTITY archiveTagged "Архивировать теггирование сообщения (с меткой) старше ">
-<!ENTITY archiveStarred "Архивировать помеченные сообщения (со звездой) старше ">
-<!ENTITY archiveUnread "Архивировать не прочитанные сообщения старше ">
-
-<!ENTITY days "дней">
-
 <!ENTITY toolbarArchive "Авто архивирование...">
 <!ENTITY toolbarArchiveTooltip "Архивировать сейчас">

@@ -1,15 +1,4 @@
 ﻿<?xml version="1.0"  encoding="UTF-8"?>
-<!ENTITY settingsHeadline "AutoarchiveReloaded settings">
-<!ENTITY settingsDescription "You can select the time of Autoarchiving in the global settings of the addon.">
-<!ENTITY settingsDescription2 "Please also remember: Beside this options you also have to set up the Thunderbird archive settings under 'Copies &amp; Folders'! Note: These settings are not available for feed accounts (e.g. RSS) or local folders. You can archive them only with default settings (or die set the globalen configs 'mail.identity.default.archive_granularity' / 'mail.identity.default.archive_keep_folder_structure' manually).">
-
-<!ENTITY archiveMessages "Archive all other messages older than ">
-<!ENTITY archiveTagged "Archive tagged (with keywords) messages older than ">
-<!ENTITY archiveStarred "Archive messages marked (with a star) older than ">
-<!ENTITY archiveUnread "Archive unread messages older than ">
-
-<!ENTITY days "days">
-
 <!ENTITY toolbarArchive "Autoarchive...">
 <!ENTITY toolbarArchiveTooltip "Autoarchive now">
 

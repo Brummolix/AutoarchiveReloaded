@@ -29,42 +29,115 @@ Copyright 2014-2018 Brummolix (AutoarchiveReloaded, https://github.com/Brummolix
 
   <body>
     <div class="container">
-      <div class="m-3"></div>
-      <H3>__MSG_settingsHeadline__</H3>
-      <form>
-        <fieldset class="form-group">
-          <div class="row">
-            <legend class="col-form-label col-sm-2 pt-0">__MSG_archiveTypeTitle__</legend>
-            <div class="col-sm-10">
-              <div class="form-check">
-                <input class="form-check-input" type="radio" name="archiveType" id="archiveTypeManual" value="manual">
-                <label class="form-check-label" for="archiveTypeManual">__MSG_archiveTypeManual__</label>
-              </div>
-              <div class="form-check">
-                <input class="form-check-input" type="radio" name="archiveType" id="archiveTypeStartup" value="startup">
-                <label class="form-check-label" for="archiveTypeStartup">__MSG_archiveTypeStartup__</label>
-              </div>
-              <div class="alert alert-light" role="alert">__MSG_globalSettingsStartupDescription__</div>
-            </div>
-          </div>
-        </fieldset>
-        <div class="form-group row">
-          <div class="col-sm-2">Logging</div>
-          <div class="col-sm-10">      
-            <div class="form-check">
-              <input class="form-check-input" type="checkbox" name="enableInfoLogging" id="enableInfoLogging" value="enableInfoLogging">
-              <label class="form-check-label" for="enableInfoLogging"> __MSG_enableInfoLoggingOption__</label>
-            </div>
-          </div>
+        <div class="m-3"></div>
+        <H3>__MSG_settingsHeadline__</H3>
+        <div class="card">
+        <div class="card-header">
+          <ul class="nav nav-tabs card-header-tabs" role="tablist" id="tablist">
+            <li class="nav-item">
+              <a class="nav-link active" data-toggle="tab" id="global-tab" href="#global" role="tab" aria-controls="home" aria-selected="true">__MSG_globalSettings__</a>
+            </li>
+            <li class="nav-item d-none" id="§§ID§§-tab">
+                <a class="nav-link" data-toggle="tab" id="§§ID§§-link-tab" href="#§§ID§§-content" role="tab" aria-controls="profile" aria-selected="false">§§TITLE§§</a>
+            </li>
+          </ul>
         </div>
-        <div class="form-group row">
-          <div class="col-sm-10">
-            <!-- TODO: disable button and only enable on changes-->
-            <button class="btn btn-primary" id="button" type="button">__MSG_saveSettings__</button>
+        <div class="tab-content" id="tabcontent">
+          <div id="global" class="tab-pane fade show active card-body" role="tabpanel" aria-labelledby="global-tab">
+            <form>
+              <fieldset class="form-group">
+                <div class="row">
+                  <legend class="col-form-label col-sm-2 pt-0">__MSG_archiveTypeTitle__</legend>
+                  <div class="col-sm-10">
+                    <div class="form-check">
+                      <input class="form-check-input" type="radio" name="archiveType" id="archiveTypeManual" value="manual">
+                      <label class="form-check-label" for="archiveTypeManual">__MSG_archiveTypeManual__</label>
+                    </div>
+                    <div class="form-check">
+                      <input class="form-check-input" type="radio" name="archiveType" id="archiveTypeStartup" value="startup">
+                      <label class="form-check-label" for="archiveTypeStartup">__MSG_archiveTypeStartup__</label>
+                    </div>
+                    <div class="pt-3" role="alert">__MSG_globalSettingsStartupDescription__</div>
+                  </div>
+                </div>
+              </fieldset>
+              <div class="form-group row">
+                <div class="col-sm-2">__MSG_logging__</div>
+                <div class="col-sm-10">      
+                  <div class="form-check">
+                    <input class="form-check-input" type="checkbox" name="enableInfoLogging" id="enableInfoLogging" value="enableInfoLogging">
+                    <label class="form-check-label" for="enableInfoLogging"> __MSG_enableInfoLoggingOption__</label>
+                  </div>
+                </div>
+              </div>
+            </form>
           </div>
-        </div>
-      </form>
 
+          <div id="§§ID§§-content" class="tab-pane fade card-body d-none" role="tabpanel" aria-labelledby="§§ID§§-link-tab">
+            <h5>__MSG_accountSettingTitle__</h5>
+
+            <div class="input-group mb-3">
+              <div class="input-group-prepend">
+                <div class="input-group-text">
+                  <input type="checkbox" id="archiveUnread-§§ID§§">
+                </div>
+                <span class="input-group-text">__MSG_archiveUnread__</span>
+              </div>
+              <input type="text" class="form-control col-lg-1" id="archiveUnreadDays-§§ID§§">
+              <div class="input-group-append">
+                <span class="input-group-text">__MSG_days__</span>
+              </div>
+            </div>
+
+            <div class="input-group mb-3">
+              <div class="input-group-prepend">
+                <div class="input-group-text">
+                  <input type="checkbox" id="archiveStarred-§§ID§§">
+                </div>
+                <span class="input-group-text">__MSG_archiveStarred__</span>
+              </div>
+              <input type="text" class="form-control col-lg-1" id="archiveStarredDays-§§ID§§">
+              <div class="input-group-append">
+                <span class="input-group-text">__MSG_days__</span>
+              </div>
+            </div>
+              
+            <div class="input-group mb-3">
+              <div class="input-group-prepend">
+                <div class="input-group-text">
+                  <input type="checkbox" id="archiveTagged-§§ID§§">
+                </div>
+                <span class="input-group-text">__MSG_archiveTagged__</span>
+              </div>
+              <input type="text" class="form-control col-lg-1" id="archiveTaggedDays-§§ID§§">
+              <div class="input-group-append">
+                <span class="input-group-text">__MSG_days__</span>
+              </div>
+            </div>
+
+            <div class="input-group mb-3">
+              <div class="input-group-prepend">
+                <div class="input-group-text">
+                  <input type="checkbox" id="archiveMessages-§§ID§§">
+                </div>
+                <span class="input-group-text">__MSG_archiveMessages__</span>
+              </div>
+              <input type="text" class="form-control col-lg-1" id="archiveMessagesDays-§§ID§§">
+              <div class="input-group-append">
+                <span class="input-group-text">__MSG_days__</span>
+              </div>
+            </div>
+              
+            <div>__MSG_settingsDescription2__</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="m-3"></div>
+      <div>
+        <!-- TODO: disable button and only enable on changes-->
+        <button class="btn btn-primary" id="button" type="button">__MSG_saveSettings__</button>
+      </div>
       <BR>
       <div class="alert alert-primary" role="alert">__MSG_globalSettingsDescription__</div>
     </div>

@@ -18,6 +18,9 @@ Copyright 2018 Brummolix (AutoarchiveReloaded, https://github.com/Brummolix/Auto
 */
 
 function saveOptions(e) {
+
+  //TODO: Für alle accounts die Einstellungen holen und speichern (sowie zurückgeben)
+
   var settings = {
     archiveType: document.querySelector('input[name="archiveType"]:checked').value,
     enableInfoLogging: document.getElementById("enableInfoLogging").checked
@@ -28,12 +31,32 @@ function saveOptions(e) {
 
 function restoreOptions() 
 {
+  //TODO: Für jeden (sinnvollen) Account die Einstellungen clonen und die gespeicherten Werte setzen
+
+
+  cloneTemplate("§§ID§§-tab","tablist")
+  cloneTemplate("§§ID§§-content","tabcontent")
+
   AutoarchiveReloadedWeOptionHelper.loadCurrentSettings(function(settings){
     document.getElementById("enableInfoLogging").checked = settings.enableInfoLogging;
     document.querySelectorAll('input[name="archiveType"]').forEach(element => {
       element.checked = (element.value == settings.archiveType);
     });
   });
+}
+
+function cloneTemplate(cloneId,appendToId)
+{
+  var clone = $("#" + cloneId).clone(true,true);
+  clone.appendTo("#" + appendToId);
+
+  //make template visible
+  clone.removeClass("d-none");
+
+  var html = clone[0].outerHTML;
+  html = html.replace(/§§ID§§/g, "HelloWorldId");
+  html = html.replace(/§§TITLE§§/g, "Hello World");
+  clone[0].outerHTML = html;
 }
 
 document.addEventListener("DOMContentLoaded", restoreOptions);

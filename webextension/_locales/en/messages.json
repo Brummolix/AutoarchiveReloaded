@@ -6,5 +6,17 @@
     "archiveTypeStartup": {"message": "at every Thunderbird startup (and repeated after every day)"},
     "enableInfoLoggingOption": {"message": "activate extended Logging (error console and file AutoarchiveReloadedLog.txt in your profile directory)"},
     "globalSettingsStartupDescription":{"message":"Autoarchiving after Thunderbird start is not recommended for IMAP accounts, because there may be problems if the server/internet connection is missing (messages are archived twice)."},
-    "saveSettings":{"message":"Save settings"}
+    "saveSettings":{"message":"Save settings"},
+
+    "settingsDescription2":{"message": "Please also remember: Beside this options you also have to set up the Thunderbird archive settings under 'Copies & Folders'! Note: These settings are not available for feed accounts (e.g. RSS) or local folders. You can archive them only with default settings (or die set the globalen configs 'mail.identity.default.archive_granularity' / 'mail.identity.default.archive_keep_folder_structure' manually)."},
+    
+    "archiveMessages":{"message": "Archive all other messages older than "},
+    "archiveTagged":{"message": "Archive tagged (with keywords) messages older than "},
+    "archiveStarred":{"message": "Archive messages marked (with a star) older than "},
+    "archiveUnread":{"message": "Archive unread messages older than "},
+    
+    "days":{"message": "days"},
+    "globalSettings":{"message": "General"},
+    "logging":{"message": "Logging"},
+    "accountSettingTitle":{"message": "specific settings for account $$TITLE$$"}
 }
