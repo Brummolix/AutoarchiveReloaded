@@ -556,41 +556,6 @@ AutoarchiveReloadedOverlay.Global = new function ()
 			var appInfoLogger = new AutoarchiveReloadedOverlay.AppInfoLogger();
 			appInfoLogger.log();
 
-			//wait a second before starting, because otherwise the check message from startupIfValid is *behind* Thunderbird
-			setTimeout(function ()
-			{
-				AutoarchiveReloadedOverlay.Global.startupIfValid();
-			}, 1000);
-		};
-		
-		//we do not start if you have the original version of Autoarchiver installed
-		this.startupIfValid = function ()
-		{
-			try
-			{
-				var thisForEvent = this;
-				AddonManager.getAddonByID("{b3a22f77-26b5-43d1-bd2f-9337488eacef}", function (addon)
-				{
-					if (addon != null)
-					{
-						//inform user about plugins
-						AutoarchiveReloadedOverlay.Logger.info("invalid because of old autoarchiver");
-						AutoarchiveReloadedOverlay.Helper.getThePromptService().alert(null, AutoarchiveReloadedOverlay.StringBundle.GetStringFromName("warningOldAutoarchiverTitle"), AutoarchiveReloadedOverlay.StringBundle.GetStringFromName("warningOldAutoarchiver"));
-						return;
-					}
-					thisForEvent.internalstartup();
-				});
-			}
-			catch (e)
-			{
-				AutoarchiveReloadedOverlay.Logger.errorException(e);
-				throw e;
-			}
-		};
-		
-		//real startup
-		this.internalstartup = function ()
-		{
 			this.status = this.READY_FOR_WORK;
 			AutoarchiveReloadedOverlay.Logger.info("ready for work");
 
