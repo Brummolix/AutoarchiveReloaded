@@ -133,7 +133,7 @@ function shutdown(data, reason) {
 
 	console.log("AutoArchiveReloaded - shutdown");
 
-	if (RestartlessMenuItems)
+	if (typeof RestartlessMenuItems !== 'undefined')
 		RestartlessMenuItems.removeAll();
 
 	Components.utils.unload("chrome://autoarchiveReloaded/content/overlay.js");
