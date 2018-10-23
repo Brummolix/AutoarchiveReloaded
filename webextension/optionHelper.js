@@ -40,21 +40,81 @@ AutoarchiveReloadedWeOptionHelper.sendCurrentPreferencesToLegacyAddOn = function
 
 AutoarchiveReloadedWeOptionHelper.loadCurrentSettings = function (onSuccesfulDone)
 {
-    //TODO: defaults???
-    //wenn gar nichts da ist, sollten defaults bestimmt werden!
+    //TODO: accountName should be independent from settings (it should be not saved)
+    console.log("loadCurrentSettings");
 
-    var getting = browser.storage.local.get("settings");
-    getting.then(function(result){
-        //TODO: geht das auch, wenn es noch gar keine Settings gibt (z.B. bei Neuinstallation!)
-        //settings read sucefully...
-        onSuccesfulDone(result.settings);
-    },function(error)
-    {
-        //error while reading settings
-        //TODO: error? log
-        console.log(`Error: ${error}`);
+    var message = {
+        id: "askForAccounts",
+    }
+
+    browser.runtime.sendMessage(message).then(accounts => {
+        browser.storage.local.get("settings").then(function(result){
+            console.log("loadCurrentSettings fine " + result.settings);
+            //settings read succesfully...
+
+            //defaults
+            if (result.settings == undefined)
+                result.settings = {};
+            if (result.settings.globalSettings == undefined)
+                result.settings.globalSettings = {};
+            if (result.settings.globalSettings.archiveType == undefined)
+                result.settings.globalSettings.archiveType = "manual";
+            if (result.settings.globalSettings.enableInfoLogging == undefined)
+                result.settings.globalSettings.enableInfoLogging = false;
+
+            //handle accounts
+            if (result.settings.accountSettings == undefined)
+                result.settings.accountSettings = [];
+
+            //defaults
+            accounts.forEach(account => {
+                var accountSetting = findAccountSetting(result.settings.accountSettings,account.accountId);
+                if (accountSetting==undefined)
+                {
+                    result.settings.accountSettings.push({
+                        accountId: account.accountId,
+                        accountName: account.accountName,
+                        bArchiveOther: false,
+                        daysOther: 360,
+                        bArchiveMarked: false,
+                        daysMarked: 360,
+                        bArchiveTagged: false,
+                        daysTagged: 360,
+                        bArchiveUnread: false,
+                        daysUnread: 360
+                    });
+                }
+            });
+
+            //remove setting of deleted accounts
+            for (var n=0;n<result.settings.accountSettings.length;n++)
+            {
+                if (findAccountSetting(accounts,result.settings.accountSettings[n].accountId) == undefined)
+                {
+                    result.settings.accountSettings.splice(n, 1);
+                    n--;
+                }
+            }
+
+            onSuccesfulDone(result.settings);
+        },function(error)
+        {
+            //error while reading settings
+            //TODO: error? log
+            console.log(`Error: ${error}`);
+        });
     });
+}
 
+function findAccountSetting(accountSettings,id)
+{
+    for (let accountSetting of accountSettings) 
+    {
+        if (accountSetting.accountId == id)
+            return accountSetting;
+    }
+
+    return undefined;
 }
 
 AutoarchiveReloadedWeOptionHelper.convertLegacyPreferences = function ()

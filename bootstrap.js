@@ -59,6 +59,10 @@ function startup(data, reason) {
 				{
 					initAutoArchiveReloadedOverlay();
 				}
+				else if (msg.id == "askForAccounts") //we will be asked for valid accounts which can be archived
+				{
+					sendReply([{accountId: "account1",accountName: "testaccount 1"},{accountId: "account3",accountName: "testaccount 3"}]);
+				}
 			});
 		});
 	}

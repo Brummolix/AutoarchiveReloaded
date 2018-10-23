@@ -31,19 +31,52 @@ var AutoarchiveReloadedOptions = AutoarchiveReloadedOptions || {};
         var prefBranch = AutoarchiveReloadedOptions.getInternalLegacyPrefBranch();
         var aChildArray = prefBranch.getChildList("", {});
 
+        //TODO: this test is not sufficient, even if no global options are available there could be account settings...
         if (aChildArray.length==0)
             return null;
 
         if (prefBranch.getBoolPref("preferencesAlreadyMigrated",false))
             return null;
 
-        var settings = {
-            archiveType: prefBranch.getCharPref("archiveType","manual"),
-            enableInfoLogging: prefBranch.getBoolPref("enableInfoLogging",false)
-        }
+        var legacySettings = {
+            globalSettings: {
+                archiveType: prefBranch.getCharPref("archiveType","manual"),
+                enableInfoLogging: prefBranch.getBoolPref("enableInfoLogging",false)
+            },
 
-        return settings;
-    }
+            accountSettings : []
+        };
+
+        //TODO: get real data
+        var accountSetting = {
+            accountId: "account1",
+            accountName: "testaccount 1",
+            bArchiveOther: true,
+            daysOther: 0,
+            bArchiveMarked: true,
+            daysMarked: 40,
+            bArchiveTagged: true,
+            daysTagged: 50,
+            bArchiveUnread: true,
+            daysUnread: 60
+        };
+        legacySettings.accountSettings[0] = accountSetting;
+        var accountSetting2 = {
+            accountId: "account2",
+            accountName: "testaccount 2",
+            bArchiveOther: false,
+            daysOther: 70,
+            bArchiveMarked: false,
+            daysMarked: 80,
+            bArchiveTagged: false,
+            daysTagged: 90,
+            bArchiveUnread: false,
+            daysUnread: 100
+        };
+        legacySettings.accountSettings[1] = accountSetting2;
+
+        return legacySettings;
+    };
 
     AutoarchiveReloadedOptions.markLegacySettingsAsMigrated = function()
     {

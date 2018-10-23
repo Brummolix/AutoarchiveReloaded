@@ -17,35 +17,79 @@ Copyright 2018 Brummolix (AutoarchiveReloaded, https://github.com/Brummolix/Auto
     along with AutoarchiveReloaded.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-function saveOptions(e) {
-
-  //TODO: Für alle accounts die Einstellungen holen und speichern (sowie zurückgeben)
-
+function saveOptions(e) 
+{
   var settings = {
-    archiveType: document.querySelector('input[name="archiveType"]:checked').value,
-    enableInfoLogging: document.getElementById("enableInfoLogging").checked
+    globalSettings: {
+      archiveType: document.querySelector('input[name="archiveType"]:checked').value,
+      enableInfoLogging: document.getElementById("enableInfoLogging").checked
+    },
+    accountSettings: []
   };
 
+  //fill the settings for all accounts
+  $("#tabcontent").children().each(function(index) {
+    var accountId = $(this).data("accountId");
+    if (accountId)
+    {
+      settings.accountSettings.push({
+        bArchiveUnread: getElementForAccount(accountId, "archiveUnread").checked,
+        daysUnread: getElementForAccount(accountId, "archiveUnreadDays").value,
+        bArchiveMarked: getElementForAccount(accountId, "archiveStarred").checked,
+        daysMarked: getElementForAccount(accountId, "archiveStarredDays").value,
+        bArchiveTagged: getElementForAccount(accountId, "archiveTagged").checked,
+        daysTagged: getElementForAccount(accountId, "archiveTaggedDays").value,
+        bArchiveOther: getElementForAccount(accountId, "archiveMessages").checked,
+        daysOther: getElementForAccount(accountId, "archiveMessagesDays").value,
+        accountId: accountId,
+      });
+    }
+  });
+  
   AutoarchiveReloadedWeOptionHelper.savePreferencesAndSendToLegacyAddOn(settings,function(){});
 }
 
 function restoreOptions() 
 {
-  //TODO: Für jeden (sinnvollen) Account die Einstellungen clonen und die gespeicherten Werte setzen
-
-
-  cloneTemplate("§§ID§§-tab","tablist")
-  cloneTemplate("§§ID§§-content","tabcontent")
-
   AutoarchiveReloadedWeOptionHelper.loadCurrentSettings(function(settings){
-    document.getElementById("enableInfoLogging").checked = settings.enableInfoLogging;
+    document.getElementById("enableInfoLogging").checked = settings.globalSettings.enableInfoLogging;
     document.querySelectorAll('input[name="archiveType"]').forEach(element => {
-      element.checked = (element.value == settings.archiveType);
+      element.checked = (element.value == settings.globalSettings.archiveType);
+    });
+
+    //Für jeden Account die Einstellungen clonen und die gespeicherten Werte setzen
+    settings.accountSettings.forEach(accountSetting => {
+      cloneTemplate("§§ID§§-tab","tablist",accountSetting);
+      cloneTemplate("accountContent-§§ID§§","tabcontent",accountSetting);
+
+      //mark this element as account
+      getJQueryElementForAccount(accountSetting.accountId,"accountContent").data("accountId",accountSetting.accountId);
+
+      getElementForAccount(accountSetting.accountId, "archiveUnread").checked = accountSetting.bArchiveUnread;
+      getElementForAccount(accountSetting.accountId, "archiveUnreadDays").value = accountSetting.daysUnread;
+      getElementForAccount(accountSetting.accountId, "archiveStarred").checked = accountSetting.bArchiveMarked;
+      getElementForAccount(accountSetting.accountId, "archiveStarredDays").value = accountSetting.daysMarked;
+      getElementForAccount(accountSetting.accountId, "archiveTagged").checked = accountSetting.bArchiveTagged;
+      getElementForAccount(accountSetting.accountId, "archiveTaggedDays").value = accountSetting.daysTagged;
+      getElementForAccount(accountSetting.accountId, "archiveMessages").checked = accountSetting.bArchiveOther;
+      getElementForAccount(accountSetting.accountId, "archiveMessagesDays").value = accountSetting.daysOther;
     });
   });
 }
 
-function cloneTemplate(cloneId,appendToId)
+function getJQueryElementForAccount(accountId,elementId)
+{
+  var id = elementId + "-" + accountId;
+  var jQueryElem = $("#" + id);
+  return jQueryElem;
+}
+
+function getElementForAccount(accountId,elementId)
+{
+  return getJQueryElementForAccount(accountId,elementId)[0];
+}
+
+function cloneTemplate(cloneId,appendToId,accountSetting)
 {
   var clone = $("#" + cloneId).clone(true,true);
   clone.appendTo("#" + appendToId);
@@ -54,8 +98,8 @@ function cloneTemplate(cloneId,appendToId)
   clone.removeClass("d-none");
 
   var html = clone[0].outerHTML;
-  html = html.replace(/§§ID§§/g, "HelloWorldId");
-  html = html.replace(/§§TITLE§§/g, "Hello World");
+  html = html.replace(/§§ID§§/g, accountSetting.accountId);
+  html = html.replace(/§§TITLE§§/g, accountSetting.accountName);
   clone[0].outerHTML = html;
 }
 
