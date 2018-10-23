@@ -21,8 +21,8 @@ function saveOptions(e)
 {
   var settings = {
     globalSettings: {
-      archiveType: document.querySelector('input[name="archiveType"]:checked').value,
-      enableInfoLogging: document.getElementById("enableInfoLogging").checked
+      archiveType: document.querySelector<HTMLInputElement>('input[name="archiveType"]:checked').value,
+      enableInfoLogging: (<HTMLInputElement>document.getElementById("enableInfoLogging")).checked
     },
     accountSettings: []
   };
@@ -33,14 +33,14 @@ function saveOptions(e)
     if (accountId)
     {
       settings.accountSettings.push({
-        bArchiveUnread: getElementForAccount(accountId, "archiveUnread").checked,
-        daysUnread: getElementForAccount(accountId, "archiveUnreadDays").value,
-        bArchiveMarked: getElementForAccount(accountId, "archiveStarred").checked,
-        daysMarked: getElementForAccount(accountId, "archiveStarredDays").value,
-        bArchiveTagged: getElementForAccount(accountId, "archiveTagged").checked,
-        daysTagged: getElementForAccount(accountId, "archiveTaggedDays").value,
-        bArchiveOther: getElementForAccount(accountId, "archiveMessages").checked,
-        daysOther: getElementForAccount(accountId, "archiveMessagesDays").value,
+        bArchiveUnread: (<HTMLInputElement>getElementForAccount(accountId, "archiveUnread")).checked,
+        daysUnread: (<HTMLInputElement>getElementForAccount(accountId, "archiveUnreadDays")).value,
+        bArchiveMarked: (<HTMLInputElement>getElementForAccount(accountId, "archiveStarred")).checked,
+        daysMarked: (<HTMLInputElement>getElementForAccount(accountId, "archiveStarredDays")).value,
+        bArchiveTagged: (<HTMLInputElement>getElementForAccount(accountId, "archiveTagged")).checked,
+        daysTagged: (<HTMLInputElement>getElementForAccount(accountId, "archiveTaggedDays")).value,
+        bArchiveOther: (<HTMLInputElement>getElementForAccount(accountId, "archiveMessages")).checked,
+        daysOther: (<HTMLInputElement>getElementForAccount(accountId, "archiveMessagesDays")).value,
         accountId: accountId,
       });
     }
@@ -52,8 +52,8 @@ function saveOptions(e)
 function restoreOptions() 
 {
   AutoarchiveReloadedWeOptionHelper.loadCurrentSettings(function(settings){
-    document.getElementById("enableInfoLogging").checked = settings.globalSettings.enableInfoLogging;
-    document.querySelectorAll('input[name="archiveType"]').forEach(element => {
+    (<HTMLInputElement>document.getElementById("enableInfoLogging")).checked = settings.globalSettings.enableInfoLogging;
+    document.querySelectorAll<HTMLInputElement>('input[name="archiveType"]').forEach(element => {
       element.checked = (element.value == settings.globalSettings.archiveType);
     });
 
@@ -65,14 +65,14 @@ function restoreOptions()
       //mark this element as account
       getJQueryElementForAccount(accountSetting.accountId,"accountContent").data("accountId",accountSetting.accountId);
 
-      getElementForAccount(accountSetting.accountId, "archiveUnread").checked = accountSetting.bArchiveUnread;
-      getElementForAccount(accountSetting.accountId, "archiveUnreadDays").value = accountSetting.daysUnread;
-      getElementForAccount(accountSetting.accountId, "archiveStarred").checked = accountSetting.bArchiveMarked;
-      getElementForAccount(accountSetting.accountId, "archiveStarredDays").value = accountSetting.daysMarked;
-      getElementForAccount(accountSetting.accountId, "archiveTagged").checked = accountSetting.bArchiveTagged;
-      getElementForAccount(accountSetting.accountId, "archiveTaggedDays").value = accountSetting.daysTagged;
-      getElementForAccount(accountSetting.accountId, "archiveMessages").checked = accountSetting.bArchiveOther;
-      getElementForAccount(accountSetting.accountId, "archiveMessagesDays").value = accountSetting.daysOther;
+      (<HTMLInputElement>getElementForAccount(accountSetting.accountId, "archiveUnread")).checked = accountSetting.bArchiveUnread;
+      (<HTMLInputElement>getElementForAccount(accountSetting.accountId, "archiveUnreadDays")).value = accountSetting.daysUnread;
+      (<HTMLInputElement>getElementForAccount(accountSetting.accountId, "archiveStarred")).checked = accountSetting.bArchiveMarked;
+      (<HTMLInputElement>getElementForAccount(accountSetting.accountId, "archiveStarredDays")).value = accountSetting.daysMarked;
+      (<HTMLInputElement>getElementForAccount(accountSetting.accountId, "archiveTagged")).checked = accountSetting.bArchiveTagged;
+      (<HTMLInputElement>getElementForAccount(accountSetting.accountId, "archiveTaggedDays")).value = accountSetting.daysTagged;
+      (<HTMLInputElement>getElementForAccount(accountSetting.accountId, "archiveMessages")).checked = accountSetting.bArchiveOther;
+      (<HTMLInputElement>getElementForAccount(accountSetting.accountId, "archiveMessagesDays")).value = accountSetting.daysOther;
     });
   });
 }
@@ -84,7 +84,7 @@ function getJQueryElementForAccount(accountId,elementId)
   return jQueryElem;
 }
 
-function getElementForAccount(accountId,elementId)
+function getElementForAccount(accountId,elementId):HTMLElement
 {
   return getJQueryElementForAccount(accountId,elementId)[0];
 }
