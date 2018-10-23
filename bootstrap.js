@@ -136,6 +136,8 @@ function shutdown(data, reason) {
 	if (typeof RestartlessMenuItems !== 'undefined')
 		RestartlessMenuItems.removeAll();
 
+	console.log("unload scripts");
+
 	Components.utils.unload("chrome://autoarchiveReloaded/content/overlay.js");
 	Components.utils.unload("chrome://autoarchiveReloaded/content/thunderbird-stdlib/RestartlessMenuItems.js");
 	Components.utils.unload("chrome://autoarchiveReloaded/content/options.js");
