@@ -52,7 +52,8 @@ function startup(data, reason) {
 				}
 				else if (msg.id == "askForLegacyPreferences") //at startup we are asked for legacy preferences
 				{
-					sendReply({data: AutoarchiveReloadedOptions.getLegacyOptions()}); 
+					var legacySettings = AutoarchiveReloadedOptions.getLegacyOptions();
+					sendReply(legacySettings); 
 					AutoarchiveReloadedOptions.markLegacySettingsAsMigrated();
 				}
 				else if (msg.id == "webExtensionStartupDone") //after startup we are informed and can go on

@@ -123,10 +123,10 @@ AutoarchiveReloadedWeOptionHelper.convertLegacyPreferences = function ()
         id: "askForLegacyPreferences",
     }
 
-    browser.runtime.sendMessage(message).then(reply => {
-        if ( (reply) && reply.data )
+    browser.runtime.sendMessage(message).then(settings => {
+        if (settings)
         {
-            AutoarchiveReloadedWeOptionHelper.savePreferencesAndSendToLegacyAddOn(reply.data, function(){
+            AutoarchiveReloadedWeOptionHelper.savePreferencesAndSendToLegacyAddOn(settings, function(){
                 AutoarchiveReloadedWeOptionHelper.OnWebExtensionStartupDone();
             });
         }
