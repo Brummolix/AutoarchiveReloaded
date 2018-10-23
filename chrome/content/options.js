@@ -21,14 +21,14 @@ var EXPORTED_SYMBOLS = [
     'AutoarchiveReloadedOptions'
 ]
 
-var AutoarchiveReloadedOptions = AutoarchiveReloadedOptions || {};
-
-    AutoarchiveReloadedOptions.settings = {};
+function AutoarchiveReloadedOptionsClass()
+{
+    this.settings = {};
 
     //return null if already migrated or no settings!
-    AutoarchiveReloadedOptions.getLegacyOptions = function ()
+    this.getLegacyOptions = function ()
     {
-        var prefBranch = AutoarchiveReloadedOptions.getInternalLegacyPrefBranch();
+        var prefBranch = this.getInternalLegacyPrefBranch();
         var aChildArray = prefBranch.getChildList("", {});
 
         //TODO: this test is not sufficient, even if no global options are available there could be account settings...
@@ -78,13 +78,16 @@ var AutoarchiveReloadedOptions = AutoarchiveReloadedOptions || {};
         return legacySettings;
     };
 
-    AutoarchiveReloadedOptions.markLegacySettingsAsMigrated = function()
+    this.markLegacySettingsAsMigrated = function()
     {
-        AutoarchiveReloadedOptions.getInternalLegacyPrefBranch().setBoolPref("preferencesAlreadyMigrated", true);
-    }
+        this.getInternalLegacyPrefBranch().setBoolPref("preferencesAlreadyMigrated", true);
+    };
 
-    AutoarchiveReloadedOptions.getInternalLegacyPrefBranch = function()
+    this.getInternalLegacyPrefBranch = function()
     {
         var prefs = Components.classes["@mozilla.org/preferences-service;1"].getService(Components.interfaces.nsIPrefService);
         return prefs.getBranch("extensions.AutoarchiveReloaded.");
     };
+}
+
+var AutoarchiveReloadedOptions = AutoarchiveReloadedOptions || new AutoarchiveReloadedOptionsClass();
