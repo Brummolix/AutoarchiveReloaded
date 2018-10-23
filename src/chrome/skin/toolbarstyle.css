@@ -1,0 +1,9 @@
+/*  skin/toolbar-button.css  */
+
+#autoarchiveReloadedArchiveNowButton {
+  list-style-image: url("chrome://autoarchiveReloaded/skin/btn_large.png");
+}
+
+toolbar[iconsize="small"] #autoarchiveReloadedArchiveNowButton {
+  list-style-image: url("chrome://autoarchiveReloaded/skin/btn_small.png");
+}
