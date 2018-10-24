@@ -1,0 +1,12 @@
+{
+    "compilerOptions": {
+        "target": "es5",
+        "module": "commonjs",
+        "sourceMap": true,
+
+        "outDir": "./built/release",
+        "allowJs": false,
+        "rootDir": "src"
+        //TODO: disable maps?
+    }
+}
