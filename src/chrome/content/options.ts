@@ -21,15 +21,15 @@ var EXPORTED_SYMBOLS = [
     'AutoarchiveReloadedOptions'
 ]
 
-function AutoarchiveReloadedOptionsClass()
+class AutoarchiveReloadedOptionsClass
 {
-    this.settings = {};
+    settings:ISettings;
 
     //return null if already migrated or no settings!
-    this.getLegacyOptions = function ()
+    getLegacyOptions():ISettings | null
     {
         var prefBranch = this.getInternalLegacyPrefBranch();
-        var aChildArray = prefBranch.getChildList("", {});
+        var aChildArray:object[] = prefBranch.getChildList("", {});
 
         //TODO: this test is not sufficient, even if no global options are available there could be account settings...
         if (aChildArray.length==0)
@@ -38,17 +38,17 @@ function AutoarchiveReloadedOptionsClass()
         if (prefBranch.getBoolPref("preferencesAlreadyMigrated",false))
             return null;
 
-        var legacySettings = {
+        var legacySettings:ISettings = {
             globalSettings: {
                 archiveType: prefBranch.getCharPref("archiveType","manual"),
-                enableInfoLogging: prefBranch.getBoolPref("enableInfoLogging",false)
+                enableInfoLogging: prefBranch.getBoolPref("enableInfoLogging",false),
             },
 
             accountSettings : []
         };
 
         //TODO: get real data
-        var accountSetting = {
+        var accountSetting:IAccountSettings = {
             accountId: "account1",
             accountName: "testaccount 1",
             bArchiveOther: true,
@@ -61,7 +61,7 @@ function AutoarchiveReloadedOptionsClass()
             daysUnread: 60
         };
         legacySettings.accountSettings[0] = accountSetting;
-        var accountSetting2 = {
+        var accountSetting2:IAccountSettings = {
             accountId: "account2",
             accountName: "testaccount 2",
             bArchiveOther: false,
@@ -76,18 +76,18 @@ function AutoarchiveReloadedOptionsClass()
         legacySettings.accountSettings[1] = accountSetting2;
 
         return legacySettings;
-    };
+    }
 
-    this.markLegacySettingsAsMigrated = function()
+    markLegacySettingsAsMigrated():void
     {
         this.getInternalLegacyPrefBranch().setBoolPref("preferencesAlreadyMigrated", true);
     };
 
-    this.getInternalLegacyPrefBranch = function()
+    getInternalLegacyPrefBranch():nsIPrefBranch
     {
         var prefs = Components.classes["@mozilla.org/preferences-service;1"].getService(Components.interfaces.nsIPrefService);
         return prefs.getBranch("extensions.AutoarchiveReloaded.");
     };
 }
 
-var AutoarchiveReloadedOptions = AutoarchiveReloadedOptions || new AutoarchiveReloadedOptionsClass();
+var AutoarchiveReloadedOptions:AutoarchiveReloadedOptionsClass = AutoarchiveReloadedOptions || new AutoarchiveReloadedOptionsClass();

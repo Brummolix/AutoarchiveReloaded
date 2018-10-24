@@ -83,7 +83,7 @@ AutoarchiveReloadedOverlay.Logger = new function ()
 		
 		this.getLogLevelFromPref = function()
 		{
-			if (AutoarchiveReloadedOptions.settings.enableInfoLogging)				
+			if (AutoarchiveReloadedOptions.settings.globalSettings.enableInfoLogging)				
 				return this.LEVEL_INFO;
 			
 			return this.LEVEL_ERROR;
@@ -559,7 +559,7 @@ AutoarchiveReloadedOverlay.Global = new function ()
 			this.status = this.READY_FOR_WORK;
 			AutoarchiveReloadedOverlay.Logger.info("ready for work");
 
-			if (AutoarchiveReloadedOptions.settings.archiveType=="startup")
+			if (AutoarchiveReloadedOptions.settings.globalSettings.archiveType=="startup")
 			{
 				AutoarchiveReloadedOverlay.Logger.info("archive type at startup");
 				

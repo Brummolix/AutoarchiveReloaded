@@ -10,3 +10,4 @@ declare var MailServices:any;
 declare var AddonManager:any;
 declare function fixIterator(collection:any[],objectType:any):any;
 
+type nsIPrefBranch = any;
