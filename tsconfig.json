@@ -1,17 +1,14 @@
 {
     "compilerOptions": {
-        //TODO: which version?
-        "target": "es5",
-        //TODO: which one?
-        "module": "commonjs",
+        "target": "es6",
+        //the module stuff does not work in Thunderbird Addons (or I do not know how to make it work...)
+        "module": "none" ,
+        //TODO: needed only for debugging?
         "sourceMap": true,
 
         "outDir": "./built/release",
         "allowJs": false,
         "rootDir": "src",
-        
-        //TODO: disable maps?
-        //sourceMap: false,
 
         "strict": true,
         "noImplicitReturns": true,
