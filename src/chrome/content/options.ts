@@ -21,15 +21,26 @@ var EXPORTED_SYMBOLS = [
     'AutoarchiveReloadedOptions'
 ]
 
+//TODO: we need the AutoarchiveReloadedWeOptionHelper but it is also needed inside the webextension
+//or do we have to copy it to another place because it is inside web extension an not available for the legacyAddIn part?
+//shall we create a space with shared resources!
+//or rewrite the whole default settings part (only need default settings in webextension)
 class AutoarchiveReloadedOptionsClass
 {
-    settings:ISettings;
+    constructor()
+    {
+        console.log("AutoarchiveReloadedOptionsClass CONSTRUCTOR called!");
+    }
+
+    //TODO: refactor to own class for default settings?
+    //TODO: does not work see above...
+    settings:ISettings = new AutoarchiveReloadedWeOptionHelper().getDefaultSettings();
 
     //return null if already migrated or no settings!
     getLegacyOptions():ISettings | null
     {
-        var prefBranch = this.getInternalLegacyPrefBranch();
-        var aChildArray:object[] = prefBranch.getChildList("", {});
+        let prefBranch = this.getInternalLegacyPrefBranch();
+        let aChildArray:object[] = prefBranch.getChildList("", {});
 
         //TODO: this test is not sufficient, even if no global options are available there could be account settings...
         if (aChildArray.length==0)
@@ -38,7 +49,7 @@ class AutoarchiveReloadedOptionsClass
         if (prefBranch.getBoolPref("preferencesAlreadyMigrated",false))
             return null;
 
-        var legacySettings:ISettings = {
+        let legacySettings:ISettings = {
             globalSettings: {
                 archiveType: prefBranch.getCharPref("archiveType","manual"),
                 enableInfoLogging: prefBranch.getBoolPref("enableInfoLogging",false),
@@ -48,9 +59,8 @@ class AutoarchiveReloadedOptionsClass
         };
 
         //TODO: get real data
-        var accountSetting:IAccountSettings = {
+        let accountSetting:IAccountSettings = {
             accountId: "account1",
-            accountName: "testaccount 1",
             bArchiveOther: true,
             daysOther: 0,
             bArchiveMarked: true,
@@ -61,9 +71,8 @@ class AutoarchiveReloadedOptionsClass
             daysUnread: 60
         };
         legacySettings.accountSettings[0] = accountSetting;
-        var accountSetting2:IAccountSettings = {
+        let accountSetting2:IAccountSettings = {
             accountId: "account2",
-            accountName: "testaccount 2",
             bArchiveOther: false,
             daysOther: 70,
             bArchiveMarked: false,
@@ -85,9 +94,13 @@ class AutoarchiveReloadedOptionsClass
 
     getInternalLegacyPrefBranch():nsIPrefBranch
     {
-        var prefs = Components.classes["@mozilla.org/preferences-service;1"].getService(Components.interfaces.nsIPrefService);
+        let prefs = Components.classes["@mozilla.org/preferences-service;1"].getService(Components.interfaces.nsIPrefService);
         return prefs.getBranch("extensions.AutoarchiveReloaded.");
     };
 }
 
-var AutoarchiveReloadedOptions:AutoarchiveReloadedOptionsClass = AutoarchiveReloadedOptions || new AutoarchiveReloadedOptionsClass();
+//TODO: does it work without AutoarchiveReloadedOptions || ??? Or is it created new for every one who includes it then?
+//AutoarchiveReloadedOptions || new AutoarchiveReloadedOptionsClass();
+//-> debug and see how many times the constructor was called!
+//maybe use a namespace?
+var AutoarchiveReloadedOptions:AutoarchiveReloadedOptionsClass = new AutoarchiveReloadedOptionsClass();

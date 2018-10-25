@@ -1,9 +1,9 @@
 module.exports = function(grunt) {
 
-  var srcDir = 'src/';
-  var outDir = 'built/';
-  var outDirExtracted = outDir + "/release/";
-  var outXpi = outDir + "/AutoArchiveReloaded.xpi";
+  let srcDir = 'src/';
+  let outDir = 'built/';
+  let outDirExtracted = outDir + "/release/";
+  let outXpi = outDir + "/AutoArchiveReloaded.xpi";
 
     // Project configuration.
     grunt.initConfig({

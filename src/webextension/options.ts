@@ -17,11 +17,12 @@ Copyright 2018 Brummolix (AutoarchiveReloaded, https://github.com/Brummolix/Auto
     along with AutoarchiveReloaded.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-function saveOptions(e) 
+function saveOptions():void
 {
-  var settings = {
+  let settings:ISettings = {
     globalSettings: {
-      archiveType: document.querySelector<HTMLInputElement>('input[name="archiveType"]:checked').value,
+      //TODO: unsauber, wir "wissen", dass es der richtige Wert sein muss
+      archiveType: $("[name=archiveType]:checked").val() as ArchiveType,
       enableInfoLogging: (<HTMLInputElement>document.getElementById("enableInfoLogging")).checked
     },
     accountSettings: []
@@ -29,29 +30,29 @@ function saveOptions(e)
 
   //fill the settings for all accounts
   $("#tabcontent").children().each(function(index) {
-    var accountId = $(this).data("accountId");
+    let accountId = $(this).data("accountId");
     if (accountId)
     {
       settings.accountSettings.push({
         bArchiveUnread: (<HTMLInputElement>getElementForAccount(accountId, "archiveUnread")).checked,
-        daysUnread: (<HTMLInputElement>getElementForAccount(accountId, "archiveUnreadDays")).value,
+        daysUnread: Number((<HTMLInputElement>getElementForAccount(accountId, "archiveUnreadDays")).value),
         bArchiveMarked: (<HTMLInputElement>getElementForAccount(accountId, "archiveStarred")).checked,
-        daysMarked: (<HTMLInputElement>getElementForAccount(accountId, "archiveStarredDays")).value,
+        daysMarked: Number((<HTMLInputElement>getElementForAccount(accountId, "archiveStarredDays")).value),
         bArchiveTagged: (<HTMLInputElement>getElementForAccount(accountId, "archiveTagged")).checked,
-        daysTagged: (<HTMLInputElement>getElementForAccount(accountId, "archiveTaggedDays")).value,
+        daysTagged: Number((<HTMLInputElement>getElementForAccount(accountId, "archiveTaggedDays")).value),
         bArchiveOther: (<HTMLInputElement>getElementForAccount(accountId, "archiveMessages")).checked,
-        daysOther: (<HTMLInputElement>getElementForAccount(accountId, "archiveMessagesDays")).value,
+        daysOther: Number((<HTMLInputElement>getElementForAccount(accountId, "archiveMessagesDays")).value),
         accountId: accountId,
       });
     }
   });
   
-  AutoarchiveReloadedWeOptionHelper.savePreferencesAndSendToLegacyAddOn(settings,function(){});
+  aaHelper.savePreferencesAndSendToLegacyAddOn(settings,function(){});
 }
 
 function restoreOptions() 
 {
-  AutoarchiveReloadedWeOptionHelper.loadCurrentSettings(function(settings){
+  aaHelper.loadCurrentSettings((settings:ISettings,accounts:IAccountInfo[]) => {
     (<HTMLInputElement>document.getElementById("enableInfoLogging")).checked = settings.globalSettings.enableInfoLogging;
     document.querySelectorAll<HTMLInputElement>('input[name="archiveType"]').forEach(element => {
       element.checked = (element.value == settings.globalSettings.archiveType);
@@ -59,49 +60,56 @@ function restoreOptions()
 
     //Für jeden Account die Einstellungen clonen und die gespeicherten Werte setzen
     settings.accountSettings.forEach(accountSetting => {
-      cloneTemplate("§§ID§§-tab","tablist",accountSetting);
-      cloneTemplate("accountContent-§§ID§§","tabcontent",accountSetting);
+
+      //TODO: as IAccountInfo ist nicht ganz sauber, wir "wissen", dass es nicht null sein kann...
+      let account:IAccountInfo = aaHelper.findAccountSettingOrInfo(accounts,accountSetting.accountId) as IAccountInfo;
+
+      cloneTemplate("§§ID§§-tab","tablist",account);
+      cloneTemplate("accountContent-§§ID§§","tabcontent",account);
 
       //mark this element as account
       getJQueryElementForAccount(accountSetting.accountId,"accountContent").data("accountId",accountSetting.accountId);
 
       (<HTMLInputElement>getElementForAccount(accountSetting.accountId, "archiveUnread")).checked = accountSetting.bArchiveUnread;
-      (<HTMLInputElement>getElementForAccount(accountSetting.accountId, "archiveUnreadDays")).value = accountSetting.daysUnread;
+      (<HTMLInputElement>getElementForAccount(accountSetting.accountId, "archiveUnreadDays")).value = accountSetting.daysUnread.toString();
       (<HTMLInputElement>getElementForAccount(accountSetting.accountId, "archiveStarred")).checked = accountSetting.bArchiveMarked;
-      (<HTMLInputElement>getElementForAccount(accountSetting.accountId, "archiveStarredDays")).value = accountSetting.daysMarked;
+      (<HTMLInputElement>getElementForAccount(accountSetting.accountId, "archiveStarredDays")).value = accountSetting.daysMarked.toString();
       (<HTMLInputElement>getElementForAccount(accountSetting.accountId, "archiveTagged")).checked = accountSetting.bArchiveTagged;
-      (<HTMLInputElement>getElementForAccount(accountSetting.accountId, "archiveTaggedDays")).value = accountSetting.daysTagged;
+      (<HTMLInputElement>getElementForAccount(accountSetting.accountId, "archiveTaggedDays")).value = accountSetting.daysTagged.toString();
       (<HTMLInputElement>getElementForAccount(accountSetting.accountId, "archiveMessages")).checked = accountSetting.bArchiveOther;
-      (<HTMLInputElement>getElementForAccount(accountSetting.accountId, "archiveMessagesDays")).value = accountSetting.daysOther;
+      (<HTMLInputElement>getElementForAccount(accountSetting.accountId, "archiveMessagesDays")).value = accountSetting.daysOther.toString();
     });
   });
 }
 
-function getJQueryElementForAccount(accountId,elementId)
+function getJQueryElementForAccount(accountId:string,elementId:string):JQuery
 {
-  var id = elementId + "-" + accountId;
-  var jQueryElem = $("#" + id);
+  let id = elementId + "-" + accountId;
+  let jQueryElem = $("#" + id);
   return jQueryElem;
 }
 
-function getElementForAccount(accountId,elementId):HTMLElement
+function getElementForAccount(accountId:string,elementId:string):HTMLElement
 {
   return getJQueryElementForAccount(accountId,elementId)[0];
 }
 
-function cloneTemplate(cloneId,appendToId,accountSetting)
+function cloneTemplate(cloneId:string,appendToId:string,accountInfo:IAccountInfo)
 {
-  var clone = $("#" + cloneId).clone(true,true);
+  let clone = $("#" + cloneId).clone(true,true);
   clone.appendTo("#" + appendToId);
 
   //make template visible
   clone.removeClass("d-none");
 
-  var html = clone[0].outerHTML;
-  html = html.replace(/§§ID§§/g, accountSetting.accountId);
-  html = html.replace(/§§TITLE§§/g, accountSetting.accountName);
+  let html = clone[0].outerHTML;
+  html = html.replace(/§§ID§§/g, accountInfo.accountId);
+  html = html.replace(/§§TITLE§§/g, accountInfo.accountName);
   clone[0].outerHTML = html;
 }
 
-document.addEventListener("DOMContentLoaded", restoreOptions);
-document.getElementById("button").addEventListener("click",saveOptions);
+let aaHelper:AutoarchiveReloadedWeOptionHelper = new AutoarchiveReloadedWeOptionHelper();
+$(()=> {
+  restoreOptions();
+  $("#button").click(saveOptions);
+});

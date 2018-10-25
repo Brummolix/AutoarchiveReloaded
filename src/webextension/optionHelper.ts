@@ -21,140 +21,159 @@ var EXPORTED_SYMBOLS = [
     'AutoarchiveReloadedWeOptionHelper'
 ]
 
-var AutoarchiveReloadedWeOptionHelper = AutoarchiveReloadedWeOptionHelper || {};
-
-AutoarchiveReloadedWeOptionHelper.sendCurrentPreferencesToLegacyAddOn = function (onSuccess)
+class AutoarchiveReloadedWeOptionHelper
 {
-    AutoarchiveReloadedWeOptionHelper.loadCurrentSettings(function(settings)
+    sendCurrentPreferencesToLegacyAddOn (onSuccess:() => void):void
     {
-        var message = {
-            id: "sendCurrentPreferencesToLegacyAddOn",
-            data: settings
-        }
-
-        browser.runtime.sendMessage(message).then(reply => {
-            onSuccess();
-            });
-    });
-};
-
-AutoarchiveReloadedWeOptionHelper.loadCurrentSettings = function (onSuccesfulDone)
-{
-    //TODO: accountName should be independent from settings (it should be not saved)
-    console.log("loadCurrentSettings");
-
-    var message = {
-        id: "askForAccounts",
-    }
-
-    browser.runtime.sendMessage(message).then(accounts => {
-        browser.storage.local.get("settings").then(function(result){
-            console.log("loadCurrentSettings fine " + result.settings);
-            //settings read succesfully...
-
-            //defaults
-            if (result.settings == undefined)
-                result.settings = {};
-            if (result.settings.globalSettings == undefined)
-                result.settings.globalSettings = {};
-            if (result.settings.globalSettings.archiveType == undefined)
-                result.settings.globalSettings.archiveType = "manual";
-            if (result.settings.globalSettings.enableInfoLogging == undefined)
-                result.settings.globalSettings.enableInfoLogging = false;
-
-            //handle accounts
-            if (result.settings.accountSettings == undefined)
-                result.settings.accountSettings = [];
-
-            //defaults
-            accounts.forEach(account => {
-                var accountSetting = findAccountSetting(result.settings.accountSettings,account.accountId);
-                if (accountSetting==undefined)
-                {
-                    result.settings.accountSettings.push({
-                        accountId: account.accountId,
-                        accountName: account.accountName,
-                        bArchiveOther: false,
-                        daysOther: 360,
-                        bArchiveMarked: false,
-                        daysMarked: 360,
-                        bArchiveTagged: false,
-                        daysTagged: 360,
-                        bArchiveUnread: false,
-                        daysUnread: 360
-                    });
-                }
-            });
-
-            //remove setting of deleted accounts
-            for (var n=0;n<result.settings.accountSettings.length;n++)
-            {
-                if (findAccountSetting(accounts,result.settings.accountSettings[n].accountId) == undefined)
-                {
-                    result.settings.accountSettings.splice(n, 1);
-                    n--;
-                }
+        this.loadCurrentSettings(function(settings:ISettings)
+        {
+            let message:IBrowserMessageSendCurrentSettings = {
+                id: "sendCurrentPreferencesToLegacyAddOn",
+                data: settings
             }
 
-            onSuccesfulDone(result.settings);
-        },function(error)
+            browser.runtime.sendMessage(message).then((reply:any) => {
+                onSuccess();
+                });
+        });
+    }
+
+    loadCurrentSettings (onSuccesfulDone:(settings:ISettings,accounts:IAccountInfo[] )=> void)
+    {
+        console.log("loadCurrentSettings");
+
+        let message:IBrowserMessage = {
+            id: "askForAccounts",
+        }
+
+        browser.runtime.sendMessage(message).then((accounts:IAccountInfo[]) => {
+            browser.storage.local.get("settings").then((result:any)  => {
+                console.log("loadCurrentSettings fine " + result.settings);
+                //settings read succesfully...
+                let settings:ISettings = result.setting as ISettings;
+                //defaults
+                let defaultSettings = this.getDefaultSettings();
+                if (settings == undefined)
+                    settings = defaultSettings;
+                if (settings.globalSettings == undefined)
+                    settings.globalSettings = this.getDefaultGlobalSettings();
+                if (settings.globalSettings.archiveType == undefined)
+                    settings.globalSettings.archiveType = defaultSettings.globalSettings.archiveType;
+                if (settings.globalSettings.enableInfoLogging == undefined)
+                    settings.globalSettings.enableInfoLogging = defaultSettings.globalSettings.enableInfoLogging;
+
+                //handle accounts
+                if (settings.accountSettings == undefined)
+                    settings.accountSettings = [];
+
+                //defaults
+                accounts.forEach(account => {
+                    let accountSetting = this.findAccountSettingOrInfo(settings.accountSettings,account.accountId);
+                    if (accountSetting==null)
+                    {
+                        settings.accountSettings.push({
+                            accountId: account.accountId,
+                            bArchiveOther: false,
+                            daysOther: 360,
+                            bArchiveMarked: false,
+                            daysMarked: 360,
+                            bArchiveTagged: false,
+                            daysTagged: 360,
+                            bArchiveUnread: false,
+                            daysUnread: 360
+                        });
+                    }
+
+                    //TODO: a value could still be undefined (if we create a new one!)
+                });
+
+                //remove setting of deleted accounts
+                for (let n:number=0;n<settings.accountSettings.length;n++)
+                {
+                    if (this.findAccountSettingOrInfo(accounts,settings.accountSettings[n].accountId) == null)
+                    {
+                        settings.accountSettings.splice(n, 1);
+                        n--;
+                    }
+                }
+
+                onSuccesfulDone(settings,accounts);
+            },function(error:string)
+            {
+                //error while reading settings
+                //TODO: error? log
+                console.log(`Error: ${error}`);
+            });
+        });
+    }
+
+    findAccountSettingOrInfo<T extends IAccountSettings|IAccountInfo>(accountSettings:T[],id:string):T | null
+    {
+        for (let accountSetting of accountSettings) 
         {
-            //error while reading settings
+            if (accountSetting.accountId == id)
+                return accountSetting;
+        }
+
+        return null;
+    }
+
+    convertLegacyPreferences ():void
+    {
+        let message:IBrowserMessage = {
+            id: "askForLegacyPreferences",
+        }
+
+        browser.runtime.sendMessage(message).then((settings:ISettings):void => {
+            if (settings)
+            {
+                this.savePreferencesAndSendToLegacyAddOn(settings, ():void => {
+                    this.OnWebExtensionStartupDone();
+                });
+            }
+            else
+            {
+                this.sendCurrentPreferencesToLegacyAddOn(():void => {
+                    this.OnWebExtensionStartupDone();
+                });
+            }
+        });
+    }
+
+    OnWebExtensionStartupDone():void
+    {
+        let message:IBrowserMessage = {
+            id: "webExtensionStartupDone",
+        }
+        browser.runtime.sendMessage(message).then((reply:any) => {});
+    }
+
+    savePreferencesAndSendToLegacyAddOn(data:ISettings,onSuccess:() => void):void
+    {
+        browser.storage.local.set({settings: data}).then(() => {
+            //settings written sucesfully
+            this.sendCurrentPreferencesToLegacyAddOn(onSuccess);
+        },function (error:string){
+            //error while writing settings
             //TODO: error? log
             console.log(`Error: ${error}`);
         });
-    });
-}
-
-function findAccountSetting(accountSettings,id)
-{
-    for (let accountSetting of accountSettings) 
+    }
+    
+    getDefaultSettings():ISettings
     {
-        if (accountSetting.accountId == id)
-            return accountSetting;
+        return {
+            globalSettings:this.getDefaultGlobalSettings(),
+            accountSettings:[]
+        };
     }
 
-    return undefined;
-}
-
-AutoarchiveReloadedWeOptionHelper.convertLegacyPreferences = function ()
-{
-    var message = {
-        id: "askForLegacyPreferences",
+    getDefaultGlobalSettings():IGlobalSettings
+    {
+        return {
+            archiveType: "manual",
+            enableInfoLogging: false
+        };
     }
 
-    browser.runtime.sendMessage(message).then(settings => {
-        if (settings)
-        {
-            AutoarchiveReloadedWeOptionHelper.savePreferencesAndSendToLegacyAddOn(settings, function(){
-                AutoarchiveReloadedWeOptionHelper.OnWebExtensionStartupDone();
-            });
-        }
-        else
-        {
-            AutoarchiveReloadedWeOptionHelper.sendCurrentPreferencesToLegacyAddOn(function(){
-                AutoarchiveReloadedWeOptionHelper.OnWebExtensionStartupDone();
-            });
-        }
-    });
-};
-
-AutoarchiveReloadedWeOptionHelper.OnWebExtensionStartupDone = function ()
-{
-    var message = {
-        id: "webExtensionStartupDone",
-    }
-    browser.runtime.sendMessage(message).then(reply => {});
-}
-
-AutoarchiveReloadedWeOptionHelper.savePreferencesAndSendToLegacyAddOn = function (data,onSuccess)
-{
-    browser.storage.local.set({settings: data}).then(function (){
-        //settings written sucesfully
-        AutoarchiveReloadedWeOptionHelper.sendCurrentPreferencesToLegacyAddOn(onSuccess);
-    },function (error){
-        //error while writing settings
-        //TODO: error? log
-        console.log(`Error: ${error}`);
-    })
 }

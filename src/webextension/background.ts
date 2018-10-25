@@ -17,4 +17,5 @@ Copyright 2018 Brummolix (AutoarchiveReloaded, https://github.com/Brummolix/Auto
     along with AutoarchiveReloaded.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-AutoarchiveReloadedWeOptionHelper.convertLegacyPreferences();
+let helper:AutoarchiveReloadedWeOptionHelper = new AutoarchiveReloadedWeOptionHelper();
+helper.convertLegacyPreferences();

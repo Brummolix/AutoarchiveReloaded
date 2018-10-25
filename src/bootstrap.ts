@@ -21,7 +21,7 @@ Copyright 2018 Brummolix (AutoarchiveReloaded, https://github.com/Brummolix/Auto
 
 Components.utils.import("resource://gre/modules/Services.jsm");
 
-function startup(data, reason) {
+function startup(data:any, reason:any):void {
 	console.log("AutoArchiveReloaded - startup");
 
     /// Bootstrap data structure @see https://developer.mozilla.org/en-US/docs/Extensions/Bootstrapped_extensions#Bootstrap_data
@@ -39,20 +39,18 @@ function startup(data, reason) {
 
 	Components.utils.import("chrome://autoarchiveReloaded/content/options.js");
 
-	var browserWebExtension;
 	if (data.webExtension)
 	{
-		data.webExtension.startup().then(api => {
+		data.webExtension.startup().then((api:any) => {
 			const {browser} = api;
-			browserWebExtension = browser;
-		    browser.runtime.onMessage.addListener((msg, sender, sendReply) => {
+		    browser.runtime.onMessage.addListener((msg:IBrowserMessage|IBrowserMessageSendCurrentSettings, sender:any, sendReply:any) => {
 				if (msg.id == "sendCurrentPreferencesToLegacyAddOn") //we get the current preferences at start and on every change of preferences
 				{
-					AutoarchiveReloadedOptions.settings = msg.data;
+					AutoarchiveReloadedOptions.settings = (msg as IBrowserMessageSendCurrentSettings).data;
 				}
 				else if (msg.id == "askForLegacyPreferences") //at startup we are asked for legacy preferences
 				{
-					var legacySettings = AutoarchiveReloadedOptions.getLegacyOptions();
+					let legacySettings = AutoarchiveReloadedOptions.getLegacyOptions();
 					sendReply(legacySettings); 
 					AutoarchiveReloadedOptions.markLegacySettingsAsMigrated();
 				}
@@ -69,7 +67,7 @@ function startup(data, reason) {
 	}
 }
 
-function initAutoArchiveReloadedOverlay()
+function initAutoArchiveReloadedOverlay():void
 {
 	Components.utils.import("chrome://autoarchiveReloaded/content/overlay.js");
 	Components.utils.import("chrome://autoarchiveReloaded/content/thunderbird-stdlib/RestartlessMenuItems.js");
@@ -93,11 +91,11 @@ function initAutoArchiveReloadedOverlay()
 	//toolbar button
 	//see https://gist.github.com/Noitidart/9467045
 	/*
-	var doc = document;
-	var toolbox = doc.querySelector('#navigator-toolbox');
+	let doc = document;
+	let toolbox = doc.querySelector('#navigator-toolbox');
 	
-	var buttonId = 'AutoArchiveReloaded_AutoarchiveNow_Button';
-	var button = doc.getElementById(buttonId);
+	let buttonId = 'AutoArchiveReloaded_AutoarchiveNow_Button';
+	let button = doc.getElementById(buttonId);
 	if (!button) 
 	{
 		button = doc.createElementNS('http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul', 'toolbarbutton');
@@ -113,7 +111,7 @@ function initAutoArchiveReloadedOverlay()
 		toolbox.palette.appendChild(button);
 	}			
 	//move button into last postion in nav-bar
-	var navBar = doc.querySelector('#nav-bar');
+	let navBar = doc.querySelector('#nav-bar');
 	navBar.insertItem(buttonId); //if you want it in first position in navBar do: navBar.insertItem(buttonId, navBar.firstChild);
 	navBar.removeChild(button);			
 	*/
@@ -122,7 +120,7 @@ function initAutoArchiveReloadedOverlay()
 	AutoarchiveReloadedOverlay.Global.startup();
 }
 
-function shutdown(data, reason) {
+function shutdown(data:any, reason:any):void {
     /// Bootstrap data structure @see https://developer.mozilla.org/en-US/docs/Extensions/Bootstrapped_extensions#Bootstrap_data
     ///   string id
     ///   string version
@@ -148,7 +146,7 @@ function shutdown(data, reason) {
 	Components.utils.unload("chrome://autoarchiveReloaded/content/options.js");
 }
 
-function install(data, reason) {
+function install(data:any, reason:any):void {
     /// Bootstrap data structure @see https://developer.mozilla.org/en-US/docs/Extensions/Bootstrapped_extensions#Bootstrap_data
     ///   string id
     ///   string version
@@ -163,7 +161,7 @@ function install(data, reason) {
 	console.log("AutoArchiveReloaded - install");
 }
 
-function uninstall(data, reason) {
+function uninstall(data:any, reason:any):void {
     /// Bootstrap data structure @see https://developer.mozilla.org/en-US/docs/Extensions/Bootstrapped_extensions#Bootstrap_data
     ///   string id
     ///   string version

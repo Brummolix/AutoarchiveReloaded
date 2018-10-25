@@ -1,12 +1,24 @@
 {
     "compilerOptions": {
+        //TODO: which version?
         "target": "es5",
+        //TODO: which one?
         "module": "commonjs",
         "sourceMap": true,
 
         "outDir": "./built/release",
         "allowJs": false,
-        "rootDir": "src"
+        "rootDir": "src",
+        
         //TODO: disable maps?
+        //sourceMap: false,
+
+        "strict": true,
+        "noImplicitReturns": true,
+        "noUnusedLocals": true,
+        //TODO: also in release?
+        "removeComments":false,
+
+        "forceConsistentCasingInFileNames":true
     }
 }
