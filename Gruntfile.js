@@ -5,6 +5,9 @@ module.exports = function(grunt) {
   let outDirExtracted = outDir + "/release/";
   let outXpi = outDir + "/AutoArchiveReloaded.xpi";
 
+  let srcDirShared = outDirExtracted + 'webextension/shared/';
+  let destDirShared = outDirExtracted + 'chrome/content/shared/';
+
     // Project configuration.
     grunt.initConfig({
       pkg: grunt.file.readJSON('package.json'),
@@ -14,6 +17,11 @@ module.exports = function(grunt) {
         main: {
           files: [
             {expand: true, cwd: srcDir, src: ['**','!**/*.ts'], dest: outDirExtracted},
+          ],
+        },
+        shared: {
+          files: [
+            {expand: true, cwd:srcDirShared, src: ['**'], dest: destDirShared},//cwd:srcDirShared,
           ],
         },
       },
@@ -33,7 +41,7 @@ module.exports = function(grunt) {
             {expand: true, cwd: outDirExtracted, src: ['**'], dest: '/'}, // makes all src relative to cwd
           ]
         }
-      }
+      },
     });
   
     grunt.loadNpmTasks('grunt-contrib-copy');
@@ -42,5 +50,5 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-contrib-compress');
 
     // Default task(s).
-    grunt.registerTask('default', ['clean','copy','ts','compress']);
+    grunt.registerTask('default', ['clean','copy','ts','copy:shared','compress']);
 };

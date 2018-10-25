@@ -48,53 +48,24 @@ class AutoarchiveReloadedWeOptionHelper
 
         browser.runtime.sendMessage(message).then((accounts:IAccountInfo[]) => {
             browser.storage.local.get("settings").then((result:any)  => {
-                console.log("loadCurrentSettings fine " + result.settings);
+                
                 //settings read succesfully...
-                let settings:ISettings = result.setting as ISettings;
-                //defaults
-                let defaultSettings = this.getDefaultSettings();
-                if (settings == undefined)
-                    settings = defaultSettings;
-                if (settings.globalSettings == undefined)
-                    settings.globalSettings = this.getDefaultGlobalSettings();
-                if (settings.globalSettings.archiveType == undefined)
-                    settings.globalSettings.archiveType = defaultSettings.globalSettings.archiveType;
-                if (settings.globalSettings.enableInfoLogging == undefined)
-                    settings.globalSettings.enableInfoLogging = defaultSettings.globalSettings.enableInfoLogging;
+                let oHandling:AutoarchiveReloadedOptionHandling = new AutoarchiveReloadedOptionHandling();
+                let settings:ISettings = oHandling.convertPartialSettings(result.settings);
 
-                //handle accounts
-                if (settings.accountSettings == undefined)
-                    settings.accountSettings = [];
-
-                //defaults
+                //every existing account should have a setting
                 accounts.forEach(account => {
-                    let accountSetting = this.findAccountSettingOrInfo(settings.accountSettings,account.accountId);
-                    if (accountSetting==null)
-                    {
-                        settings.accountSettings.push({
-                            accountId: account.accountId,
-                            bArchiveOther: false,
-                            daysOther: 360,
-                            bArchiveMarked: false,
-                            daysMarked: 360,
-                            bArchiveTagged: false,
-                            daysTagged: 360,
-                            bArchiveUnread: false,
-                            daysUnread: 360
-                        });
-                    }
-
-                    //TODO: a value could still be undefined (if we create a new one!)
+                    let accountSetting = settings.accountSettings[account.accountId];
+                    if (accountSetting==undefined)
+                        settings.accountSettings[account.accountId] = oHandling.getDefaultAccountSettings();
                 });
 
-                //remove setting of deleted accounts
-                for (let n:number=0;n<settings.accountSettings.length;n++)
+                //TODO: check if this works and gives the keys...
+                //no other account should be there
+                for (let accountId in settings.accountSettings)
                 {
-                    if (this.findAccountSettingOrInfo(accounts,settings.accountSettings[n].accountId) == null)
-                    {
-                        settings.accountSettings.splice(n, 1);
-                        n--;
-                    }
+                    if (this.findAccountInfo(accounts,accountId) == null)
+                        delete settings.accountSettings[accountId];
                 }
 
                 onSuccesfulDone(settings,accounts);
@@ -107,7 +78,7 @@ class AutoarchiveReloadedWeOptionHelper
         });
     }
 
-    findAccountSettingOrInfo<T extends IAccountSettings|IAccountInfo>(accountSettings:T[],id:string):T | null
+    findAccountInfo(accountSettings:IAccountInfo[],id:string):IAccountInfo | null
     {
         for (let accountSetting of accountSettings) 
         {
@@ -148,9 +119,9 @@ class AutoarchiveReloadedWeOptionHelper
         browser.runtime.sendMessage(message).then((reply:any) => {});
     }
 
-    savePreferencesAndSendToLegacyAddOn(data:ISettings,onSuccess:() => void):void
+    savePreferencesAndSendToLegacyAddOn(settings:ISettings,onSuccess:() => void):void
     {
-        browser.storage.local.set({settings: data}).then(() => {
+        browser.storage.local.set({settings: settings}).then(() => {
             //settings written sucesfully
             this.sendCurrentPreferencesToLegacyAddOn(onSuccess);
         },function (error:string){
@@ -159,21 +130,4 @@ class AutoarchiveReloadedWeOptionHelper
             console.log(`Error: ${error}`);
         });
     }
-    
-    getDefaultSettings():ISettings
-    {
-        return {
-            globalSettings:this.getDefaultGlobalSettings(),
-            accountSettings:[]
-        };
-    }
-
-    getDefaultGlobalSettings():IGlobalSettings
-    {
-        return {
-            archiveType: "manual",
-            enableInfoLogging: false
-        };
-    }
-
-}
+ }

@@ -25,15 +25,15 @@ function saveOptions():void
       archiveType: $("[name=archiveType]:checked").val() as ArchiveType,
       enableInfoLogging: (<HTMLInputElement>document.getElementById("enableInfoLogging")).checked
     },
-    accountSettings: []
+    accountSettings: {}
   };
 
   //fill the settings for all accounts
   $("#tabcontent").children().each(function(index) {
-    let accountId = $(this).data("accountId");
+    let accountId:string = $(this).data("accountId");
     if (accountId)
     {
-      settings.accountSettings.push({
+      settings.accountSettings[accountId] ={
         bArchiveUnread: (<HTMLInputElement>getElementForAccount(accountId, "archiveUnread")).checked,
         daysUnread: Number((<HTMLInputElement>getElementForAccount(accountId, "archiveUnreadDays")).value),
         bArchiveMarked: (<HTMLInputElement>getElementForAccount(accountId, "archiveStarred")).checked,
@@ -42,8 +42,7 @@ function saveOptions():void
         daysTagged: Number((<HTMLInputElement>getElementForAccount(accountId, "archiveTaggedDays")).value),
         bArchiveOther: (<HTMLInputElement>getElementForAccount(accountId, "archiveMessages")).checked,
         daysOther: Number((<HTMLInputElement>getElementForAccount(accountId, "archiveMessagesDays")).value),
-        accountId: accountId,
-      });
+      };
     }
   });
   
@@ -59,26 +58,28 @@ function restoreOptions()
     });
 
     //Für jeden Account die Einstellungen clonen und die gespeicherten Werte setzen
-    settings.accountSettings.forEach(accountSetting => {
-
+    //for (let [accountId, accountSetting] of settings.accountSettings)
+    for (let accountId in settings.accountSettings)
+    {
+      let accountSetting = settings.accountSettings[accountId];
       //TODO: as IAccountInfo ist nicht ganz sauber, wir "wissen", dass es nicht null sein kann...
-      let account:IAccountInfo = aaHelper.findAccountSettingOrInfo(accounts,accountSetting.accountId) as IAccountInfo;
+      let account:IAccountInfo = aaHelper.findAccountInfo(accounts,accountId as string) as IAccountInfo;
 
       cloneTemplate("§§ID§§-tab","tablist",account);
       cloneTemplate("accountContent-§§ID§§","tabcontent",account);
 
       //mark this element as account
-      getJQueryElementForAccount(accountSetting.accountId,"accountContent").data("accountId",accountSetting.accountId);
+      getJQueryElementForAccount(accountId,"accountContent").data("accountId",accountId);
 
-      (<HTMLInputElement>getElementForAccount(accountSetting.accountId, "archiveUnread")).checked = accountSetting.bArchiveUnread;
-      (<HTMLInputElement>getElementForAccount(accountSetting.accountId, "archiveUnreadDays")).value = accountSetting.daysUnread.toString();
-      (<HTMLInputElement>getElementForAccount(accountSetting.accountId, "archiveStarred")).checked = accountSetting.bArchiveMarked;
-      (<HTMLInputElement>getElementForAccount(accountSetting.accountId, "archiveStarredDays")).value = accountSetting.daysMarked.toString();
-      (<HTMLInputElement>getElementForAccount(accountSetting.accountId, "archiveTagged")).checked = accountSetting.bArchiveTagged;
-      (<HTMLInputElement>getElementForAccount(accountSetting.accountId, "archiveTaggedDays")).value = accountSetting.daysTagged.toString();
-      (<HTMLInputElement>getElementForAccount(accountSetting.accountId, "archiveMessages")).checked = accountSetting.bArchiveOther;
-      (<HTMLInputElement>getElementForAccount(accountSetting.accountId, "archiveMessagesDays")).value = accountSetting.daysOther.toString();
-    });
+      (<HTMLInputElement>getElementForAccount(accountId, "archiveUnread")).checked = accountSetting.bArchiveUnread;
+      (<HTMLInputElement>getElementForAccount(accountId, "archiveUnreadDays")).value = accountSetting.daysUnread.toString();
+      (<HTMLInputElement>getElementForAccount(accountId, "archiveStarred")).checked = accountSetting.bArchiveMarked;
+      (<HTMLInputElement>getElementForAccount(accountId, "archiveStarredDays")).value = accountSetting.daysMarked.toString();
+      (<HTMLInputElement>getElementForAccount(accountId, "archiveTagged")).checked = accountSetting.bArchiveTagged;
+      (<HTMLInputElement>getElementForAccount(accountId, "archiveTaggedDays")).value = accountSetting.daysTagged.toString();
+      (<HTMLInputElement>getElementForAccount(accountId, "archiveMessages")).checked = accountSetting.bArchiveOther;
+      (<HTMLInputElement>getElementForAccount(accountId, "archiveMessagesDays")).value = accountSetting.daysOther.toString();
+    };
   });
 }
 

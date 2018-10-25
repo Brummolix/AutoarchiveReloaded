@@ -87,7 +87,7 @@ namespace AutoarchiveReloadedOverlay
 		
 		static getLogLevelFromPref():LogLevel
 		{
-			if (AutoarchiveReloadedOptions.settings.globalSettings.enableInfoLogging)				
+			if (AutoarchiveReloaded.settings.globalSettings.enableInfoLogging)				
 				return LogLevel.LEVEL_INFO;
 			
 			return LogLevel.LEVEL_ERROR;
@@ -327,39 +327,39 @@ class SearchListener
 			//unread
 			if (!dbHdr.isRead)
 			{
-				if (!this.settings.bArchiveUnread)
+				if (!this.settings.accountSettings.bArchiveUnread)
 					return;
 					
 				other = false;
-				ageInDays = Math.max(ageInDays,this.settings.daysUnread);
+				ageInDays = Math.max(ageInDays,this.settings.accountSettings.daysUnread);
 			}
 
 			//marked (starred)
 			if (dbHdr.isFlagged)
 			{
-				if (!this.settings.bArchiveMarked)
+				if (!this.settings.accountSettings.bArchiveMarked)
 					return;
 					
 				other = false;
-				ageInDays = Math.max(ageInDays,this.settings.daysMarked);
+				ageInDays = Math.max(ageInDays,this.settings.accountSettings.daysMarked);
 			}
 				
 			//tagged
 			if (Helper.messageHasTags(dbHdr))
 			{
-				if (!this.settings.bArchiveTagged)
+				if (!this.settings.accountSettings.bArchiveTagged)
 					return;
 					
 				other = false;
-				ageInDays = Math.max(ageInDays,this.settings.daysTagged);
+				ageInDays = Math.max(ageInDays,this.settings.accountSettings.daysTagged);
 			}
 			
 			if (other)
 			{
-				if (!this.settings.bArchiveOther)
+				if (!this.settings.accountSettings.bArchiveOther)
 					return;
 				
-				ageInDays = Math.max(ageInDays,this.settings.daysOther);
+				ageInDays = Math.max(ageInDays,this.settings.accountSettings.daysOther);
 			}
 			
 			if (Helper.messageGetAgeInDays(dbHdr) <= ageInDays)
@@ -523,21 +523,26 @@ archiveAccounts():void
 		for (let account of this.accounts)
 		{
 			Logger.info("check account '" + account.incomingServer.prettyName + "'");
-			//ignore IRC accounts
-			if (account.incomingServer.localStoreType == "mailbox" || account.incomingServer.localStoreType == "imap" || account.incomingServer.localStoreType == "news")
+			if (AutoarchiveReloaded.isAccountArchivable(account))
 			{
-				let settings = new Settings(account);
-				if (settings.isArchivingSomething())
+				let accountSettings = AutoarchiveReloaded.settings.accountSettings[account.key];
+				if (accountSettings != undefined)
 				{
-					let inboxFolders:nsIMsgFolder[] = [];
-					Logger.info("getting folders to archive in account '" + account.incomingServer.prettyName + "'");
-					this.getFolders(account.incomingServer.rootFolder, inboxFolders);
-					foldersToArchive += inboxFolders.length;
-					for (let folder of inboxFolders)
-						this.archiveFolder(folder,settings);
+					let settings = new Settings(accountSettings,account.incomingServer.prettyName);
+					if (settings.isArchivingSomething())
+					{
+						let inboxFolders:nsIMsgFolder[] = [];
+						Logger.info("getting folders to archive in account '" + account.incomingServer.prettyName + "'");
+						this.getFolders(account.incomingServer.rootFolder, inboxFolders);
+						foldersToArchive += inboxFolders.length;
+						for (let folder of inboxFolders)
+							this.archiveFolder(folder,settings);
+					}
+					else
+						Logger.info("autoarchive disabled, ignore account '" + account.incomingServer.prettyName + "'");
 				}
 				else
-					Logger.info("autoarchive disabled, ignore account '" + account.incomingServer.prettyName + "'");
+					Logger.info("autoarchive disabled, ignore account '" + account.incomingServer.prettyName + "' because of missing settings");
 			}
 			else
 				Logger.info("ignore account '" + account.incomingServer.prettyName + "'");
@@ -591,7 +596,7 @@ enum States
 			this.status = States.READY_FOR_WORK;
 			Logger.info("ready for work");
 
-			if (AutoarchiveReloadedOptions.settings.globalSettings.archiveType=="startup")
+			if (AutoarchiveReloaded.settings.globalSettings.archiveType=="startup")
 			{
 				Logger.info("archive type at startup");
 				
@@ -664,74 +669,38 @@ enum States
 //-----------------------------------------------------------------------------------------------------	
 class Settings
 {
-	private account:nsIMsgAccount;
+	readonly accountSettings:IAccountSettings;
 
-	bArchiveOther:boolean;
-	daysOther:number;
-	bArchiveMarked:boolean;
-	daysMarked:number;
-	bArchiveTagged:boolean;
-	daysTagged:number;
-	bArchiveUnread:boolean;
-	daysUnread:number;
-
-	constructor(account:nsIMsgAccount)
+	constructor(accountSettings:IAccountSettings,accountName:string)
 	{
-		this.account = account;
-
-		try
-		{
-			let server = this.account.incomingServer;
-			//we take the same option names as the original extension
-			this.bArchiveOther = server.getBoolValue("archiveMessages");
-			this.daysOther = server.getIntValue("archiveMessagesDays");
-			this.bArchiveMarked = server.getBoolValue("archiveStarred");
-			this.daysMarked = server.getIntValue("archiveStarredDays");
-			this.bArchiveTagged = server.getBoolValue("archiveTagged");
-			this.daysTagged = server.getIntValue("archiveTaggedDays");
-			this.bArchiveUnread = server.getBoolValue("archiveUnread");
-			this.daysUnread = server.getIntValue("archiveUnreadDays");
-		}
-		catch (e)
-		{
-			Logger.errorException(e);
-			throw e;
-		}
-
-		this.log();
+		this.accountSettings = accountSettings;
+		this.log(accountName);
 	}
 
 	isArchivingSomething ():boolean
 	{
-		return (this.bArchiveOther || this.bArchiveMarked || this.bArchiveTagged || this.bArchiveUnread);
+		return (this.accountSettings.bArchiveOther || this.accountSettings.bArchiveMarked || this.accountSettings.bArchiveTagged || this.accountSettings.bArchiveUnread);
 	}
 
 	getMinAge():number
 	{
 		let minAge = Number.MAX_VALUE;
-		if (this.bArchiveOther)
-			minAge = Math.min(this.daysOther,minAge);
-		if (this.bArchiveMarked)
-			minAge = Math.min(this.daysMarked,minAge);
-		if (this.bArchiveTagged)
-			minAge = Math.min(this.daysTagged,minAge);
-		if (this.bArchiveUnread)
-			minAge = Math.min(this.daysUnread,minAge);
+		if (this.accountSettings.bArchiveOther)
+			minAge = Math.min(this.accountSettings.daysOther,minAge);
+		if (this.accountSettings.bArchiveMarked)
+			minAge = Math.min(this.accountSettings.daysMarked,minAge);
+		if (this.accountSettings.bArchiveTagged)
+			minAge = Math.min(this.accountSettings.daysTagged,minAge);
+		if (this.accountSettings.bArchiveUnread)
+			minAge = Math.min(this.accountSettings.daysUnread,minAge);
 			
 		return minAge;
 	}
 
-	private log()
+	private log(accountName:string)
 	{
-		Logger.info("Settings for '" + this.account.incomingServer.prettyName + "':");
-		Logger.info("- archive other " + this.bArchiveOther);
-		Logger.info("- days other " + this.daysOther);
-		Logger.info("- archive marked " + this.bArchiveMarked);
-		Logger.info("- days marked " + this.daysMarked);
-		Logger.info("- archive tagged " + this.bArchiveTagged);
-		Logger.info("- days tagged " + this.daysTagged);
-		Logger.info("- archive unread " + this.bArchiveUnread);
-		Logger.info("- days unread " + this.daysUnread);
+		Logger.info("Settings for '" + accountName + "':");
+		Logger.info(JSON.stringify(this.accountSettings));
 	};
 }
 

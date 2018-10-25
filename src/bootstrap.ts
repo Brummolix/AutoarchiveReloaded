@@ -46,13 +46,14 @@ function startup(data:any, reason:any):void {
 		    browser.runtime.onMessage.addListener((msg:IBrowserMessage|IBrowserMessageSendCurrentSettings, sender:any, sendReply:any) => {
 				if (msg.id == "sendCurrentPreferencesToLegacyAddOn") //we get the current preferences at start and on every change of preferences
 				{
-					AutoarchiveReloadedOptions.settings = (msg as IBrowserMessageSendCurrentSettings).data;
+					AutoarchiveReloaded.settings = (msg as IBrowserMessageSendCurrentSettings).data;
 				}
 				else if (msg.id == "askForLegacyPreferences") //at startup we are asked for legacy preferences
 				{
-					let legacySettings = AutoarchiveReloadedOptions.getLegacyOptions();
+					let legacyOptions:AutoarchiveReloaded.LegacyOptions = new AutoarchiveReloaded.LegacyOptions();
+					let legacySettings = legacyOptions.getLegacyOptions();
 					sendReply(legacySettings); 
-					AutoarchiveReloadedOptions.markLegacySettingsAsMigrated();
+					legacyOptions.markLegacySettingsAsMigrated();
 				}
 				else if (msg.id == "webExtensionStartupDone") //after startup we are informed and can go on
 				{
