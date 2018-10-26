@@ -61,7 +61,18 @@ function startup(data:any, reason:any):void {
 				}
 				else if (msg.id == "askForAccounts") //we will be asked for valid accounts which can be archived
 				{
-					sendReply([{accountId: "account1",accountName: "testaccount 1"},{accountId: "account3",accountName: "testaccount 3"}]);
+					let accounts:IAccountInfo[] = [];
+					AutoarchiveReloaded.AccountIterator.forEachAccount( (account:nsIMsgAccount,isAccountArchivable:boolean) => {
+						if (!isAccountArchivable)
+							return;
+						
+						accounts.push({
+							accountId: account.key,
+							accountName: account.incomingServer.prettyName
+						})
+					});
+					
+					sendReply(accounts);
 				}
 			});
 		});
