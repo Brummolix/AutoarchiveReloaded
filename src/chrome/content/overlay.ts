@@ -238,10 +238,10 @@ class SearchListener
     messages:nsIMsgDBHdr[] = [];
     folder:nsIMsgFolder;
     activity:ActivityManager;
-	settings:Settings;
+	settings:IAccountSettings;
 	onFolderArchivedEvent:() => void;
 
-	constructor(folder:nsIMsgFolder, activity:ActivityManager,settings:Settings,onFolderArchivedEvent:()=> void)
+	constructor(folder:nsIMsgFolder, activity:ActivityManager,settings:IAccountSettings,onFolderArchivedEvent:()=> void)
 	{
 		this.folder = folder;
 		this.activity = activity;
@@ -326,39 +326,39 @@ class SearchListener
 			//unread
 			if (!dbHdr.isRead)
 			{
-				if (!this.settings.accountSettings.bArchiveUnread)
+				if (!this.settings.bArchiveUnread)
 					return;
 					
 				other = false;
-				ageInDays = Math.max(ageInDays,this.settings.accountSettings.daysUnread);
+				ageInDays = Math.max(ageInDays,this.settings.daysUnread);
 			}
 
 			//marked (starred)
 			if (dbHdr.isFlagged)
 			{
-				if (!this.settings.accountSettings.bArchiveMarked)
+				if (!this.settings.bArchiveMarked)
 					return;
 					
 				other = false;
-				ageInDays = Math.max(ageInDays,this.settings.accountSettings.daysMarked);
+				ageInDays = Math.max(ageInDays,this.settings.daysMarked);
 			}
 				
 			//tagged
 			if (Helper.messageHasTags(dbHdr))
 			{
-				if (!this.settings.accountSettings.bArchiveTagged)
+				if (!this.settings.bArchiveTagged)
 					return;
 					
 				other = false;
-				ageInDays = Math.max(ageInDays,this.settings.accountSettings.daysTagged);
+				ageInDays = Math.max(ageInDays,this.settings.daysTagged);
 			}
 			
 			if (other)
 			{
-				if (!this.settings.accountSettings.bArchiveOther)
+				if (!this.settings.bArchiveOther)
 					return;
 				
-				ageInDays = Math.max(ageInDays,this.settings.accountSettings.daysOther);
+				ageInDays = Math.max(ageInDays,this.settings.daysOther);
 			}
 			
 			if (Helper.messageGetAgeInDays(dbHdr) <= ageInDays)
@@ -453,7 +453,7 @@ getFolders (folder:nsIMsgFolder, outInboxFolders:nsIMsgFolder[]):void
     }
 }
 
-archiveFolder(folder:nsIMsgFolder, settings:Settings):void
+archiveFolder(folder:nsIMsgFolder, settings:IAccountSettings):void
 {
 	try
 	{
@@ -470,7 +470,7 @@ archiveFolder(folder:nsIMsgFolder, settings:Settings):void
 		searchByAge.attrib = Ci.nsMsgSearchAttrib.AgeInDays;
 		let value = searchByAge.value;
 		value.attrib = Ci.nsMsgSearchAttrib.AgeInDays;
-		value.age = settings.getMinAge();
+		value.age = SettingsHelper.getMinAge(settings);
 		searchByAge.value = value;
 		searchByAge.op = Ci.nsMsgSearchOp.IsGreaterThan;
 		searchByAge.booleanAnd = true;
@@ -522,15 +522,15 @@ archiveAccounts():void
 			if (isAccountArchivable)
 			{
 				let accountSettings = AutoarchiveReloaded.settings.accountSettings[account.key];
-				let settings = new Settings(accountSettings,account.incomingServer.prettyName);
-				if (settings.isArchivingSomething())
+				SettingsHelper.log(account.incomingServer.prettyName,accountSettings);
+				if (SettingsHelper.isArchivingSomething(accountSettings))
 				{
 					let inboxFolders:nsIMsgFolder[] = [];
 					Logger.info("getting folders to archive in account '" + account.incomingServer.prettyName + "'");
 					this.getFolders(account.incomingServer.rootFolder, inboxFolders);
 					foldersToArchive += inboxFolders.length;
 					for (let folder of inboxFolders)
-						this.archiveFolder(folder,settings);
+						this.archiveFolder(folder,accountSettings);
 				}
 				else
 					Logger.info("autoarchive disabled, ignore account '" + account.incomingServer.prettyName + "'");
@@ -658,40 +658,32 @@ enum States
 	};
 
 //-----------------------------------------------------------------------------------------------------	
-class Settings
+export class SettingsHelper
 {
-	readonly accountSettings:IAccountSettings;
-
-	constructor(accountSettings:IAccountSettings,accountName:string)
+	static isArchivingSomething(accountSettings:IAccountSettings):boolean
 	{
-		this.accountSettings = accountSettings;
-		this.log(accountName);
+		return (accountSettings.bArchiveOther || accountSettings.bArchiveMarked || accountSettings.bArchiveTagged || accountSettings.bArchiveUnread);
 	}
 
-	isArchivingSomething ():boolean
-	{
-		return (this.accountSettings.bArchiveOther || this.accountSettings.bArchiveMarked || this.accountSettings.bArchiveTagged || this.accountSettings.bArchiveUnread);
-	}
-
-	getMinAge():number
+	static getMinAge(accountSettings:IAccountSettings):number
 	{
 		let minAge = Number.MAX_VALUE;
-		if (this.accountSettings.bArchiveOther)
-			minAge = Math.min(this.accountSettings.daysOther,minAge);
-		if (this.accountSettings.bArchiveMarked)
-			minAge = Math.min(this.accountSettings.daysMarked,minAge);
-		if (this.accountSettings.bArchiveTagged)
-			minAge = Math.min(this.accountSettings.daysTagged,minAge);
-		if (this.accountSettings.bArchiveUnread)
-			minAge = Math.min(this.accountSettings.daysUnread,minAge);
+		if (accountSettings.bArchiveOther)
+			minAge = Math.min(accountSettings.daysOther,minAge);
+		if (accountSettings.bArchiveMarked)
+			minAge = Math.min(accountSettings.daysMarked,minAge);
+		if (accountSettings.bArchiveTagged)
+			minAge = Math.min(accountSettings.daysTagged,minAge);
+		if (accountSettings.bArchiveUnread)
+			minAge = Math.min(accountSettings.daysUnread,minAge);
 			
 		return minAge;
 	}
 
-	private log(accountName:string)
+	static log(accountName:string,accountSettings:IAccountSettings)
 	{
 		Logger.info("Settings for '" + accountName + "':");
-		Logger.info(JSON.stringify(this.accountSettings));
+		Logger.info(JSON.stringify(accountSettings));
 	};
 }
 

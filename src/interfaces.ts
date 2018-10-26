@@ -18,6 +18,8 @@ interface IAccountSettings
     daysUnread: number
 }
 
+type AccountSettingsArray = { [key:string]:IAccountSettings; }
+
 interface ISettings
 {
     globalSettings:IGlobalSettings;
@@ -30,7 +32,7 @@ interface ISettings
     //accountSettings: TSMap<string,IAccountSettings>;
 
     //therefore we use a plain old object with an associative array
-    accountSettings : { [key:string]:IAccountSettings; }
+    accountSettings : AccountSettingsArray
 }
 
 interface IAccountInfo

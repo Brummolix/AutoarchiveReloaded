@@ -24,6 +24,7 @@ var EXPORTED_SYMBOLS = [
 namespace AutoarchiveReloaded
 {
     Components.utils.import("chrome://autoarchiveReloaded/content/shared/OptionHandling.js");
+    Components.utils.import("chrome://autoarchiveReloaded/content/overlay.js");
     Cu.import("resource:///modules/MailServices.jsm");
     Cu.import("resource:///modules/iteratorUtils.jsm");
 
@@ -37,10 +38,14 @@ namespace AutoarchiveReloaded
             if (prefBranch.getBoolPref("preferencesAlreadyMigrated",false))
                 return null;
 
-            //TODO: How to check if an account has ANY setting? Then we could also return null if there are no account and no global settings
-            //let aChildArray:object[] = prefBranch.getChildList("", {});
-            //if ((aChildArray.length==0) || (???))
-            //    return null;
+            let accountSettings:AccountSettingsArray = this.getLegacyAccountSettings();
+
+            //no account and no global settings?
+            let aChildArray:object[] = prefBranch.getChildList("", {});
+            var test = Object.getOwnPropertyNames(accountSettings);
+            console.log(test);
+            if ( (aChildArray.length==0) && Object.getOwnPropertyNames(accountSettings).length==0)
+                return null;
 
             //TODO: wieso kommt in meinem Profil als "archiveType" null raus? Das hätte doch ein Wert sein müssen
             //nochmal mit frisch konvertiertem Profil testen!
@@ -51,15 +56,23 @@ namespace AutoarchiveReloaded
                     enableInfoLogging: prefBranch.getBoolPref("enableInfoLogging",undefined)
                 },
 
-                accountSettings : { }
+                accountSettings : accountSettings
             };
+
+            
+            return legacySettings;
+        }
+
+        private getLegacyAccountSettings():AccountSettingsArray
+        {
+            let accountSettings:AccountSettingsArray = {}
 
             AutoarchiveReloaded.AccountIterator.forEachAccount( (account:nsIMsgAccount,isAccountArchivable:boolean) => {
                 if (!isAccountArchivable)
                     return;
  
                 let server:nsIMsgIncomingServer = account.incomingServer;
-                legacySettings.accountSettings[account.key] = {
+                let settings:IAccountSettings = {
                     bArchiveOther: server.getBoolValue("archiveMessages"),
                     daysOther: server.getIntValue("archiveMessagesDays"),
                     bArchiveMarked: server.getBoolValue("archiveStarred"),
@@ -69,9 +82,14 @@ namespace AutoarchiveReloaded
                     bArchiveUnread: server.getBoolValue("archiveUnread"),
                     daysUnread: server.getIntValue("archiveUnreadDays"),
                 }
+
+                //if nothing is archived (which was the default) we assume that the AddOn was not installed or at least not used
+                //therefore we ignore the settings then and the defaults will be used later on
+                if (AutoarchiveReloadedOverlay.SettingsHelper.isArchivingSomething(settings))
+                    accountSettings[account.key] = settings;
             });
 
-            return legacySettings;
+            return accountSettings;
         }
     
         markLegacySettingsAsMigrated():void

@@ -38,6 +38,7 @@ function startup(data:any, reason:any):void {
     ///   ADDON_DOWNGRADE
 
 	Components.utils.import("chrome://autoarchiveReloaded/content/options.js");
+	Components.utils.import("chrome://autoarchiveReloaded/content/overlay.js");
 
 	if (data.webExtension)
 	{
@@ -81,7 +82,6 @@ function startup(data:any, reason:any):void {
 
 function initAutoArchiveReloadedOverlay():void
 {
-	Components.utils.import("chrome://autoarchiveReloaded/content/overlay.js");
 	Components.utils.import("chrome://autoarchiveReloaded/content/thunderbird-stdlib/RestartlessMenuItems.js");
 
 	//menuitem
