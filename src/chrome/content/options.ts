@@ -47,8 +47,8 @@ namespace AutoarchiveReloaded
 
             let legacySettings:ISettings = {
                 globalSettings: {
-                    archiveType: prefBranch.getCharPref("archiveType","manual"),
-                    enableInfoLogging: prefBranch.getBoolPref("enableInfoLogging",false),
+                    archiveType: prefBranch.getCharPref("archiveType",undefined),
+                    enableInfoLogging: prefBranch.getBoolPref("enableInfoLogging",undefined)
                 },
 
                 accountSettings : { }
