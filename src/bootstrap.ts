@@ -85,7 +85,6 @@ function initAutoArchiveReloadedOverlay():void
 	Components.utils.import("chrome://autoarchiveReloaded/content/thunderbird-stdlib/RestartlessMenuItems.js");
 
 	//menuitem
-	//TODO: muss das eigentlich bei install gemacht werden oder bei startup?
 	RestartlessMenuItems.add({
 		label: AutoarchiveReloadedOverlay.StringBundle.GetStringFromName("menuArchive"),
 		id: "AutoArchiveReloaded_AutoarchiveNow",
