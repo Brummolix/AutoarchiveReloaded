@@ -56,15 +56,35 @@ class AutoarchiveReloadedOptionHandling
     convertPartialSettings(partialSettings:any):ISettings
     {
         let defaultSettings:ISettings = this.getDefaultSettings();
-        const concatedSettings:ISettings = {...defaultSettings, ...partialSettings};
+        const concatedSettings:ISettings = this.deepMerge(defaultSettings,partialSettings);
 
         //use defaultSettings for all accounts, too
         for (let accountId in concatedSettings.accountSettings)
         {
             let accountSetting = concatedSettings.accountSettings[accountId];
-            concatedSettings.accountSettings[accountId] = {...this.getDefaultAccountSettings(), ...accountSetting};
+            concatedSettings.accountSettings[accountId] = this.deepMerge(this.getDefaultAccountSettings(),accountSetting);
         };
 
         return concatedSettings;
     }
+
+    private deepMerge<T extends Object>(defaultValues:T,valuesToMerge:any):T
+    {
+        let clone:any = Object.assign({}, defaultValues);
+        for (let key in valuesToMerge)
+        {
+            let elem:any = valuesToMerge[key];
+            if ( (elem!==undefined) && (elem!==null) )
+            {
+                if (Object.getOwnPropertyNames(elem).length==0)
+                    clone[key] = elem;
+                else
+                    clone[key] = this.deepMerge(clone[key],elem);
+            }
+        }
+
+        return clone;
+        //return {...defaultValues as Object, ...v};
+    }
+
 }
