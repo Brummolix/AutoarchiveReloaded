@@ -30,7 +30,6 @@ Components.utils.import("resource://gre/modules/FileUtils.jsm");
 Components.utils.import("resource://gre/modules/NetUtil.jsm");
 Cu.import("resource://gre/modules/Timer.jsm");
 Cu.import("resource:///modules/iteratorUtils.jsm");
-Cu.import("resource:///modules/MailServices.jsm");
 Components.utils.import("chrome://autoarchiveReloaded/content/options.js");
 
 namespace AutoarchiveReloadedOverlay
@@ -402,14 +401,12 @@ class SearchListener
 class Autoarchiver
 {
 	//properties:
-	accounts:nsIMsgAccount[];
 	foldersToArchive:number = 0;
 	foldersArchived:number = 0;
 	onDoneEvent:()=>void;
 
 	constructor(onDoneEvent:()=>void)
 	{
-		this.accounts = fixIterator(MailServices.accounts.accounts, Ci.nsIMsgAccount);
 		this.onDoneEvent = onDoneEvent;
 	}
 
@@ -520,33 +517,27 @@ archiveAccounts():void
 		
 		let foldersToArchive = 0;
 		
-		for (let account of this.accounts)
-		{
+		AutoarchiveReloaded.AccountIterator.forEachAccount( (account:nsIMsgAccount,isAccountArchivable:boolean) => {
 			Logger.info("check account '" + account.incomingServer.prettyName + "'");
-			if (AutoarchiveReloaded.isAccountArchivable(account))
+			if (isAccountArchivable)
 			{
 				let accountSettings = AutoarchiveReloaded.settings.accountSettings[account.key];
-				if (accountSettings != undefined)
+				let settings = new Settings(accountSettings,account.incomingServer.prettyName);
+				if (settings.isArchivingSomething())
 				{
-					let settings = new Settings(accountSettings,account.incomingServer.prettyName);
-					if (settings.isArchivingSomething())
-					{
-						let inboxFolders:nsIMsgFolder[] = [];
-						Logger.info("getting folders to archive in account '" + account.incomingServer.prettyName + "'");
-						this.getFolders(account.incomingServer.rootFolder, inboxFolders);
-						foldersToArchive += inboxFolders.length;
-						for (let folder of inboxFolders)
-							this.archiveFolder(folder,settings);
-					}
-					else
-						Logger.info("autoarchive disabled, ignore account '" + account.incomingServer.prettyName + "'");
+					let inboxFolders:nsIMsgFolder[] = [];
+					Logger.info("getting folders to archive in account '" + account.incomingServer.prettyName + "'");
+					this.getFolders(account.incomingServer.rootFolder, inboxFolders);
+					foldersToArchive += inboxFolders.length;
+					for (let folder of inboxFolders)
+						this.archiveFolder(folder,settings);
 				}
 				else
-					Logger.info("autoarchive disabled, ignore account '" + account.incomingServer.prettyName + "' because of missing settings");
+					Logger.info("autoarchive disabled, ignore account '" + account.incomingServer.prettyName + "'");
 			}
 			else
 				Logger.info("ignore account '" + account.incomingServer.prettyName + "'");
-		}
+		});
 
 		this.checkForArchiveDone(foldersToArchive);
 	}
@@ -757,12 +748,10 @@ logAccountInfo():void
 {
 	try
 	{
-		let accounts:nsIMsgAccount[] = fixIterator(MailServices.accounts.accounts, Ci.nsIMsgAccount);
-		for (let account of accounts)
-		{
+		AutoarchiveReloaded.AccountIterator.forEachAccount( (account:nsIMsgAccount,isAccountArchivable:boolean) => {
 			Logger.info("Account Info: '" + account.incomingServer.prettyName + "'; type: " + 
 				account.incomingServer.type + "; localStoreType: " + account.incomingServer.localStoreType + "; " + account.incomingServer.serverURI);
-		}
+		});
 	}
     catch (e)
     {

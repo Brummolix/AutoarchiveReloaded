@@ -30,6 +30,7 @@ type nsIMsgFolder = any;
 type nsIActivityManager = any;
 type BatchMessageMover = any;
 type nsIMsgAccount = any;
+type nsIMsgIncomingServer = any;
 type nsIPromptService = any;
 type nsIXULAppInfo = any;
 type nsIStringBundle = any;

@@ -21,26 +21,29 @@ var EXPORTED_SYMBOLS = [
     'AutoarchiveReloaded'
 ]
 
-Components.utils.import("chrome://autoarchiveReloaded/content/shared/OptionHandling.js");
-
 namespace AutoarchiveReloaded
 {
+    Components.utils.import("chrome://autoarchiveReloaded/content/shared/OptionHandling.js");
+    Cu.import("resource:///modules/MailServices.jsm");
+    Cu.import("resource:///modules/iteratorUtils.jsm");
+
     export class LegacyOptions
     {
-        //return null if already migrated or no settings!
+        //returns null if already migrated or no settings!
         getLegacyOptions():ISettings | null
         {
             let prefBranch = this.getInternalLegacyPrefBranch();
             
-            let aChildArray:object[] = prefBranch.getChildList("", {});
-
-            //TODO: this test is not sufficient, even if no global options are available there could be account settings...
-            if (aChildArray.length==0)
-                return null;
-
             if (prefBranch.getBoolPref("preferencesAlreadyMigrated",false))
                 return null;
-            
+
+            //TODO: How to check if an account has ANY setting? Then we could also return null if there are no account and no global settings
+            //let aChildArray:object[] = prefBranch.getChildList("", {});
+            //if ((aChildArray.length==0) || (???))
+            //    return null;
+
+            //TODO: wieso kommt in meinem Profil als "archiveType" null raus? Das hätte doch ein Wert sein müssen
+            //nochmal mit frisch konvertiertem Profil testen!
 
             let legacySettings:ISettings = {
                 globalSettings: {
@@ -51,49 +54,26 @@ namespace AutoarchiveReloaded
                 accountSettings : { }
             };
 
-            //TODO: get real data
-
-            /*
-           	private account:nsIMsgAccount;
-
-			let server = this.account.incomingServer;
-			//we take the same option names as the original extension
-			this.bArchiveOther = server.getBoolValue("archiveMessages");
-			this.daysOther = server.getIntValue("archiveMessagesDays");
-			this.bArchiveMarked = server.getBoolValue("archiveStarred");
-			this.daysMarked = server.getIntValue("archiveStarredDays");
-			this.bArchiveTagged = server.getBoolValue("archiveTagged");
-			this.daysTagged = server.getIntValue("archiveTaggedDays");
-			this.bArchiveUnread = server.getBoolValue("archiveUnread");
-			this.daysUnread = server.getIntValue("archiveUnreadDays");
-            */
-
-            let accountSetting:IAccountSettings = {
-                bArchiveOther: true,
-                daysOther: 0,
-                bArchiveMarked: true,
-                daysMarked: 40,
-                bArchiveTagged: true,
-                daysTagged: 50,
-                bArchiveUnread: true,
-                daysUnread: 60
-            };
-            legacySettings.accountSettings["account1"] = accountSetting;
-            let accountSetting2:IAccountSettings = {
-                bArchiveOther: false,
-                daysOther: 70,
-                bArchiveMarked: false,
-                daysMarked: 80,
-                bArchiveTagged: false,
-                daysTagged: 90,
-                bArchiveUnread: false,
-                daysUnread: 100
-            };
-            legacySettings.accountSettings["account2"] = accountSetting2;
+            AutoarchiveReloaded.AccountIterator.forEachAccount( (account:nsIMsgAccount,isAccountArchivable:boolean) => {
+                if (!isAccountArchivable)
+                    return;
+ 
+                let server:nsIMsgIncomingServer = account.incomingServer;
+                legacySettings.accountSettings[account.key] = {
+                    bArchiveOther: server.getBoolValue("archiveMessages"),
+                    daysOther: server.getIntValue("archiveMessagesDays"),
+                    bArchiveMarked: server.getBoolValue("archiveStarred"),
+                    daysMarked: server.getIntValue("archiveStarredDays"),
+                    bArchiveTagged: server.getBoolValue("archiveTagged"),
+                    daysTagged: server.getIntValue("archiveTaggedDays"),
+                    bArchiveUnread: server.getBoolValue("archiveUnread"),
+                    daysUnread: server.getIntValue("archiveUnreadDays"),
+                }
+            });
 
             return legacySettings;
         }
-
+    
         markLegacySettingsAsMigrated():void
         {
             this.getInternalLegacyPrefBranch().setBoolPref("preferencesAlreadyMigrated", true);
@@ -106,11 +86,23 @@ namespace AutoarchiveReloaded
         };
     }
 
-    //TODO: why is this inside options?
-    export function isAccountArchivable(account:nsIMsgAccount):boolean
+    //TODO: why is this inside options.ts? Rename file? Or put everything into overlay.js again?
+    export class AccountIterator
     {
-		//ignore IRC accounts
-		return (account.incomingServer.localStoreType == "mailbox" || account.incomingServer.localStoreType == "imap" || account.incomingServer.localStoreType == "news");
+        private static isAccountArchivable(account:nsIMsgAccount):boolean
+        {
+            //ignore IRC accounts
+            return (account.incomingServer.localStoreType == "mailbox" || account.incomingServer.localStoreType == "imap" || account.incomingServer.localStoreType == "news");
+        }
+
+        static forEachAccount(forEachDo:(account:nsIMsgAccount,isAccountArchivable:boolean)=>void):void
+        {
+            let accounts:nsIMsgAccount[] = fixIterator(MailServices.accounts.accounts, Ci.nsIMsgAccount);
+            for (let account of accounts)
+            {
+                forEachDo(account,this.isAccountArchivable(account));
+            }
+        }
     }
 
     //TODO: does it work without AutoarchiveReloadedOptions || ??? Or is it created new for every one who includes it then?
