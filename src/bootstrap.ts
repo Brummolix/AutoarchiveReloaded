@@ -17,8 +17,6 @@ Copyright 2018 Brummolix (AutoarchiveReloaded, https://github.com/Brummolix/Auto
     along with AutoarchiveReloaded.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-"use strict";
-
 Components.utils.import("resource://gre/modules/Services.jsm");
 
 function startup(data:any, reason:any):void {
