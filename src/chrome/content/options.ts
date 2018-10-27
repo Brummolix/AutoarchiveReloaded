@@ -41,8 +41,6 @@ namespace AutoarchiveReloaded
 
             //no account and no global settings?
             let aChildArray:object[] = prefBranch.getChildList("", {});
-            var test = Object.getOwnPropertyNames(accountSettings);
-            console.log(test);
             if ( (aChildArray.length==0) && Object.keys(accountSettings).length==0)
                 return null;
 
