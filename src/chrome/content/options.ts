@@ -43,7 +43,7 @@ namespace AutoarchiveReloaded
             let aChildArray:object[] = prefBranch.getChildList("", {});
             var test = Object.getOwnPropertyNames(accountSettings);
             console.log(test);
-            if ( (aChildArray.length==0) && Object.getOwnPropertyNames(accountSettings).length==0)
+            if ( (aChildArray.length==0) && Object.keys(accountSettings).length==0)
                 return null;
 
             //TODO: wieso kommt in meinem Profil als "archiveType" null raus? Das hätte doch ein Wert sein müssen
