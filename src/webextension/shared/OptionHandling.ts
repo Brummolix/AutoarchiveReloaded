@@ -84,7 +84,5 @@ class AutoarchiveReloadedOptionHandling
         }
 
         return clone;
-        //return {...defaultValues as Object, ...v};
     }
-
 }
