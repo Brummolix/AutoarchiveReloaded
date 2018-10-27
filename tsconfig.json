@@ -13,7 +13,7 @@
         "strict": true,
         "noImplicitReturns": true,
         "noUnusedLocals": true,
-        //TODO: also in release?
+        //only for debug release
         "removeComments":false,
 
         "forceConsistentCasingInFileNames":true

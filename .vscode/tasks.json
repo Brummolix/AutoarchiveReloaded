@@ -18,7 +18,16 @@
                 "kind": "build",
                 "isDefault": true
             },
-            "problemMatcher": ["$tsc"]
+            "problemMatcher": [
+                "$tsc"
+            ]
+        },
+        {
+            "type": "grunt",
+            "task": "release",
+            "problemMatcher": [
+                "$tsc"
+            ]
         }
     ]
 }

@@ -29,6 +29,9 @@ module.exports = function(grunt) {
         default : {
           tsconfig: './tsconfig.json'
         },
+        release: {
+          tsconfig: './tsconfig.release.json'
+        }
       },
       // make a zipfile
       compress: {
@@ -50,5 +53,6 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-contrib-compress');
 
     // Default task(s).
-    grunt.registerTask('default', ['clean','copy','ts',/*'copy:shared',*/'compress']);
+    grunt.registerTask('default', ['clean','copy','ts:default',/*'copy:shared',*/'compress']);
+    grunt.registerTask('release', ['clean','copy','ts:release',/*'copy:shared',*/'compress']);
 };
