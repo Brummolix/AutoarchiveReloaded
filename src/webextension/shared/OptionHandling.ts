@@ -70,14 +70,18 @@ class AutoarchiveReloadedOptionHandling
 
     private deepMerge<T extends Object>(defaultValues:T,valuesToMerge:any):T
     {
+        if (valuesToMerge===undefined || valuesToMerge===null)
+            return defaultValues;
+
         let clone:any = Object.assign({}, defaultValues);
         for (let key in valuesToMerge)
         {
             let elem:any = valuesToMerge[key];
             if ( (elem!==undefined) && (elem!==null) )
             {
-                if (Object.getOwnPropertyNames(elem).length==0)
-                    clone[key] = elem;
+                //do not use Object.keys here, as TB 64 gives keys also for strings and even numbers
+                if (typeof elem != "object")
+                    clone[key] = elem; 
                 else
                     clone[key] = this.deepMerge(clone[key],elem);
             }
