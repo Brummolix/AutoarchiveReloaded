@@ -50,5 +50,5 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-contrib-compress');
 
     // Default task(s).
-    grunt.registerTask('default', ['clean','copy','ts','copy:shared','compress']);
+    grunt.registerTask('default', ['clean','copy','ts',/*'copy:shared',*/'compress']);
 };
