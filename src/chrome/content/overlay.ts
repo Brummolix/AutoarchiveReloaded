@@ -492,11 +492,9 @@ archiveFolder(folder:nsIMsgFolder, settings:IAccountSettings):void
 		let activity = new ActivityManager(folder);
 		activity.start();
 		
-		//TODO: durch => Ausdruck ersetzen, dann kann thisforEvent weg...
-		let thisForEvent = this;
-		searchSession.registerListener(new SearchListener(folder, activity,settings,function ()
+		searchSession.registerListener(new SearchListener(folder, activity,settings,() => 
 		{
-			thisForEvent.foldersArchived++;
+			this.foldersArchived++;
 		}));
 		searchSession.search(null);
 	}
