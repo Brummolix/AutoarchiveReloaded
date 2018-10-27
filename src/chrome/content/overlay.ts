@@ -558,7 +558,6 @@ checkForArchiveDone(foldersToArchive:number):void
 	}
 	else
 	{
-		//TODO: bind?
 		setTimeout(this.checkForArchiveDone.bind(this,foldersToArchive), 500);
 	}
 }
@@ -592,11 +591,9 @@ enum States
 				Logger.info("archive type at startup");
 				
 				//wait some time to give TB time to connect and everything
-				//TODO: bind?
 				setTimeout(this.onDoArchiveAutomatic.bind(this), 9000);
 				
 				//repeat after one day (if someone has open Thunderbird all the time)
-				//TODO: bind?
 				setInterval(this.onDoArchiveAutomatic.bind(this), 86400000);
 			}
 			else
@@ -610,7 +607,6 @@ enum States
 			{
 				Logger.info("automatic archive busy, wait");
 				//busy: wait 5 seconds
-				//TODO: bind?
 				setTimeout(this.onDoArchiveAutomatic.bind(this), 5000);
 			}
 			else
@@ -621,7 +617,6 @@ enum States
 		{
 			Logger.info("start archiving");
 			this.status = States.IN_PROGRESS;
-			//TODO: bind?
 			let autoarchiveReloaded = new Autoarchiver(this.onArchiveDone.bind(this));
 			autoarchiveReloaded.archiveAccounts();
 		}

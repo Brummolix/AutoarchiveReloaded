@@ -60,7 +60,6 @@ class AutoarchiveReloadedWeOptionHelper
                         settings.accountSettings[account.accountId] = oHandling.getDefaultAccountSettings();
                 });
 
-                //TODO: check if this works and gives the keys...
                 //no other account should be there
                 for (let accountId in settings.accountSettings)
                 {

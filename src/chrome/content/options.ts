@@ -120,8 +120,5 @@ namespace AutoarchiveReloaded
         }
     }
 
-    //TODO: does it work without AutoarchiveReloadedOptions || ??? Or is it created new for every one who includes it then?
-    //AutoarchiveReloadedOptions || new AutoarchiveReloadedOptionsClass();
-    //-> debug and see if the settings are there in overlay.ts
     export var settings:ISettings;
 }
