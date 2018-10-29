@@ -69,6 +69,10 @@ function initAutoArchiveReloadedOverlay():void
 {
 	Components.utils.import("chrome://autoarchiveReloaded/content/thunderbird-stdlib/RestartlessMenuItems.js");
 
+	//TODO: after start of TB the menu is not there!
+	//if we deactivate/activate it, it is there?
+	//-> debug/log
+
 	//menuitem
 	RestartlessMenuItems.add({
 		label: AutoarchiveReloadedOverlay.StringBundle.GetStringFromName("menuArchive"),

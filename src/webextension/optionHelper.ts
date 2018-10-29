@@ -120,6 +120,8 @@ class AutoarchiveReloadedWeOptionHelper
 
     savePreferencesAndSendToLegacyAddOn(settings:ISettings,onSuccess:() => void):void
     {
+        //TODO: sometimes we get "Error: WebExtension context not found!"
+        //why?
         browser.storage.local.set({settings: settings}).then(() => {
             //settings written sucesfully
             this.sendCurrentPreferencesToLegacyAddOn(onSuccess);
