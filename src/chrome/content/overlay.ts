@@ -34,7 +34,7 @@ namespace AutoarchiveReloadedOverlay
 {
 
 	//singleton class for getting string resources
-	export const StringBundle:nsIStringBundle = Cc["@mozilla.org/intl/stringbundle;1"].getService(Ci.nsIStringBundleService)
+	export const StringBundle:Ci.nsIStringBundle = Cc["@mozilla.org/intl/stringbundle;1"].getService(Ci.nsIStringBundleService)
     	.createBundle("chrome://autoarchiveReloaded/locale/autoarchive.properties");
 
 	//-------------------------------------------------------------------------------------
@@ -49,18 +49,18 @@ namespace AutoarchiveReloadedOverlay
         }
 		
 		//don't call this getPromptService because Mozillas automatic extension checker warns (wrong) about it
-		static getThePromptService():nsIPromptService
+		static getThePromptService():Ci.nsIPromptService
 		{
 			return Components.classes["@mozilla.org/embedcomp/prompt-service;1"].getService(Components.interfaces.nsIPromptService);
 		}
 		
-		static messageHasTags(msgDbHeader:nsIMsgDBHdr):boolean
+		static messageHasTags(msgDbHeader:Ci.nsIMsgDBHdr):boolean
 		{
 			let tags = msgHdrGetTags(msgDbHeader);
 			return (tags && tags.length>0);
 		}
 		
-		static messageGetAgeInDays (msgDbHeader:nsIMsgDBHdr):number
+		static messageGetAgeInDays (msgDbHeader:Ci.nsIMsgDBHdr):number
 		{
 			let now = new Date();
 			let ageInSeconds = (now.getTime()/1000) - msgDbHeader.dateInSeconds;
@@ -80,7 +80,7 @@ namespace AutoarchiveReloadedOverlay
 	class Logger
     {
 		//private
-		private static consoleService:nsIConsoleService = Components.classes["@mozilla.org/consoleservice;1"].getService(Components.interfaces.nsIConsoleService);
+		private static consoleService:Ci.nsIConsoleService = Components.classes["@mozilla.org/consoleservice;1"].getService(Ci.nsIConsoleService);
 		
 		static getLogLevelFromPref():LogLevel
 		{
@@ -100,12 +100,12 @@ namespace AutoarchiveReloadedOverlay
 			this.log(LogLevel.LEVEL_ERROR,str);
 		}
 
-		static errorException(e:any):void
+		static errorException(e:ThunderbirdError):void
 		{
 			this.error(this.getExceptionInfo(e));
 		}
 		
-		static getExceptionInfo(e:any):string
+		static getExceptionInfo(e:ThunderbirdError):string
 		{
 			return e + "; Source: '" + e.fileName + "'; Line: " + e.lineNumber + "; code: " + e.toSource() + "; stack: " + e.stack;
 		}
@@ -162,18 +162,14 @@ namespace AutoarchiveReloadedOverlay
 //for managing the activities in activity view
 class ActivityManager
 {
-	folder:nsIMsgFolder;
-	startProcess:nsIActivityProcess;
+	folder:Ci.nsIMsgFolder;
+	startProcess:Ci.nsIActivityProcess;
 
-	constructor (folder:nsIMsgFolder)
-	{
-		this.folder = folder;
-	}
-
-	start():void
+	constructor (folder:Ci.nsIMsgFolder)
 	{
 		try
 		{
+			this.folder = folder;
 			let activityManager = this.getActivityManager();
 			this.startProcess = Components.classes["@mozilla.org/activity-process;1"].createInstance(Components.interfaces.nsIActivityProcess);
 
@@ -222,7 +218,7 @@ class ActivityManager
 		}
 	}
 
-	getActivityManager():nsIActivityManager
+	getActivityManager():Ci.nsIActivityManager
 	{
 		return Components.classes["@mozilla.org/activity-manager;1"].getService(Components.interfaces.nsIActivityManager);
 	}
@@ -233,13 +229,13 @@ class ActivityManager
 //for collecting the searched mails and start real archiving
 class SearchListener
 {
-    messages:nsIMsgDBHdr[] = [];
-    folder:nsIMsgFolder;
+    messages:Ci.nsIMsgDBHdr[] = [];
+    folder:Ci.nsIMsgFolder;
     activity:ActivityManager;
 	settings:IAccountSettings;
 	onFolderArchivedEvent:() => void;
 
-	constructor(folder:nsIMsgFolder, activity:ActivityManager,settings:IAccountSettings,onFolderArchivedEvent:()=> void)
+	constructor(folder:Ci.nsIMsgFolder, activity:ActivityManager,settings:IAccountSettings,onFolderArchivedEvent:()=> void)
 	{
 		this.folder = folder;
 		this.activity = activity;
@@ -268,7 +264,7 @@ class SearchListener
 				}
 			}
 			
-			let batchMover:BatchMessageMover = new mail3PaneWindow.BatchMessageMover();
+			let batchMover:Ci.BatchMessageMover = new mail3PaneWindow.BatchMessageMover();
 		
 			//There are several issues with "this.view.dbView is null" inside "chrome://messenger/content/folderDisplay.js", 1359
 			//see https://github.com/Brummolix/AutoarchiveReloaded/issues/1
@@ -313,7 +309,7 @@ class SearchListener
 	}
 
 	//collect all messages
-	onSearchHit(dbHdr:nsIMsgDBHdr, folder:nsIMsgFolder):void
+	onSearchHit(dbHdr:Ci.nsIMsgDBHdr, folder:Ci.nsIMsgFolder):void
 	{
 		try
 		{
@@ -378,7 +374,7 @@ class SearchListener
 	}
 
 	//after the search was done, archive all messages
-	onSearchDone (status:any):void
+	onSearchDone (status:number):void
 	{
 		Logger.info("message search done for '" + this.folder.name + "' in account '" + this.folder.server.prettyName + "' -> " + this.messages.length + " messages found to archive");
 		let result = 0;
@@ -410,7 +406,7 @@ class Autoarchiver
 
 //determine all folders (recursive, starting with param folder), which we want to archive
 //write output to inboxFolders array
-getFolders (folder:nsIMsgFolder, outInboxFolders:nsIMsgFolder[]):void
+getFolders (folder:Ci.nsIMsgFolder, outInboxFolders:Ci.nsIMsgFolder[]):void
 {
     try
     {
@@ -451,13 +447,13 @@ getFolders (folder:nsIMsgFolder, outInboxFolders:nsIMsgFolder[]):void
     }
 }
 
-archiveFolder(folder:nsIMsgFolder, settings:IAccountSettings):void
+archiveFolder(folder:Ci.nsIMsgFolder, settings:IAccountSettings):void
 {
 	try
 	{
 		Logger.info("start searching messages to archive in folder '" + folder.name + "' in account '" + folder.server.prettyName + "'");
 		//build a search for the messages to archive
-		let searchSession = Cc["@mozilla.org/messenger/searchSession;1"].createInstance(Ci.nsIMsgSearchSession);
+		let searchSession:Ci.nsIMsgSearchSession = Cc["@mozilla.org/messenger/searchSession;1"].createInstance(Ci.nsIMsgSearchSession);
 		searchSession.addScopeTerm(Ci.nsMsgSearchScope.offlineMail, folder);
 
 		//attention: the strange value copy syntax is needed!
@@ -488,7 +484,6 @@ archiveFolder(folder:nsIMsgFolder, settings:IAccountSettings):void
 		//the other search parameters will be done in the listener itself, we can not create such a search
 		//also the real archiving is done on the SearchListener...
 		let activity = new ActivityManager(folder);
-		activity.start();
 		
 		searchSession.registerListener(new SearchListener(folder, activity,settings,() => 
 		{
@@ -513,7 +508,7 @@ archiveAccounts():void
 		
 		let foldersToArchive = 0;
 		
-		AutoarchiveReloaded.AccountIterator.forEachAccount( (account:nsIMsgAccount,isAccountArchivable:boolean) => {
+		AutoarchiveReloaded.AccountIterator.forEachAccount( (account:Ci.nsIMsgAccount,isAccountArchivable:boolean) => {
 			Logger.info("check account '" + account.incomingServer.prettyName + "'");
 			if (isAccountArchivable)
 			{
@@ -521,7 +516,7 @@ archiveAccounts():void
 				SettingsHelper.log(account.incomingServer.prettyName,accountSettings);
 				if (SettingsHelper.isArchivingSomething(accountSettings))
 				{
-					let inboxFolders:nsIMsgFolder[] = [];
+					let inboxFolders:Ci.nsIMsgFolder[] = [];
 					Logger.info("getting folders to archive in account '" + account.incomingServer.prettyName + "'");
 					this.getFolders(account.incomingServer.rootFolder, inboxFolders);
 					foldersToArchive += inboxFolders.length;
@@ -693,7 +688,7 @@ logAppInfo():void
 {
 	try
 	{
-		let appInfo:nsIXULAppInfo = Components.classes["@mozilla.org/xre/app-info;1"].getService(Components.interfaces.nsIXULAppInfo);
+		let appInfo:Ci.nsIXULAppInfo = Components.classes["@mozilla.org/xre/app-info;1"].getService(Components.interfaces.nsIXULAppInfo);
 		
 		//the new extension system does not provide a window > use mail3pane instead
 		let window = Helper.getMail3Pane();
@@ -712,7 +707,7 @@ logAddonInfo():void
 {
 	try
 	{
-		AddonManager.getAllAddons(function(addons:any[]){
+		AddonManager.getAllAddons(function(addons:Addon[]){
 			for (let n=0;n<addons.length;n++)
 			{
 				let addon = addons[n];
@@ -731,7 +726,7 @@ logAccountInfo():void
 {
 	try
 	{
-		AutoarchiveReloaded.AccountIterator.forEachAccount( (account:nsIMsgAccount,isAccountArchivable:boolean) => {
+		AutoarchiveReloaded.AccountIterator.forEachAccount( (account:Ci.nsIMsgAccount,isAccountArchivable:boolean) => {
 			Logger.info("Account Info: '" + account.incomingServer.prettyName + "'; type: " + 
 				account.incomingServer.type + "; localStoreType: " + account.incomingServer.localStoreType + "; " + account.incomingServer.serverURI);
 		});

@@ -53,7 +53,7 @@ class AutoarchiveReloadedOptionHandling
         };
     }
 
-    convertPartialSettings(partialSettings:any):ISettings
+    convertPartialSettings(partialSettings:{ [key:string]:any; }):ISettings
     {
         let defaultSettings:ISettings = this.getDefaultSettings();
         const concatedSettings:ISettings = this.deepMerge(defaultSettings,partialSettings);
@@ -68,12 +68,12 @@ class AutoarchiveReloadedOptionHandling
         return concatedSettings;
     }
 
-    private deepMerge<T extends Object>(defaultValues:T,valuesToMerge:any):T
+    private deepMerge<T extends { [key:string]:any; }>(defaultValues:T,valuesToMerge:{ [key:string]:any; }):T
     {
         if (valuesToMerge===undefined || valuesToMerge===null)
             return defaultValues;
 
-        let clone:any = Object.assign({}, defaultValues);
+        let clone:T = Object.assign({}, defaultValues);
         for (let key in valuesToMerge)
         {
             let elem:any = valuesToMerge[key];

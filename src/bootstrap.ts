@@ -19,30 +19,17 @@ Copyright 2018 Brummolix (AutoarchiveReloaded, https://github.com/Brummolix/Auto
 
 Components.utils.import("resource://gre/modules/Services.jsm");
 
-function startup(data:any, reason:any):void {
+function startup(data:BootstrapData, reason:BootstrapReasons):void {
 	console.log("AutoArchiveReloaded - startup");
-
-    /// Bootstrap data structure @see https://developer.mozilla.org/en-US/docs/Extensions/Bootstrapped_extensions#Bootstrap_data
-    ///   string id
-    ///   string version
-    ///   nsIFile installPath
-    ///   nsIURI resourceURI
-    /// 
-    /// Reason types:
-    ///   APP_STARTUP
-    ///   ADDON_ENABLE
-    ///   ADDON_INSTALL
-    ///   ADDON_UPGRADE
-    ///   ADDON_DOWNGRADE
 
 	Components.utils.import("chrome://autoarchiveReloaded/content/options.js");
 	Components.utils.import("chrome://autoarchiveReloaded/content/overlay.js");
 
 	if (data.webExtension)
 	{
-		data.webExtension.startup().then((api:any) => {
-			const {browser} = api;
-		    browser.runtime.onMessage.addListener((msg:IBrowserMessage|IBrowserMessageSendCurrentSettings, sender:any, sendReply:any) => {
+		data.webExtension.startup().then((api:StartupWebextensionApi) => {
+			const browser = api.browser;
+		    browser.runtime.onMessage.addListener( (msg:IBrowserMessage|IBrowserMessageSendCurrentSettings, sender:RuntimeMessageSender, sendReply:(response:Object|null) => void) => {
 				if (msg.id == "sendCurrentPreferencesToLegacyAddOn") //we get the current preferences at start and on every change of preferences
 				{
 					AutoarchiveReloaded.settings = (msg as IBrowserMessageSendCurrentSettings).data;
@@ -61,7 +48,7 @@ function startup(data:any, reason:any):void {
 				else if (msg.id == "askForAccounts") //we will be asked for valid accounts which can be archived
 				{
 					let accounts:IAccountInfo[] = [];
-					AutoarchiveReloaded.AccountIterator.forEachAccount( (account:nsIMsgAccount,isAccountArchivable:boolean) => {
+					AutoarchiveReloaded.AccountIterator.forEachAccount( (account:Ci.nsIMsgAccount,isAccountArchivable:boolean) => {
 						if (!isAccountArchivable)
 							return;
 						
@@ -86,11 +73,11 @@ function initAutoArchiveReloadedOverlay():void
 	RestartlessMenuItems.add({
 		label: AutoarchiveReloadedOverlay.StringBundle.GetStringFromName("menuArchive"),
 		id: "AutoArchiveReloaded_AutoarchiveNow",
-		onCommand: function () 
+		onCommand: function ():void
 		{
 			AutoarchiveReloadedOverlay.Global.onArchiveManually();
 		},
-		onUnload: function () {}
+		onUnload: function ():void {},
 	});
 
 	//TODO: Toolbar in alle Windows einhängen...
@@ -129,19 +116,7 @@ function initAutoArchiveReloadedOverlay():void
 	AutoarchiveReloadedOverlay.Global.startup();
 }
 
-function shutdown(data:any, reason:any):void {
-    /// Bootstrap data structure @see https://developer.mozilla.org/en-US/docs/Extensions/Bootstrapped_extensions#Bootstrap_data
-    ///   string id
-    ///   string version
-    ///   nsIFile installPath
-    ///   nsIURI resourceURI
-    /// 
-    /// Reason types:
-    ///   APP_SHUTDOWN
-    ///   ADDON_DISABLE
-    ///   ADDON_UNINSTALL
-    ///   ADDON_UPGRADE
-	///   ADDON_DOWNGRADE
+function shutdown(data:BootstrapData, reason:BootstrapReasons):void {
 
 	console.log("AutoArchiveReloaded - shutdown");
 
@@ -155,32 +130,10 @@ function shutdown(data:any, reason:any):void {
 	Components.utils.unload("chrome://autoarchiveReloaded/content/options.js");
 }
 
-function install(data:any, reason:any):void {
-    /// Bootstrap data structure @see https://developer.mozilla.org/en-US/docs/Extensions/Bootstrapped_extensions#Bootstrap_data
-    ///   string id
-    ///   string version
-    ///   nsIFile installPath
-    ///   nsIURI resourceURI
-    /// 
-    /// Reason types:
-    ///   ADDON_INSTALL
-    ///   ADDON_UPGRADE
-    ///   ADDON_DOWNGRADE
-	
+function install(data:BootstrapData, reason:BootstrapReasons):void {
 	console.log("AutoArchiveReloaded - install");
 }
 
-function uninstall(data:any, reason:any):void {
-    /// Bootstrap data structure @see https://developer.mozilla.org/en-US/docs/Extensions/Bootstrapped_extensions#Bootstrap_data
-    ///   string id
-    ///   string version
-    ///   nsIFile installPath
-    ///   nsIURI resourceURI
-    /// 
-    /// Reason types:
-    ///   ADDON_UNINSTALL
-    ///   ADDON_UPGRADE
-	///   ADDON_DOWNGRADE
-	
+function uninstall(data:BootstrapData, reason:BootstrapReasons):void {
 	console.log("AutoArchiveReloaded - uninstall");
 }

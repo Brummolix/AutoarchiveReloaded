@@ -40,7 +40,7 @@ namespace AutoarchiveReloaded
             let accountSettings:AccountSettingsArray = this.getLegacyAccountSettings();
 
             //no account and no global settings?
-            let aChildArray:object[] = prefBranch.getChildList("", {});
+            let aChildArray:string[] = prefBranch.getChildList("", {});
             if ( (aChildArray.length==0) && Object.keys(accountSettings).length==0)
                 return null;
 
@@ -49,7 +49,8 @@ namespace AutoarchiveReloaded
 
             let legacySettings:ISettings = {
                 globalSettings: {
-                    archiveType: prefBranch.getCharPref("archiveType",undefined),
+                    //TODO: as ArchiveType?
+                    archiveType: prefBranch.getCharPref("archiveType",undefined) as ArchiveType,
                     enableInfoLogging: prefBranch.getBoolPref("enableInfoLogging",undefined)
                 },
 
@@ -64,11 +65,11 @@ namespace AutoarchiveReloaded
         {
             let accountSettings:AccountSettingsArray = {}
 
-            AutoarchiveReloaded.AccountIterator.forEachAccount( (account:nsIMsgAccount,isAccountArchivable:boolean) => {
+            AutoarchiveReloaded.AccountIterator.forEachAccount( (account:Ci.nsIMsgAccount,isAccountArchivable:boolean) => {
                 if (!isAccountArchivable)
                     return;
  
-                let server:nsIMsgIncomingServer = account.incomingServer;
+                let server:Ci.nsIMsgIncomingServer = account.incomingServer;
                 let settings:IAccountSettings = {
                     bArchiveOther: server.getBoolValue("archiveMessages"),
                     daysOther: server.getIntValue("archiveMessagesDays"),
@@ -94,9 +95,9 @@ namespace AutoarchiveReloaded
             this.getInternalLegacyPrefBranch().setBoolPref("preferencesAlreadyMigrated", true);
         };
 
-        getInternalLegacyPrefBranch():nsIPrefBranch
+        getInternalLegacyPrefBranch():Ci.nsIPrefBranch
         {
-            let prefs = Components.classes["@mozilla.org/preferences-service;1"].getService(Components.interfaces.nsIPrefService);
+            let prefs:Ci.nsIPrefService = Components.classes["@mozilla.org/preferences-service;1"].getService(Components.interfaces.nsIPrefService);
             return prefs.getBranch("extensions.AutoarchiveReloaded.");
         };
     }
@@ -104,15 +105,15 @@ namespace AutoarchiveReloaded
     //TODO: why is this inside options.ts? Rename file? Or put everything into overlay.js again?
     export class AccountIterator
     {
-        private static isAccountArchivable(account:nsIMsgAccount):boolean
+        private static isAccountArchivable(account:Ci.nsIMsgAccount):boolean
         {
             //ignore IRC accounts
             return (account.incomingServer.localStoreType == "mailbox" || account.incomingServer.localStoreType == "imap" || account.incomingServer.localStoreType == "news");
         }
 
-        static forEachAccount(forEachDo:(account:nsIMsgAccount,isAccountArchivable:boolean)=>void):void
+        static forEachAccount(forEachDo:(account:Ci.nsIMsgAccount,isAccountArchivable:boolean)=>void):void
         {
-            let accounts:nsIMsgAccount[] = fixIterator(MailServices.accounts.accounts, Ci.nsIMsgAccount);
+            let accounts:Ci.nsIMsgAccount[] = fixIterator(MailServices.accounts.accounts, Ci.nsIMsgAccount);
             for (let account of accounts)
             {
                 forEachDo(account,this.isAccountArchivable(account));

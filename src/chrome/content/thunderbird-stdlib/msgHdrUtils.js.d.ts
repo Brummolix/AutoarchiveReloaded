@@ -1,1 +1,1 @@
-declare function msgHdrGetTags (aMsgHdr:nsIMsgDBHdr):nsIMsgTag[];
+declare function msgHdrGetTags (aMsgHdr:Ci.nsIMsgDBHdr):Ci.nsIMsgTag[];
