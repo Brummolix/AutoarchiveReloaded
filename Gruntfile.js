@@ -17,6 +17,7 @@ module.exports = function(grunt) {
         main: {
           files: [
             {expand: true, cwd: srcDir, src: ['**','!**/*.ts'], dest: outDirExtracted},
+            {expand: true, src: ['./licence.txt','./README.md'], dest: outDirExtracted},
           ],
         },
         shared: {
