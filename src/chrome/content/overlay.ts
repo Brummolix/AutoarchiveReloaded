@@ -23,12 +23,13 @@ var EXPORTED_SYMBOLS = [
 ]
 Cu.import("resource://gre/modules/Services.jsm");
 Cu.import("resource://gre/modules/AddonManager.jsm");
-Cu.import("chrome://autoarchiveReloaded/content/thunderbird-stdlib/msgHdrUtils.js");
 Cu.import("resource://gre/modules/FileUtils.jsm");
 Cu.import("resource://gre/modules/NetUtil.jsm");
 Cu.import("resource://gre/modules/Timer.jsm");
 Cu.import("resource:///modules/iteratorUtils.jsm");
+
 Cu.import("chrome://autoarchiveReloaded/content/options.js");
+Cu.import("chrome://autoarchiveReloaded/content/thunderbird-stdlib/msgHdrUtils.js");
 
 namespace AutoarchiveReloadedOverlay
 {
