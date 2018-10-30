@@ -110,7 +110,7 @@ class AutoarchiveReloadedWeOptionHelper
         });
     }
 
-    OnWebExtensionStartupDone():void
+    private OnWebExtensionStartupDone():void
     {
         let message:IBrowserMessage = {
             id: "webExtensionStartupDone",

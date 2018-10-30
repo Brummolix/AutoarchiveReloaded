@@ -95,7 +95,7 @@ namespace AutoarchiveReloaded
             this.getInternalLegacyPrefBranch().setBoolPref("preferencesAlreadyMigrated", true);
         };
 
-        getInternalLegacyPrefBranch():Ci.nsIPrefBranch
+        private getInternalLegacyPrefBranch():Ci.nsIPrefBranch
         {
             let prefs:Ci.nsIPrefService = Components.classes["@mozilla.org/preferences-service;1"].getService(Components.interfaces.nsIPrefService);
             return prefs.getBranch("extensions.AutoarchiveReloaded.");

@@ -32,7 +32,6 @@ Components.utils.import("chrome://autoarchiveReloaded/content/options.js");
 
 namespace AutoarchiveReloadedOverlay
 {
-
 	//singleton class for getting string resources
 	export const StringBundle:Ci.nsIStringBundle = Cc["@mozilla.org/intl/stringbundle;1"].getService(Ci.nsIStringBundleService)
     	.createBundle("chrome://autoarchiveReloaded/locale/autoarchive.properties");
@@ -82,7 +81,7 @@ namespace AutoarchiveReloadedOverlay
 		//private
 		private static consoleService:Ci.nsIConsoleService = Components.classes["@mozilla.org/consoleservice;1"].getService(Ci.nsIConsoleService);
 		
-		static getLogLevelFromPref():LogLevel
+		private static getLogLevelFromPref():LogLevel
 		{
 			if (AutoarchiveReloaded.settings.globalSettings.enableInfoLogging)				
 				return LogLevel.LEVEL_INFO;
@@ -105,7 +104,7 @@ namespace AutoarchiveReloadedOverlay
 			this.error(this.getExceptionInfo(e));
 		}
 		
-		static getExceptionInfo(e:ThunderbirdError):string
+		private static getExceptionInfo(e:ThunderbirdError):string
 		{
 			return e + "; Source: '" + e.fileName + "'; Line: " + e.lineNumber + "; code: " + e.toSource() + "; stack: " + e.stack;
 		}
@@ -132,7 +131,7 @@ namespace AutoarchiveReloadedOverlay
 			this.writeToFile(strToLog);
         }
 		
-		static writeToFile (str:string):void
+		private static writeToFile (str:string):void
 		{
 			try
 			{
@@ -162,8 +161,8 @@ namespace AutoarchiveReloadedOverlay
 //for managing the activities in activity view
 class ActivityManager
 {
-	folder:Ci.nsIMsgFolder;
-	startProcess:Ci.nsIActivityProcess;
+	private folder:Ci.nsIMsgFolder;
+	private startProcess:Ci.nsIActivityProcess;
 
 	constructor (folder:Ci.nsIMsgFolder)
 	{
@@ -218,7 +217,7 @@ class ActivityManager
 		}
 	}
 
-	getActivityManager():Ci.nsIActivityManager
+	private getActivityManager():Ci.nsIActivityManager
 	{
 		return Components.classes["@mozilla.org/activity-manager;1"].getService(Components.interfaces.nsIActivityManager);
 	}
@@ -229,11 +228,11 @@ class ActivityManager
 //for collecting the searched mails and start real archiving
 class SearchListener
 {
-    messages:Ci.nsIMsgDBHdr[] = [];
-    folder:Ci.nsIMsgFolder;
-    activity:ActivityManager;
-	settings:IAccountSettings;
-	onFolderArchivedEvent:() => void;
+    private messages:Ci.nsIMsgDBHdr[] = [];
+    private folder:Ci.nsIMsgFolder;
+    private activity:ActivityManager;
+	private settings:IAccountSettings;
+	private onFolderArchivedEvent:() => void;
 
 	constructor(folder:Ci.nsIMsgFolder, activity:ActivityManager,settings:IAccountSettings,onFolderArchivedEvent:()=> void)
 	{
@@ -386,7 +385,6 @@ class SearchListener
 
 	onNewSearch():void
 	{
-
 	}
 }
 
@@ -395,9 +393,8 @@ class SearchListener
 class Autoarchiver
 {
 	//properties:
-	foldersToArchive:number = 0;
-	foldersArchived:number = 0;
-	onDoneEvent:()=>void;
+	private foldersArchived:number = 0;
+	private onDoneEvent:()=>void;
 
 	constructor(onDoneEvent:()=>void)
 	{
@@ -406,7 +403,7 @@ class Autoarchiver
 
 //determine all folders (recursive, starting with param folder), which we want to archive
 //write output to inboxFolders array
-getFolders (folder:Ci.nsIMsgFolder, outInboxFolders:Ci.nsIMsgFolder[]):void
+private getFolders (folder:Ci.nsIMsgFolder, outInboxFolders:Ci.nsIMsgFolder[]):void
 {
     try
     {
@@ -447,7 +444,7 @@ getFolders (folder:Ci.nsIMsgFolder, outInboxFolders:Ci.nsIMsgFolder[]):void
     }
 }
 
-archiveFolder(folder:Ci.nsIMsgFolder, settings:IAccountSettings):void
+private archiveFolder(folder:Ci.nsIMsgFolder, settings:IAccountSettings):void
 {
 	try
 	{
@@ -539,7 +536,7 @@ archiveAccounts():void
     }
 }
 
-checkForArchiveDone(foldersToArchive:number):void
+private checkForArchiveDone(foldersToArchive:number):void
 {
 	//wait until all accounts are ready
 	if (this.foldersArchived == foldersToArchive)
@@ -566,7 +563,7 @@ enum States
 	//singleton with global /startup/ui functions
 	export class Global
     {
-		static status:States = States.UNINITIALZED;
+		private static status:States = States.UNINITIALZED;
 
 		static startup ():void
 		{
@@ -612,7 +609,7 @@ enum States
 			autoarchiveReloaded.archiveAccounts();
 		}
 		
-		static onArchiveDone():void
+		private static onArchiveDone():void
 		{
 			Logger.info("archive (searching messages to archive) done");
 			this.status = States.READY_FOR_WORK;
@@ -640,8 +637,8 @@ enum States
 			}
 			else
 				Logger.info("manual archive canceled by user");
-		};
-	};
+		}
+	}
 
 //-----------------------------------------------------------------------------------------------------	
 export class SettingsHelper
@@ -684,7 +681,7 @@ log ():void
 	this.logAccountInfo();
 }
 
-logAppInfo():void
+private logAppInfo():void
 {
 	try
 	{
@@ -703,7 +700,7 @@ logAppInfo():void
     }
 }
 
-logAddonInfo():void
+private logAddonInfo():void
 {
 	try
 	{
@@ -722,7 +719,7 @@ logAddonInfo():void
     }
 }
 
-logAccountInfo():void
+private logAccountInfo():void
 {
 	try
 	{

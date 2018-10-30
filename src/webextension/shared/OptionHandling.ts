@@ -23,7 +23,7 @@ var EXPORTED_SYMBOLS = [
 
 class AutoarchiveReloadedOptionHandling
 {
-    getDefaultSettings():ISettings
+    private getDefaultSettings():ISettings
     {
         return {
             globalSettings:this.getDefaultGlobalSettings(),
@@ -31,7 +31,7 @@ class AutoarchiveReloadedOptionHandling
         };
     }
 
-    getDefaultGlobalSettings():IGlobalSettings
+    private getDefaultGlobalSettings():IGlobalSettings
     {
         return {
             archiveType: "manual",
