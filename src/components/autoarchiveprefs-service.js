@@ -19,7 +19,7 @@ Copyright 2012 Alexey Egorov (original version Autoarchive, http://code.google.c
 */
 
 "use strict";
-Components.utils.import("resource://gre/modules/XPCOMUtils.jsm");
+Cu.import("resource://gre/modules/XPCOMUtils.jsm");
 
 function AutoarchiveManagerExtension() 
 {

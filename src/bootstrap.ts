@@ -17,13 +17,13 @@ Copyright 2018 Brummolix (AutoarchiveReloaded, https://github.com/Brummolix/Auto
     along with AutoarchiveReloaded.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-Components.utils.import("resource://gre/modules/Services.jsm");
+Cu.import("resource://gre/modules/Services.jsm");
 
 function startup(data:BootstrapData, reason:BootstrapReasons):void {
 	console.log("AutoArchiveReloaded - startup");
 
-	Components.utils.import("chrome://autoarchiveReloaded/content/options.js");
-	Components.utils.import("chrome://autoarchiveReloaded/content/overlay.js");
+	Cu.import("chrome://autoarchiveReloaded/content/options.js");
+	Cu.import("chrome://autoarchiveReloaded/content/overlay.js");
 
 	if (data.webExtension)
 	{
@@ -67,7 +67,7 @@ function startup(data:BootstrapData, reason:BootstrapReasons):void {
 
 function initAutoArchiveReloadedOverlay():void
 {
-	Components.utils.import("chrome://autoarchiveReloaded/content/thunderbird-stdlib/RestartlessMenuItems.js");
+	Cu.import("chrome://autoarchiveReloaded/content/thunderbird-stdlib/RestartlessMenuItems.js");
 
 	//TODO: after start of TB the menu is not there!
 	//if we deactivate/activate it, it is there?
@@ -129,9 +129,9 @@ function shutdown(data:BootstrapData, reason:BootstrapReasons):void {
 
 	console.log("unload scripts");
 
-	Components.utils.unload("chrome://autoarchiveReloaded/content/overlay.js");
-	Components.utils.unload("chrome://autoarchiveReloaded/content/thunderbird-stdlib/RestartlessMenuItems.js");
-	Components.utils.unload("chrome://autoarchiveReloaded/content/options.js");
+	Cu.unload("chrome://autoarchiveReloaded/content/overlay.js");
+	Cu.unload("chrome://autoarchiveReloaded/content/thunderbird-stdlib/RestartlessMenuItems.js");
+	Cu.unload("chrome://autoarchiveReloaded/content/options.js");
 }
 
 function install(data:BootstrapData, reason:BootstrapReasons):void {

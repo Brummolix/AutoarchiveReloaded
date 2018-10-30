@@ -23,7 +23,7 @@ var EXPORTED_SYMBOLS = [
 
 namespace AutoarchiveReloaded
 {
-    Components.utils.import("chrome://autoarchiveReloaded/content/overlay.js");
+    Cu.import("chrome://autoarchiveReloaded/content/overlay.js");
     Cu.import("resource:///modules/MailServices.jsm");
     Cu.import("resource:///modules/iteratorUtils.jsm");
 
