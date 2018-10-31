@@ -102,19 +102,6 @@ declare class BootstrapData
 	public webExtension: StartupWebextension;
 }
 
-//https://developer.mozilla.org/en-US/docs/Archive/Add-ons/Bootstrapped_extensions#Reason_constants
-declare enum BootstrapReasons
-{
-	APP_STARTUP = 1, 		//The application is starting up.
-	APP_SHUTDOWN = 2, 		//The application is shutting down.
-	ADDON_ENABLE = 3, 		//The add-on is being enabled.
-	ADDON_DISABLE = 4, 		//The add-on is being disabled. (Also sent during uninstallation)
-	ADDON_INSTALL = 5,		//The add-on is being installed.
-	ADDON_UNINSTALL = 6,	//The add-on is being uninstalled.
-	ADDON_UPGRADE = 7,		//The add-on is being upgraded.
-	ADDON_DOWNGRADE = 8,	//The add-on is being downgraded.
-}
-
 //LegacyAddOn--------------------------------------------------------------------------------------------------
 
 //https://developer.mozilla.org/en-US/docs/Mozilla/Tech/XPCOM/Reference/Interface/nsIJSCID

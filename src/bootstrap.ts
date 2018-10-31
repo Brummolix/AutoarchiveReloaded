@@ -22,7 +22,20 @@ Cu.import("resource://gre/modules/Services.jsm");
 //list here all imports, also from sub files to make sure they are correctly unloaded
 const AutoArchiveReloadedImports: string[] = ["options.js", "overlay.js", "thunderbird-stdlib/RestartlessMenuItems.js", "thunderbird-stdlib/msgHdrUtils.js"];
 
-function startup(data: BootstrapData, reason: BootstrapReasons): void
+//https://developer.mozilla.org/en-US/docs/Archive/Add-ons/Bootstrapped_extensions#Reason_constants
+enum BootstrapReasons
+{
+	APP_STARTUP = 1, 		//The application is starting up.
+	APP_SHUTDOWN = 2, 		//The application is shutting down.
+	ADDON_ENABLE = 3, 		//The add-on is being enabled.
+	ADDON_DISABLE = 4, 		//The add-on is being disabled. (Also sent during uninstallation)
+	ADDON_INSTALL = 5,		//The add-on is being installed.
+	ADDON_UNINSTALL = 6,	//The add-on is being uninstalled.
+	ADDON_UPGRADE = 7,		//The add-on is being upgraded.
+	ADDON_DOWNGRADE = 8,	//The add-on is being downgraded.
+}
+
+function startup(data: BootstrapData, reason: BootstrapReasons.APP_STARTUP | BootstrapReasons.ADDON_ENABLE | BootstrapReasons.ADDON_INSTALL | BootstrapReasons.ADDON_UPGRADE | BootstrapReasons.ADDON_DOWNGRADE): void
 {
 	console.log("AutoArchiveReloaded - startup");
 
@@ -156,7 +169,7 @@ function initAutoArchiveReloadedOverlay(): void
 	AutoarchiveReloadedOverlay.Global.startup();
 }
 
-function shutdown(data: BootstrapData, reason: BootstrapReasons): void
+function shutdown(data: BootstrapData, reason: BootstrapReasons.APP_SHUTDOWN | BootstrapReasons.ADDON_DISABLE| BootstrapReasons.ADDON_UNINSTALL| BootstrapReasons.ADDON_UPGRADE| BootstrapReasons.ADDON_DOWNGRADE): void
 {
 	console.log("AutoArchiveReloaded - shutdown");
 
@@ -180,12 +193,12 @@ function shutdown(data: BootstrapData, reason: BootstrapReasons): void
 	}
 }
 
-function install(data: BootstrapData, reason: BootstrapReasons): void
+function install(data: BootstrapData, reason: BootstrapReasons.ADDON_INSTALL | BootstrapReasons.ADDON_UPGRADE | BootstrapReasons.ADDON_DOWNGRADE): void
 {
 	//nothing to do
 }
 
-function uninstall(data: BootstrapData, reason: BootstrapReasons): void
+function uninstall(data: BootstrapData, reason: BootstrapReasons.ADDON_UNINSTALL | BootstrapReasons.ADDON_UPGRADE | BootstrapReasons.ADDON_DOWNGRADE): void
 {
 	//nothing to do
 }
