@@ -154,10 +154,10 @@ function shutdown(data: BootstrapData, reason: BootstrapReasons): void
 
 function install(data: BootstrapData, reason: BootstrapReasons): void
 {
-	console.log("AutoArchiveReloaded - install");
+	//nothing to do
 }
 
 function uninstall(data: BootstrapData, reason: BootstrapReasons): void
 {
-	console.log("AutoArchiveReloaded - uninstall");
+	//nothing to do
 }
