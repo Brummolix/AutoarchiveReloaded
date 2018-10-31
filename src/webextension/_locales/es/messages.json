@@ -6,7 +6,8 @@
     "archiveTypeStartup": {"message": "Al iniciar Thunderbird (y repetir cada día)"},
     "enableInfoLoggingOption": {"message": "Activar extensión de rastreo (Los errores de consola se guardarán en el archivo AutoarchiveReloadedLog.txt en tu directorio de perfil)"},
     "globalSettingsStartupDescription":{"message":"No es recomendado autoarchivar después de iniciar Thunderbird para cuentas IMAP, puede causar problemas si no cuenta con una conexión a Internet o al servidor de IMAP (los mensajes pueden ser duplicados)."},
-    "saveSettings":{"message":"Save settings"},
+	"saveSettings":{"message":"Save settings"},
+	"settingsSaved":{"message":"Settings saved."},
 
     "settingsDescription2":{"message": "Por favor recuerda: ¡A un lado de estas opciones tienes la configuración de archivado de Thunderbird en 'Copias y carpetas'! Estas configuraciones no estan disponibles para cuentas RSS o 'Carpetas locales'. Puedes archivarlos únicamente con la configuración predeterminada (o en el 'Editor de confiuración' en 'Configuración avanzada' modificando manualmente las entradas 'mail.identity.default.archive_granularity' y 'mail.identity.default.archive_keep_folder_structure')."},
     

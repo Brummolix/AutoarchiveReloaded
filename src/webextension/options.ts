@@ -49,7 +49,26 @@ function saveOptions(): void
 
 	aaHelper.savePreferencesAndSendToLegacyAddOn(settings, () =>
 	{
-		//TODO: show popup or similar
+		//show toast
+		($ as any).notify({
+			// options
+			message: "__MSG_settingsSaved__",
+		}, {
+			// settings
+			type: "success",
+			allow_dismiss: false,
+			placement: {
+				from: "top",
+				align: "center",
+			},
+			animate: {
+				enter: "animated bounceInDown",
+				exit: "animated bounceOutUp",
+			},
+		});
+
+		//update translations...
+		l10n.updateDocument();
 	});
 }
 
