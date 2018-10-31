@@ -20,10 +20,14 @@ Copyright 2018 Brummolix (AutoarchiveReloaded, https://github.com/Brummolix/Auto
 //Attention:
 //this types are not complete! I only added, what is used by AutoarchiveReloaded at the moment!
 
+// tslint:disable:class-name
+// tslint:disable:interface-name
+
 //general---------------------------------------------------------------------------------------------------------
 
 //define a Type "keyword"
 //see https://github.com/Microsoft/TypeScript/issues/20719
+// tslint:disable-next-line:interface-name
 interface Type<T> extends Function
 {
 	new(...args: any[]): T;
@@ -37,40 +41,40 @@ declare class RuntimeMessageSender
 }
 
 //https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/runtime/onMessage
-type RuntimeMessageListener = (message: any, sender: RuntimeMessageSender, sendResponse: (response: Object | null) => void) => void;
+type RuntimeMessageListener = (message: any, sender: RuntimeMessageSender, sendResponse: (response: object | null) => void) => void;
 
 declare class RuntimeMessageListeners
 {
-	addListener(listener: RuntimeMessageListener): void;
+	public addListener(listener: RuntimeMessageListener): void;
 }
 
 //https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/runtime
 declare class Runtime
 {
-	sendMessage(message: any): Promise<any>;
+	public onMessage: RuntimeMessageListeners;
 
-	onMessage: RuntimeMessageListeners;
+	public sendMessage(message: any): Promise<any>;
 }
 
 //https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/storage/StorageArea
 declare class StorageType
 {
-	get(value: string | string[]): Promise<object>
-	set(values: object): Promise<void>;
+	public get(value: string | string[]): Promise<object>;
+	public set(values: object): Promise<void>;
 }
 
 //https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/storage
 declare class BrowserStorages
 {
-	local: StorageType;
-	sync: StorageType;
-	managed: StorageType;
+	public local: StorageType;
+	public sync: StorageType;
+	public managed: StorageType;
 }
 
 declare class Browser
 {
-	runtime: Runtime;
-	storage: BrowserStorages;
+	public runtime: Runtime;
+	public storage: BrowserStorages;
 }
 declare var browser: Browser;
 
@@ -78,37 +82,37 @@ declare var browser: Browser;
 
 declare class StartupWebextensionApi
 {
-	browser: Browser;
+	public browser: Browser;
 }
 
 //https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/Embedded_WebExtensions
 declare class StartupWebextension
 {
-	startup(): Promise<StartupWebextensionApi>;
+	public startup(): Promise<StartupWebextensionApi>;
 }
 
 //https://developer.mozilla.org/en-US/docs/Extensions/Bootstrapped_extensions#Bootstrap_data
 declare class BootstrapData
 {
-	id: string
-	version: string;
-	installPath: Ci.nsIFile;
-	resourceURI: Ci.nsIURI;
+	public id: string;
+	public version: string;
+	public installPath: Ci.nsIFile;
+	public resourceURI: Ci.nsIURI;
 
-	webExtension: StartupWebextension;
+	public webExtension: StartupWebextension;
 }
 
 //https://developer.mozilla.org/en-US/docs/Archive/Add-ons/Bootstrapped_extensions#Reason_constants
 declare enum BootstrapReasons
 {
-	APP_STARTUP = 1,// 	The application is starting up.
-	APP_SHUTDOWN = 2,// 	The application is shutting down.
-	ADDON_ENABLE = 3,// 	The add-on is being enabled.
-	ADDON_DISABLE = 4,// 	The add-on is being disabled. (Also sent during uninstallation)
-	ADDON_INSTALL = 5,// 	The add-on is being installed.
-	ADDON_UNINSTALL = 6,// 	The add-on is being uninstalled.
-	ADDON_UPGRADE = 7,// 	The add-on is being upgraded.
-	ADDON_DOWNGRADE = 8,// 	The add-on is being downgraded.
+	APP_STARTUP = 1, 		//The application is starting up.
+	APP_SHUTDOWN = 2, 		//The application is shutting down.
+	ADDON_ENABLE = 3, 		//The add-on is being enabled.
+	ADDON_DISABLE = 4, 		//The add-on is being disabled. (Also sent during uninstallation)
+	ADDON_INSTALL = 5,		//The add-on is being installed.
+	ADDON_UNINSTALL = 6,	//The add-on is being uninstalled.
+	ADDON_UPGRADE = 7,		//The add-on is being upgraded.
+	ADDON_DOWNGRADE = 8,	//The add-on is being downgraded.
 }
 
 //LegacyAddOn--------------------------------------------------------------------------------------------------
@@ -116,18 +120,17 @@ declare enum BootstrapReasons
 //https://developer.mozilla.org/en-US/docs/Mozilla/Tech/XPCOM/Reference/Interface/nsIJSCID
 declare class Services
 {
-	getService<T>(type: Type<T>): T;
-	createInstance<T>(type: Type<T>): T;
+	public getService<T>(type: Type<T>): T;
+	public createInstance<T>(type: Type<T>): T;
 }
 
 declare namespace Components
 {
 	class utils
 	{
-		static import(path: string): void;
-		static unload(path: string): void;
+		public static import(path: string): void;
+		public static unload(path: string): void;
 	}
-
 
 	//https://developer.mozilla.org/en-US/docs/Mozilla/Tech/XPCOM/Reference
 	namespace interfaces
@@ -141,14 +144,14 @@ declare namespace Components
 		//https://developer.mozilla.org/en-US/docs/Mozilla/Tech/XPCOM/Reference/Interface/nsIPromptService
 		class nsIPromptService
 		{
-			alert(parent: nsIDOMWindow | null, title: string, msg: string): void;
-			confirm(parent: nsIDOMWindow | null, title: string, msg: string): boolean;
+			public alert(parent: nsIDOMWindow | null, title: string, msg: string): void;
+			public confirm(parent: nsIDOMWindow | null, title: string, msg: string): boolean;
 		}
 
 		//https://developer.mozilla.org/en-US/docs/Mozilla/Tech/XPCOM/Reference/Interface/nsIConsoleService
 		class nsIConsoleService
 		{
-			logStringMessage(msg: string): void;
+			public logStringMessage(msg: string): void;
 		}
 
 		class nsISimpleEnumerator<T>
@@ -159,72 +162,73 @@ declare namespace Components
 		//https://developer.mozilla.org/en-US/docs/Mozilla/Tech/XPCOM/Reference/Interface/nsIMsgFolder
 		class nsIMsgFolder
 		{
-			name: string;
-			readonly server: nsIMsgIncomingServer;
-			readonly URI: string;
-			getFlag(flagName: nsMsgFolderFlags): boolean;
-			readonly hasSubFolders: boolean;
-			readonly subFolders: nsISimpleEnumerator<nsIMsgFolder>;
+			public name: string;
+			public readonly server: nsIMsgIncomingServer;
+			public readonly URI: string;
+			public readonly hasSubFolders: boolean;
+			public readonly subFolders: nsISimpleEnumerator<nsIMsgFolder>;
+
+			public getFlag(flagName: nsMsgFolderFlags): boolean;
 		}
 
 		//https://developer.mozilla.org/en-US/docs/Mozilla/Thunderbird/Thunderbird_extensions/HowTos/Activity_Manager
 		class nsIActivityManager
 		{
-			addActivity(activity: nsIActivity): void;
-			removeActivity(id: string): void;
+			public addActivity(activity: nsIActivity): void;
+			public removeActivity(id: string): void;
 		}
 
 		//https://dxr.mozilla.org/comm-central/source/comm/mail/base/content/mailWindowOverlay.js
 		class BatchMessageMover
 		{
-			archiveMessages(messages: nsIMsgDBHdr[]): void;
+			public archiveMessages(messages: nsIMsgDBHdr[]): void;
 		}
 
 		//https://developer.mozilla.org/en-US/docs/Mozilla/Tech/XPCOM/Reference/Interface/nsIMsgAccount
 		class nsIMsgAccount
 		{
-			incomingServer: nsIMsgIncomingServer;
-			key: string;
+			public incomingServer: nsIMsgIncomingServer;
+			public key: string;
 		}
 
 		//https://developer.mozilla.org/en-US/docs/Mozilla/Tech/XPCOM/Reference/Interface/nsIMsgIncomingServer
 		class nsIMsgIncomingServer
 		{
-			readonly serverURI: string;
-			type: "pop3" | "imap" | "nntp" | "none"; //"and so on"?
-			rootFolder: nsIMsgFolder;
-			prettyName: string;
-			readonly localStoreType: "mailbox" | "imap" | "news";
+			public readonly serverURI: string;
+			public type: "pop3" | "imap" | "nntp" | "none"; //"and so on"?
+			public rootFolder: nsIMsgFolder;
+			public prettyName: string;
+			public readonly localStoreType: "mailbox" | "imap" | "news";
 
-			getBoolValue(attr: string): boolean;
-			getIntValue(attr: string): number;
+			public getBoolValue(attr: string): boolean;
+			public getIntValue(attr: string): number;
 		}
 
 		//https://developer.mozilla.org/en-US/docs/Mozilla/Tech/XPCOM/Reference/Interface/nsIXULAppInfo
 		class nsIXULAppInfo
 		{
-			readonly ID: string;
-			readonly version: string;
-			readonly appBuildID: string;
-			readonly platformVersion: string;
-			readonly platformBuildID: string;
+			public readonly ID: string;
+			public readonly version: string;
+			public readonly appBuildID: string;
+			public readonly platformVersion: string;
+			public readonly platformBuildID: string;
 		}
 
 		//https://developer.mozilla.org/en-US/docs/Mozilla/Tech/XPCOM/Reference/Interface/nsIStringBundle
 		class nsIStringBundle
 		{
-			GetStringFromName(name: string): string;
-			formatStringFromName(name: string, params: string[], length: number): string;
+			public GetStringFromName(name: string): string;
+			public formatStringFromName(name: string, params: string[], length: number): string;
 		}
 
 		//https://developer.mozilla.org/en-US/docs/Mozilla/Tech/XPCOM/Reference/Interface/nsIMsgSearchSession
 		class nsIMsgSearchSession
 		{
-			addScopeTerm(scope: nsMsgSearchScope, folder: nsIMsgFolder): void;
-			createTerm(): nsMsgSearchTerm;
-			appendTerm(term: nsMsgSearchTerm): void;
-			registerListener(listener: nsIMsgSearchNotify): void;
-			search(window: nsIMsgWindow | null): void;
+			public addScopeTerm(scope: nsMsgSearchScope, folder: nsIMsgFolder): void;
+			public createTerm(): nsMsgSearchTerm;
+			public appendTerm(term: nsMsgSearchTerm): void;
+			public registerListener(listener: nsIMsgSearchNotify): void;
+			public search(window: nsIMsgWindow | null): void;
 		}
 
 		//https://developer.mozilla.org/en-US/docs/Mozilla/Tech/XPCOM/Reference/Interface/nsIMsgWindow
@@ -235,18 +239,18 @@ declare namespace Components
 		//https://developer.mozilla.org/en-US/docs/Mozilla/Tech/XPCOM/Reference/Interface/nsIMsgSearchTerm
 		class nsMsgSearchTerm
 		{
-			attrib: nsMsgSearchAttrib;
-			value: nsIMsgSearchValue;
-			op: nsMsgSearchOp;
-			booleanAnd: boolean;
+			public attrib: nsMsgSearchAttrib;
+			public value: nsIMsgSearchValue;
+			public op: nsMsgSearchOp;
+			public booleanAnd: boolean;
 		}
 
 		//https://developer.mozilla.org/en-US/docs/Mozilla/Tech/XPCOM/Reference/Interface/nsIMsgSearchValue
 		class nsIMsgSearchValue
 		{
-			attrib: nsMsgSearchAttrib;
-			age: number;
-			status: nsMsgMessageFlags;
+			public attrib: nsMsgSearchAttrib;
+			public age: number;
+			public status: nsMsgMessageFlags;
 		}
 
 		//https://developer.mozilla.org/en-US/docs/Mozilla/Tech/XPCOM/Reference/Interface/nsIMsgSearchNotify
@@ -257,16 +261,16 @@ declare namespace Components
 			// notification that a search has finished.
 			onSearchDone(status: number): void;
 
-            /*
+			/*
              * called when a new search begins
              */
-			onNewSearch(): void
+			onNewSearch(): void;
 		}
 
 		//https://developer.mozilla.org/en-US/docs/Mozilla/Tech/XPCOM/Reference/Interface/nsIFileOutputStream
 		class nsIFileOutputStream
 		{
-			init(file: nsIFile, ioFlags: number, perm: number, behaviorFlags: number): void;
+			public init(file: nsIFile, ioFlags: number, perm: number, behaviorFlags: number): void;
 		}
 
 		class nsIFile
@@ -283,12 +287,12 @@ declare namespace Components
 		//https://dxr.mozilla.org/comm-central/source/obj-x86_64-pc-linux-gnu/dist/include/nsIUnicharOutputStream.h?q=nsIUnicharOutputStream&redirect_type=direct#27
 		class nsIConverterOutputStream
 		{
-			init(stream: nsIOutputStream, charset: string, bufferSize: number, replacementCharacter: number): void;
-			writeString(str: string): boolean;
-			close(): void;
+			public init(stream: nsIOutputStream, charset: string, bufferSize: number, replacementCharacter: number): void;
+			public writeString(str: string): boolean;
+			public close(): void;
 		}
 
-		class nsIOutputStream 
+		class nsIOutputStream
 		{
 
 		}
@@ -296,71 +300,70 @@ declare namespace Components
 		//https://developer.mozilla.org/en-US/docs/Mozilla/Tech/XPCOM/Reference/Interface/nsIStringBundleService
 		class nsIStringBundleService
 		{
-			createBundle(urlSpec: string): nsIStringBundle;
-
+			public createBundle(urlSpec: string): nsIStringBundle;
 		}
 
 		//https://developer.mozilla.org/en-US/docs/Mozilla/Tech/XPCOM/Reference/Interface/nsIWindowMediator
 		class nsIWindowMediator
 		{
-			getMostRecentWindow(windowType: string | null): nsIDOMWindow;
-			getMostRecentWindow(windowType: "mail:3pane"): Mail3Pane;
+			public getMostRecentWindow(windowType: string | null): nsIDOMWindow;
+			public getMostRecentWindow(windowType: "mail:3pane"): Mail3Pane;
 
 		}
 
 		//https://developer.mozilla.org/en-US/docs/Mozilla/Tech/XPCOM/Reference/Interface/nsMsgFolderFlagType
 		class nsMsgFolderFlags
 		{
-			static readonly Trash: nsMsgFolderFlags;
-			static readonly Junk: nsMsgFolderFlags;
-			static readonly Queue: nsMsgFolderFlags;
-			static readonly Drafts: nsMsgFolderFlags;
-			static readonly Templates: nsMsgFolderFlags;
-			static readonly Archive: nsMsgFolderFlags;
-			static readonly Virtual: nsMsgFolderFlags;
+			public static readonly Trash: nsMsgFolderFlags;
+			public static readonly Junk: nsMsgFolderFlags;
+			public static readonly Queue: nsMsgFolderFlags;
+			public static readonly Drafts: nsMsgFolderFlags;
+			public static readonly Templates: nsMsgFolderFlags;
+			public static readonly Archive: nsMsgFolderFlags;
+			public static readonly Virtual: nsMsgFolderFlags;
 		}
 
 		//https://developer.mozilla.org/en-US/docs/Mozilla/Tech/XPCOM/Reference/Interface/nsMsgSearchScope
 		class nsMsgSearchScope
 		{
-			static readonly offlineMail: nsMsgSearchScope;
+			public static readonly offlineMail: nsMsgSearchScope;
 		}
 
 		//https://developer.mozilla.org/en-US/docs/Mozilla/Tech/XPCOM/Reference/Interface/nsMsgSearchOp
 		class nsMsgSearchOp
 		{
-			static readonly IsGreaterThan: nsMsgSearchOp;
-			static readonly Isnt: nsMsgSearchOp;
+			public static readonly IsGreaterThan: nsMsgSearchOp;
+			public static readonly Isnt: nsMsgSearchOp;
 		}
 
 		//https://developer.mozilla.org/en-US/docs/Mozilla/Tech/XPCOM/Reference/Interface/nsMsgSearchAttrib
 		class nsMsgSearchAttrib
 		{
-			static readonly AgeInDays: nsMsgSearchAttrib;
-			static readonly MsgStatus: nsMsgSearchAttrib;
+			public static readonly AgeInDays: nsMsgSearchAttrib;
+			public static readonly MsgStatus: nsMsgSearchAttrib;
 		}
 
 		//https://developer.mozilla.org/en-US/docs/Mozilla/Tech/XPCOM/Reference/nsMsgMessagesFlags
 		class nsMsgMessageFlags
 		{
-			static readonly IMAPDeleted: nsMsgMessageFlags;
+			public static readonly IMAPDeleted: nsMsgMessageFlags;
 		}
 
 		//https://developer.mozilla.org/en-US/docs/Mozilla/Tech/XPCOM/Reference/nsMsgNavigationType
 		class nsMsgNavigationType
 		{
-			static readonly firstMessage: nsMsgNavigationType;
+			public static readonly firstMessage: nsMsgNavigationType;
 		}
 
 		class nsIActivity
 		{
-			contextType: string;
-			contextObj: nsIMsgIncomingServer;
+			public contextType: string;
+			public contextObj: nsIMsgIncomingServer;
 		}
 
 		class nsIActivityEvent extends nsIActivity
 		{
-			init(msg: string, value2: any, value3: string, time: number, date: number): void;
+			public init(msg: string, value2: any, value3: string, time: number, date: number): void;
 		}
 
 		class nsIActivityStates
@@ -370,27 +373,28 @@ declare namespace Components
 
 		class nsIActivityProcess extends nsIActivity
 		{
-			static readonly STATE_COMPLETED: nsIActivityStates;
+			public static readonly STATE_COMPLETED: nsIActivityStates;
 
-			state: nsIActivityStates;
-			init(msg: string, value2: any): void;
-			startTime: number;
-			id: string;
+			public state: nsIActivityStates;
+			public startTime: number;
+			public id: string;
+
+			public init(msg: string, value2: any): void;
 		}
 
 		//https://developer.mozilla.org/en-US/docs/Mozilla/Tech/XPCOM/Reference/Interface/nsIPrefService
 		class nsIPrefService
 		{
-			getBranch(aPrefRoot: string): nsIPrefBranch;
+			public getBranch(aPrefRoot: string): nsIPrefBranch;
 		}
 
 		//https://developer.mozilla.org/en-US/docs/Mozilla/Tech/XPCOM/Reference/Interface/nsIMsgDBHdr
 		class nsIMsgDBHdr
 		{
-			readonly isRead: boolean;
-			readonly isFlagged: boolean;
-			readonly dateInSeconds: number;
-			readonly folder: nsIMsgFolder;
+			public readonly isRead: boolean;
+			public readonly isFlagged: boolean;
+			public readonly dateInSeconds: number;
+			public readonly folder: nsIMsgFolder;
 		}
 
 		class nsIMsgTag
@@ -401,15 +405,15 @@ declare namespace Components
 		//https://developer.mozilla.org/en-US/docs/Mozilla/Tech/XPCOM/Reference/Interface/nsIPrefBranch
 		class nsIPrefBranch
 		{
-			getBoolPref(name: string, defaultValue: boolean | undefined): boolean;
-			getCharPref(name: string, defaultValue: string | undefined): string;
-			getChildList(startingAt: string, obj: object): string[];
-			setBoolPref(name: string, value: boolean): void;
+			public getBoolPref(name: string, defaultValue: boolean | undefined): boolean;
+			public getCharPref(name: string, defaultValue: string | undefined): string;
+			public getChildList(startingAt: string, obj: object): string[];
+			public setBoolPref(name: string, value: boolean): void;
 		}
 	}
 
 	//https://developer.mozilla.org/en-US/docs/Mozilla/Tech/XPCOM/Language_Bindings/Components.classes
-	export var classes: { [key: string]: Services; };
+	export let classes: { [key: string]: Services; };
 }
 
 import Cu = Components.utils;
@@ -419,46 +423,45 @@ import Ci = Components.interfaces;
 //https://developer.mozilla.org/en-US/docs/Mozilla/JavaScript_code_modules/FileUtils.jsm
 declare class FileUtils
 {
-	static getFile(key: string, pathArray: string[], followLinks?: boolean): Ci.nsIFile;
+	public static getFile(key: string, pathArray: string[], followLinks?: boolean): Ci.nsIFile;
 }
 
 //https://developer.mozilla.org/en-US/docs/Mozilla/Tech/Toolkit_API/extIApplication
 declare class Application
 {
-	static console: extIConsole;
+	public static console: extIConsole;
 }
 
 //https://developer.mozilla.org/en-US/docs/Mozilla/Tech/Toolkit_API/extIConsole
 declare class extIConsole
 {
-	log(msg: string): void;
+	public log(msg: string): void;
 }
 
 declare class MailServicesAccounts
 {
-	accounts: Ci.nsISimpleEnumerator<Ci.nsIMsgAccount>;
+	public accounts: Ci.nsISimpleEnumerator<Ci.nsIMsgAccount>;
 }
-
 
 declare class MailServices
 {
-	static accounts: MailServicesAccounts
+	public static accounts: MailServicesAccounts;
 }
 
 //https://developer.mozilla.org/en-US/docs/Mozilla/JavaScript_code_modules/Add-on_Manager/Addon
 declare class Addon
 {
-	readonly type: string;
-	readonly name: string;
-	readonly id: string;
-	readonly version: string;
-	readonly isActive: boolean;
+	public readonly type: string;
+	public readonly name: string;
+	public readonly id: string;
+	public readonly version: string;
+	public readonly isActive: boolean;
 }
 
 //https://developer.mozilla.org/en-US/docs/Mozilla/JavaScript_code_modules/Add-on_Manager/AddonManager
 declare class AddonManager
 {
-	static getAllAddons(AddonListCallback: (addons: Addon[]) => void): void;
+	public static getAllAddons(AddonListCallback: (addons: Addon[]) => void): void;
 }
 
 declare function fixIterator<T>(collection: Ci.nsISimpleEnumerator<T>, objectType: Type<T>): T[];
@@ -472,45 +475,47 @@ declare class FolderDisplayViewDb
 //not official API
 declare class FolderDisplayView
 {
-	dbView: FolderDisplayViewDb;
+	public dbView: FolderDisplayViewDb;
 }
 
 //I don't know the real type name
 declare class FolderDisplay
 {
-	displayedFolder: Ci.nsIMsgFolder;
-	selectedCount: number;
-	navigate(type: Ci.nsMsgNavigationType): void;
-	show(folder: Ci.nsIMsgFolder): void;
+	public displayedFolder: Ci.nsIMsgFolder;
+	public selectedCount: number;
 
 	//not official API
-	view: FolderDisplayView;
+	public view: FolderDisplayView;
 
+	public navigate(type: Ci.nsMsgNavigationType): void;
+	public show(folder: Ci.nsIMsgFolder): void;
 }
 
 //I don't know the real type name
 declare class MessageIdentity
 {
-	archiveEnabled: boolean;
+	public archiveEnabled: boolean;
 }
 
 declare class ThunderbirdNavigator extends Navigator
 {
-	oscpu: string;
+	public oscpu: string;
 }
 
 declare class Mail3Pane extends Ci.nsIDOMWindow
 {
-	gFolderDisplay: FolderDisplay;
-	BatchMessageMover: { new(): Ci.BatchMessageMover };//tricky, this is an inner class
-	getIdentityForHeader(msg: Ci.nsIMsgDBHdr): MessageIdentity;
-	navigator: ThunderbirdNavigator;
+	public gFolderDisplay: FolderDisplay;
+	public BatchMessageMover: { new(): Ci.BatchMessageMover }; //tricky, this is an inner class
+	public navigator: ThunderbirdNavigator;
+
+	public getIdentityForHeader(msg: Ci.nsIMsgDBHdr): MessageIdentity;
 }
 
 declare class ThunderbirdError
 {
-	fileName: string;
-	lineNumber: number;
-	toSource(): string;
-	stack: string;
+	public fileName: string;
+	public lineNumber: number;
+	public stack: string;
+
+	public toSource(): string;
 }
