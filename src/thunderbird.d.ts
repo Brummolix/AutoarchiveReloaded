@@ -48,12 +48,33 @@ declare class RuntimeMessageListeners
 	public addListener(listener: RuntimeMessageListener): void;
 }
 
+declare interface RuntimePortListener
+{
+	addListener(listener: (object: object) => void): void;
+}
+
+//https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/runtime/Port
+declare class RuntimePort
+{
+	public onMessage: RuntimePortListener;
+
+	public disconnect(): void;
+	public postMessage(object: object): void;
+}
+
+declare class RuntimeConnectListener
+{
+	public addListener(listener: (port: RuntimePort) => void): void;
+}
+
 //https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/runtime
 declare class Runtime
 {
 	public onMessage: RuntimeMessageListeners;
+	public onConnect: RuntimeConnectListener;
 
 	public sendMessage(message: any): Promise<any>;
+	public connect(connectInfo: {name: string}): RuntimePort;
 }
 
 //https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/storage/StorageArea
@@ -71,10 +92,18 @@ declare class BrowserStorages
 	public managed: StorageType;
 }
 
+//https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/windows
+declare class BrowserWindows
+{
+	public WINDOW_ID_CURRENT: number;
+	public remove(windowid: number): Promise<void>;
+}
+
 declare class Browser
 {
 	public runtime: Runtime;
 	public storage: BrowserStorages;
+	public windows: BrowserWindows;
 }
 declare var browser: Browser;
 
