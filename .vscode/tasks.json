@@ -19,14 +19,14 @@
                 "isDefault": true
             },
             "problemMatcher": [
-                "$tsc"
+                "$tsc","$tslint4"
             ]
         },
         {
             "type": "grunt",
             "task": "release",
             "problemMatcher": [
-                "$tsc"
+                "$tsc","$tslint4"
             ]
         }
     ]

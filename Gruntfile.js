@@ -63,15 +63,34 @@ module.exports = function(grunt) {
             {expand: true, cwd: outDirExtracted, src: ['**'], dest: '/'}, // makes all src relative to cwd
           ]
         }
-      },
+	  },
+		tslint: {
+		options: {
+			// can be a configuration object or a filepath to tslint.json
+			configuration: "./tslint.json",
+			// If set to true, tslint errors will be reported, but not fail the task
+			// If set to false, tslint errors will be reported, and the task will fail
+			force: false,
+			fix: false
+		},
+		files: {
+			src: [
+				srcDir + "/**/*.ts",
+				srcDir + "/**/*.js",
+				"!src/webextension/libs/**/*.js",
+				"!src/chrome/content/thunderbird-stdlib/*.js"
+			]
+		}
+	}
     });
   
     grunt.loadNpmTasks('grunt-contrib-copy');
     grunt.loadNpmTasks('grunt-contrib-clean');
     grunt.loadNpmTasks("grunt-ts");
-    grunt.loadNpmTasks('grunt-contrib-compress');
+	grunt.loadNpmTasks('grunt-contrib-compress');
+	grunt.loadNpmTasks("grunt-tslint");
 
     // Default task(s).
-    grunt.registerTask('default', ['clean','copy','ts:default',/*'copy:shared',*/'compress']);
-    grunt.registerTask('release', ['clean','copy','ts:release',/*'copy:shared',*/'compress']);
+    grunt.registerTask('default', ['clean','copy','ts:default',"tslint",/*'copy:shared',*/'compress']);
+    grunt.registerTask('release', ['clean','copy','ts:release',"tslint",/*'copy:shared',*/'compress']);
 };
