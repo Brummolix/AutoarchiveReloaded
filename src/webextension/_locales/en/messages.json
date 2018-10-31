@@ -1,4 +1,7 @@
 {
+	"addOnDescription": {"message": "Automatically archives old mails"},
+	"addOnAuthor": {"message": "Brummolix (original version created by Alexey Egorov)"},
+	
     "settingsHeadline": {"message": "AutoarchiveReloaded settings"},
     "globalSettingsDescription": {"message":"Please see also the settings at every account. Without them nothing will be archived automatically."},
     "archiveTypeTitle": {"message":"Autoarchive time"},

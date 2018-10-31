@@ -1,4 +1,7 @@
 {
+	"addOnDescription": {"message": "Archiva correos antiguos automáticamente"},
+	"addOnAuthor": {"message": "Brummolix (versión original creada por Alexey Egorov)"},
+
     "settingsHeadline": {"message": "Configuración de auto-archivado"},
     "globalSettingsDescription": {"message":"Por favor revisa también la configurción de cada cuenta. Sin esto no se archivara automáticamente."},
     "archiveTypeTitle": {"message":"Modo de autoarchivado"},

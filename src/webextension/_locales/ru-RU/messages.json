@@ -1,4 +1,7 @@
 {
+	"addOnDescription": {"message": "Автоматическое архивирование старых писем"},
+	"addOnAuthor": {"message": "Brummolix (Оригинальная версия Алексея Егорова)"},
+
     "settingsHeadline": {"message": "Настройки расширения AutoarchiveReloaded"},
     "globalSettingsDescription": {"message":"Пожалуйста, посмотрите настройки каждого аккаунта. Без настройки автоархивация не будет работать."},
     "archiveTypeTitle": {"message":"Режим работы авто архивирования"},

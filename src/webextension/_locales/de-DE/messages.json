@@ -1,4 +1,7 @@
 {
+	"addOnDescription": {"message": "Archiviert alte E-Mails automatisch"},
+	"addOnAuthor": {"message": "Brummolix (Originalversion von Alexey Egorov)"},
+
     "settingsHeadline": {"message": "AutoarchiveReloaded Einstellungen"},
     "globalSettingsDescription": {"message":"Bitte beachten Sie auch die Konto-spezifischen Einstellungen. Ohne diese wird nichts automatisch archiviert."},
     "archiveTypeTitle": {"message":"Autoarchiv Zeitpunkt"},

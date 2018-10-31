@@ -1,4 +1,7 @@
 {
+	"addOnDescription": {"message": "Archivez automatiquement les vieux messages"},
+	"addOnAuthor": {"message": "Brummolix (version originale créée par Alexey Egorov)"},
+
     "settingsHeadline": {"message": "Paramètres d'AutoarchiveReloaded"},
     "globalSettingsDescription": {"message":"Veuillez également définir les paramètres de chaque compte. Sans cela rien ne sera archivé automatiquement."},
     "archiveTypeTitle": {"message":"Archiver automatiquement"},

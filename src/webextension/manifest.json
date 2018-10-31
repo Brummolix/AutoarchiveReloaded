@@ -1,9 +1,9 @@
 {
 	"manifest_version":2,
 	"version":"0.9.9.6",
-	"name":"AutoarchiveReloaded",
-	"description": "Automatically archives old mails",
-	"author": "Brummolix (original version created by Alexey Egorov)",
+	"name": "AutoarchiveReloaded",
+	"description": "__MSG_addOnDescription__",
+	"author": "__MSG_addOnAuthor__",
 	"homepage_url": "http://brummolix.github.io/AutoarchiveReloaded/",
 	
 	"options_ui": 
