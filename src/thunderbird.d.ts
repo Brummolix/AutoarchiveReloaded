@@ -195,7 +195,7 @@ declare namespace Components
 		class nsIMsgIncomingServer
 		{
 			public readonly serverURI: string;
-			public type: "pop3" | "imap" | "nntp" | "none"; //"and so on"?
+			public type: "pop3" | "imap" | "nntp" | "none" | "im" | "rss"; //"and so on"?
 			public rootFolder: nsIMsgFolder;
 			public prettyName: string;
 			public readonly localStoreType: "mailbox" | "imap" | "news";

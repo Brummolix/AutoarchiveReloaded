@@ -55,25 +55,53 @@ function startup(data: BootstrapData, reason: BootstrapReasons): void
 				}
 				else if (msg.id === "askForAccounts") //we will be asked for valid accounts which can be archived
 				{
-					const accounts: IAccountInfo[] = [];
-					AutoarchiveReloaded.AccountIterator.forEachAccount((account: Ci.nsIMsgAccount, isAccountArchivable: boolean) =>
-					{
-						if (!isAccountArchivable)
-						{
-							return;
-						}
-
-						accounts.push({
-							accountId: account.key,
-							accountName: account.incomingServer.prettyName,
-						});
-					});
-
-					sendReply(accounts);
+					sendReply(getAccounts());
 				}
 			});
 		});
 	}
+}
+
+function getAccounts(): IAccountInfo[]
+{
+	const nsAccounts: Ci.nsIMsgAccount[] = [];
+	AutoarchiveReloaded.AccountIterator.forEachAccount((account: Ci.nsIMsgAccount, isAccountArchivable: boolean) =>
+	{
+		if (isAccountArchivable)
+		{
+			nsAccounts.push(account);
+		}
+	});
+
+	nsAccounts.sort((a: Ci.nsIMsgAccount, b: Ci.nsIMsgAccount) =>
+	{
+		const mailTypeA: boolean = (a.incomingServer.type === "pop3" || a.incomingServer.type === "imap");
+		const mailTypeB: boolean = (b.incomingServer.type === "pop3" || b.incomingServer.type === "imap");
+
+		if (mailTypeA === mailTypeB)
+		{
+			return a.incomingServer.prettyName.localeCompare(b.incomingServer.prettyName);
+		}
+
+		if (mailTypeA)
+		{
+			return -1;
+		}
+
+		return 1;
+	});
+
+	const accounts: IAccountInfo[] = [];
+	let currentOrder = 0;
+	nsAccounts.forEach((account) => {
+		accounts.push({
+			accountId: account.key,
+			accountName: account.incomingServer.prettyName,
+			order: currentOrder++,
+		});
+	});
+
+	return accounts;
 }
 
 function initAutoArchiveReloadedOverlay(): void

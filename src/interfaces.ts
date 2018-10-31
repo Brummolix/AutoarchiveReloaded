@@ -60,4 +60,5 @@ interface IAccountInfo
 {
 	accountId: string;
 	accountName: string;
+	order: number;
 }

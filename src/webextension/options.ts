@@ -53,6 +53,12 @@ function saveOptions(): void
 	});
 }
 
+interface IAccountInfos
+{
+	account: IAccountInfo;
+	accountSetting: IAccountSettings;
+}
+
 function restoreOptions()
 {
 	aaHelper.loadCurrentSettings((settings: ISettings, accounts: IAccountInfo[]) =>
@@ -64,31 +70,53 @@ function restoreOptions()
 		});
 
 		//Für jeden Account die Einstellungen clonen und die gespeicherten Werte setzen
-		//for (let [accountId, accountSetting] of settings.accountSettings)
+		const accountsSorted: IAccountInfos[] = [];
 		for (const accountId in settings.accountSettings)
 		{
 			if ( settings.accountSettings.hasOwnProperty(accountId) )
 			{
-				const accountSetting = settings.accountSettings[accountId];
 				//TODO: as IAccountInfo ist nicht ganz sauber, wir "wissen", dass es nicht null sein kann...
-				const account: IAccountInfo = aaHelper.findAccountInfo(accounts, accountId as string) as IAccountInfo;
-
-				cloneTemplate("§§ID§§-tab", "tablist", account);
-				cloneTemplate("accountContent-§§ID§§", "tabcontent", account);
-
-				//mark this element as account
-				getJQueryElementForAccount(accountId, "accountContent").data("accountId", accountId);
-
-				(getElementForAccount(accountId, "archiveUnread") as HTMLInputElement).checked = accountSetting.bArchiveUnread;
-				(getElementForAccount(accountId, "archiveUnreadDays") as HTMLInputElement).value = accountSetting.daysUnread.toString();
-				(getElementForAccount(accountId, "archiveStarred") as HTMLInputElement).checked = accountSetting.bArchiveMarked;
-				(getElementForAccount(accountId, "archiveStarredDays") as HTMLInputElement).value = accountSetting.daysMarked.toString();
-				(getElementForAccount(accountId, "archiveTagged") as HTMLInputElement).checked = accountSetting.bArchiveTagged;
-				(getElementForAccount(accountId, "archiveTaggedDays") as HTMLInputElement).value = accountSetting.daysTagged.toString();
-				(getElementForAccount(accountId, "archiveMessages") as HTMLInputElement).checked = accountSetting.bArchiveOther;
-				(getElementForAccount(accountId, "archiveMessagesDays") as HTMLInputElement).value = accountSetting.daysOther.toString();
+				accountsSorted.push({
+					account: aaHelper.findAccountInfo(accounts, accountId) as IAccountInfo,
+					accountSetting: settings.accountSettings[accountId],
+				});
 			}
 		}
+
+		accountsSorted.sort( (a: IAccountInfos, b: IAccountInfos): number =>
+		{
+			if (a.account.order === b.account.order)
+			{
+				return 0;
+			}
+
+			if (a.account.order < b.account.order)
+			{
+				return -1;
+			}
+
+			return 1;
+		});
+
+		accountsSorted.forEach((accountInfos) => {
+			const account = accountInfos.account;
+			const accountId = accountInfos.account.accountId;
+			const accountSetting = accountInfos.accountSetting;
+			cloneTemplate("§§ID§§-tab", "tablist", account);
+			cloneTemplate("accountContent-§§ID§§", "tabcontent", account);
+
+			//mark this element as account
+			getJQueryElementForAccount(accountId, "accountContent").data("accountId", accountId);
+
+			(getElementForAccount(accountId, "archiveUnread") as HTMLInputElement).checked = accountSetting.bArchiveUnread;
+			(getElementForAccount(accountId, "archiveUnreadDays") as HTMLInputElement).value = accountSetting.daysUnread.toString();
+			(getElementForAccount(accountId, "archiveStarred") as HTMLInputElement).checked = accountSetting.bArchiveMarked;
+			(getElementForAccount(accountId, "archiveStarredDays") as HTMLInputElement).value = accountSetting.daysMarked.toString();
+			(getElementForAccount(accountId, "archiveTagged") as HTMLInputElement).checked = accountSetting.bArchiveTagged;
+			(getElementForAccount(accountId, "archiveTaggedDays") as HTMLInputElement).value = accountSetting.daysTagged.toString();
+			(getElementForAccount(accountId, "archiveMessages") as HTMLInputElement).checked = accountSetting.bArchiveOther;
+			(getElementForAccount(accountId, "archiveMessagesDays") as HTMLInputElement).value = accountSetting.daysOther.toString();
+		});
 	});
 }
 
