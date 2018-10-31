@@ -79,18 +79,7 @@ namespace AutoarchiveReloadedOverlay
 
 	class Logger
 	{
-		//private
-		private static consoleService: Ci.nsIConsoleService = Components.classes["@mozilla.org/consoleservice;1"].getService(Ci.nsIConsoleService);
-
-		private static getLogLevelFromPref(): LogLevel
-		{
-			if (AutoarchiveReloaded.settings.globalSettings.enableInfoLogging)
-			{
-				return LogLevel.LEVEL_INFO;
-			}
-
-			return LogLevel.LEVEL_ERROR;
-		}
+		private static readonly consoleService: Ci.nsIConsoleService = Components.classes["@mozilla.org/consoleservice;1"].getService(Ci.nsIConsoleService);
 
 		public static info(str: string): void
 		{
@@ -105,6 +94,16 @@ namespace AutoarchiveReloadedOverlay
 		public static errorException(e: ThunderbirdError): void
 		{
 			this.error(this.getExceptionInfo(e));
+		}
+
+		private static getLogLevelFromPref(): LogLevel
+		{
+			if (AutoarchiveReloaded.settings.globalSettings.enableInfoLogging)
+			{
+				return LogLevel.LEVEL_INFO;
+			}
+
+			return LogLevel.LEVEL_ERROR;
 		}
 
 		private static getExceptionInfo(e: ThunderbirdError): string
@@ -428,6 +427,54 @@ namespace AutoarchiveReloadedOverlay
 			this.onDoneEvent = onDoneEvent;
 		}
 
+		//archive messages for all accounts
+		//(depending on the autoarchive options of the account)
+		public archiveAccounts(): void
+		{
+			try
+			{
+				this.foldersArchived = 0;
+
+				let foldersToArchive = 0;
+
+				AutoarchiveReloaded.AccountIterator.forEachAccount((account: Ci.nsIMsgAccount, isAccountArchivable: boolean) =>
+				{
+					Logger.info("check account '" + account.incomingServer.prettyName + "'");
+					if (isAccountArchivable)
+					{
+						const accountSettings = AutoarchiveReloaded.settings.accountSettings[account.key];
+						SettingsHelper.log(account.incomingServer.prettyName, accountSettings);
+						if (SettingsHelper.isArchivingSomething(accountSettings))
+						{
+							const inboxFolders: Ci.nsIMsgFolder[] = [];
+							Logger.info("getting folders to archive in account '" + account.incomingServer.prettyName + "'");
+							this.getFolders(account.incomingServer.rootFolder, inboxFolders);
+							foldersToArchive += inboxFolders.length;
+							for (const folder of inboxFolders)
+							{
+								this.archiveFolder(folder, accountSettings);
+							}
+						}
+						else
+						{
+							Logger.info("autoarchive disabled, ignore account '" + account.incomingServer.prettyName + "'");
+						}
+					}
+					else
+					{
+						Logger.info("ignore account '" + account.incomingServer.prettyName + "'");
+					}
+				});
+
+				this.checkForArchiveDone(foldersToArchive);
+			}
+			catch (e)
+			{
+				Logger.errorException(e);
+				throw e;
+			}
+		}
+
 		//determine all folders (recursive, starting with param folder), which we want to archive
 		//write output to inboxFolders array
 		private getFolders(folder: Ci.nsIMsgFolder, outInboxFolders: Ci.nsIMsgFolder[]): void
@@ -522,54 +569,6 @@ namespace AutoarchiveReloadedOverlay
 			}
 		}
 
-		//archive messages for all accounts
-		//(depending on the autoarchive options of the account)
-		public archiveAccounts(): void
-		{
-			try
-			{
-				this.foldersArchived = 0;
-
-				let foldersToArchive = 0;
-
-				AutoarchiveReloaded.AccountIterator.forEachAccount((account: Ci.nsIMsgAccount, isAccountArchivable: boolean) =>
-				{
-					Logger.info("check account '" + account.incomingServer.prettyName + "'");
-					if (isAccountArchivable)
-					{
-						const accountSettings = AutoarchiveReloaded.settings.accountSettings[account.key];
-						SettingsHelper.log(account.incomingServer.prettyName, accountSettings);
-						if (SettingsHelper.isArchivingSomething(accountSettings))
-						{
-							const inboxFolders: Ci.nsIMsgFolder[] = [];
-							Logger.info("getting folders to archive in account '" + account.incomingServer.prettyName + "'");
-							this.getFolders(account.incomingServer.rootFolder, inboxFolders);
-							foldersToArchive += inboxFolders.length;
-							for (const folder of inboxFolders)
-							{
-								this.archiveFolder(folder, accountSettings);
-							}
-						}
-						else
-						{
-							Logger.info("autoarchive disabled, ignore account '" + account.incomingServer.prettyName + "'");
-						}
-					}
-					else
-					{
-						Logger.info("ignore account '" + account.incomingServer.prettyName + "'");
-					}
-				});
-
-				this.checkForArchiveDone(foldersToArchive);
-			}
-			catch (e)
-			{
-				Logger.errorException(e);
-				throw e;
-			}
-		}
-
 		private checkForArchiveDone(foldersToArchive: number): void
 		{
 			//wait until all accounts are ready
@@ -647,12 +646,6 @@ namespace AutoarchiveReloadedOverlay
 			autoarchiveReloaded.archiveAccounts();
 		}
 
-		private static onArchiveDone(): void
-		{
-			Logger.info("archive (searching messages to archive) done");
-			this.status = States.READY_FOR_WORK;
-		}
-
 		public static onArchiveManually(): void
 		{
 			Logger.info("try manual archive");
@@ -677,6 +670,12 @@ namespace AutoarchiveReloadedOverlay
 			{
 				Logger.info("manual archive canceled by user");
 			}
+		}
+
+		private static onArchiveDone(): void
+		{
+			Logger.info("archive (searching messages to archive) done");
+			this.status = States.READY_FOR_WORK;
 		}
 	}
 

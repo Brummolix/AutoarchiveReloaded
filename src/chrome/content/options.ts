@@ -62,6 +62,11 @@ namespace AutoarchiveReloaded
 			return legacySettings;
 		}
 
+		public markLegacySettingsAsMigrated(): void
+		{
+			this.getInternalLegacyPrefBranch().setBoolPref("preferencesAlreadyMigrated", true);
+		}
+
 		private getLegacyAccountSettings(): IAccountSettingsArray
 		{
 			const accountSettings: IAccountSettingsArray = {};
@@ -96,11 +101,6 @@ namespace AutoarchiveReloaded
 			return accountSettings;
 		}
 
-		public markLegacySettingsAsMigrated(): void
-		{
-			this.getInternalLegacyPrefBranch().setBoolPref("preferencesAlreadyMigrated", true);
-		}
-
 		private getInternalLegacyPrefBranch(): Ci.nsIPrefBranch
 		{
 			const prefs: Ci.nsIPrefService = Components.classes["@mozilla.org/preferences-service;1"].getService(Components.interfaces.nsIPrefService);
@@ -111,12 +111,6 @@ namespace AutoarchiveReloaded
 	//TODO: why is this inside options.ts? Rename file? Or put everything into overlay.js again?
 	export class AccountIterator
 	{
-		private static isAccountArchivable(account: Ci.nsIMsgAccount): boolean
-		{
-			//ignore IRC accounts
-			return (account.incomingServer.localStoreType === "mailbox" || account.incomingServer.localStoreType === "imap" || account.incomingServer.localStoreType === "news");
-		}
-
 		public static forEachAccount(forEachDo: (account: Ci.nsIMsgAccount, isAccountArchivable: boolean) => void): void
 		{
 			const accounts: Ci.nsIMsgAccount[] = fixIterator(MailServices.accounts.accounts, Ci.nsIMsgAccount);
@@ -124,6 +118,12 @@ namespace AutoarchiveReloaded
 			{
 				forEachDo(account, this.isAccountArchivable(account));
 			}
+		}
+
+		private static isAccountArchivable(account: Ci.nsIMsgAccount): boolean
+		{
+			//ignore IRC accounts
+			return (account.incomingServer.localStoreType === "mailbox" || account.incomingServer.localStoreType === "imap" || account.incomingServer.localStoreType === "news");
 		}
 	}
 

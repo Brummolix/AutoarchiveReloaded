@@ -122,14 +122,6 @@ class AutoarchiveReloadedWeOptionHelper
 		});
 	}
 
-	private OnWebExtensionStartupDone(): void
-	{
-		const message: IBrowserMessage = {
-			id: "webExtensionStartupDone",
-		};
-		browser.runtime.sendMessage(message);
-	}
-
 	public savePreferencesAndSendToLegacyAddOn(settings: ISettings, onSuccess: () => void): void
 	{
 		//TODO: sometimes we get "Error: WebExtension context not found!"
@@ -144,5 +136,13 @@ class AutoarchiveReloadedWeOptionHelper
 			//TODO: error? log
 			console.log(`Error: ${error}`);
 		});
+	}
+
+	private OnWebExtensionStartupDone(): void
+	{
+		const message: IBrowserMessage = {
+			id: "webExtensionStartupDone",
+		};
+		browser.runtime.sendMessage(message);
 	}
 }

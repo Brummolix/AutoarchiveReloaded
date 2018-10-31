@@ -22,22 +22,6 @@ var EXPORTED_SYMBOLS = ["AutoarchiveReloadedWeOptionHelper"];
 
 class AutoarchiveReloadedOptionHandling
 {
-	private getDefaultSettings(): ISettings
-	{
-		return {
-			globalSettings: this.getDefaultGlobalSettings(),
-			accountSettings: {},
-		};
-	}
-
-	private getDefaultGlobalSettings(): IGlobalSettings
-	{
-		return {
-			archiveType: "manual",
-			enableInfoLogging: false,
-		};
-	}
-
 	public getDefaultAccountSettings(): IAccountSettings
 	{
 		return {
@@ -99,5 +83,21 @@ class AutoarchiveReloadedOptionHandling
 		}
 
 		return clone;
+	}
+
+	private getDefaultSettings(): ISettings
+	{
+		return {
+			globalSettings: this.getDefaultGlobalSettings(),
+			accountSettings: {},
+		};
+	}
+
+	private getDefaultGlobalSettings(): IGlobalSettings
+	{
+		return {
+			archiveType: "manual",
+			enableInfoLogging: false,
+		};
 	}
 }
