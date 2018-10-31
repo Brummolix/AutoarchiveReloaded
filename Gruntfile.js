@@ -18,79 +18,79 @@ Copyright 2018 Brummolix (new version AutoarchiveReloaded, https://github.com/Br
 */
 module.exports = function(grunt) {
 
-  let srcDir = 'src/';
-  let outDir = 'built/';
-  let outDirExtracted = outDir + "/release/";
-  let outXpi = outDir + "/AutoArchiveReloaded.xpi";
+	let srcDir = "src/";
+	let outDir = "built/";
+	let outDirExtracted = outDir + "/release/";
+	let outXpi = outDir + "/AutoArchiveReloaded.xpi";
 
-  let srcDirShared = outDirExtracted + 'webextension/shared/';
-  let destDirShared = outDirExtracted + 'chrome/content/shared/';
+	let srcDirShared = outDirExtracted + "webextension/shared/";
+	let destDirShared = outDirExtracted + "chrome/content/shared/";
 
-    // Project configuration.
-    grunt.initConfig({
-      pkg: grunt.file.readJSON('package.json'),
+	// Project configuration.
+	grunt.initConfig({
+		pkg: grunt.file.readJSON("package.json"),
 
-      clean: [outDir],
-      copy: {
-        main: {
-          files: [
-            {expand: true, cwd: srcDir, src: ['**','!**/*.ts'], dest: outDirExtracted},
-            {expand: true, src: ['./licence.txt','./README.md'], dest: outDirExtracted},
-          ],
-        },
-        shared: {
-          files: [
-            {expand: true, cwd:srcDirShared, src: ['**'], dest: destDirShared},//cwd:srcDirShared,
-          ],
-        },
-      },
-      ts: {
-        default : {
-          tsconfig: './tsconfig.json'
-        },
-        release: {
-          tsconfig: './tsconfig.release.json'
-        }
-      },
-      // make a zipfile
-      compress: {
-        main: {
-          options: {
-            archive: outXpi,
-            mode: 'zip'
-          },
-          files: [
-            {expand: true, cwd: outDirExtracted, src: ['**'], dest: '/'}, // makes all src relative to cwd
-          ]
-        }
-	  },
-		tslint: {
-		options: {
-			// can be a configuration object or a filepath to tslint.json
-			configuration: "./tslint.json",
-			// If set to true, tslint errors will be reported, but not fail the task
-			// If set to false, tslint errors will be reported, and the task will fail
-			force: false,
-			fix: false
+		clean: [outDir],
+		copy: {
+			main: {
+				files: [
+					{ expand: true, cwd: srcDir, src: ["**", "!**/*.ts"], dest: outDirExtracted },
+					{ expand: true, src: ["./licence.txt", "./README.md"], dest: outDirExtracted },
+				],
+			},
+			shared: {
+				files: [
+					{ expand: true, cwd: srcDirShared, src: ["**"], dest: destDirShared }, //cwd:srcDirShared,
+				],
+			},
 		},
-		files: {
-			src: [
-				srcDir + "/**/*.ts",
-				srcDir + "/**/*.js",
-				"!src/webextension/libs/**/*.js",
-				"!src/chrome/content/thunderbird-stdlib/*.js"
-			]
-		}
-	}
-    });
-  
-    grunt.loadNpmTasks('grunt-contrib-copy');
-    grunt.loadNpmTasks('grunt-contrib-clean');
-    grunt.loadNpmTasks("grunt-ts");
-	grunt.loadNpmTasks('grunt-contrib-compress');
+		ts: {
+			default: {
+				tsconfig: "./tsconfig.json",
+			},
+			release: {
+				tsconfig: "./tsconfig.release.json",
+			},
+		},
+		// make a zipfile
+		compress: {
+			main: {
+				options: {
+					archive: outXpi,
+					mode: "zip",
+				},
+				files: [
+					{ expand: true, cwd: outDirExtracted, src: ["**"], dest: "/" }, // makes all src relative to cwd
+				],
+			},
+		},
+		tslint: {
+			options: {
+				// can be a configuration object or a filepath to tslint.json
+				configuration: "./tslint.json",
+				// If set to true, tslint errors will be reported, but not fail the task
+				// If set to false, tslint errors will be reported, and the task will fail
+				force: false,
+				fix: false,
+			},
+			files: {
+				src: [
+					srcDir + "/**/*.ts",
+					srcDir + "/**/*.js",
+					"!src/webextension/libs/**/*.js",
+					"!src/chrome/content/thunderbird-stdlib/*.js",
+				],
+			},
+		},
+	});
+
+	grunt.loadNpmTasks("grunt-contrib-copy");
+	grunt.loadNpmTasks("grunt-contrib-clean");
+	grunt.loadNpmTasks("grunt-ts");
+	grunt.loadNpmTasks("grunt-contrib-compress");
 	grunt.loadNpmTasks("grunt-tslint");
 
-    // Default task(s).
-    grunt.registerTask('default', ['clean','copy','ts:default',"tslint",/*'copy:shared',*/'compress']);
-    grunt.registerTask('release', ['clean','copy','ts:release',"tslint",/*'copy:shared',*/'compress']);
+	// Default task(s).
+	grunt.registerTask("default", ["clean", "copy", "ts:default", "tslint", /*'copy:shared',*/ "compress"]);
+	grunt.registerTask("release", ["clean", "copy", "ts:release", "tslint", /*'copy:shared',*/ "compress"]);
 };

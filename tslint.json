@@ -3,7 +3,11 @@
     "extends": [
         "tslint:recommended"
     ],
-    "jsRules": {},
+	"jsRules": {
+		"indent": [true, "tabs", 4],
+		"object-literal-sort-keys":false,
+		"eofline":false
+	},
     "rules": {
         //rules see https://palantir.github.io/tslint/rules/
 
