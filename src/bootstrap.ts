@@ -130,12 +130,18 @@ function initAutoArchiveReloadedOverlay(): void
 
 function shutdown(data: BootstrapData, reason: BootstrapReasons): void
 {
-
 	console.log("AutoArchiveReloaded - shutdown");
 
-	if (typeof RestartlessMenuItems !== "undefined")
+	try
 	{
-		RestartlessMenuItems.removeAll();
+		if (typeof RestartlessMenuItems !== "undefined")
+		{
+			RestartlessMenuItems.removeAll();
+		}
+	}
+	catch (e)
+	{
+		AutoarchiveReloadedOverlay.Logger.errorException(e);
 	}
 
 	console.log("unload scripts");

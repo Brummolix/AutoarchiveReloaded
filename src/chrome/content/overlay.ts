@@ -77,7 +77,7 @@ namespace AutoarchiveReloadedOverlay
 		LEVEL_INFO, LEVEL_ERROR,
 	}
 
-	class Logger
+	export class Logger
 	{
 		private static readonly consoleService: Ci.nsIConsoleService = Components.classes["@mozilla.org/consoleservice;1"].getService(Ci.nsIConsoleService);
 
