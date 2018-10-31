@@ -8,6 +8,7 @@
     "license": "GPL-3.0-or-later",
     "dependencies": {},
     "devDependencies": {
+        "tslint": "^5.11.0",
         "@types/jquery": "^3.3.22",
         "grunt": "^1.0.3",
         "grunt-contrib-clean": "^2.0.0",

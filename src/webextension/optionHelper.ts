@@ -17,118 +17,132 @@ Copyright 2018 Brummolix (AutoarchiveReloaded, https://github.com/Brummolix/Auto
     along with AutoarchiveReloaded.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-var EXPORTED_SYMBOLS = [
-    'AutoarchiveReloadedWeOptionHelper'
-]
+// tslint:disable-next-line:no-var-keyword
+var EXPORTED_SYMBOLS = ["AutoarchiveReloadedWeOptionHelper"];
 
 class AutoarchiveReloadedWeOptionHelper
 {
-    sendCurrentPreferencesToLegacyAddOn (onSuccess:() => void):void
-    {
-        this.loadCurrentSettings(function(settings:ISettings)
-        {
-            let message:IBrowserMessageSendCurrentSettings = {
-                id: "sendCurrentPreferencesToLegacyAddOn",
-                data: settings
-            }
+	public sendCurrentPreferencesToLegacyAddOn(onSuccess: () => void): void
+	{
+		this.loadCurrentSettings((settings: ISettings) =>
+		{
+			const message: IBrowserMessageSendCurrentSettings = {
+				id: "sendCurrentPreferencesToLegacyAddOn",
+				data: settings,
+			};
 
-            browser.runtime.sendMessage(message).then((reply:any) => {
-                onSuccess();
-                });
-        });
-    }
+			browser.runtime.sendMessage(message).then((reply: any) =>
+			{
+				onSuccess();
+			});
+		});
+	}
 
-    loadCurrentSettings (onSuccesfulDone:(settings:ISettings,accounts:IAccountInfo[] )=> void)
-    {
-        console.log("loadCurrentSettings");
+	public loadCurrentSettings(onSuccesfulDone: (settings: ISettings, accounts: IAccountInfo[]) => void)
+	{
+		console.log("loadCurrentSettings");
 
-        let message:IBrowserMessage = {
-            id: "askForAccounts",
-        }
+		const message: IBrowserMessage = {
+			id: "askForAccounts",
+		};
 
-        browser.runtime.sendMessage(message).then((accounts:IAccountInfo[]) => {
-            browser.storage.local.get("settings").then((result:any)  => {
-                
-                //settings read succesfully...
-                let oHandling:AutoarchiveReloadedOptionHandling = new AutoarchiveReloadedOptionHandling();
-                let settings:ISettings = oHandling.convertPartialSettings(result.settings);
+		browser.runtime.sendMessage(message).then((accounts: IAccountInfo[]) =>
+		{
+			browser.storage.local.get("settings").then((result: any) =>
+			{
 
-                //every existing account should have a setting
-                accounts.forEach(account => {
-                    let accountSetting = settings.accountSettings[account.accountId];
-                    if (accountSetting==undefined)
-                        settings.accountSettings[account.accountId] = oHandling.getDefaultAccountSettings();
-                });
+				//settings read succesfully...
+				const oHandling: AutoarchiveReloadedOptionHandling = new AutoarchiveReloadedOptionHandling();
+				const settings: ISettings = oHandling.convertPartialSettings(result.settings);
 
-                //no other account should be there
-                for (let accountId in settings.accountSettings)
-                {
-                    if (this.findAccountInfo(accounts,accountId) == null)
-                        delete settings.accountSettings[accountId];
-                }
+				//every existing account should have a setting
+				accounts.forEach((account) =>
+				{
+					const accountSetting = settings.accountSettings[account.accountId];
+					if (accountSetting === undefined)
+					{
+						settings.accountSettings[account.accountId] = oHandling.getDefaultAccountSettings();
+					}
+				});
 
-                onSuccesfulDone(settings,accounts);
-            },function(error:string)
-            {
-                //error while reading settings
-                //TODO: error? log
-                console.log(`Error: ${error}`);
-            });
-        });
-    }
+				//no other account should be there
+				for (const accountId in settings.accountSettings)
+				{
+					if (this.findAccountInfo(accounts, accountId) === null)
+					{
+						delete settings.accountSettings[accountId];
+					}
+				}
 
-    findAccountInfo(accountSettings:IAccountInfo[],id:string):IAccountInfo | null
-    {
-        for (let accountSetting of accountSettings) 
-        {
-            if (accountSetting.accountId == id)
-                return accountSetting;
-        }
+				onSuccesfulDone(settings, accounts);
+			}, (error: string) =>
+			{
+				//error while reading settings
+				//TODO: error? log
+				console.log(`Error: ${error}`);
+			});
+		});
+	}
 
-        return null;
-    }
+	public findAccountInfo(accountSettings: IAccountInfo[], id: string): IAccountInfo | null
+	{
+		for (const accountSetting of accountSettings)
+		{
+			if (accountSetting.accountId === id)
+			{
+				return accountSetting;
+			}
+		}
 
-    convertLegacyPreferences ():void
-    {
-        let message:IBrowserMessage = {
-            id: "askForLegacyPreferences",
-        }
+		return null;
+	}
 
-        browser.runtime.sendMessage(message).then((settings:ISettings):void => {
-            if (settings)
-            {
-                this.savePreferencesAndSendToLegacyAddOn(settings, ():void => {
-                    this.OnWebExtensionStartupDone();
-                });
-            }
-            else
-            {
-                this.sendCurrentPreferencesToLegacyAddOn(():void => {
-                    this.OnWebExtensionStartupDone();
-                });
-            }
-        });
-    }
+	public convertLegacyPreferences(): void
+	{
+		const message: IBrowserMessage = {
+			id: "askForLegacyPreferences",
+		};
 
-    private OnWebExtensionStartupDone():void
-    {
-        let message:IBrowserMessage = {
-            id: "webExtensionStartupDone",
-        }
-        browser.runtime.sendMessage(message).then((reply:any) => {});
-    }
+		browser.runtime.sendMessage(message).then((settings: ISettings): void =>
+		{
+			if (settings)
+			{
+				this.savePreferencesAndSendToLegacyAddOn(settings, (): void =>
+				{
+					this.OnWebExtensionStartupDone();
+				});
+			}
+			else
+			{
+				this.sendCurrentPreferencesToLegacyAddOn((): void =>
+				{
+					this.OnWebExtensionStartupDone();
+				});
+			}
+		});
+	}
 
-    savePreferencesAndSendToLegacyAddOn(settings:ISettings,onSuccess:() => void):void
-    {
-        //TODO: sometimes we get "Error: WebExtension context not found!"
-        //why?
-        browser.storage.local.set({settings: settings}).then(() => {
-            //settings written sucesfully
-            this.sendCurrentPreferencesToLegacyAddOn(onSuccess);
-        },function (error:string){
-            //error while writing settings
-            //TODO: error? log
-            console.log(`Error: ${error}`);
-        });
-    }
- }
+	private OnWebExtensionStartupDone(): void
+	{
+		const message: IBrowserMessage = {
+			id: "webExtensionStartupDone",
+		};
+		browser.runtime.sendMessage(message);
+	}
+
+	public savePreferencesAndSendToLegacyAddOn(settings: ISettings, onSuccess: () => void): void
+	{
+		//TODO: sometimes we get "Error: WebExtension context not found!"
+		//why?
+		browser.storage.local.set({ settings: settings }).then(() =>
+		{
+			//settings written sucesfully
+			this.sendCurrentPreferencesToLegacyAddOn(onSuccess);
+		}, (error: string) =>
+		{
+			//error while writing settings
+			//TODO: error? log
+			console.log(`Error: ${error}`);
+		});
+	}
+}
