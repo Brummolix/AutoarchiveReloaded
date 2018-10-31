@@ -20,50 +20,55 @@ Copyright 2018 Brummolix (AutoarchiveReloaded, https://github.com/Brummolix/Auto
 Cu.import("resource://gre/modules/Services.jsm");
 
 //list here all imports, also from sub files to make sure they are correctly unloaded
-const AutoArchiveReloadedImports:string[] = ["options.js","overlay.js","thunderbird-stdlib/RestartlessMenuItems.js","thunderbird-stdlib/msgHdrUtils.js"];
+const AutoArchiveReloadedImports: string[] = ["options.js", "overlay.js", "thunderbird-stdlib/RestartlessMenuItems.js", "thunderbird-stdlib/msgHdrUtils.js"];
 
-
-function startup(data:BootstrapData, reason:BootstrapReasons):void {
+function startup(data: BootstrapData, reason: BootstrapReasons): void
+{
 	console.log("AutoArchiveReloaded - startup");
 
-	for (let strImport of AutoArchiveReloadedImports)
+	for (const strImport of AutoArchiveReloadedImports)
 	{
 		Cu.import("chrome://autoarchiveReloaded/content/" + strImport);
 	}
 
 	if (data.webExtension)
 	{
-		data.webExtension.startup().then((api:StartupWebextensionApi) => {
+		data.webExtension.startup().then((api: StartupWebextensionApi) =>
+		{
 			const browser = api.browser;
-		    browser.runtime.onMessage.addListener( (msg:IBrowserMessage|IBrowserMessageSendCurrentSettings, sender:RuntimeMessageSender, sendReply:(response:Object|null) => void) => {
-				if (msg.id == "sendCurrentPreferencesToLegacyAddOn") //we get the current preferences at start and on every change of preferences
+			browser.runtime.onMessage.addListener((msg: IBrowserMessage | IBrowserMessageSendCurrentSettings, sender: RuntimeMessageSender, sendReply: (response: object | null) => void) =>
+			{
+				if (msg.id === "sendCurrentPreferencesToLegacyAddOn") //we get the current preferences at start and on every change of preferences
 				{
 					AutoarchiveReloaded.settings = (msg as IBrowserMessageSendCurrentSettings).data;
 				}
-				else if (msg.id == "askForLegacyPreferences") //at startup we are asked for legacy preferences
+				else if (msg.id === "askForLegacyPreferences") //at startup we are asked for legacy preferences
 				{
-					let legacyOptions:AutoarchiveReloaded.LegacyOptions = new AutoarchiveReloaded.LegacyOptions();
-					let legacySettings = legacyOptions.getLegacyOptions();
-					sendReply(legacySettings); 
+					const legacyOptions: AutoarchiveReloaded.LegacyOptions = new AutoarchiveReloaded.LegacyOptions();
+					const legacySettings = legacyOptions.getLegacyOptions();
+					sendReply(legacySettings);
 					legacyOptions.markLegacySettingsAsMigrated();
 				}
-				else if (msg.id == "webExtensionStartupDone") //after startup we are informed and can go on
+				else if (msg.id === "webExtensionStartupDone") //after startup we are informed and can go on
 				{
 					initAutoArchiveReloadedOverlay();
 				}
-				else if (msg.id == "askForAccounts") //we will be asked for valid accounts which can be archived
+				else if (msg.id === "askForAccounts") //we will be asked for valid accounts which can be archived
 				{
-					let accounts:IAccountInfo[] = [];
-					AutoarchiveReloaded.AccountIterator.forEachAccount( (account:Ci.nsIMsgAccount,isAccountArchivable:boolean) => {
+					const accounts: IAccountInfo[] = [];
+					AutoarchiveReloaded.AccountIterator.forEachAccount((account: Ci.nsIMsgAccount, isAccountArchivable: boolean) =>
+					{
 						if (!isAccountArchivable)
+						{
 							return;
-						
+						}
+
 						accounts.push({
 							accountId: account.key,
-							accountName: account.incomingServer.prettyName
-						})
+							accountName: account.incomingServer.prettyName,
+						});
 					});
-					
+
 					sendReply(accounts);
 				}
 			});
@@ -71,7 +76,7 @@ function startup(data:BootstrapData, reason:BootstrapReasons):void {
 	}
 }
 
-function initAutoArchiveReloadedOverlay():void
+function initAutoArchiveReloadedOverlay(): void
 {
 	//TODO: after start of TB the menu is not there!
 	//if we deactivate/activate it, it is there?
@@ -81,11 +86,10 @@ function initAutoArchiveReloadedOverlay():void
 	RestartlessMenuItems.add({
 		label: AutoarchiveReloadedOverlay.StringBundle.GetStringFromName("menuArchive"),
 		id: "AutoArchiveReloaded_AutoarchiveNow",
-		onCommand: function ():void
+		onCommand: () =>
 		{
 			AutoarchiveReloadedOverlay.Global.onArchiveManually();
 		},
-		onUnload: function ():void {},
 	});
 
 	//TODO: Toolbar in alle Windows einhängen...
@@ -97,10 +101,10 @@ function initAutoArchiveReloadedOverlay():void
 	/*
 	let doc = document;
 	let toolbox = doc.querySelector('#navigator-toolbox');
-	
+
 	let buttonId = 'AutoArchiveReloaded_AutoarchiveNow_Button';
 	let button = doc.getElementById(buttonId);
-	if (!button) 
+	if (!button)
 	{
 		button = doc.createElementNS('http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul', 'toolbarbutton');
 		button.setAttribute('id', buttonId);
@@ -113,34 +117,41 @@ function initAutoArchiveReloadedOverlay():void
 		}, false);
 
 		toolbox.palette.appendChild(button);
-	}			
+	}
 	//move button into last postion in nav-bar
 	let navBar = doc.querySelector('#nav-bar');
 	navBar.insertItem(buttonId); //if you want it in first position in navBar do: navBar.insertItem(buttonId, navBar.firstChild);
-	navBar.removeChild(button);			
+	navBar.removeChild(button);
 	*/
-	
+
 	//startup
 	AutoarchiveReloadedOverlay.Global.startup();
 }
 
-function shutdown(data:BootstrapData, reason:BootstrapReasons):void {
+function shutdown(data: BootstrapData, reason: BootstrapReasons): void
+{
 
 	console.log("AutoArchiveReloaded - shutdown");
 
-	if (typeof RestartlessMenuItems !== 'undefined')
+	if (typeof RestartlessMenuItems !== "undefined")
+	{
 		RestartlessMenuItems.removeAll();
+	}
 
 	console.log("unload scripts");
 
-	for (let strImport of AutoArchiveReloadedImports.reverse())
+	for (const strImport of AutoArchiveReloadedImports.reverse())
+	{
 		Cu.unload("chrome://autoarchiveReloaded/content/" + strImport);
+	}
 }
 
-function install(data:BootstrapData, reason:BootstrapReasons):void {
+function install(data: BootstrapData, reason: BootstrapReasons): void
+{
 	console.log("AutoArchiveReloaded - install");
 }
 
-function uninstall(data:BootstrapData, reason:BootstrapReasons):void {
+function uninstall(data: BootstrapData, reason: BootstrapReasons): void
+{
 	console.log("AutoArchiveReloaded - uninstall");
 }

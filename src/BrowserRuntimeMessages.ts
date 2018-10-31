@@ -19,10 +19,10 @@ Copyright 2018 Brummolix (AutoarchiveReloaded, https://github.com/Brummolix/Auto
 
 interface IBrowserMessage
 {
-    id:string
+	id: string;
 }
 
 interface IBrowserMessageSendCurrentSettings extends IBrowserMessage
 {
-    data:ISettings;
+	data: ISettings;
 }
