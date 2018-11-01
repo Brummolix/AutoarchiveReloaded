@@ -119,19 +119,22 @@ function getAccounts(): IAccountInfo[]
 
 function initAutoArchiveReloadedOverlay(): void
 {
-	//TODO: after start of TB the menu is not there!
-	//if we deactivate/activate it, it is there?
-	//-> debug/log
+	console.log("initAutoArchiveReloadedOverlay");
 
-	//menuitem
-	RestartlessMenuItems.add({
-		label: AutoarchiveReloadedOverlay.StringBundle.GetStringFromName("menuArchive"),
-		id: "AutoArchiveReloaded_AutoarchiveNow",
-		onCommand: () =>
-		{
-			AutoarchiveReloadedOverlay.Global.onArchiveManually();
-		},
-	});
+	//directly after start of TB the adding of the menu does not work (getting the elemtens of "taskPopup" and "tabmail" returns null)
+	//therefore we have to wait a bit
+	//additionally setTimeout is not defined (even if we can use it AutoarchiveReloadedOverlay.Global.startup at the same time???)
+	//therefore use the mail3pane
+	(AutoarchiveReloadedOverlay.Helper.getMail3Pane() as any).setTimeout(() => {
+		RestartlessMenuItems.add({
+			label: AutoarchiveReloadedOverlay.StringBundle.GetStringFromName("menuArchive"),
+			id: "AutoArchiveReloaded_AutoarchiveNow",
+			onCommand: () =>
+			{
+				AutoarchiveReloadedOverlay.Global.onArchiveManually();
+			},
+		});
+	}, 1000);
 
 	//TODO: Toolbar in alle Windows einhängen...
 	//TODO: wahrscheinlich besser so:

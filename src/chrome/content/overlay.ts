@@ -40,7 +40,7 @@ namespace AutoarchiveReloadedOverlay
 	//-------------------------------------------------------------------------------------
 
 	//singleton with global helper
-	class Helper
+	export class Helper
 	{
 		public static getMail3Pane(): Mail3Pane
 		{
