@@ -185,7 +185,7 @@ function shutdown(data: BootstrapData, reason: BootstrapReasons.APP_SHUTDOWN | B
 	}
 	catch (e)
 	{
-		AutoarchiveReloadedOverlay.Logger.errorException(e);
+		AutoarchiveReloadedOverlay.logger.errorException(e);
 	}
 
 	console.log("unload scripts");

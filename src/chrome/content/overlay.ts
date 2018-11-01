@@ -79,24 +79,24 @@ namespace AutoarchiveReloadedOverlay
 
 	export class Logger
 	{
-		private static readonly consoleService: Ci.nsIConsoleService = Components.classes["@mozilla.org/consoleservice;1"].getService(Ci.nsIConsoleService);
+		private readonly consoleService: Ci.nsIConsoleService = Components.classes["@mozilla.org/consoleservice;1"].getService(Ci.nsIConsoleService);
 
-		public static info(str: string): void
+		public info(str: string): void
 		{
 			this.log(LogLevel.LEVEL_INFO, str);
 		}
 
-		public static error(str: string): void
+		public error(str: string): void
 		{
 			this.log(LogLevel.LEVEL_ERROR, str);
 		}
 
-		public static errorException(e: ThunderbirdError): void
+		public errorException(e: ThunderbirdError): void
 		{
 			this.error(this.getExceptionInfo(e));
 		}
 
-		private static getLogLevelFromPref(): LogLevel
+		private getLogLevelFromPref(): LogLevel
 		{
 			if (AutoarchiveReloaded.settings.globalSettings.enableInfoLogging)
 			{
@@ -106,12 +106,12 @@ namespace AutoarchiveReloadedOverlay
 			return LogLevel.LEVEL_ERROR;
 		}
 
-		private static getExceptionInfo(e: ThunderbirdError): string
+		private getExceptionInfo(e: ThunderbirdError): string
 		{
 			return e + "; Source: '" + e.fileName + "'; Line: " + e.lineNumber + "; code: " + e.toSource() + "; stack: " + e.stack;
 		}
 
-		private static log(levelToLog: LogLevel, str: string): void
+		private log(levelToLog: LogLevel, str: string): void
 		{
 			if (levelToLog < this.getLogLevelFromPref())
 			{
@@ -121,7 +121,7 @@ namespace AutoarchiveReloadedOverlay
 			this.DoLog(levelToLog, str);
 		}
 
-		private static DoLog(levelToLog: LogLevel, str: string): void
+		private DoLog(levelToLog: LogLevel, str: string): void
 		{
 			const date = new Date();
 			let strToLog = date.toLocaleString() + " - AutoarchiveReloaded - ";
@@ -139,7 +139,7 @@ namespace AutoarchiveReloadedOverlay
 			this.writeToFile(strToLog);
 		}
 
-		private static writeToFile(str: string): void
+		private writeToFile(str: string): void
 		{
 			try
 			{
@@ -166,6 +166,8 @@ namespace AutoarchiveReloadedOverlay
 		}
 	}
 
+	export const logger: Logger = new Logger();
+
 	//------------------------------------------------------------------------------
 
 	//for managing the activities in activity view
@@ -190,7 +192,7 @@ namespace AutoarchiveReloadedOverlay
 			}
 			catch (e)
 			{
-				Logger.errorException(e);
+				logger.errorException(e);
 				throw e;
 			}
 		}
@@ -226,7 +228,7 @@ namespace AutoarchiveReloadedOverlay
 			}
 			catch (e)
 			{
-				Logger.errorException(e);
+				logger.errorException(e);
 				throw e;
 			}
 		}
@@ -260,7 +262,7 @@ namespace AutoarchiveReloadedOverlay
 		{
 			try
 			{
-				Logger.info("start real archiving of '" + this.folder.name + "' (" + this.messages.length + " messages)");
+				logger.info("start real archiving of '" + this.folder.name + "' (" + this.messages.length + " messages)");
 				const mail3PaneWindow: Mail3Pane = Helper.getMail3Pane();
 
 				//TB jumps to the end (after finishing the archiving) if no message is selected
@@ -294,11 +296,11 @@ namespace AutoarchiveReloadedOverlay
 					{
 						if (!mail3PaneWindow.gFolderDisplay.view.dbView)
 						{
-							Logger.info("mail3PaneWindow.gFolderDisplay.dbView is null > batchMessageMover will not work");
+							logger.info("mail3PaneWindow.gFolderDisplay.dbView is null > batchMessageMover will not work");
 							const folderToSelect = this.folder;
 							if (folderToSelect)
 							{
-								Logger.info("> try to select folder " + folderToSelect.name + " " + folderToSelect.URI);
+								logger.info("> try to select folder " + folderToSelect.name + " " + folderToSelect.URI);
 								//When extension TorBirdy was installed gFolderTreeView.selectFolder did not work.
 								//gFolderDisplay.show worked with and without TorBirdy.
 								mail3PaneWindow.gFolderDisplay.show(folderToSelect);
@@ -316,7 +318,7 @@ namespace AutoarchiveReloadedOverlay
 			}
 			catch (e)
 			{
-				Logger.errorException(e);
+				logger.errorException(e);
 				return -1;
 			}
 		}
@@ -390,7 +392,7 @@ namespace AutoarchiveReloadedOverlay
 			}
 			catch (e)
 			{
-				Logger.errorException(e);
+				logger.errorException(e);
 				throw e;
 			}
 		}
@@ -398,7 +400,7 @@ namespace AutoarchiveReloadedOverlay
 		//after the search was done, archive all messages
 		public onSearchDone(status: number): void
 		{
-			Logger.info("message search done for '" + this.folder.name + "' in account '" + this.folder.server.prettyName + "' -> " + this.messages.length + " messages found to archive");
+			logger.info("message search done for '" + this.folder.name + "' in account '" + this.folder.server.prettyName + "' -> " + this.messages.length + " messages found to archive");
 			let result = 0;
 			if (this.messages.length > 0)
 			{
@@ -439,7 +441,7 @@ namespace AutoarchiveReloadedOverlay
 
 				AutoarchiveReloaded.AccountIterator.forEachAccount((account: Ci.nsIMsgAccount, isAccountArchivable: boolean) =>
 				{
-					Logger.info("check account '" + account.incomingServer.prettyName + "'");
+					logger.info("check account '" + account.incomingServer.prettyName + "'");
 					if (isAccountArchivable)
 					{
 						const accountSettings = AutoarchiveReloaded.settings.accountSettings[account.key];
@@ -447,7 +449,7 @@ namespace AutoarchiveReloadedOverlay
 						if (SettingsHelper.isArchivingSomething(accountSettings))
 						{
 							const inboxFolders: Ci.nsIMsgFolder[] = [];
-							Logger.info("getting folders to archive in account '" + account.incomingServer.prettyName + "'");
+							logger.info("getting folders to archive in account '" + account.incomingServer.prettyName + "'");
 							this.getFolders(account.incomingServer.rootFolder, inboxFolders);
 							foldersToArchive += inboxFolders.length;
 							for (const folder of inboxFolders)
@@ -457,12 +459,12 @@ namespace AutoarchiveReloadedOverlay
 						}
 						else
 						{
-							Logger.info("autoarchive disabled, ignore account '" + account.incomingServer.prettyName + "'");
+							logger.info("autoarchive disabled, ignore account '" + account.incomingServer.prettyName + "'");
 						}
 					}
 					else
 					{
-						Logger.info("ignore account '" + account.incomingServer.prettyName + "'");
+						logger.info("ignore account '" + account.incomingServer.prettyName + "'");
 					}
 				});
 
@@ -470,7 +472,7 @@ namespace AutoarchiveReloadedOverlay
 			}
 			catch (e)
 			{
-				Logger.errorException(e);
+				logger.errorException(e);
 				throw e;
 			}
 		}
@@ -495,7 +497,7 @@ namespace AutoarchiveReloadedOverlay
 				//Virtual - no, it is virtual :)
 				if (folder.getFlag(Ci.nsMsgFolderFlags.Trash) || folder.getFlag(Ci.nsMsgFolderFlags.Junk) || folder.getFlag(Ci.nsMsgFolderFlags.Queue) || folder.getFlag(Ci.nsMsgFolderFlags.Drafts) || folder.getFlag(Ci.nsMsgFolderFlags.Templates) || folder.getFlag(Ci.nsMsgFolderFlags.Archive) || folder.getFlag(Ci.nsMsgFolderFlags.Virtual))
 				{
-					Logger.info("ignore folder '" + folder.name + "'");
+					logger.info("ignore folder '" + folder.name + "'");
 					return;
 				}
 
@@ -513,7 +515,7 @@ namespace AutoarchiveReloadedOverlay
 			}
 			catch (e)
 			{
-				Logger.errorException(e);
+				logger.errorException(e);
 				throw e;
 			}
 		}
@@ -522,7 +524,7 @@ namespace AutoarchiveReloadedOverlay
 		{
 			try
 			{
-				Logger.info("start searching messages to archive in folder '" + folder.name + "' in account '" + folder.server.prettyName + "'");
+				logger.info("start searching messages to archive in folder '" + folder.name + "' in account '" + folder.server.prettyName + "'");
 				//build a search for the messages to archive
 				const searchSession: Ci.nsIMsgSearchSession = Cc["@mozilla.org/messenger/searchSession;1"].createInstance(Ci.nsIMsgSearchSession);
 				searchSession.addScopeTerm(Ci.nsMsgSearchScope.offlineMail, folder);
@@ -564,7 +566,7 @@ namespace AutoarchiveReloadedOverlay
 			}
 			catch (e)
 			{
-				Logger.errorException(e);
+				logger.errorException(e);
 				throw e;
 			}
 		}
@@ -600,16 +602,16 @@ namespace AutoarchiveReloadedOverlay
 
 		public static startup(): void
 		{
-			Logger.info("start...");
+			logger.info("start...");
 			const appInfoLogger = new AppInfoLogger();
 			appInfoLogger.log();
 
 			this.status = States.READY_FOR_WORK;
-			Logger.info("ready for work");
+			logger.info("ready for work");
 
 			if (AutoarchiveReloaded.settings.globalSettings.archiveType === "startup")
 			{
-				Logger.info("archive type at startup");
+				logger.info("archive type at startup");
 
 				//wait some time to give TB time to connect and everything
 				setTimeout(this.onDoArchiveAutomatic.bind(this), 9000);
@@ -619,16 +621,16 @@ namespace AutoarchiveReloadedOverlay
 			}
 			else
 			{
-				Logger.info("archive type manually");
+				logger.info("archive type manually");
 			}
 		}
 
 		public static onDoArchiveAutomatic(): void
 		{
-			Logger.info("try automatic archive");
+			logger.info("try automatic archive");
 			if (this.status !== States.READY_FOR_WORK)
 			{
-				Logger.info("automatic archive busy, wait");
+				logger.info("automatic archive busy, wait");
 				//busy: wait 5 seconds
 				setTimeout(this.onDoArchiveAutomatic.bind(this), 5000);
 			}
@@ -640,7 +642,7 @@ namespace AutoarchiveReloadedOverlay
 
 		public static onDoArchive(): void
 		{
-			Logger.info("start archiving");
+			logger.info("start archiving");
 			this.status = States.IN_PROGRESS;
 			const autoarchiveReloaded = new Autoarchiver(this.onArchiveDone.bind(this));
 			autoarchiveReloaded.archiveAccounts();
@@ -648,10 +650,10 @@ namespace AutoarchiveReloadedOverlay
 
 		public static onArchiveManually(): void
 		{
-			Logger.info("try manual archive");
+			logger.info("try manual archive");
 			if (this.status === States.UNINITIALZED)
 			{
-				Logger.info("not initialized, cancel");
+				logger.info("not initialized, cancel");
 				Helper.getThePromptService().alert(null, StringBundle.GetStringFromName("dialogTitle"), StringBundle.GetStringFromName("waitForInit"));
 				return;
 			}
@@ -660,7 +662,7 @@ namespace AutoarchiveReloadedOverlay
 			{
 				if (this.status === States.IN_PROGRESS)
 				{
-					Logger.info("busy with other archive..., cancel");
+					logger.info("busy with other archive..., cancel");
 					Helper.getThePromptService().alert(null, StringBundle.GetStringFromName("dialogTitle"), StringBundle.GetStringFromName("waitForArchive"));
 					return;
 				}
@@ -668,13 +670,13 @@ namespace AutoarchiveReloadedOverlay
 			}
 			else
 			{
-				Logger.info("manual archive canceled by user");
+				logger.info("manual archive canceled by user");
 			}
 		}
 
 		private static onArchiveDone(): void
 		{
-			Logger.info("archive (searching messages to archive) done");
+			logger.info("archive (searching messages to archive) done");
 			this.status = States.READY_FOR_WORK;
 		}
 	}
@@ -712,8 +714,8 @@ namespace AutoarchiveReloadedOverlay
 
 		public static log(accountName: string, accountSettings: IAccountSettings)
 		{
-			Logger.info("Settings for '" + accountName + "':");
-			Logger.info(JSON.stringify(accountSettings));
+			logger.info("Settings for '" + accountName + "':");
+			logger.info(JSON.stringify(accountSettings));
 		}
 	}
 
@@ -736,13 +738,13 @@ namespace AutoarchiveReloadedOverlay
 
 				//the new extension system does not provide a window > use mail3pane instead
 				const window = Helper.getMail3Pane();
-				Logger.info("ApplicationInfo ID:" + appInfo.ID + "; Version:" + appInfo.version + "; BuildID:" + appInfo.appBuildID + "; PlatformVersion:" + appInfo.platformVersion + "; PlatformBuildID:" + appInfo.platformBuildID + "; language: " + window.navigator.language);
+				logger.info("ApplicationInfo ID:" + appInfo.ID + "; Version:" + appInfo.version + "; BuildID:" + appInfo.appBuildID + "; PlatformVersion:" + appInfo.platformVersion + "; PlatformBuildID:" + appInfo.platformBuildID + "; language: " + window.navigator.language);
 
-				Logger.info("SystemInfo " + window.navigator.oscpu + "| " + window.navigator.platform + "| " + window.navigator.userAgent);
+				logger.info("SystemInfo " + window.navigator.oscpu + "| " + window.navigator.platform + "| " + window.navigator.userAgent);
 			}
 			catch (e)
 			{
-				Logger.errorException(e);
+				logger.errorException(e);
 				//don't throw... this method is only info logging...
 			}
 		}
@@ -755,13 +757,13 @@ namespace AutoarchiveReloadedOverlay
 				{
 					for (const addon of addons)
 					{
-						Logger.info("Installed Addon-Info: " + addon.name + " (" + addon.id + ") version " + addon.version + "; active: " + addon.isActive);
+						logger.info("Installed Addon-Info: " + addon.name + " (" + addon.id + ") version " + addon.version + "; active: " + addon.isActive);
 					}
 				});
 			}
 			catch (e)
 			{
-				Logger.errorException(e);
+				logger.errorException(e);
 				//don't throw... this method is only info logging...
 			}
 		}
@@ -772,13 +774,13 @@ namespace AutoarchiveReloadedOverlay
 			{
 				AutoarchiveReloaded.AccountIterator.forEachAccount((account: Ci.nsIMsgAccount, isAccountArchivable: boolean) =>
 				{
-					Logger.info("Account Info: '" + account.incomingServer.prettyName + "'; type: " +
+					logger.info("Account Info: '" + account.incomingServer.prettyName + "'; type: " +
 						account.incomingServer.type + "; localStoreType: " + account.incomingServer.localStoreType + "; " + account.incomingServer.serverURI);
 				});
 			}
 			catch (e)
 			{
-				Logger.errorException(e);
+				logger.errorException(e);
 				//don't throw... this method is only info logging...
 			}
 		}
