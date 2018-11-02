@@ -28,7 +28,9 @@ Cu.import("resource://gre/modules/NetUtil.jsm");
 Cu.import("resource://gre/modules/Timer.jsm");
 Cu.import("resource:///modules/iteratorUtils.jsm");
 
+//Attention, if you addd more scripts also add them to bootstrap.ts for propper unloading!
 Cu.import("chrome://autoarchiveReloaded/content/options.js");
+Cu.import("chrome://autoarchiveReloaded/content/shared/Logger.js");
 Cu.import("chrome://autoarchiveReloaded/content/thunderbird-stdlib/msgHdrUtils.js");
 
 namespace AutoarchiveReloadedOverlay
@@ -70,73 +72,19 @@ namespace AutoarchiveReloadedOverlay
 	}
 
 	//-----------------------------------------------------------------------------------------------------
-
-	//singleton class for logging
-	enum LogLevel
-	{
-		LEVEL_INFO, LEVEL_ERROR,
-	}
-
-	export class Logger
+	class LegacyExtensionLoggerHelper implements ILoggerHelper
 	{
 		private readonly consoleService: Ci.nsIConsoleService = Components.classes["@mozilla.org/consoleservice;1"].getService(Ci.nsIConsoleService);
 
-		public info(str: string): void
+		public log(msgToLog: string): void
 		{
-			this.log(LogLevel.LEVEL_INFO, str);
+			this.consoleService.logStringMessage(msgToLog);
+			this.writeToFile(msgToLog);
 		}
 
-		public error(str: string): void
+		public getEnableInfoLogging(): boolean
 		{
-			this.log(LogLevel.LEVEL_ERROR, str);
-		}
-
-		public errorException(e: ThunderbirdError): void
-		{
-			this.error(this.getExceptionInfo(e));
-		}
-
-		private getLogLevelFromPref(): LogLevel
-		{
-			if (AutoarchiveReloaded.settings.globalSettings.enableInfoLogging)
-			{
-				return LogLevel.LEVEL_INFO;
-			}
-
-			return LogLevel.LEVEL_ERROR;
-		}
-
-		private getExceptionInfo(e: ThunderbirdError): string
-		{
-			return e + "; Source: '" + e.fileName + "'; Line: " + e.lineNumber + "; code: " + e.toSource() + "; stack: " + e.stack;
-		}
-
-		private log(levelToLog: LogLevel, str: string): void
-		{
-			if (levelToLog < this.getLogLevelFromPref())
-			{
-				return;
-			}
-
-			this.DoLog(levelToLog, str);
-		}
-
-		private DoLog(levelToLog: LogLevel, str: string): void
-		{
-			const date = new Date();
-			let strToLog = date.toLocaleString() + " - AutoarchiveReloaded - ";
-			if (levelToLog === LogLevel.LEVEL_INFO)
-			{
-				strToLog += "INFO";
-			}
-			else
-			{
-				strToLog += "ERROR";
-			}
-			strToLog += ": " + str;
-
-			this.consoleService.logStringMessage(strToLog);
-			this.writeToFile(strToLog);
+			return AutoarchiveReloaded.settings.globalSettings.enableInfoLogging;
 		}
 
 		private writeToFile(str: string): void
@@ -160,13 +108,13 @@ namespace AutoarchiveReloadedOverlay
 			}
 			catch (e)
 			{
-				Application.console.log("error writing to log file " + this.getExceptionInfo(e));
+				Application.console.log("error writing to log file " + Logger.getExceptionInfo(e));
 				//trotzdem weitermachen, ist ja nur logging...
 			}
 		}
 	}
 
-	export const logger: Logger = new Logger();
+	export const logger: Logger = new Logger(new LegacyExtensionLoggerHelper());
 
 	//------------------------------------------------------------------------------
 

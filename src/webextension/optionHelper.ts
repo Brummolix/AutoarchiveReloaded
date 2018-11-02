@@ -22,7 +22,7 @@ var EXPORTED_SYMBOLS = ["AutoarchiveReloadedWeOptionHelper"];
 
 class AutoarchiveReloadedWeOptionHelper
 {
-	public sendCurrentPreferencesToLegacyAddOn(onSuccess: () => void): void
+	public publishCurrentPreferences(onSuccess: () => void): void
 	{
 		this.loadCurrentSettings((settings: ISettings) =>
 		{
@@ -30,6 +30,8 @@ class AutoarchiveReloadedWeOptionHelper
 				id: "sendCurrentPreferencesToLegacyAddOn",
 				data: settings,
 			};
+
+			WebExtensionLoggerHelper.setGlobaleEnableInfoLogging(settings.globalSettings.enableInfoLogging);
 
 			browser.runtime.sendMessage(message).then((reply: any) =>
 			{
@@ -114,7 +116,7 @@ class AutoarchiveReloadedWeOptionHelper
 			}
 			else
 			{
-				this.sendCurrentPreferencesToLegacyAddOn((): void =>
+				this.publishCurrentPreferences((): void =>
 				{
 					this.OnWebExtensionStartupDone();
 				});
@@ -129,7 +131,7 @@ class AutoarchiveReloadedWeOptionHelper
 		browser.storage.local.set({ settings: settings }).then(() =>
 		{
 			//settings written sucesfully
-			this.sendCurrentPreferencesToLegacyAddOn(onSuccess);
+			this.publishCurrentPreferences(onSuccess);
 		}, (error: string) =>
 		{
 			//error while writing settings

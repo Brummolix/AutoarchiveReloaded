@@ -22,7 +22,7 @@
 	},
 
 	"background": {
-		"scripts": ["optionHelper.js","background.js","shared/OptionHandling.js"]
+		"scripts": ["shared/Logger.js","Logging.js","optionHelper.js","background.js","shared/OptionHandling.js"]
 	},
 
 	"default_locale":"en"

@@ -91,6 +91,6 @@ module.exports = function(grunt) {
 	grunt.loadNpmTasks("grunt-tslint");
 
 	// Default task(s).
-	grunt.registerTask("default", ["clean", "copy", "ts:default", "tslint", /*'copy:shared',*/ "compress"]);
-	grunt.registerTask("release", ["clean", "copy", "ts:release", "tslint", /*'copy:shared',*/ "compress"]);
+	grunt.registerTask("default", ["clean", "copy", "ts:default", "tslint", "copy:shared", "compress"]);
+	grunt.registerTask("release", ["clean", "copy", "ts:release", "tslint", "copy:shared", "compress"]);
 };

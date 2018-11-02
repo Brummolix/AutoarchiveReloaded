@@ -20,7 +20,7 @@ Copyright 2018 Brummolix (AutoarchiveReloaded, https://github.com/Brummolix/Auto
 Cu.import("resource://gre/modules/Services.jsm");
 
 //list here all imports, also from sub files to make sure they are correctly unloaded
-const AutoArchiveReloadedImports: string[] = ["options.js", "overlay.js", "thunderbird-stdlib/RestartlessMenuItems.js", "thunderbird-stdlib/msgHdrUtils.js"];
+const AutoArchiveReloadedImports: string[] = ["options.js", "shared/Logger.js", "overlay.js", "thunderbird-stdlib/RestartlessMenuItems.js", "thunderbird-stdlib/msgHdrUtils.js"];
 
 //https://developer.mozilla.org/en-US/docs/Archive/Add-ons/Bootstrapped_extensions#Reason_constants
 enum BootstrapReasons

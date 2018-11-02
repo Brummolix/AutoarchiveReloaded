@@ -99,11 +99,18 @@ declare class BrowserWindows
 	public remove(windowid: number): Promise<void>;
 }
 
+//https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/extension
+declare class Extension
+{
+	public getBackgroundPage(): Window;
+}
+
 declare class Browser
 {
 	public runtime: Runtime;
 	public storage: BrowserStorages;
 	public windows: BrowserWindows;
+	public extension: Extension;
 }
 declare var browser: Browser;
 
