@@ -23,7 +23,6 @@ function saveOptions(): void
 	{
 		const settings: ISettings = {
 			globalSettings: {
-				//TODO: unsauber, wir "wissen", dass es der richtige Wert sein muss
 				archiveType: $("[name=archiveType]:checked").val() as ArchiveType,
 				enableInfoLogging: (document.getElementById("enableInfoLogging") as HTMLInputElement).checked,
 			},
@@ -103,7 +102,6 @@ function restoreOptions()
 		{
 			if (settings.accountSettings.hasOwnProperty(accountId))
 			{
-				//TODO: as IAccountInfo ist nicht ganz sauber, wir "wissen", dass es nicht null sein kann...
 				accountsSorted.push({
 					account: aaHelper.findAccountInfo(accounts, accountId) as IAccountInfo,
 					accountSetting: settings.accountSettings[accountId],

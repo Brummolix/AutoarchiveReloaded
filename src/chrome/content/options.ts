@@ -52,7 +52,6 @@ namespace AutoarchiveReloaded
 
 			const legacySettings: ISettings = {
 				globalSettings: {
-					//TODO: as ArchiveType?
 					archiveType: prefBranch.getCharPref("archiveType", undefined) as ArchiveType,
 					enableInfoLogging: prefBranch.getBoolPref("enableInfoLogging", undefined),
 				},
