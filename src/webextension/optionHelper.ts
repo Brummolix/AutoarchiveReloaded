@@ -43,14 +43,14 @@ class AutoarchiveReloadedWeOptionHelper
 					}
 					catch (e)
 					{
-						logger.errorException(e);
+						loggerWebExtension.errorException(e);
 						throw e;
 					}
 				});
 			}
 			catch (e)
 			{
-				logger.errorException(e);
+				loggerWebExtension.errorException(e);
 				throw e;
 			}
 		});
@@ -58,7 +58,7 @@ class AutoarchiveReloadedWeOptionHelper
 
 	public loadCurrentSettings(onSuccesfulDone: (settings: ISettings, accounts: IAccountInfo[]) => void)
 	{
-		logger.info("start to load current settings");
+		loggerWebExtension.info("start to load current settings");
 
 		const message: IBrowserMessage = {
 			id: "askForAccounts",
@@ -68,13 +68,13 @@ class AutoarchiveReloadedWeOptionHelper
 		{
 			try
 			{
-				logger.info("got info about accounts");
+				loggerWebExtension.info("got info about accounts");
 				browser.storage.local.get("settings").then((result: any) =>
 				{
 					try
 					{
 						//settings read succesfully...
-						logger.info("loaded settings from storage");
+						loggerWebExtension.info("loaded settings from storage");
 						const oHandling: AutoarchiveReloadedOptionHandling = new AutoarchiveReloadedOptionHandling();
 						const settings: ISettings = oHandling.convertPartialSettings(result.settings);
 
@@ -97,22 +97,22 @@ class AutoarchiveReloadedWeOptionHelper
 							}
 						}
 
-						logger.info("settings mixed with default settings");
+						loggerWebExtension.info("settings mixed with default settings");
 						onSuccesfulDone(settings, accounts);
 					}
 					catch (e)
 					{
-						logger.errorException(e);
+						loggerWebExtension.errorException(e);
 						throw e;
 					}
 				}, (error: string) =>
 					{
-						logger.error("error while reading settings: " + error);
+						loggerWebExtension.error("error while reading settings: " + error);
 					});
 			}
 			catch (e)
 			{
-				logger.errorException(e);
+				loggerWebExtension.errorException(e);
 				throw e;
 			}
 
@@ -134,7 +134,7 @@ class AutoarchiveReloadedWeOptionHelper
 
 	public convertLegacyPreferences(): void
 	{
-		logger.info("start conversion of legacy preferences (if any)");
+		loggerWebExtension.info("start conversion of legacy preferences (if any)");
 
 		const message: IBrowserMessage = {
 			id: "askForLegacyPreferences",
@@ -146,7 +146,7 @@ class AutoarchiveReloadedWeOptionHelper
 			{
 				if (settings)
 				{
-					logger.info("got legacy preferences to convert");
+					loggerWebExtension.info("got legacy preferences to convert");
 					this.savePreferencesAndSendToLegacyAddOn(settings, (): void =>
 					{
 						this.OnWebExtensionStartupDone();
@@ -154,7 +154,7 @@ class AutoarchiveReloadedWeOptionHelper
 				}
 				else
 				{
-					logger.info("no legacy preferences to convert");
+					loggerWebExtension.info("no legacy preferences to convert");
 					this.publishCurrentPreferences((): void =>
 					{
 						this.OnWebExtensionStartupDone();
@@ -163,7 +163,7 @@ class AutoarchiveReloadedWeOptionHelper
 			}
 			catch (e)
 			{
-				logger.errorException(e);
+				loggerWebExtension.errorException(e);
 				throw e;
 			}
 
@@ -172,24 +172,24 @@ class AutoarchiveReloadedWeOptionHelper
 
 	public savePreferencesAndSendToLegacyAddOn(settings: ISettings, onSuccess: () => void): void
 	{
-		logger.info("going to save settings");
+		loggerWebExtension.info("going to save settings");
 
 		//TODO: sometimes we get "Error: WebExtension context not found!", why?
 		browser.storage.local.set({ settings: settings }).then(() =>
 		{
 			try
 			{
-				logger.info("settings saved");
+				loggerWebExtension.info("settings saved");
 				this.publishCurrentPreferences(onSuccess);
 			}
 			catch (e)
 			{
-				logger.errorException(e);
+				loggerWebExtension.errorException(e);
 				throw e;
 			}
 		}, (error: string) =>
 			{
-				logger.error("error while saving settings: " + error);
+				loggerWebExtension.error("error while saving settings: " + error);
 			});
 	}
 

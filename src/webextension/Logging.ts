@@ -49,4 +49,4 @@ class WebExtensionLoggerHelper implements ILoggerHelper
 	}
 }
 
-const logger: Logger = new Logger(new WebExtensionLoggerHelper());
+const loggerWebExtension: Logger = new Logger(new WebExtensionLoggerHelper());

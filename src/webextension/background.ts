@@ -23,6 +23,6 @@ try
 }
 catch (e)
 {
-	logger.errorException(e);
+	loggerWebExtension.errorException(e);
 	throw e;
 }

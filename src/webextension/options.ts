@@ -75,7 +75,7 @@ function saveOptions(): void
 	}
 	catch (e)
 	{
-		logger.errorException(e);
+		loggerWebExtension.errorException(e);
 		throw e;
 	}
 
@@ -185,7 +185,7 @@ $(() =>
 	}
 	catch (e)
 	{
-		logger.errorException(e);
+		loggerWebExtension.errorException(e);
 		throw e;
 	}
 });
