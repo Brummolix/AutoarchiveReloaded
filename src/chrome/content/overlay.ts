@@ -84,7 +84,12 @@ namespace AutoarchiveReloadedOverlay
 
 		public getEnableInfoLogging(): boolean
 		{
-			return AutoarchiveReloaded.settings.globalSettings.enableInfoLogging;
+			if (AutoarchiveReloaded.settings && AutoarchiveReloaded.settings.globalSettings && AutoarchiveReloaded.settings.globalSettings !== undefined)
+			{
+				return AutoarchiveReloaded.settings.globalSettings.enableInfoLogging;
+			}
+
+			return false;
 		}
 
 		private writeToFile(str: string): void
