@@ -37,144 +37,217 @@ enum BootstrapReasons
 
 function startup(data: BootstrapData, reason: BootstrapReasons.APP_STARTUP | BootstrapReasons.ADDON_ENABLE | BootstrapReasons.ADDON_INSTALL | BootstrapReasons.ADDON_UPGRADE | BootstrapReasons.ADDON_DOWNGRADE): void
 {
-	console.log("AutoArchiveReloaded - startup");
-
-	for (const strImport of AutoArchiveReloadedImports)
+	try
 	{
-		Cu.import("chrome://autoarchiveReloaded/content/" + strImport);
-	}
+		//attention, no logger is there until all scripts are loaded!
 
-	if (data.webExtension)
-	{
-		data.webExtension.startup().then((api: StartupWebextensionApi) =>
+		for (const strImport of AutoArchiveReloadedImports)
 		{
-			const browser = api.browser;
-			browser.runtime.onMessage.addListener((msg: IBrowserMessage | IBrowserMessageSendCurrentSettings, sender: RuntimeMessageSender, sendReply: (response: object | null) => void) =>
+			Cu.import("chrome://autoarchiveReloaded/content/" + strImport);
+		}
+
+		AutoarchiveReloadedOverlay.logger.info("bootstrap startup and logger defined");
+
+		if (data.webExtension)
+		{
+			data.webExtension.startup().then((api: StartupWebextensionApi) =>
 			{
-				if (msg.id === "sendCurrentPreferencesToLegacyAddOn") //we get the current preferences at start and on every change of preferences
+				const browser = api.browser;
+				browser.runtime.onMessage.addListener((msg: IBrowserMessage | IBrowserMessageSendCurrentSettings, sender: RuntimeMessageSender, sendReply: (response: object | null) => void) =>
 				{
-					AutoarchiveReloaded.settings = (msg as IBrowserMessageSendCurrentSettings).data;
-				}
-				else if (msg.id === "askForLegacyPreferences") //at startup we are asked for legacy preferences
-				{
-					const legacyOptions: AutoarchiveReloaded.LegacyOptions = new AutoarchiveReloaded.LegacyOptions();
-					const legacySettings = legacyOptions.getLegacyOptions();
-					sendReply(legacySettings);
-					legacyOptions.markLegacySettingsAsMigrated();
-				}
-				else if (msg.id === "webExtensionStartupDone") //after startup we are informed and can go on
-				{
-					initAutoArchiveReloadedOverlay();
-				}
-				else if (msg.id === "askForAccounts") //we will be asked for valid accounts which can be archived
-				{
-					sendReply(getAccounts());
-				}
+					if (msg.id === "sendCurrentPreferencesToLegacyAddOn") //we get the current preferences at start and on every change of preferences
+					{
+						replyToSendCurrentPreferencesToLegacyAddOnAskForLegacyPreferences((msg as IBrowserMessageSendCurrentSettings));
+					}
+					else if (msg.id === "askForLegacyPreferences") //at startup we are asked for legacy preferences
+					{
+						replyToAskForLegacyPreferences(sendReply);
+					}
+					else if (msg.id === "webExtensionStartupDone") //after startup we are informed and can go on
+					{
+						initAutoArchiveReloadedOverlay();
+					}
+					else if (msg.id === "askForAccounts") //we will be asked for valid accounts which can be archived
+					{
+						replyToAskForAccounts(sendReply);
+					}
+				});
 			});
-		});
+		}
+	}
+	catch (e)
+	{
+		//there might be no logger, yet
+		if (typeof AutoarchiveReloadedOverlay.logger !== "undefined")
+		{
+			AutoarchiveReloadedOverlay.logger.errorException(e);
+		}
+		else
+		{
+			console.log("AutoArchiveReloaded error");
+			console.log(e);
+		}
+		throw e;
 	}
 }
 
-function getAccounts(): IAccountInfo[]
+function replyToSendCurrentPreferencesToLegacyAddOnAskForLegacyPreferences(msg: IBrowserMessageSendCurrentSettings): void
 {
-	const nsAccounts: Ci.nsIMsgAccount[] = [];
-	AutoarchiveReloaded.AccountIterator.forEachAccount((account: Ci.nsIMsgAccount, isAccountArchivable: boolean) =>
+	try
 	{
-		if (isAccountArchivable)
-		{
-			nsAccounts.push(account);
-		}
-	});
-
-	nsAccounts.sort((a: Ci.nsIMsgAccount, b: Ci.nsIMsgAccount) =>
+		AutoarchiveReloaded.settings = msg.data;
+	}
+	catch (e)
 	{
-		const mailTypeA: boolean = (a.incomingServer.type === "pop3" || a.incomingServer.type === "imap");
-		const mailTypeB: boolean = (b.incomingServer.type === "pop3" || b.incomingServer.type === "imap");
+		AutoarchiveReloadedOverlay.logger.errorException(e);
+		throw e;
+	}
+}
 
-		if (mailTypeA === mailTypeB)
+function replyToAskForLegacyPreferences(sendReply: (response: object | null) => void): void
+{
+	try
+	{
+		const legacyOptions: AutoarchiveReloaded.LegacyOptions = new AutoarchiveReloaded.LegacyOptions();
+		const legacySettings = legacyOptions.getLegacyOptions();
+		sendReply(legacySettings);
+		legacyOptions.markLegacySettingsAsMigrated();
+	}
+	catch (e)
+	{
+		AutoarchiveReloadedOverlay.logger.errorException(e);
+		throw e;
+	}
+}
+
+function replyToAskForAccounts(sendReply: (response: object | null) => void): void
+{
+	try
+	{
+		const nsAccounts: Ci.nsIMsgAccount[] = [];
+		AutoarchiveReloaded.AccountIterator.forEachAccount((account: Ci.nsIMsgAccount, isAccountArchivable: boolean) =>
 		{
-			return a.incomingServer.prettyName.localeCompare(b.incomingServer.prettyName);
-		}
-
-		if (mailTypeA)
-		{
-			return -1;
-		}
-
-		return 1;
-	});
-
-	const accounts: IAccountInfo[] = [];
-	let currentOrder = 0;
-	nsAccounts.forEach((account) => {
-		accounts.push({
-			accountId: account.key,
-			accountName: account.incomingServer.prettyName,
-			order: currentOrder++,
+			if (isAccountArchivable)
+			{
+				nsAccounts.push(account);
+			}
 		});
-	});
 
-	return accounts;
+		nsAccounts.sort((a: Ci.nsIMsgAccount, b: Ci.nsIMsgAccount) =>
+		{
+			const mailTypeA: boolean = (a.incomingServer.type === "pop3" || a.incomingServer.type === "imap");
+			const mailTypeB: boolean = (b.incomingServer.type === "pop3" || b.incomingServer.type === "imap");
+
+			if (mailTypeA === mailTypeB)
+			{
+				return a.incomingServer.prettyName.localeCompare(b.incomingServer.prettyName);
+			}
+
+			if (mailTypeA)
+			{
+				return -1;
+			}
+
+			return 1;
+		});
+
+		const accounts: IAccountInfo[] = [];
+		let currentOrder = 0;
+		nsAccounts.forEach((account) =>
+		{
+			accounts.push({
+				accountId: account.key,
+				accountName: account.incomingServer.prettyName,
+				order: currentOrder++,
+			});
+		});
+
+		sendReply(accounts);
+	}
+	catch (e)
+	{
+		AutoarchiveReloadedOverlay.logger.errorException(e);
+		throw e;
+	}
 }
 
 function initAutoArchiveReloadedOverlay(): void
 {
-	console.log("initAutoArchiveReloadedOverlay");
-
-	//directly after start of TB the adding of the menu does not work (getting the elemtens of "taskPopup" and "tabmail" returns null)
-	//therefore we have to wait a bit
-	//additionally setTimeout is not defined (even if we can use it AutoarchiveReloadedOverlay.Global.startup at the same time???)
-	//therefore use the mail3pane
-	(AutoarchiveReloadedOverlay.Helper.getMail3Pane() as any).setTimeout(() => {
-		RestartlessMenuItems.add({
-			label: AutoarchiveReloadedOverlay.StringBundle.GetStringFromName("menuArchive"),
-			id: "AutoArchiveReloaded_AutoarchiveNow",
-			onCommand: () =>
-			{
-				AutoarchiveReloadedOverlay.Global.onArchiveManually();
-			},
-		});
-	}, 1000);
-
-	//TODO: Toolbar in alle Windows einhängen...
-	//TODO: wahrscheinlich besser so:
-	//https://github.com/dgutov/bmreplace/blob/67ad019be480fc6b5d458dc886a2fb5364e92171/bootstrap.js#L27
-
-	//toolbar button
-	//see https://gist.github.com/Noitidart/9467045
-	/*
-	let doc = document;
-	let toolbox = doc.querySelector('#navigator-toolbox');
-
-	let buttonId = 'AutoArchiveReloaded_AutoarchiveNow_Button';
-	let button = doc.getElementById(buttonId);
-	if (!button)
+	try
 	{
-		button = doc.createElementNS('http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul', 'toolbarbutton');
-		button.setAttribute('id', buttonId);
-		button.setAttribute('label', AutoarchiveReloadedOverlay.StringBundle.GetStringFromName("menuArchive"));
-		button.setAttribute('tooltiptext', 'TODO My buttons tool tip if you want one');
-		button.setAttribute('class', 'toolbarbutton-1 chromeclass-toolbar-additional');
-		button.style.listStyleImage = 'url("https://gist.githubusercontent.com/Noitidart/9266173/raw/06464af2965cb5968248b764b4669da1287730f3/my-urlbar-icon-image.png")';
-		button.addEventListener('command', function() {
-			AutoarchiveReloadedOverlay.Global.onArchiveManually();
-		}, false);
+		AutoarchiveReloadedOverlay.logger.info("initAutoArchiveReloadedOverlay");
 
-		toolbox.palette.appendChild(button);
+		//directly after start of TB the adding of the menu does not work (getting the elemtens of "taskPopup" and "tabmail" returns null)
+		//therefore we have to wait a bit
+		//additionally setTimeout is not defined (even if we can use it AutoarchiveReloadedOverlay.Global.startup at the same time???)
+		//therefore use the mail3pane
+		(AutoarchiveReloadedOverlay.Helper.getMail3Pane() as any).setTimeout(() =>
+		{
+			try
+			{
+				RestartlessMenuItems.add({
+					label: AutoarchiveReloadedOverlay.StringBundle.GetStringFromName("menuArchive"),
+					id: "AutoArchiveReloaded_AutoarchiveNow",
+					onCommand: () =>
+					{
+						AutoarchiveReloadedOverlay.Global.onArchiveManually();
+					},
+				});
+			}
+			catch (e)
+			{
+				AutoarchiveReloadedOverlay.logger.errorException(e);
+				throw e;
+			}
+
+		}, 1000);
+
+		//TODO: Toolbar in alle Windows einhängen...
+		//TODO: wahrscheinlich besser so:
+		//https://github.com/dgutov/bmreplace/blob/67ad019be480fc6b5d458dc886a2fb5364e92171/bootstrap.js#L27
+
+		//toolbar button
+		//see https://gist.github.com/Noitidart/9467045
+		/*
+		let doc = document;
+		let toolbox = doc.querySelector('#navigator-toolbox');
+
+		let buttonId = 'AutoArchiveReloaded_AutoarchiveNow_Button';
+		let button = doc.getElementById(buttonId);
+		if (!button)
+		{
+			button = doc.createElementNS('http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul', 'toolbarbutton');
+			button.setAttribute('id', buttonId);
+			button.setAttribute('label', AutoarchiveReloadedOverlay.StringBundle.GetStringFromName("menuArchive"));
+			button.setAttribute('tooltiptext', 'TODO My buttons tool tip if you want one');
+			button.setAttribute('class', 'toolbarbutton-1 chromeclass-toolbar-additional');
+			button.style.listStyleImage = 'url("https://gist.githubusercontent.com/Noitidart/9266173/raw/06464af2965cb5968248b764b4669da1287730f3/my-urlbar-icon-image.png")';
+			button.addEventListener('command', function() {
+				AutoarchiveReloadedOverlay.Global.onArchiveManually();
+			}, false);
+
+			toolbox.palette.appendChild(button);
+		}
+		//move button into last postion in nav-bar
+		let navBar = doc.querySelector('#nav-bar');
+		navBar.insertItem(buttonId); //if you want it in first position in navBar do: navBar.insertItem(buttonId, navBar.firstChild);
+		navBar.removeChild(button);
+		*/
+
+		//startup
+		AutoarchiveReloadedOverlay.Global.startup();
 	}
-	//move button into last postion in nav-bar
-	let navBar = doc.querySelector('#nav-bar');
-	navBar.insertItem(buttonId); //if you want it in first position in navBar do: navBar.insertItem(buttonId, navBar.firstChild);
-	navBar.removeChild(button);
-	*/
-
-	//startup
-	AutoarchiveReloadedOverlay.Global.startup();
+	catch (e)
+	{
+		AutoarchiveReloadedOverlay.logger.errorException(e);
+		throw e;
+	}
 }
 
-function shutdown(data: BootstrapData, reason: BootstrapReasons.APP_SHUTDOWN | BootstrapReasons.ADDON_DISABLE| BootstrapReasons.ADDON_UNINSTALL| BootstrapReasons.ADDON_UPGRADE| BootstrapReasons.ADDON_DOWNGRADE): void
+function shutdown(data: BootstrapData, reason: BootstrapReasons.APP_SHUTDOWN | BootstrapReasons.ADDON_DISABLE | BootstrapReasons.ADDON_UNINSTALL | BootstrapReasons.ADDON_UPGRADE | BootstrapReasons.ADDON_DOWNGRADE): void
 {
-	console.log("AutoArchiveReloaded - shutdown");
+	//attention, do not rely on the logger in shutdown
+	//it gives "can't access dead object" when accessing the settings
 
 	try
 	{
@@ -185,10 +258,9 @@ function shutdown(data: BootstrapData, reason: BootstrapReasons.APP_SHUTDOWN | B
 	}
 	catch (e)
 	{
-		AutoarchiveReloadedOverlay.logger.errorException(e);
+		console.log("AutoArchiveReloaded error");
+		console.log(e);
 	}
-
-	console.log("unload scripts");
 
 	for (const strImport of AutoArchiveReloadedImports.reverse())
 	{

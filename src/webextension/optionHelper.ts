@@ -26,23 +26,39 @@ class AutoarchiveReloadedWeOptionHelper
 	{
 		this.loadCurrentSettings((settings: ISettings) =>
 		{
-			const message: IBrowserMessageSendCurrentSettings = {
-				id: "sendCurrentPreferencesToLegacyAddOn",
-				data: settings,
-			};
-
-			WebExtensionLoggerHelper.setGlobaleEnableInfoLogging(settings.globalSettings.enableInfoLogging);
-
-			browser.runtime.sendMessage(message).then((reply: any) =>
+			try
 			{
-				onSuccess();
-			});
+				const message: IBrowserMessageSendCurrentSettings = {
+					id: "sendCurrentPreferencesToLegacyAddOn",
+					data: settings,
+				};
+
+				WebExtensionLoggerHelper.setGlobaleEnableInfoLogging(settings.globalSettings.enableInfoLogging);
+
+				browser.runtime.sendMessage(message).then((reply: any) =>
+				{
+					try
+					{
+						onSuccess();
+					}
+					catch (e)
+					{
+						logger.errorException(e);
+						throw e;
+					}
+				});
+			}
+			catch (e)
+			{
+				logger.errorException(e);
+				throw e;
+			}
 		});
 	}
 
 	public loadCurrentSettings(onSuccesfulDone: (settings: ISettings, accounts: IAccountInfo[]) => void)
 	{
-		console.log("loadCurrentSettings");
+		logger.info("start to load current settings");
 
 		const message: IBrowserMessage = {
 			id: "askForAccounts",
@@ -50,39 +66,56 @@ class AutoarchiveReloadedWeOptionHelper
 
 		browser.runtime.sendMessage(message).then((accounts: IAccountInfo[]) =>
 		{
-			browser.storage.local.get("settings").then((result: any) =>
+			try
 			{
-
-				//settings read succesfully...
-				const oHandling: AutoarchiveReloadedOptionHandling = new AutoarchiveReloadedOptionHandling();
-				const settings: ISettings = oHandling.convertPartialSettings(result.settings);
-
-				//every existing account should have a setting
-				accounts.forEach((account) =>
+				logger.info("got info about accounts");
+				browser.storage.local.get("settings").then((result: any) =>
 				{
-					const accountSetting = settings.accountSettings[account.accountId];
-					if (accountSetting === undefined)
+					try
 					{
-						settings.accountSettings[account.accountId] = oHandling.getDefaultAccountSettings();
-					}
-				});
+						//settings read succesfully...
+						logger.info("loaded settings from storage");
+						const oHandling: AutoarchiveReloadedOptionHandling = new AutoarchiveReloadedOptionHandling();
+						const settings: ISettings = oHandling.convertPartialSettings(result.settings);
 
-				//no other account should be there
-				for (const accountId in settings.accountSettings)
-				{
-					if (this.findAccountInfo(accounts, accountId) === null)
+						//every existing account should have a setting
+						accounts.forEach((account) =>
+						{
+							const accountSetting = settings.accountSettings[account.accountId];
+							if (accountSetting === undefined)
+							{
+								settings.accountSettings[account.accountId] = oHandling.getDefaultAccountSettings();
+							}
+						});
+
+						//no other account should be there
+						for (const accountId in settings.accountSettings)
+						{
+							if (this.findAccountInfo(accounts, accountId) === null)
+							{
+								delete settings.accountSettings[accountId];
+							}
+						}
+
+						logger.info("settings mixed with default settings");
+						onSuccesfulDone(settings, accounts);
+					}
+					catch (e)
 					{
-						delete settings.accountSettings[accountId];
+						logger.errorException(e);
+						throw e;
 					}
-				}
-
-				onSuccesfulDone(settings, accounts);
-			}, (error: string) =>
+				}, (error: string) =>
+					{
+						logger.error("error while reading settings: " + error);
+					});
+			}
+			catch (e)
 			{
-				//error while reading settings
-				//TODO: error? log
-				console.log(`Error: ${error}`);
-			});
+				logger.errorException(e);
+				throw e;
+			}
+
 		});
 	}
 
@@ -101,43 +134,63 @@ class AutoarchiveReloadedWeOptionHelper
 
 	public convertLegacyPreferences(): void
 	{
+		logger.info("start conversion of legacy preferences (if any)");
+
 		const message: IBrowserMessage = {
 			id: "askForLegacyPreferences",
 		};
 
 		browser.runtime.sendMessage(message).then((settings: ISettings): void =>
 		{
-			if (settings)
+			try
 			{
-				this.savePreferencesAndSendToLegacyAddOn(settings, (): void =>
+				if (settings)
 				{
-					this.OnWebExtensionStartupDone();
-				});
+					logger.info("got legacy preferences to convert");
+					this.savePreferencesAndSendToLegacyAddOn(settings, (): void =>
+					{
+						this.OnWebExtensionStartupDone();
+					});
+				}
+				else
+				{
+					logger.info("no legacy preferences to convert");
+					this.publishCurrentPreferences((): void =>
+					{
+						this.OnWebExtensionStartupDone();
+					});
+				}
 			}
-			else
+			catch (e)
 			{
-				this.publishCurrentPreferences((): void =>
-				{
-					this.OnWebExtensionStartupDone();
-				});
+				logger.errorException(e);
+				throw e;
 			}
+
 		});
 	}
 
 	public savePreferencesAndSendToLegacyAddOn(settings: ISettings, onSuccess: () => void): void
 	{
-		//TODO: sometimes we get "Error: WebExtension context not found!"
-		//why?
+		logger.info("going to save settings");
+
+		//TODO: sometimes we get "Error: WebExtension context not found!", why?
 		browser.storage.local.set({ settings: settings }).then(() =>
 		{
-			//settings written sucesfully
-			this.publishCurrentPreferences(onSuccess);
+			try
+			{
+				logger.info("settings saved");
+				this.publishCurrentPreferences(onSuccess);
+			}
+			catch (e)
+			{
+				logger.errorException(e);
+				throw e;
+			}
 		}, (error: string) =>
-		{
-			//error while writing settings
-			//TODO: error? log
-			console.log(`Error: ${error}`);
-		});
+			{
+				logger.error("error while saving settings: " + error);
+			});
 	}
 
 	private OnWebExtensionStartupDone(): void

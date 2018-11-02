@@ -19,57 +19,66 @@ Copyright 2018 Brummolix (AutoarchiveReloaded, https://github.com/Brummolix/Auto
 
 function saveOptions(): void
 {
-	const settings: ISettings = {
-		globalSettings: {
-			//TODO: unsauber, wir "wissen", dass es der richtige Wert sein muss
-			archiveType: $("[name=archiveType]:checked").val() as ArchiveType,
-			enableInfoLogging: (document.getElementById("enableInfoLogging") as HTMLInputElement).checked,
-		},
-		accountSettings: {},
-	};
-
-	//fill the settings for all accounts
-	$("#tabcontent").children().each((index: number, element: HTMLElement) =>
+	try
 	{
-		const accountId: string = $(element).data("accountId");
-		if (accountId)
+		const settings: ISettings = {
+			globalSettings: {
+				//TODO: unsauber, wir "wissen", dass es der richtige Wert sein muss
+				archiveType: $("[name=archiveType]:checked").val() as ArchiveType,
+				enableInfoLogging: (document.getElementById("enableInfoLogging") as HTMLInputElement).checked,
+			},
+			accountSettings: {},
+		};
+
+		//fill the settings for all accounts
+		$("#tabcontent").children().each((index: number, element: HTMLElement) =>
 		{
-			settings.accountSettings[accountId] = {
-				bArchiveUnread: (getElementForAccount(accountId, "archiveUnread") as HTMLInputElement).checked,
-				daysUnread: Number((getElementForAccount(accountId, "archiveUnreadDays") as HTMLInputElement).value),
-				bArchiveMarked: (getElementForAccount(accountId, "archiveStarred") as HTMLInputElement).checked,
-				daysMarked: Number((getElementForAccount(accountId, "archiveStarredDays") as HTMLInputElement).value),
-				bArchiveTagged: (getElementForAccount(accountId, "archiveTagged") as HTMLInputElement).checked,
-				daysTagged: Number((getElementForAccount(accountId, "archiveTaggedDays") as HTMLInputElement).value),
-				bArchiveOther: (getElementForAccount(accountId, "archiveMessages") as HTMLInputElement).checked,
-				daysOther: Number((getElementForAccount(accountId, "archiveMessagesDays") as HTMLInputElement).value),
-			};
-		}
-	});
-
-	aaHelper.savePreferencesAndSendToLegacyAddOn(settings, () =>
-	{
-		//show toast
-		($ as any).notify({
-			// options
-			message: "__MSG_settingsSaved__",
-		}, {
-			// settings
-			type: "success",
-			allow_dismiss: false,
-			placement: {
-				from: "top",
-				align: "center",
-			},
-			animate: {
-				enter: "animated bounceInDown",
-				exit: "animated bounceOutUp",
-			},
+			const accountId: string = $(element).data("accountId");
+			if (accountId)
+			{
+				settings.accountSettings[accountId] = {
+					bArchiveUnread: (getElementForAccount(accountId, "archiveUnread") as HTMLInputElement).checked,
+					daysUnread: Number((getElementForAccount(accountId, "archiveUnreadDays") as HTMLInputElement).value),
+					bArchiveMarked: (getElementForAccount(accountId, "archiveStarred") as HTMLInputElement).checked,
+					daysMarked: Number((getElementForAccount(accountId, "archiveStarredDays") as HTMLInputElement).value),
+					bArchiveTagged: (getElementForAccount(accountId, "archiveTagged") as HTMLInputElement).checked,
+					daysTagged: Number((getElementForAccount(accountId, "archiveTaggedDays") as HTMLInputElement).value),
+					bArchiveOther: (getElementForAccount(accountId, "archiveMessages") as HTMLInputElement).checked,
+					daysOther: Number((getElementForAccount(accountId, "archiveMessagesDays") as HTMLInputElement).value),
+				};
+			}
 		});
 
-		//update translations...
-		l10n.updateDocument();
-	});
+		aaHelper.savePreferencesAndSendToLegacyAddOn(settings, () =>
+		{
+			//show toast
+			($ as any).notify({
+				// options
+				message: "__MSG_settingsSaved__",
+			}, {
+					// settings
+					type: "success",
+					allow_dismiss: false,
+					placement: {
+						from: "top",
+						align: "center",
+					},
+					animate: {
+						enter: "animated bounceInDown",
+						exit: "animated bounceOutUp",
+					},
+				});
+
+			//update translations...
+			l10n.updateDocument();
+		});
+	}
+	catch (e)
+	{
+		logger.errorException(e);
+		throw e;
+	}
+
 }
 
 interface IAccountInfos
@@ -92,7 +101,7 @@ function restoreOptions()
 		const accountsSorted: IAccountInfos[] = [];
 		for (const accountId in settings.accountSettings)
 		{
-			if ( settings.accountSettings.hasOwnProperty(accountId) )
+			if (settings.accountSettings.hasOwnProperty(accountId))
 			{
 				//TODO: as IAccountInfo ist nicht ganz sauber, wir "wissen", dass es nicht null sein kann...
 				accountsSorted.push({
@@ -102,7 +111,7 @@ function restoreOptions()
 			}
 		}
 
-		accountsSorted.sort( (a: IAccountInfos, b: IAccountInfos): number =>
+		accountsSorted.sort((a: IAccountInfos, b: IAccountInfos): number =>
 		{
 			if (a.account.order === b.account.order)
 			{
@@ -117,7 +126,8 @@ function restoreOptions()
 			return 1;
 		});
 
-		accountsSorted.forEach((accountInfos) => {
+		accountsSorted.forEach((accountInfos) =>
+		{
 			const account = accountInfos.account;
 			const accountId = accountInfos.account.accountId;
 			const accountSetting = accountInfos.accountSetting;
@@ -168,6 +178,14 @@ function cloneTemplate(cloneId: string, appendToId: string, accountInfo: IAccoun
 let aaHelper: AutoarchiveReloadedWeOptionHelper = new AutoarchiveReloadedWeOptionHelper();
 $(() =>
 {
-	restoreOptions();
-	$("#button").click(saveOptions);
+	try
+	{
+		restoreOptions();
+		$("#button").click(saveOptions);
+	}
+	catch (e)
+	{
+		logger.errorException(e);
+		throw e;
+	}
 });
