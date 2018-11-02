@@ -18,7 +18,7 @@ Copyright 2018 Brummolix (AutoarchiveReloaded, https://github.com/Brummolix/Auto
 */
 
 // tslint:disable-next-line:no-var-keyword
-var EXPORTED_SYMBOLS = ["AutoarchiveReloadedWeOptionHelper"];
+var EXPORTED_SYMBOLS = ["AutoarchiveReloadedOptionHandling"];
 
 class AutoarchiveReloadedOptionHandling
 {
