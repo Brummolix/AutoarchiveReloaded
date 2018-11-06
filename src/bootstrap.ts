@@ -204,6 +204,7 @@ function initAutoArchiveReloadedOverlay(): void
 				RestartlessMenuItems.add({
 					label: AutoarchiveReloadedOverlay.StringBundle.GetStringFromName("menuArchive"),
 					id: "AutoArchiveReloaded_AutoarchiveNow",
+					idAppMenu: "AutoArchiveReloaded_AutoarchiveNow_AppMenu",
 					onCommand: () =>
 					{
 						AutoarchiveReloadedOverlay.Global.onArchiveManually();

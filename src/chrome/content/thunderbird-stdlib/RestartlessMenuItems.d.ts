@@ -18,7 +18,8 @@ Copyright 2018 Brummolix (new version AutoarchiveReloaded, https://github.com/Br
 */
 interface IRestartlessMenuItemOptions
 {
-	id: string; //An id for the <tt>menuitem</tt>, this should be namespaced.
+	id?: string; //(optional) An id for the <tt>menuitem</tt> in taskPopup menu, this should be namespaced, you should either fill id or idAppMenu or both.
+	idAppMenu?: string; //(optional) An id for the <tt>menuitem</tt> in Appmenu taskPopup menu, this should be namespaced, you should either fill id or idAppMenu or both.
 	label: string; // A label for the <tt>menuitem</tt>.
 	url?: string; //(optional, preferred) An URL where the <tt>oncommand</tt> should navigate to.
 	onCommand?: () => void; //(optional) A function callback what the <tt>menuitem</tt>'s oncommand will call.
