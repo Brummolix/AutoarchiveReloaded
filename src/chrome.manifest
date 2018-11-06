@@ -6,5 +6,3 @@ locale autoarchiveReloaded        es-MX       chrome/locale/es-MX/
 locale autoarchiveReloaded        es-AR       chrome/locale/es-AR/
 locale autoarchiveReloaded        fr-FR       chrome/locale/fr-FR/
 locale autoarchiveReloaded        ru-RU       chrome/locale/ru-RU/
-
-#overlay	chrome://messenger/content/messenger.xul	chrome://autoarchiveReloaded/content/autoarchive_overlay.xul
