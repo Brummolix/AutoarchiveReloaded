@@ -43,14 +43,12 @@ declare class RuntimeMessageSender
 //https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/runtime/onMessage
 type RuntimeMessageListener = (message: any, sender: RuntimeMessageSender, sendResponse: (response: object | null) => void) => void;
 
-declare class RuntimeMessageListeners
+declare interface RuntimeMessageListeners extends IListeners<RuntimeMessageListener>
 {
-	public addListener(listener: RuntimeMessageListener): void;
 }
 
-declare interface RuntimePortListener
+declare interface RuntimePortListener extends IListeners<(object: object) => void>
 {
-	addListener(listener: (object: object) => void): void;
 }
 
 //https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/runtime/Port
@@ -62,9 +60,8 @@ declare class RuntimePort
 	public postMessage(object: object): void;
 }
 
-declare class RuntimeConnectListener
+declare interface RuntimeConnectListener extends IListeners<(port: RuntimePort) => void>
 {
-	public addListener(listener: (port: RuntimePort) => void): void;
 }
 
 //https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/runtime
@@ -92,17 +89,74 @@ declare class BrowserStorages
 	public managed: StorageType;
 }
 
+type BrowserWindowType = "normal" | "popup" | "panel" | "devtools";
+
+//https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/windows/Window
+declare class BrowserWindow extends Window
+{
+	public title: string;
+	public type: BrowserWindowType;
+}
+
+declare interface IListeners<T>
+{
+	addListener(callback: T): void;
+	removeListener(listener: T): void;
+	hasListener(listener: T): boolean;
+}
+
+declare interface BrowserWindowCreatedListeners extends IListeners< (window: BrowserWindow) => void>
+{
+}
+
+declare interface BrowserWindowInfo
+{
+	populate?: boolean; //If true, the windows.Window object will have a tabs property that contains a list of tabs.Tab objects representing the tabs in the window. The Tab objects only contain the url, title and favIconUrl properties if the extension's manifest file includes the "tabs" permission.
+	windowTypes?: BrowserWindowType[]; //An array of windows.WindowType objects. If set, the windows.Window returned will be filtered based on its type. If unset the default filter is set to ['normal', 'panel', 'popup'], with 'panel' window types limited to the extension's own windows.
+}
+
 //https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/windows
 declare class BrowserWindows
 {
 	public WINDOW_ID_CURRENT: number;
+	public readonly onCreated: BrowserWindowCreatedListeners;
+
 	public remove(windowid: number): Promise<void>;
+	public getCurrent(getInfo?: BrowserWindowInfo): Promise<BrowserWindow>;
+	public getLastFocused(getInfo?: BrowserWindowInfo): Promise<BrowserWindow>;
+	public getAll(getInfo?: BrowserWindowInfo): Promise<BrowserWindow[]>;
+	public get(id: number, getInfo?: BrowserWindowInfo): Promise<BrowserWindow>;
 }
 
 //https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/extension
 declare class Extension
 {
-	public getBackgroundPage(): Window;
+	public getBackgroundPage(): BrowserWindow;
+}
+
+//https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/browserAction
+declare interface BrowserAction
+{
+	onClicked: IListeners<(tab: Tab) => void>;
+}
+
+declare interface TabInfo
+{
+	url: string;
+}
+
+//https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/tabs/Tab
+declare interface Tab
+{
+	url?: string;
+}
+
+//https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/tabs
+declare interface BrowserTabs
+{
+	onCreated: IListeners<(tab: Tab) => void>;
+
+	query(queryInfo: TabInfo | {}): Promise<Tab[]>;
 }
 
 declare class Browser
@@ -111,6 +165,8 @@ declare class Browser
 	public storage: BrowserStorages;
 	public windows: BrowserWindows;
 	public extension: Extension;
+	public browserAction: BrowserAction;
+	public tabs: BrowserTabs;
 }
 declare var browser: Browser;
 
@@ -141,10 +197,10 @@ declare class BootstrapData
 //LegacyAddOn--------------------------------------------------------------------------------------------------
 
 //https://developer.mozilla.org/en-US/docs/Mozilla/Tech/XPCOM/Reference/Interface/nsIJSCID
-declare class Services
+declare interface nsIJSCID
 {
-	public getService<T>(type: Type<T>): T;
-	public createInstance<T>(type: Type<T>): T;
+	getService<T>(type: Type<T>): T;
+	createInstance<T>(type: Type<T>): T;
 }
 
 declare namespace Components
@@ -436,7 +492,7 @@ declare namespace Components
 	}
 
 	//https://developer.mozilla.org/en-US/docs/Mozilla/Tech/XPCOM/Language_Bindings/Components.classes
-	export let classes: { [key: string]: Services; };
+	export let classes: { [key: string]: nsIJSCID; };
 }
 
 import Cu = Components.utils;
@@ -541,4 +597,28 @@ declare class ThunderbirdError
 	public stack: string;
 
 	public toSource(): string;
+}
+
+//https://developer.mozilla.org/en-US/docs/Mozilla/Tech/XPCOM/Reference/Interface/nsIObserver
+declare class nsIObserver
+{
+
+}
+
+//https://developer.mozilla.org/en-US/docs/Mozilla/Tech/XPCOM/Reference/Interface/nsIWindowWatcher
+declare interface nsIWindowWatcher
+{
+	registerNotification(observer: nsIObserver): void;
+}
+
+//https://developer.mozilla.org/en-US/docs/Mozilla/Tech/XPCOM/Reference/Interface/nsIWindowMediator
+declare class nsIWindowMediator
+{
+}
+
+//https://developer.mozilla.org/en-US/docs/Mozilla/JavaScript_code_modules/Services.jsm
+declare namespace Services
+{
+	let ww: nsIWindowWatcher;
+	let wm: nsIWindowMediator;
 }

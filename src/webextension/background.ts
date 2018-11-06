@@ -18,6 +18,17 @@ Copyright 2018 Brummolix (AutoarchiveReloaded, https://github.com/Brummolix/Auto
 */
 try
 {
+	//TODO: disable button in mailwindow (or only enable it in mail3pane) -> how to detect?
+	browser.browserAction.onClicked.addListener( (tab: any) =>
+	{
+		const message: IBrowserMessage = {
+			id: "archiveManually",
+		};
+
+		//TODO: don't do anything if the buttons are configured right now, but how to detect this?
+		browser.runtime.sendMessage(message);
+	});
+
 	const helper: AutoarchiveReloadedWeOptionHelper = new AutoarchiveReloadedWeOptionHelper();
 	helper.convertLegacyPreferences();
 }

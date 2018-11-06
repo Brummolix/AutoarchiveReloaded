@@ -71,6 +71,10 @@ function startup(data: BootstrapData, reason: BootstrapReasons.APP_STARTUP | Boo
 					{
 						replyToAskForAccounts(sendReply);
 					}
+					else if (msg.id === "archiveManually")
+					{
+						AutoarchiveReloadedOverlay.Global.onArchiveManually();
+					}
 				});
 			});
 		}
@@ -201,38 +205,6 @@ function initAutoArchiveReloadedOverlay(): void
 			}
 
 		}, 1000);
-
-		//TODO: Toolbar in alle Windows einhängen...
-		//TODO: wahrscheinlich besser so:
-		//https://github.com/dgutov/bmreplace/blob/67ad019be480fc6b5d458dc886a2fb5364e92171/bootstrap.js#L27
-
-		//toolbar button
-		//see https://gist.github.com/Noitidart/9467045
-		/*
-		let doc = document;
-		let toolbox = doc.querySelector('#navigator-toolbox');
-
-		let buttonId = 'AutoArchiveReloaded_AutoarchiveNow_Button';
-		let button = doc.getElementById(buttonId);
-		if (!button)
-		{
-			button = doc.createElementNS('http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul', 'toolbarbutton');
-			button.setAttribute('id', buttonId);
-			button.setAttribute('label', AutoarchiveReloadedOverlay.StringBundle.GetStringFromName("menuArchive"));
-			button.setAttribute('tooltiptext', 'TODO My buttons tool tip if you want one');
-			button.setAttribute('class', 'toolbarbutton-1 chromeclass-toolbar-additional');
-			button.style.listStyleImage = 'url("https://gist.githubusercontent.com/Noitidart/9266173/raw/06464af2965cb5968248b764b4669da1287730f3/my-urlbar-icon-image.png")';
-			button.addEventListener('command', function() {
-				AutoarchiveReloadedOverlay.Global.onArchiveManually();
-			}, false);
-
-			toolbox.palette.appendChild(button);
-		}
-		//move button into last postion in nav-bar
-		let navBar = doc.querySelector('#nav-bar');
-		navBar.insertItem(buttonId); //if you want it in first position in navBar do: navBar.insertItem(buttonId, navBar.firstChild);
-		navBar.removeChild(button);
-		*/
 
 		//startup
 		AutoarchiveReloadedOverlay.Global.startup();

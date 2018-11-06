@@ -22,6 +22,8 @@
     "days":{"message": "días"},
     "globalSettings":{"message": "General"},
     "logging":{"message": "Logging"},
-    "accountSettingTitle":{"message": "specific settings for account $$TITLE$$"}
-
+	"accountSettingTitle":{"message": "specific settings for account $$TITLE$$"},
+	
+	"toolbarArchive":{"message": "Autoarchivar..."},
+	"toolbarArchiveTooltip":{"message": "Autoarchivar ahora"}
 }

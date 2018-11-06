@@ -8,5 +8,3 @@ locale autoarchiveReloaded        fr-FR       chrome/locale/fr-FR/
 locale autoarchiveReloaded        ru-RU       chrome/locale/ru-RU/
 
 #overlay	chrome://messenger/content/messenger.xul	chrome://autoarchiveReloaded/content/autoarchive_overlay.xul
-#skin	autoarchiveReloaded	classic/1.0	chrome/skin/
-#style chrome://global/content/customizeToolbar.xul chrome://autoarchiveReloaded/skin/toolbarstyle.css
