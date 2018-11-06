@@ -30,11 +30,11 @@ try
 		browser.runtime.sendMessage(message);
 	});
 
-	const helper: AutoarchiveReloadedWeOptionHelper = new AutoarchiveReloadedWeOptionHelper();
+	const helper: AutoarchiveReloadedWebextension.OptionHelper = new AutoarchiveReloadedWebextension.OptionHelper();
 	helper.convertLegacyPreferences();
 }
 catch (e)
 {
-	loggerWebExtension.errorException(e);
+	AutoarchiveReloadedWebextension.loggerWebExtension.errorException(e);
 	throw e;
 }

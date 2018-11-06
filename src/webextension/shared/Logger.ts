@@ -18,82 +18,85 @@ Copyright 2018 Brummolix (AutoarchiveReloaded, https://github.com/Brummolix/Auto
 */
 
 // tslint:disable-next-line:no-var-keyword
-var EXPORTED_SYMBOLS = ["LogLevel", "Logger"];
+var EXPORTED_SYMBOLS = ["AutoarchiveReloadedShared"];
 
-enum LogLevel
+namespace AutoarchiveReloadedShared
 {
-	LEVEL_INFO, LEVEL_ERROR,
-}
-
-interface ILoggerHelper
-{
-	log(msgToLog: string): void;
-	getEnableInfoLogging(): boolean;
-}
-
-class Logger
-{
-	private loggerHelper: ILoggerHelper;
-
-	constructor(loggerHelper: ILoggerHelper)
+	export enum LogLevel
 	{
-		this.loggerHelper = loggerHelper;
+		LEVEL_INFO, LEVEL_ERROR,
 	}
 
-	public static getExceptionInfo(e: ThunderbirdError): string
+	export interface ILoggerHelper
 	{
-		return e + "; Source: '" + e.fileName + "'; Line: " + e.lineNumber + "; code: " + e.toSource() + "; stack: " + e.stack;
+		log(msgToLog: string): void;
+		getEnableInfoLogging(): boolean;
 	}
 
-	public info(str: string): void
+	export class Logger
 	{
-		this.log(LogLevel.LEVEL_INFO, str);
-	}
+		private loggerHelper: ILoggerHelper;
 
-	public error(str: string): void
-	{
-		this.log(LogLevel.LEVEL_ERROR, str);
-	}
-
-	public errorException(e: ThunderbirdError): void
-	{
-		this.error(Logger.getExceptionInfo(e));
-	}
-
-	private getLogLevelFromPref(): LogLevel
-	{
-		if (this.loggerHelper.getEnableInfoLogging())
+		constructor(loggerHelper: ILoggerHelper)
 		{
-			return LogLevel.LEVEL_INFO;
+			this.loggerHelper = loggerHelper;
 		}
 
-		return LogLevel.LEVEL_ERROR;
-	}
-
-	private log(levelToLog: LogLevel, str: string): void
-	{
-		if (levelToLog < this.getLogLevelFromPref())
+		public static getExceptionInfo(e: ThunderbirdError): string
 		{
-			return;
+			return e + "; Source: '" + e.fileName + "'; Line: " + e.lineNumber + "; code: " + e.toSource() + "; stack: " + e.stack;
 		}
 
-		this.DoLog(levelToLog, str);
-	}
-
-	private DoLog(levelToLog: LogLevel, str: string): void
-	{
-		const date = new Date();
-		let strToLog = date.toLocaleString() + " - AutoarchiveReloaded - ";
-		if (levelToLog === LogLevel.LEVEL_INFO)
+		public info(str: string): void
 		{
-			strToLog += "INFO";
+			this.log(LogLevel.LEVEL_INFO, str);
 		}
-		else
-		{
-			strToLog += "ERROR";
-		}
-		strToLog += ": " + str;
 
-		this.loggerHelper.log(strToLog);
+		public error(str: string): void
+		{
+			this.log(LogLevel.LEVEL_ERROR, str);
+		}
+
+		public errorException(e: ThunderbirdError): void
+		{
+			this.error(Logger.getExceptionInfo(e));
+		}
+
+		private getLogLevelFromPref(): LogLevel
+		{
+			if (this.loggerHelper.getEnableInfoLogging())
+			{
+				return LogLevel.LEVEL_INFO;
+			}
+
+			return LogLevel.LEVEL_ERROR;
+		}
+
+		private log(levelToLog: LogLevel, str: string): void
+		{
+			if (levelToLog < this.getLogLevelFromPref())
+			{
+				return;
+			}
+
+			this.DoLog(levelToLog, str);
+		}
+
+		private DoLog(levelToLog: LogLevel, str: string): void
+		{
+			const date = new Date();
+			let strToLog = date.toLocaleString() + " - AutoarchiveReloaded - ";
+			if (levelToLog === LogLevel.LEVEL_INFO)
+			{
+				strToLog += "INFO";
+			}
+			else
+			{
+				strToLog += "ERROR";
+			}
+			strToLog += ": " + str;
+
+			this.loggerHelper.log(strToLog);
+		}
 	}
 }

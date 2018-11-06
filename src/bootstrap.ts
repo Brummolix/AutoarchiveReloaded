@@ -46,7 +46,7 @@ function startup(data: BootstrapData, reason: BootstrapReasons.APP_STARTUP | Boo
 			Cu.import("chrome://autoarchiveReloaded/content/" + strImport);
 		}
 
-		AutoarchiveReloadedOverlay.logger.info("bootstrap startup and logger defined");
+		AutoarchiveReloadedBootstrap.logger.info("bootstrap startup and logger defined");
 
 		if (data.webExtension)
 		{
@@ -82,9 +82,9 @@ function startup(data: BootstrapData, reason: BootstrapReasons.APP_STARTUP | Boo
 	catch (e)
 	{
 		//there might be no logger, yet
-		if (typeof AutoarchiveReloadedOverlay.logger !== "undefined")
+		if (isLoggerAvailable())
 		{
-			AutoarchiveReloadedOverlay.logger.errorException(e);
+			AutoarchiveReloadedBootstrap.logger.errorException(e);
 		}
 		else
 		{
@@ -95,15 +95,20 @@ function startup(data: BootstrapData, reason: BootstrapReasons.APP_STARTUP | Boo
 	}
 }
 
+function isLoggerAvailable(): boolean
+{
+	return (typeof AutoarchiveReloadedBootstrap !== "undefined") && (typeof AutoarchiveReloadedBootstrap.logger !== "undefined");
+}
+
 function replyToArchiveManually(): void
 {
 	if (!bIsInToolbarCustomize)
 	{
-		AutoarchiveReloadedOverlay.Global.onArchiveManually();
+		AutoarchiveReloadedBootstrap.Global.onArchiveManually();
 	}
 	else
 	{
-		AutoarchiveReloadedOverlay.logger.info("archive manually rejected because of toolbar customization");
+		AutoarchiveReloadedBootstrap.logger.info("archive manually rejected because of toolbar customization");
 	}
 }
 
@@ -111,11 +116,11 @@ function replyToSendCurrentPreferencesToLegacyAddOnAskForLegacyPreferences(msg: 
 {
 	try
 	{
-		AutoarchiveReloaded.settings = msg.data;
+		AutoarchiveReloadedBootstrap.settings = msg.data;
 	}
 	catch (e)
 	{
-		AutoarchiveReloadedOverlay.logger.errorException(e);
+		AutoarchiveReloadedBootstrap.logger.errorException(e);
 		throw e;
 	}
 }
@@ -124,14 +129,14 @@ function replyToAskForLegacyPreferences(sendReply: (response: object | null) => 
 {
 	try
 	{
-		const legacyOptions: AutoarchiveReloaded.LegacyOptions = new AutoarchiveReloaded.LegacyOptions();
+		const legacyOptions: AutoarchiveReloadedBootstrap.LegacyOptions = new AutoarchiveReloadedBootstrap.LegacyOptions();
 		const legacySettings = legacyOptions.getLegacyOptions();
 		sendReply(legacySettings);
 		legacyOptions.markLegacySettingsAsMigrated();
 	}
 	catch (e)
 	{
-		AutoarchiveReloadedOverlay.logger.errorException(e);
+		AutoarchiveReloadedBootstrap.logger.errorException(e);
 		throw e;
 	}
 }
@@ -141,7 +146,7 @@ function replyToAskForAccounts(sendReply: (response: object | null) => void): vo
 	try
 	{
 		const nsAccounts: Ci.nsIMsgAccount[] = [];
-		AutoarchiveReloaded.AccountIterator.forEachAccount((account: Ci.nsIMsgAccount, isAccountArchivable: boolean) =>
+		AutoarchiveReloadedBootstrap.AccountIterator.forEachAccount((account: Ci.nsIMsgAccount, isAccountArchivable: boolean) =>
 		{
 			if (isAccountArchivable)
 			{
@@ -182,7 +187,7 @@ function replyToAskForAccounts(sendReply: (response: object | null) => void): vo
 	}
 	catch (e)
 	{
-		AutoarchiveReloadedOverlay.logger.errorException(e);
+		AutoarchiveReloadedBootstrap.logger.errorException(e);
 		throw e;
 	}
 }
@@ -191,42 +196,42 @@ function initAutoArchiveReloadedOverlay(): void
 {
 	try
 	{
-		AutoarchiveReloadedOverlay.logger.info("initAutoArchiveReloadedOverlay");
+		AutoarchiveReloadedBootstrap.logger.info("initAutoArchiveReloadedOverlay");
 
 		//directly after start of TB the adding of the menu does not work (getting the elemtens of "taskPopup" and "tabmail" returns null)
 		//therefore we have to wait a bit
 		//additionally setTimeout is not defined (even if we can use it AutoarchiveReloadedOverlay.Global.startup at the same time???)
 		//therefore use the mail3pane
-		(AutoarchiveReloadedOverlay.Helper.getMail3Pane() as any).setTimeout(() =>
+		(AutoarchiveReloadedBootstrap.Helper.getMail3Pane() as any).setTimeout(() =>
 		{
 			try
 			{
 				RestartlessMenuItems.add({
-					label: AutoarchiveReloadedOverlay.StringBundle.GetStringFromName("menuArchive"),
+					label: AutoarchiveReloadedBootstrap.StringBundle.GetStringFromName("menuArchive"),
 					id: "AutoArchiveReloaded_AutoarchiveNow",
 					idAppMenu: "AutoArchiveReloaded_AutoarchiveNow_AppMenu",
 					onCommand: () =>
 					{
-						AutoarchiveReloadedOverlay.Global.onArchiveManually();
+						AutoarchiveReloadedBootstrap.Global.onArchiveManually();
 					},
 				});
 
-				registerToolbarCustomizationListener(AutoarchiveReloadedOverlay.Helper.getMail3Pane());
+				registerToolbarCustomizationListener(AutoarchiveReloadedBootstrap.Helper.getMail3Pane());
 			}
 			catch (e)
 			{
-				AutoarchiveReloadedOverlay.logger.errorException(e);
+				AutoarchiveReloadedBootstrap.logger.errorException(e);
 				throw e;
 			}
 
 		}, 1000);
 
 		//startup
-		AutoarchiveReloadedOverlay.Global.startup();
+		AutoarchiveReloadedBootstrap.Global.startup();
 	}
 	catch (e)
 	{
-		AutoarchiveReloadedOverlay.logger.errorException(e);
+		AutoarchiveReloadedBootstrap.logger.errorException(e);
 		throw e;
 	}
 }
@@ -236,7 +241,7 @@ function shutdown(data: BootstrapData, reason: BootstrapReasons.APP_SHUTDOWN | B
 	//attention, do not rely on the logger in shutdown
 	//it gives "can't access dead object" when accessing the settings
 
-	removeToolbarCustomizationListener(AutoarchiveReloadedOverlay.Helper.getMail3Pane());
+	removeToolbarCustomizationListener(AutoarchiveReloadedBootstrap.Helper.getMail3Pane());
 
 	try
 	{
@@ -293,12 +298,12 @@ function removeToolbarCustomizationListener(window: Window): void
 
 function beforeCustomize(e: Event): void
 {
-	AutoarchiveReloadedOverlay.logger.info("toolbar customization detected");
+	AutoarchiveReloadedBootstrap.logger.info("toolbar customization detected");
 	bIsInToolbarCustomize = true;
 }
 
 function afterCustomize(e: Event): void
 {
-	AutoarchiveReloadedOverlay.logger.info("toolbar customization ended");
+	AutoarchiveReloadedBootstrap.logger.info("toolbar customization ended");
 	bIsInToolbarCustomize = false;
 }

@@ -19,7 +19,7 @@ Copyright 2012 Alexey Egorov (original version Autoarchive, http://code.google.c
 */
 
 // tslint:disable-next-line:no-var-keyword
-var EXPORTED_SYMBOLS = ["AutoarchiveReloadedOverlay"];
+var EXPORTED_SYMBOLS = ["AutoarchiveReloadedBootstrap"];
 
 Cu.import("resource://gre/modules/Services.jsm");
 Cu.import("resource://gre/modules/AddonManager.jsm");
@@ -33,7 +33,7 @@ Cu.import("chrome://autoarchiveReloaded/content/options.js");
 Cu.import("chrome://autoarchiveReloaded/content/shared/Logger.js");
 Cu.import("chrome://autoarchiveReloaded/content/thunderbird-stdlib/msgHdrUtils.js");
 
-namespace AutoarchiveReloadedOverlay
+namespace AutoarchiveReloadedBootstrap
 {
 	//singleton class for getting string resources
 	export const StringBundle: Ci.nsIStringBundle = Cc["@mozilla.org/intl/stringbundle;1"].getService(Ci.nsIStringBundleService)
@@ -72,7 +72,7 @@ namespace AutoarchiveReloadedOverlay
 	}
 
 	//-----------------------------------------------------------------------------------------------------
-	class LegacyExtensionLoggerHelper implements ILoggerHelper
+	class LegacyExtensionLoggerHelper implements AutoarchiveReloadedShared.ILoggerHelper
 	{
 		private readonly consoleService: Ci.nsIConsoleService = Components.classes["@mozilla.org/consoleservice;1"].getService(Ci.nsIConsoleService);
 
@@ -84,9 +84,9 @@ namespace AutoarchiveReloadedOverlay
 
 		public getEnableInfoLogging(): boolean
 		{
-			if (AutoarchiveReloaded.settings && AutoarchiveReloaded.settings.globalSettings && AutoarchiveReloaded.settings.globalSettings !== undefined)
+			if (AutoarchiveReloadedBootstrap.settings && AutoarchiveReloadedBootstrap.settings.globalSettings && AutoarchiveReloadedBootstrap.settings.globalSettings !== undefined)
 			{
-				return AutoarchiveReloaded.settings.globalSettings.enableInfoLogging;
+				return AutoarchiveReloadedBootstrap.settings.globalSettings.enableInfoLogging;
 			}
 
 			return false;
@@ -113,13 +113,13 @@ namespace AutoarchiveReloadedOverlay
 			}
 			catch (e)
 			{
-				Application.console.log("error writing to log file " + Logger.getExceptionInfo(e));
+				Application.console.log("error writing to log file " + AutoarchiveReloadedShared.Logger.getExceptionInfo(e));
 				//trotzdem weitermachen, ist ja nur logging...
 			}
 		}
 	}
 
-	export const logger: Logger = new Logger(new LegacyExtensionLoggerHelper());
+	export const logger: AutoarchiveReloadedShared.Logger = new AutoarchiveReloadedShared.Logger(new LegacyExtensionLoggerHelper());
 
 	//------------------------------------------------------------------------------
 
@@ -392,12 +392,12 @@ namespace AutoarchiveReloadedOverlay
 
 				let foldersToArchive = 0;
 
-				AutoarchiveReloaded.AccountIterator.forEachAccount((account: Ci.nsIMsgAccount, isAccountArchivable: boolean) =>
+				AutoarchiveReloadedBootstrap.AccountIterator.forEachAccount((account: Ci.nsIMsgAccount, isAccountArchivable: boolean) =>
 				{
 					logger.info("check account '" + account.incomingServer.prettyName + "'");
 					if (isAccountArchivable)
 					{
-						const accountSettings = AutoarchiveReloaded.settings.accountSettings[account.key];
+						const accountSettings = AutoarchiveReloadedBootstrap.settings.accountSettings[account.key];
 						SettingsHelper.log(account.incomingServer.prettyName, accountSettings);
 						if (SettingsHelper.isArchivingSomething(accountSettings))
 						{
@@ -562,7 +562,7 @@ namespace AutoarchiveReloadedOverlay
 			this.status = States.READY_FOR_WORK;
 			logger.info("ready for work");
 
-			if (AutoarchiveReloaded.settings.globalSettings.archiveType === "startup")
+			if (AutoarchiveReloadedBootstrap.settings.globalSettings.archiveType === "startup")
 			{
 				logger.info("archive type at startup");
 
@@ -725,7 +725,7 @@ namespace AutoarchiveReloadedOverlay
 		{
 			try
 			{
-				AutoarchiveReloaded.AccountIterator.forEachAccount((account: Ci.nsIMsgAccount, isAccountArchivable: boolean) =>
+				AutoarchiveReloadedBootstrap.AccountIterator.forEachAccount((account: Ci.nsIMsgAccount, isAccountArchivable: boolean) =>
 				{
 					logger.info("Account Info: '" + account.incomingServer.prettyName + "'; type: " +
 						account.incomingServer.type + "; localStoreType: " + account.incomingServer.localStoreType + "; " + account.incomingServer.serverURI);

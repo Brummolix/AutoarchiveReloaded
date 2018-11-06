@@ -18,86 +18,89 @@ Copyright 2018 Brummolix (AutoarchiveReloaded, https://github.com/Brummolix/Auto
 */
 
 // tslint:disable-next-line:no-var-keyword
-var EXPORTED_SYMBOLS = ["AutoarchiveReloadedOptionHandling"];
+var EXPORTED_SYMBOLS = ["AutoarchiveReloadedShared"];
 
-class AutoarchiveReloadedOptionHandling
+namespace AutoarchiveReloadedShared
 {
-	public getDefaultAccountSettings(): IAccountSettings
+	export class OptionHandling
 	{
-		return {
-			bArchiveOther: false,
-			daysOther: 360,
-			bArchiveMarked: false,
-			daysMarked: 360,
-			bArchiveTagged: false,
-			daysTagged: 360,
-			bArchiveUnread: false,
-			daysUnread: 360,
-		};
-	}
-
-	public convertPartialSettings(partialSettings: { [key: string]: any; }): ISettings
-	{
-		const defaultSettings: ISettings = this.getDefaultSettings();
-		const concatedSettings: ISettings = this.deepMerge(defaultSettings, partialSettings);
-
-		//use defaultSettings for all accounts, too
-		for (const accountId in concatedSettings.accountSettings)
+		public getDefaultAccountSettings(): IAccountSettings
 		{
-			if ( concatedSettings.accountSettings.hasOwnProperty(accountId) )
-			{
-				const accountSetting = concatedSettings.accountSettings[accountId];
-				concatedSettings.accountSettings[accountId] = this.deepMerge(this.getDefaultAccountSettings(), accountSetting);
-				}
+			return {
+				bArchiveOther: false,
+				daysOther: 360,
+				bArchiveMarked: false,
+				daysMarked: 360,
+				bArchiveTagged: false,
+				daysTagged: 360,
+				bArchiveUnread: false,
+				daysUnread: 360,
+			};
 		}
 
-		return concatedSettings;
-	}
-
-	private deepMerge<T extends { [key: string]: any; }>(defaultValues: T, valuesToMerge: { [key: string]: any; }): T
-	{
-		if (valuesToMerge === undefined || valuesToMerge === null)
+		public convertPartialSettings(partialSettings: { [key: string]: any; }): ISettings
 		{
-			return defaultValues;
-		}
+			const defaultSettings: ISettings = this.getDefaultSettings();
+			const concatedSettings: ISettings = this.deepMerge(defaultSettings, partialSettings);
 
-		const clone: T = Object.assign({}, defaultValues);
-		for (const key in valuesToMerge)
-		{
-			if (valuesToMerge.hasOwnProperty(key))
+			//use defaultSettings for all accounts, too
+			for (const accountId in concatedSettings.accountSettings)
 			{
-				const elem: any = valuesToMerge[key];
-				if ((elem !== undefined) && (elem !== null))
+				if ( concatedSettings.accountSettings.hasOwnProperty(accountId) )
 				{
-					//do not use Object.keys here, as TB 64 gives keys also for strings and even numbers
-					if (typeof elem !== "object")
-					{
-						clone[key] = elem;
+					const accountSetting = concatedSettings.accountSettings[accountId];
+					concatedSettings.accountSettings[accountId] = this.deepMerge(this.getDefaultAccountSettings(), accountSetting);
 					}
-					else
+			}
+
+			return concatedSettings;
+		}
+
+		private deepMerge<T extends { [key: string]: any; }>(defaultValues: T, valuesToMerge: { [key: string]: any; }): T
+		{
+			if (valuesToMerge === undefined || valuesToMerge === null)
+			{
+				return defaultValues;
+			}
+
+			const clone: T = Object.assign({}, defaultValues);
+			for (const key in valuesToMerge)
+			{
+				if (valuesToMerge.hasOwnProperty(key))
+				{
+					const elem: any = valuesToMerge[key];
+					if ((elem !== undefined) && (elem !== null))
 					{
-						clone[key] = this.deepMerge(clone[key], elem);
+						//do not use Object.keys here, as TB 64 gives keys also for strings and even numbers
+						if (typeof elem !== "object")
+						{
+							clone[key] = elem;
+						}
+						else
+						{
+							clone[key] = this.deepMerge(clone[key], elem);
+						}
 					}
 				}
 			}
+
+			return clone;
 		}
 
-		return clone;
-	}
+		private getDefaultSettings(): ISettings
+		{
+			return {
+				globalSettings: this.getDefaultGlobalSettings(),
+				accountSettings: {},
+			};
+		}
 
-	private getDefaultSettings(): ISettings
-	{
-		return {
-			globalSettings: this.getDefaultGlobalSettings(),
-			accountSettings: {},
-		};
-	}
-
-	private getDefaultGlobalSettings(): IGlobalSettings
-	{
-		return {
-			archiveType: "manual",
-			enableInfoLogging: false,
-		};
+		private getDefaultGlobalSettings(): IGlobalSettings
+		{
+			return {
+				archiveType: "manual",
+				enableInfoLogging: false,
+			};
+		}
 	}
 }

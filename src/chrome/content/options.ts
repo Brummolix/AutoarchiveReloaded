@@ -18,9 +18,9 @@ Copyright 2018 Brummolix (AutoarchiveReloaded, https://github.com/Brummolix/Auto
 */
 
 // tslint:disable-next-line:no-var-keyword
-var EXPORTED_SYMBOLS = ["AutoarchiveReloaded"];
+var EXPORTED_SYMBOLS = ["AutoarchiveReloadedBootstrap"];
 
-namespace AutoarchiveReloaded
+namespace AutoarchiveReloadedBootstrap
 {
 	Cu.import("chrome://autoarchiveReloaded/content/overlay.js");
 	Cu.import("resource:///modules/MailServices.jsm");
@@ -70,7 +70,7 @@ namespace AutoarchiveReloaded
 		{
 			const accountSettings: IAccountSettingsArray = {};
 
-			AutoarchiveReloaded.AccountIterator.forEachAccount((account: Ci.nsIMsgAccount, isAccountArchivable: boolean) =>
+			AutoarchiveReloadedBootstrap.AccountIterator.forEachAccount((account: Ci.nsIMsgAccount, isAccountArchivable: boolean) =>
 			{
 				if (!isAccountArchivable)
 				{
@@ -91,7 +91,7 @@ namespace AutoarchiveReloaded
 
 				//if nothing is archived (which was the default) we assume that the AddOn was not installed or at least not used
 				//therefore we ignore the settings then and the defaults will be used later on
-				if (AutoarchiveReloadedOverlay.SettingsHelper.isArchivingSomething(settingOfAccount))
+				if (AutoarchiveReloadedBootstrap.SettingsHelper.isArchivingSomething(settingOfAccount))
 				{
 					accountSettings[account.key] = settingOfAccount;
 				}

@@ -74,7 +74,7 @@ function saveOptions(): void
 	}
 	catch (e)
 	{
-		loggerWebExtension.errorException(e);
+		AutoarchiveReloadedWebextension.loggerWebExtension.errorException(e);
 		throw e;
 	}
 
@@ -173,7 +173,7 @@ function cloneTemplate(cloneId: string, appendToId: string, accountInfo: IAccoun
 	clone[0].outerHTML = html;
 }
 
-let aaHelper: AutoarchiveReloadedWeOptionHelper = new AutoarchiveReloadedWeOptionHelper();
+let aaHelper: AutoarchiveReloadedWebextension.OptionHelper = new AutoarchiveReloadedWebextension.OptionHelper();
 $(() =>
 {
 	try
@@ -183,7 +183,7 @@ $(() =>
 	}
 	catch (e)
 	{
-		loggerWebExtension.errorException(e);
+		AutoarchiveReloadedWebextension.loggerWebExtension.errorException(e);
 		throw e;
 	}
 });
