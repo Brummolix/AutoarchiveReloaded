@@ -107,7 +107,6 @@ namespace AutoarchiveReloadedBootstrap
 		}
 	}
 
-	//TODO: why is this inside options.ts? Rename file? Or put everything into overlay.js again?
 	export class AccountIterator
 	{
 		public static forEachAccount(forEachDo: (account: Ci.nsIMsgAccount, isAccountArchivable: boolean) => void): void
