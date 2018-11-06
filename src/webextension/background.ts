@@ -25,7 +25,8 @@ try
 			id: "archiveManually",
 		};
 
-		//TODO: don't do anything if the buttons are configured right now, but how to detect this?
+		//it would be better to detect if the buttons are configured right now and do nothing in this case
+		//but as we don't know how to do it for a web extension it will be done in the bootstrap part
 		browser.runtime.sendMessage(message);
 	});
 

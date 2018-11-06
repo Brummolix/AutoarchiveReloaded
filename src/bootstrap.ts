@@ -73,7 +73,7 @@ function startup(data: BootstrapData, reason: BootstrapReasons.APP_STARTUP | Boo
 					}
 					else if (msg.id === "archiveManually")
 					{
-						AutoarchiveReloadedOverlay.Global.onArchiveManually();
+						replyToArchiveManually();
 					}
 				});
 			});
@@ -92,6 +92,18 @@ function startup(data: BootstrapData, reason: BootstrapReasons.APP_STARTUP | Boo
 			console.log(e);
 		}
 		throw e;
+	}
+}
+
+function replyToArchiveManually(): void
+{
+	if (!bIsInToolbarCustomize)
+	{
+		AutoarchiveReloadedOverlay.Global.onArchiveManually();
+	}
+	else
+	{
+		AutoarchiveReloadedOverlay.logger.info("archive manually rejected because of toolbar customization");
 	}
 }
 
@@ -197,6 +209,8 @@ function initAutoArchiveReloadedOverlay(): void
 						AutoarchiveReloadedOverlay.Global.onArchiveManually();
 					},
 				});
+
+				registerToolbarCustomizationListener(AutoarchiveReloadedOverlay.Helper.getMail3Pane());
 			}
 			catch (e)
 			{
@@ -220,6 +234,8 @@ function shutdown(data: BootstrapData, reason: BootstrapReasons.APP_SHUTDOWN | B
 {
 	//attention, do not rely on the logger in shutdown
 	//it gives "can't access dead object" when accessing the settings
+
+	removeToolbarCustomizationListener(AutoarchiveReloadedOverlay.Helper.getMail3Pane());
 
 	try
 	{
@@ -248,4 +264,40 @@ function install(data: BootstrapData, reason: BootstrapReasons.ADDON_INSTALL | B
 function uninstall(data: BootstrapData, reason: BootstrapReasons.ADDON_UNINSTALL | BootstrapReasons.ADDON_UPGRADE | BootstrapReasons.ADDON_DOWNGRADE): void
 {
 	//nothing to do
+}
+
+let bIsInToolbarCustomize: boolean = false;
+
+function registerToolbarCustomizationListener(window: Window): void
+{
+	if (!window)
+	{
+		return;
+	}
+
+	window.addEventListener("aftercustomization", afterCustomize);
+	window.addEventListener("beforecustomization", beforeCustomize);
+}
+
+function removeToolbarCustomizationListener(window: Window): void
+{
+	if (!window)
+	{
+		return;
+	}
+
+	window.removeEventListener("aftercustomization", afterCustomize);
+	window.removeEventListener("beforecustomization", beforeCustomize);
+}
+
+function beforeCustomize(e: Event): void
+{
+	AutoarchiveReloadedOverlay.logger.info("toolbar customization detected");
+	bIsInToolbarCustomize = true;
+}
+
+function afterCustomize(e: Event): void
+{
+	AutoarchiveReloadedOverlay.logger.info("toolbar customization ended");
+	bIsInToolbarCustomize = false;
 }

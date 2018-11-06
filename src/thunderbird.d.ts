@@ -215,7 +215,7 @@ declare namespace Components
 	namespace interfaces
 	{
 		//https://developer.mozilla.org/en-US/docs/Mozilla/Tech/XPCOM/Reference/Interface/nsIDOMWindow
-		class nsIDOMWindow
+		class nsIDOMWindow extends Window
 		{
 
 		}
