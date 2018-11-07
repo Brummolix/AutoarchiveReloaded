@@ -47,9 +47,8 @@ namespace AutoarchiveReloadedBootstrap
 				return null;
 			}
 
-			//TODO: wieso kommt in meinem Profil als "archiveType" null raus? Das hätte doch ein Wert sein müssen
-			//nochmal mit frisch konvertiertem Profil testen!
-
+			//in an old profile the default values were not stored and we get undefined instead
+			//nevertheless we read everything with default value undefined now and the deepMerge later on will merge it with current default values
 			const legacySettings: ISettings = {
 				globalSettings: {
 					archiveType: prefBranch.getCharPref("archiveType", undefined) as ArchiveType,
