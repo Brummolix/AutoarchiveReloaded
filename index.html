@@ -18,7 +18,7 @@
 
   </head>
   <body>
-      <div id="header">
+    <div id="header">
         <nav>
 			<li class="fork"><a href="https://addons.mozilla.org/de/thunderbird/addon/autoarchivereloaded/">Download/Install from addons.mozilla.org</a></li>
 			<li class="fork"><a href="https://github.com/Brummolix/AutoarchiveReloaded/issues">Report bugs</a></li>
@@ -57,24 +57,29 @@ You can use it for example if you want to archive your mails from an IMAP accoun
 <a name="how-to-use-it" class="anchor" href="#how-to-use-it"><span class="octicon octicon-link"></span></a>How to use it?</h3>
 
 <ul>
-<li>Install the addon in Mozilla Thunderbird</li>
+<li>Install the addon in Mozilla Thunderbird<BR>
+(If you use Thunderbird 60 or below see the <a href="#how-to-use-it-old">documentation for the old version</a>.)
+</li>
 <li>Set up normal archive settings in Thunderbird for every account (right click at an account, choose "Properties", choose "Copies and folders" and find the archive settings there)</li>
-<li>Set up Autoarchive settings (right click at an account, choose properties, choose "Autoarchive settings")
-<img src="myimages/AutoarchiveReloaded_ENG.png">
+<li>Open the AutoarchiveReloaded settings, for example like seen in the following screenshot:
+	<img src="myimages/extension_settings.png"></li>
+<li>Set up Autoarchive settings for your accounts
+	<img src="myimages/account_settings.png">
 <ul>
 <li>You can set up if you want to enable autoarchiving and after how many days a message is archived automatically</li>
 <li>You can have different settings for unread messages, starred messages (marked with a star) or messages with keywords (the settings will also be combined if a message is both or all of that)</li>
 </ul>
 </li>
-<li>Choose "Extras\Autoarchive" now to start autoarchiving. Then your mails are archived automatically according to your settings. 
-All folders of the account will be archived except Draft,Trash,Templates,Junk,Archive,Queue.
-You find progress infos under the menu Extras\Activities.<BR>
-You can also use a button in the toolbar. You have to edit your toolbar and add the button first.
+<li>In the menu choose "Tools\Autoarchive now..." now to start autoarchiving.
+		<img src="myimages/start.png">
+	Then your mails are archived automatically according to your settings. 
+All folders of the account will be archived except Draft,Trash,Templates,Junk,Archive and Queue.
+You find progress infos under the menu "Activity manager".<BR>
+You can also use a button in the toolbar. If you don't see it you may have to edit your toolbar and add the button first.
 <li>
-<B>Important change in 0.9.1</B><BR>
-In the options of AutoarchiveReloaded you can also choose to autoarchive every time you start Thunderbird (after some seconds). 
+In the general options of AutoarchiveReloaded you can also choose to autoarchive every time you start Thunderbird (after some seconds). 
 Because of a bug in Thunderbird this may lead to duplicate messages if you use IMAP accounts and archiving is done when your internet connection is broken. See <a href="https://bugzilla.mozilla.org/show_bug.cgi?id=956598">https://bugzilla.mozilla.org/show_bug.cgi?id=956598</a> for details. Therefore I have decided to let the <b>manual start be the default</B>!
-<img src="myimages/AutoarchiveReloadedSettings_ENG.png">
+<img src="myimages/general_settings.png">
 </li>
 </ul><h3>
 <a name="original-version" class="anchor" href="#original-version"><span class="octicon octicon-link"></span></a>Original version</h3>
@@ -95,6 +100,32 @@ Because of a bug in Thunderbird this may lead to duplicate messages if you use I
 <li>add (limited) possibility to archive RSS accounts (it is limited because you don't have Thunderbird archive options at such an account, therefore you can only archive with default settings)</li>
 <li>...</li>
 </ul>
+
+<h3>
+	<a name="how-to-use-it-old" class="anchor" href="#how-to-use-it-old"><span class="octicon octicon-link"></span></a>How to use it (old version 0.9.9.6 until Thunderbird 60)?</h3>
+	
+	<ul>
+	<li>Get the old version 0.9.9.6 of the addon (<a href="https://addons.thunderbird.net/de/thunderbird/addon/autoarchivereloaded/versions/">from version archive</a>)</li>
+	<li>Install the addon in Mozilla Thunderbird</li>
+	<li>Set up normal archive settings in Thunderbird for every account (right click at an account, choose "Properties", choose "Copies and folders" and find the archive settings there)</li>
+	<li>Set up Autoarchive settings (right click at an account, choose properties, choose "Autoarchive settings")
+	<img src="myimages/AutoarchiveReloaded_ENG.png">
+	<ul>
+	<li>You can set up if you want to enable autoarchiving and after how many days a message is archived automatically</li>
+	<li>You can have different settings for unread messages, starred messages (marked with a star) or messages with keywords (the settings will also be combined if a message is both or all of that)</li>
+	</ul>
+	</li>
+	<li>Choose "Extras\Autoarchive" now to start autoarchiving. Then your mails are archived automatically according to your settings. 
+	All folders of the account will be archived except Draft,Trash,Templates,Junk,Archive and Queue.
+	You find progress infos under the menu Extras\Activities.<BR>
+	You can also use a button in the toolbar. You have to edit your toolbar and add the button first.
+	<li>
+	<B>Important change starting with version 0.9.1</B><BR>
+	In the options of AutoarchiveReloaded you can also choose to autoarchive every time you start Thunderbird (after some seconds). 
+	Because of a bug in Thunderbird this may lead to duplicate messages if you use IMAP accounts and archiving is done when your internet connection is broken. See <a href="https://bugzilla.mozilla.org/show_bug.cgi?id=956598">https://bugzilla.mozilla.org/show_bug.cgi?id=956598</a> for details. Therefore I have decided to let the <b>manual start be the default</B>!
+	<img src="myimages/AutoarchiveReloadedSettings_ENG.png">
+	</li>
+	</ul>
 
         <div>
           <hr>
