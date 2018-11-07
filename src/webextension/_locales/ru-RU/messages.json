@@ -22,7 +22,7 @@
     "days":{"message":"дней"},
     "globalSettings":{"message": "Основные"},
     "logging":{"message": "Журналирование"},
-	"accountSettingTitle":{"message": "параметры учетной записи $$TITLE$$"},
+	"accountSettingTitle":{"message": "параметры учетной записи §§TITLE§§"},
 	
 	"toolbarArchive":{"message": "Авто архивирование..."},
 	"toolbarArchiveTooltip":{"message": "Архивировать сейчас"}

@@ -22,7 +22,7 @@
     "days":{"message": "jours"},
     "globalSettings":{"message": "General"},
     "logging":{"message": "Journalisation"},
-	"accountSettingTitle":{"message": "paramètres spécifiques au compte $$TITLE$$"},
+	"accountSettingTitle":{"message": "paramètres spécifiques au compte §§TITLE§§"},
 	
 	"toolbarArchive":{"message": "Archivage automatique..."},
 	"toolbarArchiveTooltip":{"message": "Archiver automatiquement maintenant"}
