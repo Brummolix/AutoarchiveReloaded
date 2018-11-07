@@ -9,8 +9,8 @@
     "archiveTypeStartup": {"message": "à chaque démarrage de Thunderbird (et répété après chaque jour)"},
     "enableInfoLoggingOption": {"message": "activer la journalisation étendue (console d'erreurs et fichier AutoarchiveReloadedLog.txt dans le dossier de votre profil)"},
     "globalSettingsStartupDescription":{"message":"L'archivage automatique après le démarrage de Thunderbird n'est pas recommandé pour les comptes IMAP, car il peut y avoir des problèmes si le serveur / la connexion Internet sont absents (les messages sont archivés deux fois)."},
-	"saveSettings":{"message":"Save settings"},
-	"settingsSaved":{"message":"Settings saved."},
+	"saveSettings":{"message":"Sauvegarder les paramètres"},
+	"settingsSaved":{"message":"Paramètres sauvegardés."},
 
     "settingsDescription2":{"message": "Souvenez-vous: En plus de cette option vous devez également configurer les paramètres d'archivage de Thunderbird dans 'Copies & Dossiers'! Note: Ces paramètres ne sont pas disponibles pour les comptes de flux (ex: RSS) ou les dossiers locaux. Vous pouvez seulement les archiver avec les paramètres par défaut (ou en définissant manuellement les préférences globales 'mail.identity.default.archive_granularity' / 'mail.identity.default.archive_keep_folder_structure')."},
     
@@ -21,8 +21,8 @@
     
     "days":{"message": "jours"},
     "globalSettings":{"message": "General"},
-    "logging":{"message": "Logging"},
-	"accountSettingTitle":{"message": "specific settings for account $$TITLE$$"},
+    "logging":{"message": "Journalisation"},
+	"accountSettingTitle":{"message": "paramètres spécifiques au compte $$TITLE$$"},
 	
 	"toolbarArchive":{"message": "Archivage automatique..."},
 	"toolbarArchiveTooltip":{"message": "Archiver automatiquement maintenant"}
