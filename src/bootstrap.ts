@@ -102,14 +102,13 @@ function isLoggerAvailable(): boolean
 
 function replyToArchiveManually(): void
 {
-	if (!bIsInToolbarCustomize)
-	{
-		AutoarchiveReloadedBootstrap.Global.onArchiveManually();
-	}
-	else
+	if (bIsInToolbarCustomize)
 	{
 		AutoarchiveReloadedBootstrap.logger.info("archive manually rejected because of toolbar customization");
+		return;
 	}
+
+	AutoarchiveReloadedBootstrap.Global.onArchiveManually();
 }
 
 function replyToSendCurrentPreferencesToLegacyAddOnAskForLegacyPreferences(msg: IBrowserMessageSendCurrentSettings): void
@@ -202,7 +201,7 @@ function initAutoArchiveReloadedOverlay(): void
 		//therefore we have to wait a bit
 		//additionally setTimeout is not defined (even if we can use it AutoarchiveReloadedOverlay.Global.startup at the same time???)
 		//therefore use the mail3pane
-		(AutoarchiveReloadedBootstrap.Helper.getMail3Pane() as any).setTimeout(() =>
+		(AutoarchiveReloadedBootstrap.Helper.getMail3Pane() as Window).setTimeout(() =>
 		{
 			try
 			{
