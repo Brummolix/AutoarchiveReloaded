@@ -120,7 +120,7 @@ namespace AutoarchiveReloadedBootstrap
 		private static isAccountArchivable(account: Ci.nsIMsgAccount): boolean
 		{
 			//ignore IRC accounts
-			return (account.incomingServer.localStoreType === "mailbox" || account.incomingServer.localStoreType === "imap" || account.incomingServer.localStoreType === "news");
+			return (account.incomingServer.localStoreType === "mailbox" || account.incomingServer.localStoreType === "imap" || account.incomingServer.localStoreType === "news" || account.incomingServer.localStoreType === "exquilla");
 		}
 	}
 
