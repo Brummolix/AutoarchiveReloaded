@@ -274,10 +274,10 @@ declare namespace Components
 		class nsIMsgIncomingServer
 		{
 			public readonly serverURI: string;
-			public type: "pop3" | "imap" | "nntp" | "none" | "im" | "rss"; //"and so on"?
+			public type: "pop3" | "imap" | "nntp" | "none" | "im" | "rss" | "exquilla"; //"and so on"?
 			public rootFolder: nsIMsgFolder;
 			public prettyName: string;
-			public readonly localStoreType: "mailbox" | "imap" | "news";
+			public readonly localStoreType: "mailbox" | "imap" | "news" | "exquilla";
 
 			public getBoolValue(attr: string): boolean;
 			public getIntValue(attr: string): number;

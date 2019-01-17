@@ -155,8 +155,8 @@ function replyToAskForAccounts(sendReply: (response: object | null) => void): vo
 
 		nsAccounts.sort((a: Ci.nsIMsgAccount, b: Ci.nsIMsgAccount) =>
 		{
-			const mailTypeA: boolean = (a.incomingServer.type === "pop3" || a.incomingServer.type === "imap");
-			const mailTypeB: boolean = (b.incomingServer.type === "pop3" || b.incomingServer.type === "imap");
+			const mailTypeA: boolean = AutoarchiveReloadedBootstrap.AccountInfo.isMailType(a);
+			const mailTypeB: boolean = AutoarchiveReloadedBootstrap.AccountInfo.isMailType(b);
 
 			if (mailTypeA === mailTypeB)
 			{

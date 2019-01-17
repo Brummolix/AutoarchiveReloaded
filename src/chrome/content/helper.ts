@@ -122,7 +122,15 @@ namespace AutoarchiveReloadedBootstrap
 			//ignore IRC accounts
 			return (account.incomingServer.localStoreType === "mailbox" || account.incomingServer.localStoreType === "imap" || account.incomingServer.localStoreType === "news" || account.incomingServer.localStoreType === "exquilla");
 		}
-	}
+  }
+
+	export class AccountInfo
+  {
+		public static isMailType(account: Ci.nsIMsgAccount): boolean
+		{
+			return (account.incomingServer.type === "pop3" || account.incomingServer.type === "imap" || account.incomingServer.type === "exquilla");
+		}
+  }
 
 	export let settings: ISettings;
 }
