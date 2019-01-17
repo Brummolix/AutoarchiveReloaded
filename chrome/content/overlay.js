@@ -517,7 +517,7 @@ AutoarchiveReloadedOverlay.Autoarchiver.prototype.archiveAccounts = function ()
 		{
 			AutoarchiveReloadedOverlay.Logger.info("check account '" + account.incomingServer.prettyName + "'");
 			//ignore IRC accounts
-			if (account.incomingServer.localStoreType == "mailbox" || account.incomingServer.localStoreType == "imap" || account.incomingServer.localStoreType == "news")
+			if (account.incomingServer.localStoreType == "mailbox" || account.incomingServer.localStoreType == "imap" || account.incomingServer.localStoreType == "news" || account.incomingServer.localStoreType == "exquilla")
 			{
 				var settings = new AutoarchiveReloadedOverlay.Settings(account);
 				if (settings.isArchivingSomething())
