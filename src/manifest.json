@@ -6,6 +6,13 @@
 	"author": "__MSG_addOnAuthor__",
 	"homepage_url": "http://brummolix.github.io/AutoarchiveReloaded/",
 	
+	"browser_specific_settings": {
+		"gecko": {
+			"id": "AutoarchiveReloaded@brummolix.addons.mozilla.org",
+			"strict_min_version": "66"
+		}
+	},
+
 	"options_ui": 
 	{
 		"page": "options.html",
