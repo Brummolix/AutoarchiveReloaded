@@ -77,8 +77,8 @@ module.exports = function(grunt) {
 				src: [
 					srcDir + "/**/*.ts",
 					srcDir + "/**/*.js",
-					"!src/webextension/libs/**/*.js",
-					"!src/chrome/content/thunderbird-stdlib/*.js",
+					"!src/libs/**/*.js",
+					"!src/old/chrome/content/thunderbird-stdlib/*.js",
 				],
 			},
 		},
