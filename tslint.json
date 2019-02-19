@@ -1,52 +1,61 @@
 {
-    "defaultSeverity": "error",
-    "extends": [
-        "tslint:recommended"
-    ],
+	"defaultSeverity": "error",
+	"extends": [
+		"tslint:recommended"
+	],
 	"jsRules": {
-		"indent": [true, "tabs", 4],
-		"object-literal-sort-keys":false,
-		"eofline":false
+		"indent": [
+			true,
+			"tabs",
+			4
+		],
+		"object-literal-sort-keys": false,
+		"eofline": false
 	},
-    "rules": {
-        //rules see https://palantir.github.io/tslint/rules/
-
-        "no-namespace":false,
-        "one-line": [false],
-        "comment-format": [false, "check-space"],
-        "object-literal-sort-keys":false,
-        "object-literal-shorthand":false,
-        "max-line-length": false,
-
-        //TODO: enable?
-        "max-classes-per-file":false,
-        "eofline":false,
-		"indent": [true, "tabs", 4],
-		"no-console":false,
-		"member-ordering": [true,
+	"rules": {
+		//rules see https://palantir.github.io/tslint/rules/
+		"no-namespace": false,
+		"one-line": [
+			false
+		],
+		"comment-format": [
+			false,
+			"check-space"
+		],
+		"object-literal-sort-keys": false,
+		"object-literal-shorthand": false,
+		"max-line-length": false,
+		//TODO: enable?
+		"max-classes-per-file": false,
+		"eofline": false,
+		"indent": [
+			true,
+			"tabs",
+			4
+		],
+		"no-console": false,
+		"member-ordering": [
+			true,
 			{
-			  "order": [
-				"public-static-field",
-				"protected-static-field",
-				"private-static-field",
-				"public-instance-field",
-				"protected-instance-field",
-				"private-instance-field",
-				
-				"public-constructor",
-				"protected-constructor",
-				"private-constructor",
-
-				"public-static-method",
-				"protected-static-method",
-				"private-static-method",
-												
-				"public-instance-method",
-				"protected-instance-method",
-				"private-instance-method"
+				"order": [
+					"public-static-field",
+					"protected-static-field",
+					"private-static-field",
+					"public-instance-field",
+					"protected-instance-field",
+					"private-instance-field",
+					"public-constructor",
+					"protected-constructor",
+					"private-constructor",
+					"public-static-method",
+					"protected-static-method",
+					"private-static-method",
+					"public-instance-method",
+					"protected-instance-method",
+					"private-instance-method"
 				]
 			}
-		  ]
-    },
-    "rulesDirectory": []
+		]
+	},
+	"rulesDirectory": []
 }
