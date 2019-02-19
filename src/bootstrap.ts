@@ -78,6 +78,10 @@ function startup(data: BootstrapData, reason: BootstrapReasons.APP_STARTUP | Boo
 				});
 			});
 		}
+		else
+		{
+			AutoarchiveReloadedBootstrap.logger.error("No embedded webextension found?");
+		}
 	}
 	catch (e)
 	{
