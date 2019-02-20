@@ -52,4 +52,7 @@ namespace AutoarchiveReloadedWebextension
 	}
 
 	export const loggerWebExtension: AutoarchiveReloadedShared.Logger = new AutoarchiveReloadedShared.Logger(new LoggerHelper());
+
+	//TODO: temporarily enable info logging until we have a more stable state
+	LoggerHelper.setGlobaleEnableInfoLogging(true);
 }
