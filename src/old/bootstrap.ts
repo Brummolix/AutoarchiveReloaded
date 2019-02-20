@@ -46,7 +46,7 @@ function startup(data: BootstrapData, reason: BootstrapReasons.APP_STARTUP | Boo
 			Cu.import("chrome://autoarchiveReloaded/content/" + strImport);
 		}
 
-		AutoarchiveReloadedBootstrap.logger.info("bootstrap startup and logger defined");
+		AutoarchiveReloadedWebextension.loggerWebExtension.info("bootstrap startup and logger defined");
 
 		if (data.webExtension)
 		{
@@ -80,7 +80,7 @@ function startup(data: BootstrapData, reason: BootstrapReasons.APP_STARTUP | Boo
 		}
 		else
 		{
-			AutoarchiveReloadedBootstrap.logger.error("No embedded webextension found?");
+			AutoarchiveReloadedWebextension.loggerWebExtension.error("No embedded webextension found?");
 		}
 	}
 	catch (e)
@@ -88,7 +88,7 @@ function startup(data: BootstrapData, reason: BootstrapReasons.APP_STARTUP | Boo
 		//there might be no logger, yet
 		if (isLoggerAvailable())
 		{
-			AutoarchiveReloadedBootstrap.logger.errorException(e);
+			AutoarchiveReloadedWebextension.loggerWebExtension.errorException(e);
 		}
 		else
 		{
@@ -101,14 +101,14 @@ function startup(data: BootstrapData, reason: BootstrapReasons.APP_STARTUP | Boo
 
 function isLoggerAvailable(): boolean
 {
-	return (typeof AutoarchiveReloadedBootstrap !== "undefined") && (typeof AutoarchiveReloadedBootstrap.logger !== "undefined");
+	return (typeof AutoarchiveReloadedBootstrap !== "undefined") && (typeof AutoarchiveReloadedWebextension.loggerWebExtension !== "undefined");
 }
 
 function replyToArchiveManually(): void
 {
 	if (bIsInToolbarCustomize)
 	{
-		AutoarchiveReloadedBootstrap.logger.info("archive manually rejected because of toolbar customization");
+		AutoarchiveReloadedWebextension.loggerWebExtension.info("archive manually rejected because of toolbar customization");
 		return;
 	}
 
@@ -123,7 +123,7 @@ function replyToSendCurrentPreferencesToLegacyAddOnAskForLegacyPreferences(msg: 
 	}
 	catch (e)
 	{
-		AutoarchiveReloadedBootstrap.logger.errorException(e);
+		AutoarchiveReloadedWebextension.loggerWebExtension.errorException(e);
 		throw e;
 	}
 }
@@ -139,7 +139,7 @@ function replyToAskForLegacyPreferences(sendReply: (response: object | null) => 
 	}
 	catch (e)
 	{
-		AutoarchiveReloadedBootstrap.logger.errorException(e);
+		AutoarchiveReloadedWebextension.loggerWebExtension.errorException(e);
 		throw e;
 	}
 }
@@ -190,7 +190,7 @@ function replyToAskForAccounts(sendReply: (response: object | null) => void): vo
 	}
 	catch (e)
 	{
-		AutoarchiveReloadedBootstrap.logger.errorException(e);
+		AutoarchiveReloadedWebextension.loggerWebExtension.errorException(e);
 		throw e;
 	}
 }
@@ -199,7 +199,7 @@ function initAutoArchiveReloadedOverlay(): void
 {
 	try
 	{
-		AutoarchiveReloadedBootstrap.logger.info("initAutoArchiveReloadedOverlay");
+		AutoarchiveReloadedWebextension.loggerWebExtension.info("initAutoArchiveReloadedOverlay");
 
 		//directly after start of TB the adding of the menu does not work (getting the elemtens of "taskPopup" and "tabmail" returns null)
 		//therefore we have to wait a bit
@@ -223,7 +223,7 @@ function initAutoArchiveReloadedOverlay(): void
 			}
 			catch (e)
 			{
-				AutoarchiveReloadedBootstrap.logger.errorException(e);
+				AutoarchiveReloadedWebextension.loggerWebExtension.errorException(e);
 				throw e;
 			}
 
@@ -234,7 +234,7 @@ function initAutoArchiveReloadedOverlay(): void
 	}
 	catch (e)
 	{
-		AutoarchiveReloadedBootstrap.logger.errorException(e);
+		AutoarchiveReloadedWebextension.loggerWebExtension.errorException(e);
 		throw e;
 	}
 }
@@ -301,12 +301,12 @@ function removeToolbarCustomizationListener(window: Window): void
 
 function beforeCustomize(e: Event): void
 {
-	AutoarchiveReloadedBootstrap.logger.info("toolbar customization detected");
+	AutoarchiveReloadedWebextension.loggerWebExtension.info("toolbar customization detected");
 	bIsInToolbarCustomize = true;
 }
 
 function afterCustomize(e: Event): void
 {
-	AutoarchiveReloadedBootstrap.logger.info("toolbar customization ended");
+	AutoarchiveReloadedWebextension.loggerWebExtension.info("toolbar customization ended");
 	bIsInToolbarCustomize = false;
 }
