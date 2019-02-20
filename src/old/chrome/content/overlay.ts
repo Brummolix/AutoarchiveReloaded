@@ -35,12 +35,6 @@ Cu.import("chrome://autoarchiveReloaded/content/thunderbird-stdlib/msgHdrUtils.j
 
 namespace AutoarchiveReloadedBootstrap
 {
-	//singleton class for getting string resources
-	export const StringBundle: Ci.nsIStringBundle = Cc["@mozilla.org/intl/stringbundle;1"].getService(Ci.nsIStringBundleService)
-		.createBundle("chrome://autoarchiveReloaded/locale/autoarchive.properties");
-
-	//-------------------------------------------------------------------------------------
-
 	//singleton with global helper
 	export class Helper
 	{
@@ -136,7 +130,7 @@ namespace AutoarchiveReloadedBootstrap
 				this.folder = folder;
 				this.startProcess = Components.classes["@mozilla.org/activity-process;1"].createInstance(Components.interfaces.nsIActivityProcess);
 
-				this.startProcess.init(StringBundle.formatStringFromName("activityStart", [this.folder.name], 1), null);
+				this.startProcess.init(browser.i18n.getMessage("activityStart", this.folder.name), null);
 				this.startProcess.contextType = "account"; // group this activity by account
 				this.startProcess.contextObj = this.folder.server; // account in question
 
@@ -169,9 +163,9 @@ namespace AutoarchiveReloadedBootstrap
 				}
 
 				const event = Components.classes["@mozilla.org/activity-event;1"].createInstance(Components.interfaces.nsIActivityEvent);
-				event.init(StringBundle.formatStringFromName("activityDone", [this.folder.name], 1),
+				event.init(browser.i18n.getMessage("activityDone", this.folder.name),
 					null,
-					StringBundle.formatStringFromName("activityMessagesToArchive", [msgNumber], 1),
+					browser.i18n.getMessage("activityMessagesToArchive", msgNumber),
 					this.startProcess.startTime, // start time
 					Date.now(), // completion time
 				);
@@ -607,16 +601,16 @@ namespace AutoarchiveReloadedBootstrap
 			if (this.status === States.UNINITIALZED)
 			{
 				logger.info("not initialized, cancel");
-				Helper.getThePromptService().alert(null, StringBundle.GetStringFromName("dialogTitle"), StringBundle.GetStringFromName("waitForInit"));
+				Helper.getThePromptService().alert(null, browser.i18n.getMessage("dialogTitle"), browser.i18n.getMessage("waitForInit"));
 				return;
 			}
 
-			if (Helper.getThePromptService().confirm(null, StringBundle.GetStringFromName("dialogTitle"), StringBundle.GetStringFromName("dialogStartManualText")))
+			if (Helper.getThePromptService().confirm(null, browser.i18n.getMessage("dialogTitle"), browser.i18n.getMessage("dialogStartManualText")))
 			{
 				if (this.status === States.IN_PROGRESS)
 				{
 					logger.info("busy with other archive..., cancel");
-					Helper.getThePromptService().alert(null, StringBundle.GetStringFromName("dialogTitle"), StringBundle.GetStringFromName("waitForArchive"));
+					Helper.getThePromptService().alert(null, browser.i18n.getMessage("dialogTitle"), browser.i18n.getMessage("waitForArchive"));
 					return;
 				}
 				this.onDoArchive();

@@ -167,6 +167,13 @@ declare class Browser
 	public extension: Extension;
 	public browserAction: BrowserAction;
 	public tabs: BrowserTabs;
+
+	i18n:i18n;
+}
+
+declare interface i18n
+{
+	getMessage(messageName:string,substitutions?:string | string[]):string;
 }
 declare var browser: Browser;
 

@@ -210,7 +210,7 @@ function initAutoArchiveReloadedOverlay(): void
 			try
 			{
 				RestartlessMenuItems.add({
-					label: AutoarchiveReloadedBootstrap.StringBundle.GetStringFromName("menuArchive"),
+					label: browser.i18n.getMessage("menuArchive"),
 					id: "AutoArchiveReloaded_AutoarchiveNow",
 					idAppMenu: "AutoArchiveReloaded_AutoarchiveNow_AppMenu",
 					onCommand: () =>
