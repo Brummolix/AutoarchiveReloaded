@@ -23,6 +23,7 @@ module.exports = function(grunt) {
 	let outDirExtracted = outDir + "/release/";
 	let outXpi = outDir + "/AutoArchiveReloaded.xpi";
 
+	//TODO: remove shared kram
 	let srcDirShared = outDirExtracted + "webextension/shared/";
 	let destDirShared = outDirExtracted + "chrome/content/shared/";
 
