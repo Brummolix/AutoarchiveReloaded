@@ -159,6 +159,11 @@ declare interface BrowserTabs
 	query(queryInfo: TabInfo | {}): Promise<Tab[]>;
 }
 
+declare interface i18n
+{
+	getMessage(messageName: string, substitutions?: string | string[]): string;
+}
+
 declare class Browser
 {
 	public runtime: Runtime;
@@ -168,13 +173,9 @@ declare class Browser
 	public browserAction: BrowserAction;
 	public tabs: BrowserTabs;
 
-	i18n:i18n;
+	public i18n: i18n;
 }
 
-declare interface i18n
-{
-	getMessage(messageName:string,substitutions?:string | string[]):string;
-}
 declare var browser: Browser;
 
 //Bootstrap--------------------------------------------------------------------------------------------------
