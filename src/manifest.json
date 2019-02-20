@@ -29,7 +29,7 @@
 	},
 
 	"background": {
-		"scripts": ["shared/Logger.js","Logging.js","optionHelper.js","background.js","shared/OptionHandling.js","old/chrome/content/helper.js","old/chrome/content/overlay.js","old/chrome/content/thunderbird-stdlib/msgHdrUtils.js"]
+		"scripts": ["shared/Logger.js","Logging.js","optionHelper.js","shared/OptionHandling.js","old/chrome/content/helper.js","old/chrome/content/overlay.js","old/chrome/content/thunderbird-stdlib/msgHdrUtils.js","background.js"]
 	},
 
 	"browser_action": {
