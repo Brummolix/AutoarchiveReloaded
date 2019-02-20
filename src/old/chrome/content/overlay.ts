@@ -563,6 +563,7 @@ namespace AutoarchiveReloadedBootstrap
 		public static startup(): void
 		{
 			AutoarchiveReloadedWebextension.loggerWebExtension.info("start...");
+
 			const appInfoLogger = new AppInfoLogger();
 			appInfoLogger.log();
 
@@ -686,6 +687,11 @@ namespace AutoarchiveReloadedBootstrap
 	{
 		public log(): void
 		{
+			//TODO: reactivate
+			if (1 === 1)
+			{
+				return;
+			}
 			this.logAppInfo();
 			this.logAddonInfo();
 			this.logAccountInfo();
