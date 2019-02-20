@@ -24,17 +24,17 @@ AutoarchiveReloadedWebextension.loggerWebExtension.info("Hello world overlay.ts"
 // tslint:disable-next-line:no-var-keyword
 var EXPORTED_SYMBOLS = ["AutoarchiveReloadedBootstrap"];
 
-Cu.import("resource://gre/modules/Services.jsm");
-Cu.import("resource://gre/modules/AddonManager.jsm");
-Cu.import("resource://gre/modules/FileUtils.jsm");
-Cu.import("resource://gre/modules/NetUtil.jsm");
-Cu.import("resource://gre/modules/Timer.jsm");
-Cu.import("resource:///modules/iteratorUtils.jsm");
+//Cu.import("resource://gre/modules/Services.jsm");
+//Cu.import("resource://gre/modules/AddonManager.jsm");
+//Cu.import("resource://gre/modules/FileUtils.jsm");
+//Cu.import("resource://gre/modules/NetUtil.jsm");
+//Cu.import("resource://gre/modules/Timer.jsm");
+//Cu.import("resource:///modules/iteratorUtils.jsm");
 
 //Attention, if you addd more scripts also add them to bootstrap.ts for propper unloading!
-Cu.import("chrome://autoarchiveReloaded/content/helper.js");
-Cu.import("chrome://autoarchiveReloaded/content/shared/Logger.js");
-Cu.import("chrome://autoarchiveReloaded/content/thunderbird-stdlib/msgHdrUtils.js");
+//Cu.import("chrome://autoarchiveReloaded/content/helper.js");
+//Cu.import("chrome://autoarchiveReloaded/content/shared/Logger.js");
+//Cu.import("chrome://autoarchiveReloaded/content/thunderbird-stdlib/msgHdrUtils.js");
 
 namespace AutoarchiveReloadedBootstrap
 {

@@ -25,9 +25,9 @@ var EXPORTED_SYMBOLS = ["AutoarchiveReloadedBootstrap"];
 
 namespace AutoarchiveReloadedBootstrap
 {
-	Cu.import("chrome://autoarchiveReloaded/content/overlay.js");
-	Cu.import("resource:///modules/MailServices.jsm");
-	Cu.import("resource:///modules/iteratorUtils.jsm");
+	//Cu.import("chrome://autoarchiveReloaded/content/overlay.js");
+	//Cu.import("resource:///modules/MailServices.jsm");
+	//Cu.import("resource:///modules/iteratorUtils.jsm");
 
 	export class LegacyOptions
 	{
