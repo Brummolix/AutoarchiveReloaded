@@ -18,6 +18,8 @@ Copyright 2018 Brummolix (AutoarchiveReloaded, https://github.com/Brummolix/Auto
 */
 try
 {
+	AutoarchiveReloadedWebextension.loggerWebExtension.info("Hello world background.ts");
+
 	//TODO: disable button in mailwindow (or only enable it in mail3pane) -> how to detect?
 	browser.browserAction.onClicked.addListener( (tab: any) =>
 	{
@@ -30,8 +32,12 @@ try
 		browser.runtime.sendMessage(message);
 	});
 
-	const helper: AutoarchiveReloadedWebextension.OptionHelper = new AutoarchiveReloadedWebextension.OptionHelper();
-	helper.convertLegacyPreferences();
+	//TODO:???
+	//const helper: AutoarchiveReloadedWebextension.OptionHelper = new AutoarchiveReloadedWebextension.OptionHelper();
+	//helper.convertLegacyPreferences();
+
+	//TODO: is this the real startup?
+	AutoarchiveReloadedBootstrap.Global.startup();
 }
 catch (e)
 {
