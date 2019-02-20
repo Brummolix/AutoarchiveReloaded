@@ -17,6 +17,9 @@ Copyright 2018 Brummolix (AutoarchiveReloaded, https://github.com/Brummolix/Auto
     along with AutoarchiveReloaded.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+//TODO: remove
+AutoarchiveReloadedWebextension.loggerWebExtension.info("Hello world helper.ts");
+
 // tslint:disable-next-line:no-var-keyword
 var EXPORTED_SYMBOLS = ["AutoarchiveReloadedBootstrap"];
 

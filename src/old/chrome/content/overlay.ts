@@ -18,6 +18,9 @@ Copyright 2012 Alexey Egorov (original version Autoarchive, http://code.google.c
     along with AutoarchiveReloaded.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+//TODO: remove
+AutoarchiveReloadedWebextension.loggerWebExtension.info("Hello world overlay.ts");
+
 // tslint:disable-next-line:no-var-keyword
 var EXPORTED_SYMBOLS = ["AutoarchiveReloadedBootstrap"];
 
