@@ -17,7 +17,10 @@ Copyright 2018 Brummolix (AutoarchiveReloaded, https://github.com/Brummolix/Auto
     along with AutoarchiveReloaded.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-Cu.import("resource://gre/modules/Services.jsm");
+//TODO: remove
+AutoarchiveReloadedWebextension.loggerWebExtension.info("Hello world bootstrap.ts");
+
+//Cu.import("resource://gre/modules/Services.jsm");
 
 //list here all imports, also from sub files to make sure they are correctly unloaded
 const AutoArchiveReloadedImports: string[] = ["helper.js", "shared/Logger.js", "overlay.js", "thunderbird-stdlib/RestartlessMenuItems.js", "thunderbird-stdlib/msgHdrUtils.js"];
