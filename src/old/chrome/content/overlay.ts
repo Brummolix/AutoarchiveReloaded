@@ -47,10 +47,16 @@ namespace AutoarchiveReloadedBootstrap
 				.getMostRecentWindow("mail:3pane");
 		}
 
-		//don't call this getPromptService because Mozillas automatic extension checker warns (wrong) about it
-		public static getThePromptService(): Ci.nsIPromptService
+		public static alert(message: string): void
 		{
-			return Components.classes["@mozilla.org/embedcomp/prompt-service;1"].getService(Components.interfaces.nsIPromptService);
+			//TODO: alert() is not supported in background windows; please use console.log instead.
+			alert(message);
+		}
+
+		public static confirm(message: string): boolean
+		{
+			//TODO: confirm wird im Background Window nicht gehen!
+			return confirm(message);
 		}
 
 		public static messageHasTags(msgDbHeader: Ci.nsIMsgDBHdr): boolean
@@ -604,16 +610,17 @@ namespace AutoarchiveReloadedBootstrap
 			if (this.status === States.UNINITIALZED)
 			{
 				logger.info("not initialized, cancel");
-				Helper.getThePromptService().alert(null, browser.i18n.getMessage("dialogTitle"), browser.i18n.getMessage("waitForInit"));
+
+				Helper.alert(browser.i18n.getMessage("waitForInit")); //TODO: browser.i18n.getMessage("dialogTitle")
 				return;
 			}
 
-			if (Helper.getThePromptService().confirm(null, browser.i18n.getMessage("dialogTitle"), browser.i18n.getMessage("dialogStartManualText")))
+			if (Helper.confirm(browser.i18n.getMessage("dialogStartManualText")))//TODO: browser.i18n.getMessage("dialogTitle")
 			{
 				if (this.status === States.IN_PROGRESS)
 				{
 					logger.info("busy with other archive..., cancel");
-					Helper.getThePromptService().alert(null, browser.i18n.getMessage("dialogTitle"), browser.i18n.getMessage("waitForArchive"));
+					Helper.alert(browser.i18n.getMessage("waitForArchive")); //TODO: browser.i18n.getMessage("dialogTitle")
 					return;
 				}
 				this.onDoArchive();
