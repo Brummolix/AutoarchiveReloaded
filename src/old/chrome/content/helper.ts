@@ -34,6 +34,12 @@ namespace AutoarchiveReloadedBootstrap
 		// returns null if already migrated or no settings!
 		public getLegacyOptions(): ISettings | null
 		{
+			//TODO: what about legacy preferences?
+			if (1 === 1)
+			{
+				return null;
+			}
+
 			const prefBranch = this.getInternalLegacyPrefBranch();
 
 			if (prefBranch.getBoolPref("preferencesAlreadyMigrated", false))
@@ -65,7 +71,8 @@ namespace AutoarchiveReloadedBootstrap
 
 		public markLegacySettingsAsMigrated(): void
 		{
-			this.getInternalLegacyPrefBranch().setBoolPref("preferencesAlreadyMigrated", true);
+			//TODO: how to do?
+			//this.getInternalLegacyPrefBranch().setBoolPref("preferencesAlreadyMigrated", true);
 		}
 
 		private getLegacyAccountSettings(): IAccountSettingsArray

@@ -119,46 +119,32 @@ namespace AutoarchiveReloadedWebextension
 			loggerWebExtension.info("start conversion of legacy preferences (if any)");
 
 			//TODO: can we still convert legacy preference or do we have to skip it?
-			/*
-			const message: IBrowserMessage = {
-				id: "askForLegacyPreferences",
-			};
-
-			browser.runtime.sendMessage(message).then((settings: ISettings): void =>
+			const settings: ISettings | null = replyToAskForLegacyPreferences();
+			try
 			{
-			*/
-				try
+				if (settings)
 				{
-					/*
-					if (settings)
+					loggerWebExtension.info("got legacy preferences to convert");
+					this.savePreferencesAndSendToLegacyAddOn(settings, (): void =>
 					{
-						loggerWebExtension.info("got legacy preferences to convert");
-						this.savePreferencesAndSendToLegacyAddOn(settings, (): void =>
-						{
-							this.OnWebExtensionStartupDone();
-						});
-					}
-					else
-					{
-					*/
-						loggerWebExtension.info("no legacy preferences to convert");
-						this.publishCurrentPreferences((): void =>
-						{
-							loggerWebExtension.info("publishCurrentPreferences done");
-							initAutoArchiveReloadedOverlay();
-						});
-					/*
-					}
-					*/
+						initAutoArchiveReloadedOverlay();
+					});
 				}
-				catch (e)
+				else
 				{
-					loggerWebExtension.errorException(e);
-					throw e;
+					loggerWebExtension.info("no legacy preferences to convert");
+					this.publishCurrentPreferences((): void =>
+					{
+						loggerWebExtension.info("publishCurrentPreferences done");
+						initAutoArchiveReloadedOverlay();
+					});
 				}
-/*
-			});
-*/
+			}
+			catch (e)
+			{
+				loggerWebExtension.errorException(e);
+				throw e;
+			}
 		}
 
 		public savePreferencesAndSendToLegacyAddOn(settings: ISettings, onSuccess: () => void): void

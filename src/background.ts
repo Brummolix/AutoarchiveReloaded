@@ -26,7 +26,7 @@ try
 		//TODO: what about this comment?
 		//it would be better to detect if the buttons are configured right now and do nothing in this case
 		//but as we don't know how to do it for a web extension it will be done in the bootstrap part
-		replyToArchiveManually()
+		replyToArchiveManually();
 	});
 
 	const helper: AutoarchiveReloadedWebextension.OptionHelper = new AutoarchiveReloadedWebextension.OptionHelper();

@@ -20,11 +20,6 @@ Copyright 2018 Brummolix (AutoarchiveReloaded, https://github.com/Brummolix/Auto
 //TODO: remove
 AutoarchiveReloadedWebextension.loggerWebExtension.info("Hello world bootstrap.ts");
 
-//Cu.import("resource://gre/modules/Services.jsm");
-
-//list here all imports, also from sub files to make sure they are correctly unloaded
-const AutoArchiveReloadedImports: string[] = ["helper.js", "shared/Logger.js", "overlay.js", "thunderbird-stdlib/RestartlessMenuItems.js", "thunderbird-stdlib/msgHdrUtils.js"];
-
 //https://developer.mozilla.org/en-US/docs/Archive/Add-ons/Bootstrapped_extensions#Reason_constants
 enum BootstrapReasons
 {
@@ -36,59 +31,6 @@ enum BootstrapReasons
 	ADDON_UNINSTALL = 6,	//The add-on is being uninstalled.
 	ADDON_UPGRADE = 7,		//The add-on is being upgraded.
 	ADDON_DOWNGRADE = 8,	//The add-on is being downgraded.
-}
-
-function startup(data: BootstrapData, reason: BootstrapReasons.APP_STARTUP | BootstrapReasons.ADDON_ENABLE | BootstrapReasons.ADDON_INSTALL | BootstrapReasons.ADDON_UPGRADE | BootstrapReasons.ADDON_DOWNGRADE): void
-{
-	try
-	{
-		//attention, no logger is there until all scripts are loaded!
-
-		for (const strImport of AutoArchiveReloadedImports)
-		{
-			Cu.import("chrome://autoarchiveReloaded/content/" + strImport);
-		}
-
-		AutoarchiveReloadedWebextension.loggerWebExtension.info("bootstrap startup and logger defined");
-
-		if (data.webExtension)
-		{
-			data.webExtension.startup().then((api: StartupWebextensionApi) =>
-			{
-				const browser = api.browser;
-				browser.runtime.onMessage.addListener((msg: IBrowserMessage | IBrowserMessageSendCurrentSettings, sender: RuntimeMessageSender, sendReply: (response: object | null) => void) =>
-				{
-					if (msg.id === "askForLegacyPreferences") //at startup we are asked for legacy preferences
-					{
-						replyToAskForLegacyPreferences(sendReply);
-					}
-				});
-			});
-		}
-		else
-		{
-			AutoarchiveReloadedWebextension.loggerWebExtension.error("No embedded webextension found?");
-		}
-	}
-	catch (e)
-	{
-		//there might be no logger, yet
-		if (isLoggerAvailable())
-		{
-			AutoarchiveReloadedWebextension.loggerWebExtension.errorException(e);
-		}
-		else
-		{
-			console.log("AutoArchiveReloaded error");
-			console.log(e);
-		}
-		throw e;
-	}
-}
-
-function isLoggerAvailable(): boolean
-{
-	return (typeof AutoarchiveReloadedBootstrap !== "undefined") && (typeof AutoarchiveReloadedWebextension.loggerWebExtension !== "undefined");
 }
 
 function replyToArchiveManually(): void
@@ -117,14 +59,14 @@ function setCurrentPreferences(settings: ISettings): void
 	}
 }
 
-function replyToAskForLegacyPreferences(sendReply: (response: object | null) => void): void
+function replyToAskForLegacyPreferences(): ISettings | null
 {
 	try
 	{
 		const legacyOptions: AutoarchiveReloadedBootstrap.LegacyOptions = new AutoarchiveReloadedBootstrap.LegacyOptions();
 		const legacySettings = legacyOptions.getLegacyOptions();
-		sendReply(legacySettings);
 		legacyOptions.markLegacySettingsAsMigrated();
+		return legacySettings;
 	}
 	catch (e)
 	{
@@ -249,21 +191,6 @@ function shutdown(data: BootstrapData, reason: BootstrapReasons.APP_SHUTDOWN | B
 		console.log("AutoArchiveReloaded error");
 		console.log(e);
 	}
-
-	for (const strImport of AutoArchiveReloadedImports.reverse())
-	{
-		Cu.unload("chrome://autoarchiveReloaded/content/" + strImport);
-	}
-}
-
-function install(data: BootstrapData, reason: BootstrapReasons.ADDON_INSTALL | BootstrapReasons.ADDON_UPGRADE | BootstrapReasons.ADDON_DOWNGRADE): void
-{
-	//nothing to do
-}
-
-function uninstall(data: BootstrapData, reason: BootstrapReasons.ADDON_UNINSTALL | BootstrapReasons.ADDON_UPGRADE | BootstrapReasons.ADDON_DOWNGRADE): void
-{
-	//nothing to do
 }
 
 let bIsInToolbarCustomize: boolean = false;
