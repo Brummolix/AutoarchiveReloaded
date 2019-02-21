@@ -62,20 +62,6 @@ namespace AutoarchiveReloadedBootstrap
 
 			//return confirm(message);
 		}
-
-		public static messageHasTags(msgDbHeader: Ci.nsIMsgDBHdr): boolean
-		{
-			const tags = msgHdrGetTags(msgDbHeader);
-			return (tags && tags.length > 0);
-		}
-
-		public static messageGetAgeInDays(msgDbHeader: Ci.nsIMsgDBHdr): number
-		{
-			const now = new Date();
-			const ageInSeconds = (now.getTime() / 1000) - msgDbHeader.dateInSeconds;
-			const ageInDays = ageInSeconds / (60 * 60 * 24);
-			return ageInDays;
-		}
 	}
 
 	//-----------------------------------------------------------------------------------------------------
@@ -145,6 +131,9 @@ namespace AutoarchiveReloadedBootstrap
 			try
 			{
 				this.folder = folder;
+				this.startProcess = undefined as unknown as Ci.nsIActivityProcess;
+				/*
+				//TODO: what about the whole Activity manager?
 				this.startProcess = Components.classes["@mozilla.org/activity-process;1"].createInstance(Components.interfaces.nsIActivityProcess);
 
 				this.startProcess.init(browser.i18n.getMessage("activityStart", this.folder.name), null);
@@ -153,6 +142,7 @@ namespace AutoarchiveReloadedBootstrap
 
 				const activityManager = this.getActivityManager();
 				activityManager.addActivity(this.startProcess);
+				*/
 			}
 			catch (e)
 			{
@@ -208,33 +198,30 @@ namespace AutoarchiveReloadedBootstrap
 	//for collecting the searched mails and start real archiving
 	class SearchListener
 	{
-		private messages: Ci.nsIMsgDBHdr[] = [];
-		private folder: Ci.nsIMsgFolder;
-		private activity: ActivityManager;
-		private settings: IAccountSettings;
-		private onFolderArchivedEvent: () => void;
+		private folder: MailFolder;
+		//private activity: ActivityManager;
 
-		constructor(folder: Ci.nsIMsgFolder, activity: ActivityManager, settings: IAccountSettings, onFolderArchivedEvent: () => void)
+		constructor(folder: MailFolder /*,activity: ActivityManager*/)
 		{
 			this.folder = folder;
-			this.activity = activity;
-			this.settings = settings;
-			this.onFolderArchivedEvent = onFolderArchivedEvent;
+			//this.activity = activity;
 		}
 
-		public archiveMessages(): number
+		public archiveMessages(messages: MessageHeader[]): number
 		{
 			try
 			{
-				AutoarchiveReloadedWebextension.loggerWebExtension.info("start real archiving of '" + this.folder.name + "' (" + this.messages.length + " messages)");
+				AutoarchiveReloadedWebextension.loggerWebExtension.info("start real archiving of '" + this.folder.name + "' (" + messages.length + " messages)");
+
+				/*
 				const mail3PaneWindow: Mail3Pane = Helper.getMail3Pane();
 
 				//TB jumps to the end (after finishing the archiving) if no message is selected
 				//> select the first message (unfortunately it will become unread...)
 				//(but only select the first message if the messages being archived are from the current folder)
-				if (this.messages.length > 0)
+				if (messages.length > 0)
 				{
-					if (this.messages[0].folder === mail3PaneWindow.gFolderDisplay.displayedFolder)
+					if (messages[0].folder === mail3PaneWindow.gFolderDisplay.displayedFolder)
 					{
 						if (mail3PaneWindow.gFolderDisplay.selectedCount <= 0)
 						{
@@ -277,106 +264,15 @@ namespace AutoarchiveReloadedBootstrap
 				//-> problem: how to detect imap server problems/problems with i-net connection? (we do not talk about online/offline mode here which you can handle with  MailOfflineMgr!)
 				//I have also reported the real bug to TB: see https://bugzilla.mozilla.org/show_bug.cgi?id=956598
 
-				batchMover.archiveMessages(this.messages);
-				return this.messages.length;
+				batchMover.archiveMessages(messages);
+				*/
+				return messages.length;
 			}
 			catch (e)
 			{
 				AutoarchiveReloadedWebextension.loggerWebExtension.errorException(e);
 				return -1;
 			}
-		}
-
-		//collect all messages
-		public onSearchHit(dbHdr: Ci.nsIMsgDBHdr, folder: Ci.nsIMsgFolder): void
-		{
-			try
-			{
-				//determine ageInDays
-				let ageInDays = 0;
-				let other = true;
-
-				//unread
-				if (!dbHdr.isRead)
-				{
-					if (!this.settings.bArchiveUnread)
-					{
-						return;
-					}
-
-					other = false;
-					ageInDays = Math.max(ageInDays, this.settings.daysUnread);
-				}
-
-				//marked (starred)
-				if (dbHdr.isFlagged)
-				{
-					if (!this.settings.bArchiveMarked)
-					{
-						return;
-					}
-
-					other = false;
-					ageInDays = Math.max(ageInDays, this.settings.daysMarked);
-				}
-
-				//tagged
-				if (Helper.messageHasTags(dbHdr))
-				{
-					if (!this.settings.bArchiveTagged)
-					{
-						return;
-					}
-
-					other = false;
-					ageInDays = Math.max(ageInDays, this.settings.daysTagged);
-				}
-
-				if (other)
-				{
-					if (!this.settings.bArchiveOther)
-					{
-						return;
-					}
-					ageInDays = Math.max(ageInDays, this.settings.daysOther);
-				}
-
-				if (Helper.messageGetAgeInDays(dbHdr) <= ageInDays)
-				{
-					return;
-				}
-
-				//check if archive is possible for this message/in this account
-				//TODO: actual it is not clear how to get the archiveEnabled for the identity in the beginning and not for every message
-				const mail3PaneWindow: Mail3Pane = Helper.getMail3Pane();
-				if (mail3PaneWindow.getIdentityForHeader(dbHdr).archiveEnabled)
-				{
-					this.messages.push(dbHdr);
-				}
-			}
-			catch (e)
-			{
-				AutoarchiveReloadedWebextension.loggerWebExtension.errorException(e);
-				throw e;
-			}
-		}
-
-		//after the search was done, archive all messages
-		public onSearchDone(status: number): void
-		{
-			AutoarchiveReloadedWebextension.loggerWebExtension.info("message search done for '" + this.folder.name + "' in account '" + this.folder.server.prettyName + "' -> " + this.messages.length + " messages found to archive");
-			let result = 0;
-			if (this.messages.length > 0)
-			{
-				result = this.archiveMessages();
-			}
-			this.activity.stopAndSetFinal(result);
-			this.onFolderArchivedEvent();
-		}
-
-		public onNewSearch(): void
-		{
-			//nothing to do, but we have to fulfil the interface
 		}
 	}
 
@@ -406,11 +302,6 @@ namespace AutoarchiveReloadedBootstrap
 				await AutoarchiveReloadedBootstrap.AccountIterator.forEachAccount((account: MailAccount, isAccountArchivable: boolean) =>
 				{
 					AutoarchiveReloadedWebextension.loggerWebExtension.info("check account '" + account.name + "'");
-					//TODO: does account.folders contain all folders recursively?
-					for (const folder of account.folders)
-					{
-						AutoarchiveReloadedWebextension.loggerWebExtension.info("folder " + folder.name + " : " + folder.path + " " + folder.type);
-					}
 					if (isAccountArchivable)
 					{
 						const accountSettings = AutoarchiveReloadedBootstrap.settings.accountSettings[account.id];
@@ -419,12 +310,12 @@ namespace AutoarchiveReloadedBootstrap
 						{
 							AutoarchiveReloadedWebextension.loggerWebExtension.info("getting folders to archive in account '" + account.name + "'");
 
-							//TODO: cast is a hack to force compile
 							const foldersToArchive = this.getFoldersToArchive(account.folders);
 
 							countFoldersToArchive += foldersToArchive.length;
 							for (const folder of foldersToArchive)
 							{
+								//TODO: await geht hier nicht?
 								this.archiveFolder(folder, accountSettings);
 							}
 						}
@@ -439,6 +330,7 @@ namespace AutoarchiveReloadedBootstrap
 					}
 				});
 
+				console.log("start checkForArchiveDone");
 				this.checkForArchiveDone(countFoldersToArchive);
 			}
 			catch (e)
@@ -470,7 +362,7 @@ namespace AutoarchiveReloadedBootstrap
 					//virtual - no, it is virtual :) (TODO: does this still exist?)
 					//undefined - yes, normal folder
 
-					//TODO: take type of parent into account???
+					//TODO: take type of parent into account!
 					if ( (folder.type === "trash") || (folder.type === "junk") || (folder.type === "outbox") || (folder.type === "drafts") || (folder.type === "templates") || (folder.type === "archives") || (folder.type === "virtual"))
 					{
 						AutoarchiveReloadedWebextension.loggerWebExtension.info("ignore folder '" + folder.name + "'");
@@ -493,49 +385,170 @@ namespace AutoarchiveReloadedBootstrap
 			}
 		}
 
-		private archiveFolder(folder: MailFolder, settings: IAccountSettings): void
+		private async shallMessageBeArchived(messageHeader: MessageHeader, settings: IAccountSettings): Promise<boolean>
+		{
+			//TODO: warum minage?
+			/*
+			const age: number = SettingsHelper.getMinAge(settings);
+			Date.now();
+			{
+				return false;
+			}
+			*/
+
+			//TODO: früher wurden MsgStatus Ci.nsMsgMessageFlags.IMAPDeleted ausgeschlossen, braucht man das noch?
+
+			//determine ageInDays
+			let ageInDays: number = 0;
+			let other: boolean = true;
+
+			//unread
+			if (!messageHeader.read)
+			{
+				console.log("message is unread");
+				if (!settings.bArchiveUnread)
+				{
+					console.log("message unread, but unread messages shall not be archived");
+					return false;
+				}
+
+				other = false;
+				ageInDays = Math.max(ageInDays, settings.daysUnread);
+			}
+
+			//marked (starred)
+			if (messageHeader.flagged)
+			{
+				console.log("message is flagged");
+				if (!settings.bArchiveMarked)
+				{
+					console.log("message flagged, but flagged messages shall not be archived");
+					return false;
+				}
+
+				other = false;
+				ageInDays = Math.max(ageInDays, settings.daysMarked);
+			}
+
+			//tagged
+			if (messageHeader.tags.length > 0)
+			{
+				console.log("message is tagged");
+				if (!settings.bArchiveTagged)
+				{
+					console.log("message tagged, but tagged messages shall not be archived");
+					return false;
+				}
+
+				other = false;
+				ageInDays = Math.max(ageInDays, settings.daysTagged);
+			}
+
+			if (other)
+			{
+				console.log("message is other");
+				if (!settings.bArchiveOther)
+				{
+					console.log("other message, but other messages shall not be archived");
+					return false;
+				}
+				ageInDays = Math.max(ageInDays, settings.daysOther);
+			}
+
+			console.log("calculated ageInDays " + ageInDays);
+			const minDate: Date = new Date(Date.now() - ageInDays * 24 * 60 * 60 * 1000);
+			if (messageHeader.date > minDate)
+			{
+				console.log("message newer than " + ageInDays);
+				return false;
+			}
+
+			//TODO: do we need it? May depend on the way how we move messages
+			/*
+			//check if archive is possible for this message/in this account
+			//TODO: actual it is not clear how to get the archiveEnabled for the identity in the beginning and not for every message
+			const mail3PaneWindow: Mail3Pane = Helper.getMail3Pane();
+			if (mail3PaneWindow.getIdentityForHeader(dbHdr).archiveEnabled)
+			{
+				this.messages.push(dbHdr);
+			}
+			*/
+			return true;
+		}
+
+		private async detectMessagesToArchive(messageList: MessageList, settings: IAccountSettings, messages: MessageHeader[]): Promise<void>
+		{
+			for (const message of messageList.messages)
+			{
+				console.log("check message " + message.subject);
+				if (await this.shallMessageBeArchived(message, settings))
+				{
+					console.log(message.messageId + " shall be archived");
+					messages.push(message);
+				}
+			}
+		}
+
+		/*
+		private async *listMessages(folder: MailFolder): IterableIterator<MessageHeader> {
+			let messageList: MessageList = await browser.messages.list(folder);
+			for (const message of messageList.messages)
+			{
+				yield message;
+			}
+
+			while (messageList.id)
+			{
+				messageList = await browser.messages.continueList(messageList.id);
+				for (const message of messageList.messages)
+				{
+					yield message;
+				}
+			}
+		}
+		*/
+
+		//TODO: check consequence for async functions
+		private async archiveFolder(folder: MailFolder, settings: IAccountSettings): Promise<void>
 		{
 			try
 			{
-				AutoarchiveReloadedWebextension.loggerWebExtension.info("start searching messages to archive in folder '" + folder.name + "' in account '" + folder.server.prettyName + "'");
-				//build a search for the messages to archive
-				const searchSession: Ci.nsIMsgSearchSession = Cc["@mozilla.org/messenger/searchSession;1"].createInstance(Ci.nsIMsgSearchSession);
-				searchSession.addScopeTerm(Ci.nsMsgSearchScope.offlineMail, folder);
+				//TODO: log account name instead of accountId?
+				AutoarchiveReloadedWebextension.loggerWebExtension.info("start searching messages to archive in folder '" + folder.name + "' in account '" + folder.accountId + "'");
 
-				//attention: the strange value copy syntax is needed!
+				const messages: MessageHeader[] = [];
+				let messageList: MessageList = await browser.messages.list(folder);
+				await this.detectMessagesToArchive(messageList, settings, messages);
 
-				//find only messages with interesting age
-				//AgeInDays > age
-				const searchByAge = searchSession.createTerm();
-				searchByAge.attrib = Ci.nsMsgSearchAttrib.AgeInDays;
-				let value = searchByAge.value;
-				value.attrib = Ci.nsMsgSearchAttrib.AgeInDays;
-				value.age = SettingsHelper.getMinAge(settings);
-				searchByAge.value = value;
-				searchByAge.op = Ci.nsMsgSearchOp.IsGreaterThan;
-				searchByAge.booleanAnd = true;
-				searchSession.appendTerm(searchByAge);
+				while (messageList.id) {
+					messageList = await browser.messages.continueList(messageList.id);
+					await this.detectMessagesToArchive(messageList, settings, messages);
+				}
 
-				//do not search for (marked as) deleted messages
-				const termNoDeleted = searchSession.createTerm();
-				value = termNoDeleted.value;
-				value.status = Ci.nsMsgMessageFlags.IMAPDeleted;
-				value.attrib = Ci.nsMsgSearchAttrib.MsgStatus;
-				termNoDeleted.value = value;
-				termNoDeleted.attrib = Ci.nsMsgSearchAttrib.MsgStatus;
-				termNoDeleted.op = Ci.nsMsgSearchOp.Isnt;
-				termNoDeleted.booleanAnd = true;
-				searchSession.appendTerm(termNoDeleted);
+				AutoarchiveReloadedWebextension.loggerWebExtension.info("message search done for '" + folder.name + "' in account '" + folder.accountId + "' -> " + messages.length + " messages found to archive");
 
 				//the other search parameters will be done in the listener itself, we can not create such a search
 				//also the real archiving is done on the SearchListener...
-				const activity = new ActivityManager(folder);
 
-				searchSession.registerListener(new SearchListener(folder, activity, settings, () =>
+				//TODO: shall we still support the activity manager?
+				//TODO: where shall we show the progress?
+				const activity = new ActivityManager(undefined as unknown as Ci.nsIMsgFolder); //folder
+				console.log(activity);
+
+				//TODO: wann archivieren? oder gleich Archivieren?
+
+				const archiver = new SearchListener(folder/*, activity*/);
+
+				let result = 0;
+				if (messages.length > 0)
 				{
-					this.foldersArchived++;
-				}));
-				searchSession.search(null);
+					//TODO: messageId is undefined?
+					result = archiver.archiveMessages(messages);
+				}
+				//activity.stopAndSetFinal(result);
+				console.log(result);
+
+				this.foldersArchived++;
 			}
 			catch (e)
 			{
@@ -546,6 +559,7 @@ namespace AutoarchiveReloadedBootstrap
 
 		private checkForArchiveDone(foldersToArchive: number): void
 		{
+			console.log("checkForArchiveDone");
 			//wait until all accounts are ready
 			if (this.foldersArchived === foldersToArchive)
 			{
