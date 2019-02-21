@@ -72,6 +72,9 @@ namespace AutoarchiveReloadedBootstrap
 		{
 			const accountSettings: IAccountSettingsArray = {};
 
+			/*
+			TODO: how to read legacy settings?
+
 			AutoarchiveReloadedBootstrap.AccountIterator.forEachAccount((account: Ci.nsIMsgAccount, isAccountArchivable: boolean) =>
 			{
 				if (!isAccountArchivable)
@@ -98,6 +101,7 @@ namespace AutoarchiveReloadedBootstrap
 					accountSettings[account.key] = settingOfAccount;
 				}
 			});
+			*/
 
 			return accountSettings;
 		}
@@ -111,27 +115,44 @@ namespace AutoarchiveReloadedBootstrap
 
 	export class AccountIterator
 	{
-		public static forEachAccount(forEachDo: (account: Ci.nsIMsgAccount, isAccountArchivable: boolean) => void): void
+		public static async forEachAccount(forEachDo: (account: MailAccount, isAccountArchivable: boolean) => void): Promise<void>
 		{
+			const accounts: MailAccount[] = await browser.accounts.list();
+			for (const account of accounts)
+			{
+				AutoarchiveReloadedWebextension.loggerWebExtension.info("Account " + account.name);
+				AutoarchiveReloadedWebextension.loggerWebExtension.info("id " + account.id);
+				AutoarchiveReloadedWebextension.loggerWebExtension.info("type " + account.type);
+				AutoarchiveReloadedWebextension.loggerWebExtension.info("folders " + account.folders);
+				forEachDo(account, this.isAccountArchivable(account));
+			}
+
+			/*
 			const accounts: Ci.nsIMsgAccount[] = fixIterator(MailServices.accounts.accounts, Ci.nsIMsgAccount);
 			for (const account of accounts)
 			{
 				forEachDo(account, this.isAccountArchivable(account));
 			}
+			*/
 		}
 
-		private static isAccountArchivable(account: Ci.nsIMsgAccount): boolean
+		private static isAccountArchivable(account: MailAccount): boolean
 		{
+			//TODO: are the types still the same? Is there still an exquilla type?
+
 			//ignore IRC accounts
-			return (account.incomingServer.localStoreType === "mailbox" || account.incomingServer.localStoreType === "imap" || account.incomingServer.localStoreType === "news" || account.incomingServer.localStoreType === "exquilla");
+			return (account.type === "mailbox" || account.type === "imap" || account.type === "news" || account.type === "exquilla");
+			//return (account.incomingServer.localStoreType === "mailbox" || account.incomingServer.localStoreType === "imap" || account.incomingServer.localStoreType === "news" || account.incomingServer.localStoreType === "exquilla");
 		}
   }
 
 	export class AccountInfo
   {
-		public static isMailType(account: Ci.nsIMsgAccount): boolean
+		public static isMailType(account: MailAccount): boolean
 		{
-			return (account.incomingServer.type === "pop3" || account.incomingServer.type === "imap" || account.incomingServer.type === "exquilla");
+			//TODO: are the types still the same? Is there still an exquilla type?
+			return (account.type === "pop3" || account.type === "imap" || account.type === "exquilla");
+			//return (account.incomingServer.type === "pop3" || account.incomingServer.type === "imap" || account.incomingServer.type === "exquilla");
 		}
   }
 

@@ -70,10 +70,6 @@ function startup(data: BootstrapData, reason: BootstrapReasons.APP_STARTUP | Boo
 					{
 						initAutoArchiveReloadedOverlay();
 					}
-					else if (msg.id === "askForAccounts") //we will be asked for valid accounts which can be archived
-					{
-						replyToAskForAccounts(sendReply);
-					}
 					else if (msg.id === "archiveManually")
 					{
 						replyToArchiveManually();
@@ -147,12 +143,12 @@ function replyToAskForLegacyPreferences(sendReply: (response: object | null) => 
 	}
 }
 
-function replyToAskForAccounts(sendReply: (response: object | null) => void): void
+async function askForAccounts(): Promise<IAccountInfo[]>
 {
 	try
 	{
-		const nsAccounts: Ci.nsIMsgAccount[] = [];
-		AutoarchiveReloadedBootstrap.AccountIterator.forEachAccount((account: Ci.nsIMsgAccount, isAccountArchivable: boolean) =>
+		const nsAccounts: MailAccount[] = [];
+		await AutoarchiveReloadedBootstrap.AccountIterator.forEachAccount((account: MailAccount, isAccountArchivable: boolean) =>
 		{
 			if (isAccountArchivable)
 			{
@@ -160,14 +156,14 @@ function replyToAskForAccounts(sendReply: (response: object | null) => void): vo
 			}
 		});
 
-		nsAccounts.sort((a: Ci.nsIMsgAccount, b: Ci.nsIMsgAccount) =>
+		nsAccounts.sort((a: MailAccount, b: MailAccount) =>
 		{
 			const mailTypeA: boolean = AutoarchiveReloadedBootstrap.AccountInfo.isMailType(a);
 			const mailTypeB: boolean = AutoarchiveReloadedBootstrap.AccountInfo.isMailType(b);
 
 			if (mailTypeA === mailTypeB)
 			{
-				return a.incomingServer.prettyName.localeCompare(b.incomingServer.prettyName);
+				return a.name.localeCompare(b.name);
 			}
 
 			if (mailTypeA)
@@ -183,13 +179,13 @@ function replyToAskForAccounts(sendReply: (response: object | null) => void): vo
 		nsAccounts.forEach((account) =>
 		{
 			accounts.push({
-				accountId: account.key,
-				accountName: account.incomingServer.prettyName,
+				accountId: account.id,
+				accountName: account.name,
 				order: currentOrder++,
 			});
 		});
 
-		sendReply(accounts);
+		return accounts;
 	}
 	catch (e)
 	{

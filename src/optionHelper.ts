@@ -58,67 +58,61 @@ namespace AutoarchiveReloadedWebextension
 			});
 		}
 
-		public loadCurrentSettings(onSuccesfulDone: (settings: ISettings, accounts: IAccountInfo[]) => void)
+		public async loadCurrentSettings(onSuccesfulDone: (settings: ISettings, accounts: IAccountInfo[]) => void)
 		{
 			loggerWebExtension.info("start to load current settings");
 
-			const message: IBrowserMessage = {
-				id: "askForAccounts",
-			};
+			const accounts: IAccountInfo[] = await askForAccounts();
 
-			browser.runtime.sendMessage(message).then((accounts: IAccountInfo[]) =>
+			try
 			{
-				try
+				loggerWebExtension.info("got info about accounts");
+				browser.storage.local.get("settings").then((result: any) =>
 				{
-					loggerWebExtension.info("got info about accounts");
-					browser.storage.local.get("settings").then((result: any) =>
+					try
 					{
-						try
+						//settings read succesfully...
+						loggerWebExtension.info("loaded settings from storage");
+						const oHandling: AutoarchiveReloadedShared.OptionHandling = new AutoarchiveReloadedShared.OptionHandling();
+						const settings: ISettings = oHandling.convertPartialSettings(result.settings);
+
+						//every existing account should have a setting
+						accounts.forEach((account) =>
 						{
-							//settings read succesfully...
-							loggerWebExtension.info("loaded settings from storage");
-							const oHandling: AutoarchiveReloadedShared.OptionHandling = new AutoarchiveReloadedShared.OptionHandling();
-							const settings: ISettings = oHandling.convertPartialSettings(result.settings);
-
-							//every existing account should have a setting
-							accounts.forEach((account) =>
+							const accountSetting = settings.accountSettings[account.accountId];
+							if (accountSetting === undefined)
 							{
-								const accountSetting = settings.accountSettings[account.accountId];
-								if (accountSetting === undefined)
-								{
-									settings.accountSettings[account.accountId] = oHandling.getDefaultAccountSettings();
-								}
-							});
-
-							//no other account should be there
-							for (const accountId in settings.accountSettings)
-							{
-								if (this.findAccountInfo(accounts, accountId) === null)
-								{
-									delete settings.accountSettings[accountId];
-								}
+								settings.accountSettings[account.accountId] = oHandling.getDefaultAccountSettings();
 							}
-
-							loggerWebExtension.info("settings mixed with default settings");
-							onSuccesfulDone(settings, accounts);
-						}
-						catch (e)
-						{
-							loggerWebExtension.errorException(e);
-							throw e;
-						}
-					}, (error: string) =>
-						{
-							loggerWebExtension.error("error while reading settings: " + error);
 						});
-				}
-				catch (e)
-				{
-					loggerWebExtension.errorException(e);
-					throw e;
-				}
 
-			});
+						//no other account should be there
+						for (const accountId in settings.accountSettings)
+						{
+							if (this.findAccountInfo(accounts, accountId) === null)
+							{
+								delete settings.accountSettings[accountId];
+							}
+						}
+
+						loggerWebExtension.info("settings mixed with default settings");
+						onSuccesfulDone(settings, accounts);
+					}
+					catch (e)
+					{
+						loggerWebExtension.errorException(e);
+						throw e;
+					}
+				}, (error: string) =>
+					{
+						loggerWebExtension.error("error while reading settings: " + error);
+					});
+			}
+			catch (e)
+			{
+				loggerWebExtension.errorException(e);
+				throw e;
+			}
 		}
 
 		public findAccountInfo(accountSettings: IAccountInfo[], id: string): IAccountInfo | null
@@ -138,14 +132,18 @@ namespace AutoarchiveReloadedWebextension
 		{
 			loggerWebExtension.info("start conversion of legacy preferences (if any)");
 
+			//TODO: can we still convert legacy preference or do we have to skip it?
+			/*
 			const message: IBrowserMessage = {
 				id: "askForLegacyPreferences",
 			};
 
 			browser.runtime.sendMessage(message).then((settings: ISettings): void =>
 			{
+			*/
 				try
 				{
+					/*
 					if (settings)
 					{
 						loggerWebExtension.info("got legacy preferences to convert");
@@ -156,20 +154,24 @@ namespace AutoarchiveReloadedWebextension
 					}
 					else
 					{
+					*/
 						loggerWebExtension.info("no legacy preferences to convert");
 						this.publishCurrentPreferences((): void =>
 						{
 							this.OnWebExtensionStartupDone();
 						});
+					/*
 					}
+					*/
 				}
 				catch (e)
 				{
 					loggerWebExtension.errorException(e);
 					throw e;
 				}
-
+/*
 			});
+*/
 		}
 
 		public savePreferencesAndSendToLegacyAddOn(settings: ISettings, onSuccess: () => void): void

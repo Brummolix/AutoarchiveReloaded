@@ -399,18 +399,22 @@ namespace AutoarchiveReloadedBootstrap
 
 				let foldersToArchive = 0;
 
-				AutoarchiveReloadedBootstrap.AccountIterator.forEachAccount((account: Ci.nsIMsgAccount, isAccountArchivable: boolean) =>
+				AutoarchiveReloadedBootstrap.AccountIterator.forEachAccount((account: MailAccount, isAccountArchivable: boolean) =>
 				{
-					AutoarchiveReloadedWebextension.loggerWebExtension.info("check account '" + account.incomingServer.prettyName + "'");
+					AutoarchiveReloadedWebextension.loggerWebExtension.info("check account '" + account.name + "'");
 					if (isAccountArchivable)
 					{
-						const accountSettings = AutoarchiveReloadedBootstrap.settings.accountSettings[account.key];
-						SettingsHelper.log(account.incomingServer.prettyName, accountSettings);
+						const accountSettings = AutoarchiveReloadedBootstrap.settings.accountSettings[account.id];
+						SettingsHelper.log(account.name, accountSettings);
 						if (SettingsHelper.isArchivingSomething(accountSettings))
 						{
 							const inboxFolders: Ci.nsIMsgFolder[] = [];
-							AutoarchiveReloadedWebextension.loggerWebExtension.info("getting folders to archive in account '" + account.incomingServer.prettyName + "'");
-							this.getFolders(account.incomingServer.rootFolder, inboxFolders);
+							AutoarchiveReloadedWebextension.loggerWebExtension.info("getting folders to archive in account '" + account.name + "'");
+
+							//TODO: does account.folders contain all folders recursively?
+							//TODO: cast is a hack to force compile
+							this.getFolders(account.folders as unknown as Ci.nsIMsgFolder, inboxFolders);
+
 							foldersToArchive += inboxFolders.length;
 							for (const folder of inboxFolders)
 							{
@@ -419,12 +423,12 @@ namespace AutoarchiveReloadedBootstrap
 						}
 						else
 						{
-							AutoarchiveReloadedWebextension.loggerWebExtension.info("autoarchive disabled, ignore account '" + account.incomingServer.prettyName + "'");
+							AutoarchiveReloadedWebextension.loggerWebExtension.info("autoarchive disabled, ignore account '" + account.name + "'");
 						}
 					}
 					else
 					{
-						AutoarchiveReloadedWebextension.loggerWebExtension.info("ignore account '" + account.incomingServer.prettyName + "'");
+						AutoarchiveReloadedWebextension.loggerWebExtension.info("ignore account '" + account.name + "'");
 					}
 				});
 
@@ -560,12 +564,12 @@ namespace AutoarchiveReloadedBootstrap
 	{
 		private static status: States = States.UNINITIALZED;
 
-		public static startup(): void
+		public static async startup(): Promise<void>
 		{
 			AutoarchiveReloadedWebextension.loggerWebExtension.info("start...");
 
 			const appInfoLogger = new AppInfoLogger();
-			appInfoLogger.log();
+			await appInfoLogger.log();
 
 			this.status = States.READY_FOR_WORK;
 			AutoarchiveReloadedWebextension.loggerWebExtension.info("ready for work");
@@ -685,7 +689,7 @@ namespace AutoarchiveReloadedBootstrap
 	//-----------------------------------------------------------------------------------------------------
 	class AppInfoLogger
 	{
-		public log(): void
+		public async log(): Promise<void>
 		{
 			//TODO: reactivate
 			if (1 === 1)
@@ -694,7 +698,7 @@ namespace AutoarchiveReloadedBootstrap
 			}
 			this.logAppInfo();
 			this.logAddonInfo();
-			this.logAccountInfo();
+			await this.logAccountInfo();
 		}
 
 		private logAppInfo(): void
@@ -735,14 +739,14 @@ namespace AutoarchiveReloadedBootstrap
 			}
 		}
 
-		private logAccountInfo(): void
+		private async logAccountInfo(): Promise<void>
 		{
 			try
 			{
-				AutoarchiveReloadedBootstrap.AccountIterator.forEachAccount((account: Ci.nsIMsgAccount, isAccountArchivable: boolean) =>
+				await AutoarchiveReloadedBootstrap.AccountIterator.forEachAccount((account: MailAccount, isAccountArchivable: boolean) =>
 				{
-					AutoarchiveReloadedWebextension.loggerWebExtension.info("Account Info: '" + account.incomingServer.prettyName + "'; type: " +
-						account.incomingServer.type + "; localStoreType: " + account.incomingServer.localStoreType + "; " + account.incomingServer.serverURI);
+					AutoarchiveReloadedWebextension.loggerWebExtension.info("Account Info: '" + account.name + "'; type: " +
+						account.type + "; id: " + account.id);
 				});
 			}
 			catch (e)

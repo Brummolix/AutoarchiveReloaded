@@ -32,12 +32,8 @@ try
 		browser.runtime.sendMessage(message);
 	});
 
-	//TODO:???
-	//const helper: AutoarchiveReloadedWebextension.OptionHelper = new AutoarchiveReloadedWebextension.OptionHelper();
-	//helper.convertLegacyPreferences();
-
-	//TODO: is this the real startup?
-	AutoarchiveReloadedBootstrap.Global.startup();
+	const helper: AutoarchiveReloadedWebextension.OptionHelper = new AutoarchiveReloadedWebextension.OptionHelper();
+	helper.convertLegacyPreferences();
 }
 catch (e)
 {
