@@ -164,6 +164,31 @@ declare interface i18n
 	getMessage(messageName: string, substitutions?: string | string[]): string;
 }
 
+//https://thunderbird-webextensions.readthedocs.io/en/latest/accounts.html#accounts-mailaccount
+declare interface MailAccount
+{
+	folders: MailFolder[];
+	id: string;
+	name: string;
+	type: string; //e.g. imap, nntp, or pop3.
+}
+
+//https://thunderbird-webextensions.readthedocs.io/en/latest/accounts.html#mailfolder
+declare interface MailFolder
+{
+	accountId: string;
+	path: string;
+	name: string;
+	type: string;
+}
+
+//https://thunderbird-webextensions.readthedocs.io/en/latest/accounts.html
+declare interface accounts
+{
+	list(): Promise<MailAccount[]>;
+	get(accountId: string): Promise<MailAccount>;
+}
+
 declare class Browser
 {
 	public runtime: Runtime;
@@ -174,6 +199,7 @@ declare class Browser
 	public tabs: BrowserTabs;
 
 	public i18n: i18n;
+	public accounts: accounts;
 }
 
 declare var browser: Browser;
@@ -271,6 +297,7 @@ declare namespace Components
 			public archiveMessages(messages: nsIMsgDBHdr[]): void;
 		}
 
+		//TODO: remove
 		//https://developer.mozilla.org/en-US/docs/Mozilla/Tech/XPCOM/Reference/Interface/nsIMsgAccount
 		class nsIMsgAccount
 		{
