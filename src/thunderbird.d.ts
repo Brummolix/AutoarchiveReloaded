@@ -189,17 +189,59 @@ declare interface accounts
 	get(accountId: string): Promise<MailAccount>;
 }
 
-declare class Browser
+//https://thunderbird-webextensions.readthedocs.io/en/latest/messages.html#messageheader
+declare interface MessageHeader
 {
-	public runtime: Runtime;
-	public storage: BrowserStorages;
-	public windows: BrowserWindows;
-	public extension: Extension;
-	public browserAction: BrowserAction;
-	public tabs: BrowserTabs;
+	author: string;
+	bccList: string[];
+	ccList: string[];
+	date: Date;
+	flagged: boolean;
+	folder: MailFolder;
+	messageId: number;
+	read: boolean;
+	recipients: string[];
+	subject: string;
+	tags: string[];
+}
 
-	public i18n: i18n;
-	public accounts: accounts;
+//https://thunderbird-webextensions.readthedocs.io/en/latest/messages.html#messagelist
+declare interface MessageList
+{
+	id: string;
+	messages: MessageHeader[];
+}
+
+//https://thunderbird-webextensions.readthedocs.io/en/latest/messages.html#messagetag
+declare interface MessageTag
+{
+	color: string; //Tag color
+	key: string; // Distinct tag identifier – use this string when referring to a tag
+	ordinal: string; //Custom sort string (usually empty)
+	tag: string; //Human-readable tag name
+}
+
+//https://thunderbird-webextensions.readthedocs.io/en/latest/messages.html
+declare interface messages
+{
+	list(folder: MailFolder): Promise<MessageList>;
+	continueList(messageListId: string): Promise<MessageList>;
+	get(messageId: number): Promise<MessageHeader>;
+	listTags(): Promise<MessageTag>;
+}
+
+declare interface Browser
+{
+	runtime: Runtime;
+	storage: BrowserStorages;
+	windows: BrowserWindows;
+	extension: Extension;
+	browserAction: BrowserAction;
+	tabs: BrowserTabs;
+
+	i18n: i18n;
+	accounts: accounts;
+	messages: messages;
 }
 
 declare var browser: Browser;
