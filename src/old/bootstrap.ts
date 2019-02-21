@@ -62,10 +62,6 @@ function startup(data: BootstrapData, reason: BootstrapReasons.APP_STARTUP | Boo
 					{
 						replyToAskForLegacyPreferences(sendReply);
 					}
-					else if (msg.id === "archiveManually")
-					{
-						replyToArchiveManually();
-					}
 				});
 			});
 		}
