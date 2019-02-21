@@ -30,25 +30,10 @@ namespace AutoarchiveReloadedWebextension
 			{
 				try
 				{
-					const message: IBrowserMessageSendCurrentSettings = {
-						id: "sendCurrentPreferencesToLegacyAddOn",
-						data: settings,
-					};
-
 					AutoarchiveReloadedWebextension.LoggerHelper.setGlobaleEnableInfoLogging(settings.globalSettings.enableInfoLogging);
 
-					browser.runtime.sendMessage(message).then((reply: any) =>
-					{
-						try
-						{
-							onSuccess();
-						}
-						catch (e)
-						{
-							loggerWebExtension.errorException(e);
-							throw e;
-						}
-					});
+					setCurrentPreferences(settings);
+					onSuccess();
 				}
 				catch (e)
 				{
@@ -158,7 +143,7 @@ namespace AutoarchiveReloadedWebextension
 						loggerWebExtension.info("no legacy preferences to convert");
 						this.publishCurrentPreferences((): void =>
 						{
-							this.OnWebExtensionStartupDone();
+							initAutoArchiveReloadedOverlay();
 						});
 					/*
 					}
@@ -195,14 +180,6 @@ namespace AutoarchiveReloadedWebextension
 				{
 					loggerWebExtension.error("error while saving settings: " + error);
 				});
-		}
-
-		private OnWebExtensionStartupDone(): void
-		{
-			const message: IBrowserMessage = {
-				id: "webExtensionStartupDone",
-			};
-			browser.runtime.sendMessage(message);
 		}
 	}
 }

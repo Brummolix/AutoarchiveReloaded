@@ -58,17 +58,9 @@ function startup(data: BootstrapData, reason: BootstrapReasons.APP_STARTUP | Boo
 				const browser = api.browser;
 				browser.runtime.onMessage.addListener((msg: IBrowserMessage | IBrowserMessageSendCurrentSettings, sender: RuntimeMessageSender, sendReply: (response: object | null) => void) =>
 				{
-					if (msg.id === "sendCurrentPreferencesToLegacyAddOn") //we get the current preferences at start and on every change of preferences
-					{
-						replyToSendCurrentPreferencesToLegacyAddOnAskForLegacyPreferences((msg as IBrowserMessageSendCurrentSettings));
-					}
-					else if (msg.id === "askForLegacyPreferences") //at startup we are asked for legacy preferences
+					if (msg.id === "askForLegacyPreferences") //at startup we are asked for legacy preferences
 					{
 						replyToAskForLegacyPreferences(sendReply);
-					}
-					else if (msg.id === "webExtensionStartupDone") //after startup we are informed and can go on
-					{
-						initAutoArchiveReloadedOverlay();
 					}
 					else if (msg.id === "archiveManually")
 					{
@@ -114,11 +106,12 @@ function replyToArchiveManually(): void
 	AutoarchiveReloadedBootstrap.Global.onArchiveManually();
 }
 
-function replyToSendCurrentPreferencesToLegacyAddOnAskForLegacyPreferences(msg: IBrowserMessageSendCurrentSettings): void
+//we get the current preferences at start and on every change of preferences
+function setCurrentPreferences(settings: ISettings): void
 {
 	try
 	{
-		AutoarchiveReloadedBootstrap.settings = msg.data;
+		AutoarchiveReloadedBootstrap.settings = settings;
 	}
 	catch (e)
 	{
