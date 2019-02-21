@@ -28,6 +28,7 @@ namespace AutoarchiveReloadedWebextension
 		{
 			this.loadCurrentSettings((settings: ISettings) =>
 			{
+				loggerWebExtension.info("loadCurrentSettings done");
 				try
 				{
 					AutoarchiveReloadedWebextension.LoggerHelper.setGlobaleEnableInfoLogging(settings.globalSettings.enableInfoLogging);
@@ -143,6 +144,7 @@ namespace AutoarchiveReloadedWebextension
 						loggerWebExtension.info("no legacy preferences to convert");
 						this.publishCurrentPreferences((): void =>
 						{
+							loggerWebExtension.info("publishCurrentPreferences done");
 							initAutoArchiveReloadedOverlay();
 						});
 					/*
