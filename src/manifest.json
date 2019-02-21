@@ -20,7 +20,7 @@
 		"open_in_tab":true
 	},
 	
-	"permissions": ["storage","accountsRead"],
+	"permissions": ["storage","accountsRead","messagesRead"],
 
 	"applications": {
 		"gecko": {
