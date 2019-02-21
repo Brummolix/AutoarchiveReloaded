@@ -57,7 +57,10 @@ namespace AutoarchiveReloadedBootstrap
 		public static confirm(message: string): boolean
 		{
 			//TODO: confirm wird im Background Window nicht gehen!
-			return confirm(message);
+			alert(message);
+			return true;
+
+			//return confirm(message);
 		}
 
 		public static messageHasTags(msgDbHeader: Ci.nsIMsgDBHdr): boolean
@@ -392,32 +395,35 @@ namespace AutoarchiveReloadedBootstrap
 
 		//archive messages for all accounts
 		//(depending on the autoarchive options of the account)
-		public archiveAccounts(): void
+		public async archiveAccounts(): Promise<void>
 		{
 			try
 			{
 				this.foldersArchived = 0;
 
-				let foldersToArchive = 0;
+				let countFoldersToArchive = 0;
 
-				AutoarchiveReloadedBootstrap.AccountIterator.forEachAccount((account: MailAccount, isAccountArchivable: boolean) =>
+				await AutoarchiveReloadedBootstrap.AccountIterator.forEachAccount((account: MailAccount, isAccountArchivable: boolean) =>
 				{
 					AutoarchiveReloadedWebextension.loggerWebExtension.info("check account '" + account.name + "'");
+					//TODO: does account.folders contain all folders recursively?
+					for (const folder of account.folders)
+					{
+						AutoarchiveReloadedWebextension.loggerWebExtension.info("folder " + folder.name + " : " + folder.path + " " + folder.type);
+					}
 					if (isAccountArchivable)
 					{
 						const accountSettings = AutoarchiveReloadedBootstrap.settings.accountSettings[account.id];
 						SettingsHelper.log(account.name, accountSettings);
 						if (SettingsHelper.isArchivingSomething(accountSettings))
 						{
-							const inboxFolders: Ci.nsIMsgFolder[] = [];
 							AutoarchiveReloadedWebextension.loggerWebExtension.info("getting folders to archive in account '" + account.name + "'");
 
-							//TODO: does account.folders contain all folders recursively?
 							//TODO: cast is a hack to force compile
-							this.getFolders(account.folders as unknown as Ci.nsIMsgFolder, inboxFolders);
+							const foldersToArchive = this.getFoldersToArchive(account.folders);
 
-							foldersToArchive += inboxFolders.length;
-							for (const folder of inboxFolders)
+							countFoldersToArchive += foldersToArchive.length;
+							for (const folder of foldersToArchive)
 							{
 								this.archiveFolder(folder, accountSettings);
 							}
@@ -433,7 +439,7 @@ namespace AutoarchiveReloadedBootstrap
 					}
 				});
 
-				this.checkForArchiveDone(foldersToArchive);
+				this.checkForArchiveDone(countFoldersToArchive);
 			}
 			catch (e)
 			{
@@ -444,39 +450,41 @@ namespace AutoarchiveReloadedBootstrap
 
 		//determine all folders (recursive, starting with param folder), which we want to archive
 		//write output to inboxFolders array
-		private getFolders(folder: Ci.nsIMsgFolder, outInboxFolders: Ci.nsIMsgFolder[]): void
+		private getFoldersToArchive(folders: MailFolder[]): MailFolder[]
 		{
 			try
 			{
-				//attention do not try to get the folderURL for IMAP account (it crashes or may crash)
+				const foldersToArchive: MailFolder [] = [];
 
-				//Do not archive some special folders (and also no subfolders in there)
-				//Inbox - yes
-				//SentMail - yes, sure
-				//Drafts - no, because you want to send them?
-				//Trash - no, trash is trash
-				//Templates - no, because you want to use it
-				//Junk - no junk is junk
-				//Archive - no, we do archive
-				//Queue - no, must be sent?
-				//Virtual - no, it is virtual :)
-				if (folder.getFlag(Ci.nsMsgFolderFlags.Trash) || folder.getFlag(Ci.nsMsgFolderFlags.Junk) || folder.getFlag(Ci.nsMsgFolderFlags.Queue) || folder.getFlag(Ci.nsMsgFolderFlags.Drafts) || folder.getFlag(Ci.nsMsgFolderFlags.Templates) || folder.getFlag(Ci.nsMsgFolderFlags.Archive) || folder.getFlag(Ci.nsMsgFolderFlags.Virtual))
+				for (const folder of folders)
 				{
-					AutoarchiveReloadedWebextension.loggerWebExtension.info("ignore folder '" + folder.name + "'");
-					return;
-				}
+					//Do not archive some special folders (and also no subfolders in there)
+					//inbox - yes
+					//sent - yes, sure
+					//drafts - no, because you want to send them?
+					//trash - no, trash is trash
+					//templates - no, because you want to use it (TODO: does this still exist?)
+					//junk - no junk is junk
+					//archives - no, we do archive
+					//outbox - no, must be sent? (TODO: does this still exist?)
+					//virtual - no, it is virtual :) (TODO: does this still exist?)
+					//undefined - yes, normal folder
 
-				//a Feed account (RSS Feeds) will be listed here, but it is kicked out later because it does not have archive options...
-
-				outInboxFolders.push(folder);
-
-				if (folder.hasSubFolders)
-				{
-					for (const subFolder of fixIterator(folder.subFolders, Ci.nsIMsgFolder))
+					//TODO: take type of parent into account???
+					if ( (folder.type === "trash") || (folder.type === "junk") || (folder.type === "outbox") || (folder.type === "drafts") || (folder.type === "templates") || (folder.type === "archives") || (folder.type === "virtual"))
 					{
-						this.getFolders(subFolder, outInboxFolders);
+						AutoarchiveReloadedWebextension.loggerWebExtension.info("ignore folder '" + folder.name + "'");
+					}
+					else
+					{
+						foldersToArchive.push(folder);
 					}
 				}
+
+				//TODO: still true?
+				//a Feed account (RSS Feeds) will be listed here, but it is kicked out later because it does not have archive options...
+
+				return foldersToArchive;
 			}
 			catch (e)
 			{
@@ -485,7 +493,7 @@ namespace AutoarchiveReloadedBootstrap
 			}
 		}
 
-		private archiveFolder(folder: Ci.nsIMsgFolder, settings: IAccountSettings): void
+		private archiveFolder(folder: MailFolder, settings: IAccountSettings): void
 		{
 			try
 			{
@@ -591,7 +599,7 @@ namespace AutoarchiveReloadedBootstrap
 			}
 		}
 
-		public static onDoArchiveAutomatic(): void
+		public static async onDoArchiveAutomatic(): Promise<void>
 		{
 			AutoarchiveReloadedWebextension.loggerWebExtension.info("try automatic archive");
 			if (this.status !== States.READY_FOR_WORK)
@@ -602,19 +610,19 @@ namespace AutoarchiveReloadedBootstrap
 			}
 			else
 			{
-				this.onDoArchive();
+				await this.onDoArchive();
 			}
 		}
 
-		public static onDoArchive(): void
+		public static async onDoArchive(): Promise<void>
 		{
 			AutoarchiveReloadedWebextension.loggerWebExtension.info("start archiving");
 			this.status = States.IN_PROGRESS;
 			const autoarchiveReloaded = new Autoarchiver(this.onArchiveDone.bind(this));
-			autoarchiveReloaded.archiveAccounts();
+			await autoarchiveReloaded.archiveAccounts();
 		}
 
-		public static onArchiveManually(): void
+		public static async onArchiveManually(): Promise<void>
 		{
 			AutoarchiveReloadedWebextension.loggerWebExtension.info("try manual archive");
 			if (this.status === States.UNINITIALZED)
@@ -633,7 +641,7 @@ namespace AutoarchiveReloadedBootstrap
 					Helper.alert(browser.i18n.getMessage("waitForArchive")); //TODO: browser.i18n.getMessage("dialogTitle")
 					return;
 				}
-				this.onDoArchive();
+				await this.onDoArchive();
 			}
 			else
 			{

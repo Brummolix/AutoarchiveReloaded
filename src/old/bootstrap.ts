@@ -33,7 +33,7 @@ enum BootstrapReasons
 	ADDON_DOWNGRADE = 8,	//The add-on is being downgraded.
 }
 
-function replyToArchiveManually(): void
+async function replyToArchiveManually(): Promise<void>
 {
 	if (bIsInToolbarCustomize)
 	{
@@ -41,7 +41,7 @@ function replyToArchiveManually(): void
 		return;
 	}
 
-	AutoarchiveReloadedBootstrap.Global.onArchiveManually();
+	await AutoarchiveReloadedBootstrap.Global.onArchiveManually();
 }
 
 //we get the current preferences at start and on every change of preferences

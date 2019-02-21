@@ -127,20 +127,8 @@ namespace AutoarchiveReloadedBootstrap
 			const accounts: MailAccount[] = await browser.accounts.list();
 			for (const account of accounts)
 			{
-				AutoarchiveReloadedWebextension.loggerWebExtension.info("Account " + account.name);
-				AutoarchiveReloadedWebextension.loggerWebExtension.info("id " + account.id);
-				AutoarchiveReloadedWebextension.loggerWebExtension.info("type " + account.type);
-				AutoarchiveReloadedWebextension.loggerWebExtension.info("folders " + account.folders);
 				forEachDo(account, this.isAccountArchivable(account));
 			}
-
-			/*
-			const accounts: Ci.nsIMsgAccount[] = fixIterator(MailServices.accounts.accounts, Ci.nsIMsgAccount);
-			for (const account of accounts)
-			{
-				forEachDo(account, this.isAccountArchivable(account));
-			}
-			*/
 		}
 
 		private static isAccountArchivable(account: MailAccount): boolean
