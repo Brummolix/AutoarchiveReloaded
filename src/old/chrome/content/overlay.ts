@@ -41,6 +41,7 @@ namespace AutoarchiveReloadedBootstrap
 	//singleton with global helper
 	export class Helper
 	{
+		//TODO: remove
 		public static getMail3Pane(): Mail3Pane
 		{
 			return Cc["@mozilla.org/appshell/window-mediator;1"].getService(Ci.nsIWindowMediator)

@@ -109,6 +109,7 @@ function replyToArchiveManually(): void
 //we get the current preferences at start and on every change of preferences
 function setCurrentPreferences(settings: ISettings): void
 {
+	AutoarchiveReloadedWebextension.loggerWebExtension.info("setCurrentPreferences");
 	try
 	{
 		AutoarchiveReloadedBootstrap.settings = settings;
@@ -195,10 +196,12 @@ function initAutoArchiveReloadedOverlay(): void
 
 		//directly after start of TB the adding of the menu does not work (getting the elemtens of "taskPopup" and "tabmail" returns null)
 		//therefore we have to wait a bit
-		//additionally setTimeout is not defined (even if we can use it AutoarchiveReloadedOverlay.Global.startup at the same time???)
-		//therefore use the mail3pane
-		(AutoarchiveReloadedBootstrap.Helper.getMail3Pane() as Window).setTimeout(() =>
+		setTimeout(() =>
 		{
+			//TODO: Menus and toolbarCustomizationListener deactivated
+			AutoarchiveReloadedWebextension.loggerWebExtension.info("Menus and toolbarCustomizationListener deactivated");
+
+			/*
 			try
 			{
 				RestartlessMenuItems.add({
@@ -218,7 +221,7 @@ function initAutoArchiveReloadedOverlay(): void
 				AutoarchiveReloadedWebextension.loggerWebExtension.errorException(e);
 				throw e;
 			}
-
+			*/
 		}, 1000);
 
 		//startup
