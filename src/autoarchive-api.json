@@ -1,0 +1,23 @@
+[
+  {
+    "namespace": "autoarchive",
+    "functions": [
+      {
+        "name": "alert",
+        "type": "function",
+        "description": "Says hello to the user.",
+        "async": true,
+        "parameters": [
+          {
+            "name": "title",
+            "type": "string"
+					},
+          {
+            "name": "text",
+            "type": "string"
+          }
+        ]
+      }
+		]
+	}
+]

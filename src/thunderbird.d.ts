@@ -102,7 +102,6 @@ declare class BrowserStorages
 
 type BrowserWindowType = "normal" | "popup" | "panel" | "devtools";
 
-
 //https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/windows/Window
 declare class BrowserWindow extends Window
 {
@@ -246,6 +245,11 @@ declare interface messages
 	//delete(messageIds: number[], ?skipTrash:boolean); //return type?
 }
 
+declare interface AutoarchiveWebExperiment
+{
+	alert(title: string, text: string): Promise<void>;
+}
+
 declare interface Browser
 {
 	runtime: Runtime;
@@ -258,6 +262,8 @@ declare interface Browser
 	i18n: i18n;
 	accounts: accounts;
 	messages: messages;
+
+	autoarchive: AutoarchiveWebExperiment;
 }
 
 declare var browser: Browser;
@@ -589,6 +595,7 @@ declare namespace Components
 }
 
 import Cu = Components.utils;
+import ChromeUtils = Components.utils;
 import Cc = Components.classes;
 import Ci = Components.interfaces;
 
@@ -707,6 +714,7 @@ declare interface nsIWindowWatcher
 //https://developer.mozilla.org/en-US/docs/Mozilla/Tech/XPCOM/Reference/Interface/nsIWindowMediator
 declare class nsIWindowMediator
 {
+	public getMostRecentWindow(id: string): Window;
 }
 
 //https://developer.mozilla.org/en-US/docs/Mozilla/JavaScript_code_modules/Services.jsm
@@ -714,4 +722,16 @@ declare namespace Services
 {
 	let ww: nsIWindowWatcher;
 	let wm: nsIWindowMediator;
+}
+
+declare namespace ExtensionCommon
+{
+	abstract class  ExtensionAPI
+	{
+		public abstract getAPI(context: any): {};
+	}
+	class EventManager
+	{
+		constructor(arg: any);
+	}
 }

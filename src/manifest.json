@@ -38,5 +38,22 @@
 		"default_title": "__MSG_toolbarArchive__"
 	  },
 
-	"default_locale":"en"
+	"default_locale":"en",
+
+	"experiment_apis": {
+    "autoarchive": {
+      "schema": "autoarchive-api.json",
+      "parent": {
+        "scopes": [
+          "addon_parent"
+        ],
+        "paths": [
+          [
+            "autoarchive"
+          ]
+        ],
+        "script": "autoarchive-api.js"
+      }
+    }
+}
 }

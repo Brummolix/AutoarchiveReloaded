@@ -567,6 +567,8 @@ namespace AutoarchiveReloadedBootstrap
 		{
 			AutoarchiveReloadedWebextension.loggerWebExtension.info("start...");
 
+			await browser.autoarchive.alert("hello", "world");
+
 			const appInfoLogger = new AppInfoLogger();
 			await appInfoLogger.log();
 
@@ -619,7 +621,7 @@ namespace AutoarchiveReloadedBootstrap
 			{
 				AutoarchiveReloadedWebextension.loggerWebExtension.info("not initialized, cancel");
 
-				Helper.alert(browser.i18n.getMessage("waitForInit")); //TODO: browser.i18n.getMessage("dialogTitle")
+				await browser.autoarchive.alert(browser.i18n.getMessage("dialogTitle"), browser.i18n.getMessage("waitForInit"));
 				return;
 			}
 
@@ -628,7 +630,7 @@ namespace AutoarchiveReloadedBootstrap
 				if (this.status === States.IN_PROGRESS)
 				{
 					AutoarchiveReloadedWebextension.loggerWebExtension.info("busy with other archive..., cancel");
-					Helper.alert(browser.i18n.getMessage("waitForArchive")); //TODO: browser.i18n.getMessage("dialogTitle")
+					await browser.autoarchive.alert(browser.i18n.getMessage("dialogTitle"), browser.i18n.getMessage("waitForArchive"));
 					return;
 				}
 				await this.onDoArchive();
