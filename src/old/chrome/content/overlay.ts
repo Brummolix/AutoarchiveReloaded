@@ -553,7 +553,7 @@ namespace AutoarchiveReloadedBootstrap
 
 	enum States
 	{
-		UNINITIALZED, //also if you use the old autoarchive plugin
+		UNINITIALZED,
 		READY_FOR_WORK,
 		IN_PROGRESS,
 	}
@@ -690,27 +690,21 @@ namespace AutoarchiveReloadedBootstrap
 	{
 		public async log(): Promise<void>
 		{
-			//TODO: reactivate
-			if (1 === 1)
-			{
-				return;
-			}
-			this.logAppInfo();
+			await this.logAppInfo();
 			this.logAddonInfo();
 			await this.logAccountInfo();
 		}
 
-		private logAppInfo(): void
+		private async logAppInfo(): Promise<void>
 		{
 			try
 			{
-				const appInfo: Ci.nsIXULAppInfo = Components.classes["@mozilla.org/xre/app-info;1"].getService(Components.interfaces.nsIXULAppInfo);
+				const window: BrowserWindow = browser.extension.getBackgroundPage();
+				const browserInfo: BrowserInfo = await browser.runtime.getBrowserInfo();
 
-				//the new extension system does not provide a window > use mail3pane instead
-				const window = Helper.getMail3Pane();
-				AutoarchiveReloadedWebextension.loggerWebExtension.info("ApplicationInfo ID:" + appInfo.ID + "; Version:" + appInfo.version + "; BuildID:" + appInfo.appBuildID + "; PlatformVersion:" + appInfo.platformVersion + "; PlatformBuildID:" + appInfo.platformBuildID + "; language: " + window.navigator.language);
-
-				AutoarchiveReloadedWebextension.loggerWebExtension.info("SystemInfo " + window.navigator.oscpu + "| " + window.navigator.platform + "| " + window.navigator.userAgent);
+				AutoarchiveReloadedWebextension.loggerWebExtension.info("Application: " + browserInfo.vendor + " " + browserInfo.name + " version " + browserInfo.version + " (" + browserInfo.buildID + ")");
+				AutoarchiveReloadedWebextension.loggerWebExtension.info("SystemInfo: " +  window.navigator.userAgent + "| " + window.navigator.platform);
+				AutoarchiveReloadedWebextension.loggerWebExtension.info("Language: " + window.navigator.language);
 			}
 			catch (e)
 			{
@@ -721,21 +715,8 @@ namespace AutoarchiveReloadedBootstrap
 
 		private logAddonInfo(): void
 		{
-			try
-			{
-				AddonManager.getAllAddons((addons: Addon[]) =>
-				{
-					for (const addon of addons)
-					{
-						AutoarchiveReloadedWebextension.loggerWebExtension.info("Installed Addon-Info: " + addon.name + " (" + addon.id + ") version " + addon.version + "; active: " + addon.isActive);
-					}
-				});
-			}
-			catch (e)
-			{
-				AutoarchiveReloadedWebextension.loggerWebExtension.errorException(e);
-				//don't throw... this method is only info logging...
-			}
+			//we could get infos about addons with the browser.management API, but then we would also need the "management" permission
+			//seem to be a bit overdosed only for logging of the information
 		}
 
 		private async logAccountInfo(): Promise<void>

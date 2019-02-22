@@ -64,6 +64,15 @@ declare interface RuntimeConnectListener extends IListeners<(port: RuntimePort) 
 {
 }
 
+//https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/runtime/getBrowserInfo
+declare interface BrowserInfo
+{
+	name: string; // value representing the browser name, for example "Firefox".
+	vendor: string; // value representing the browser's vendor, for example "Mozilla".
+	version: string; // representing the browser's version, for example "51.0" or "51.0a2".
+	buildID: string; // representing the specific build of the browser, for example "20161018004015".
+}
+
 //https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/runtime
 declare class Runtime
 {
@@ -72,6 +81,8 @@ declare class Runtime
 
 	public sendMessage(message: any): Promise<any>;
 	public connect(connectInfo: {name: string}): RuntimePort;
+
+	public getBrowserInfo(): Promise<BrowserInfo>;
 }
 
 //https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/storage/StorageArea
@@ -90,6 +101,7 @@ declare class BrowserStorages
 }
 
 type BrowserWindowType = "normal" | "popup" | "panel" | "devtools";
+
 
 //https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/windows/Window
 declare class BrowserWindow extends Window
