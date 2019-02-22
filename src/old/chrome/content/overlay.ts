@@ -24,18 +24,6 @@ AutoarchiveReloadedWebextension.loggerWebExtension.info("Hello world overlay.ts"
 // tslint:disable-next-line:no-var-keyword
 var EXPORTED_SYMBOLS = ["AutoarchiveReloadedBootstrap"];
 
-//Cu.import("resource://gre/modules/Services.jsm");
-//Cu.import("resource://gre/modules/AddonManager.jsm");
-//Cu.import("resource://gre/modules/FileUtils.jsm");
-//Cu.import("resource://gre/modules/NetUtil.jsm");
-//Cu.import("resource://gre/modules/Timer.jsm");
-//Cu.import("resource:///modules/iteratorUtils.jsm");
-
-//Attention, if you addd more scripts also add them to bootstrap.ts for propper unloading!
-//Cu.import("chrome://autoarchiveReloaded/content/helper.js");
-//Cu.import("chrome://autoarchiveReloaded/content/shared/Logger.js");
-//Cu.import("chrome://autoarchiveReloaded/content/thunderbird-stdlib/msgHdrUtils.js");
-
 namespace AutoarchiveReloadedBootstrap
 {
 	//singleton with global helper
@@ -66,7 +54,7 @@ namespace AutoarchiveReloadedBootstrap
 
 	//-----------------------------------------------------------------------------------------------------
 
-	//TODO: LegacyExtensionLoggerHelper supported filelogging? is it still possible?
+	//TODO: LegacyExtensionLoggerHelper supported filelogging? is it still possible? Maybe as webapi experiment?
 	//TODO: getEnableInfoLogging came from settings?
 
 	/*
@@ -195,7 +183,8 @@ namespace AutoarchiveReloadedBootstrap
 
 	//-------------------------------------------------------------------------------------
 
-	//for collecting the searched mails and start real archiving
+	//TODO: rename/move
+	//for start of real archiving
 	class SearchListener
 	{
 		private folder: MailFolder;
@@ -386,15 +375,6 @@ namespace AutoarchiveReloadedBootstrap
 
 		private async shallMessageBeArchived(messageHeader: MessageHeader, settings: IAccountSettings): Promise<boolean>
 		{
-			//TODO: warum minage?
-			/*
-			const age: number = SettingsHelper.getMinAge(settings);
-			Date.now();
-			{
-				return false;
-			}
-			*/
-
 			//TODO: früher wurden MsgStatus Ci.nsMsgMessageFlags.IMAPDeleted ausgeschlossen, braucht man das noch?
 
 			//determine ageInDays
@@ -462,7 +442,10 @@ namespace AutoarchiveReloadedBootstrap
 				return false;
 			}
 
-			//TODO: do we need it? May depend on the way how we move messages
+			//TODO: How do we know, that archiving is possible at all?
+			//look into the first message of a folder and give it to a webapi experiment?
+			//maybe first check, what happens at all if archiving is disabled
+
 			/*
 			//check if archive is possible for this message/in this account
 			//TODO: actual it is not clear how to get the archiveEnabled for the identity in the beginning and not for every message
@@ -489,25 +472,6 @@ namespace AutoarchiveReloadedBootstrap
 			}
 		}
 
-		/*
-		private async *listMessages(folder: MailFolder): IterableIterator<MessageHeader> {
-			let messageList: MessageList = await browser.messages.list(folder);
-			for (const message of messageList.messages)
-			{
-				yield message;
-			}
-
-			while (messageList.id)
-			{
-				messageList = await browser.messages.continueList(messageList.id);
-				for (const message of messageList.messages)
-				{
-					yield message;
-				}
-			}
-		}
-		*/
-
 		private async archiveFolder(folder: MailFolder, settings: IAccountSettings): Promise<void>
 		{
 			try
@@ -526,22 +490,16 @@ namespace AutoarchiveReloadedBootstrap
 
 				AutoarchiveReloadedWebextension.loggerWebExtension.info("message search done for '" + folder.name + "' in account '" + folder.accountId + "' -> " + messages.length + " messages found to archive");
 
-				//the other search parameters will be done in the listener itself, we can not create such a search
-				//also the real archiving is done on the SearchListener...
-
 				//TODO: shall we still support the activity manager?
-				//TODO: where shall we show the progress?
+				//TODO: where shall we show the progress? Does archiving show a progress?
 				const activity = new ActivityManager(undefined as unknown as Ci.nsIMsgFolder); //folder
 				console.log(activity);
-
-				//TODO: wann archivieren? oder gleich Archivieren?
 
 				const archiver = new SearchListener(folder/*, activity*/);
 
 				let result = 0;
 				if (messages.length > 0)
 				{
-					//TODO: messageId is undefined?
 					result = archiver.archiveMessages(messages);
 				}
 				//activity.stopAndSetFinal(result);
