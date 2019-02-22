@@ -347,13 +347,29 @@ namespace AutoarchiveReloadedBootstrap
 					//junk - no junk is junk
 					//archives - no, we do archive
 					//outbox - no, must be sent? (TODO: does this still exist?)
-					//virtual - no, it is virtual :) (TODO: does this still exist?)
+
+					//TODO: virtual is missing
+					//TODO: https://bugzilla.mozilla.org/show_bug.cgi?id=1529791
+					//virtual - no, it is virtual :)
+
 					//undefined - yes, normal folder
 
 					//TODO: take type of parent into account!
-					if ( (folder.type === "trash") || (folder.type === "junk") || (folder.type === "outbox") || (folder.type === "drafts") || (folder.type === "templates") || (folder.type === "archives") || (folder.type === "virtual"))
+					let ignore: boolean = false;
+					ignore = (folder.type === "trash") || (folder.type === "junk") || (folder.type === "outbox") || (folder.type === "drafts") || (folder.type === "templates") || (folder.type === "archives") || (folder.type === "virtual");
+					if (!ignore)
 					{
-						AutoarchiveReloadedWebextension.loggerWebExtension.info("ignore folder '" + folder.name + "'");
+						//TODO: hack
+						//TODO: maybe we should catch the exception in folder.list instead?
+						if (folder.path.startsWith("/[Gmail]", 0))
+						{
+							console.log("ignored because virtual Gmail folder");
+							ignore = true;
+						}
+					}
+					if ( ignore)
+					{
+						AutoarchiveReloadedWebextension.loggerWebExtension.info("ignore folder '" + folder.path + "' (" + folder.type + ")");
 					}
 					else
 					{
