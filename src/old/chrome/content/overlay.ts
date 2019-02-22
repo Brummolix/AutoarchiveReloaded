@@ -493,14 +493,17 @@ namespace AutoarchiveReloadedBootstrap
 			try
 			{
 				//TODO: log account name instead of accountId?
-				AutoarchiveReloadedWebextension.loggerWebExtension.info("start searching messages to archive in folder '" + folder.name + "' in account '" + folder.accountId + "'");
+				AutoarchiveReloadedWebextension.loggerWebExtension.info("start searching messages to archive in folder '" + folder.path + "' (" + folder.type + ") in account '" + folder.accountId + "'");
 
 				const messages: MessageHeader[] = [];
 				let messageList: MessageList = await browser.messages.list(folder);
+				console.log("messageList " + messageList + " " + messageList.messages.length);
 				await this.detectMessagesToArchive(messageList, settings, messages);
 
+				console.log("messageList.id " + messageList.id);
 				while (messageList.id) {
 					messageList = await browser.messages.continueList(messageList.id);
+					console.log("messageList " + messageList + " " + messageList.messages.length);
 					await this.detectMessagesToArchive(messageList, settings, messages);
 				}
 
