@@ -18,7 +18,7 @@ Copyright 2018 Brummolix (new version AutoarchiveReloaded, https://github.com/Br
 */
 {
     "compilerOptions": {
-        "target": "es6",
+        "target": "es2018",
         //the module stuff does not work in Thunderbird Addons (or I do not know how to make it work...)
         "module": "none" ,
         //disabled because it does not work in Thunderbird (NetworkError when attempting to fetch resource)
