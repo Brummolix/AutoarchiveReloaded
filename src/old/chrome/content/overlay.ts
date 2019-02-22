@@ -35,21 +35,6 @@ namespace AutoarchiveReloadedBootstrap
 			return Cc["@mozilla.org/appshell/window-mediator;1"].getService(Ci.nsIWindowMediator)
 				.getMostRecentWindow("mail:3pane");
 		}
-
-		public static alert(message: string): void
-		{
-			//TODO: alert() is not supported in background windows; please use console.log instead.
-			alert(message);
-		}
-
-		public static confirm(message: string): boolean
-		{
-			//TODO: confirm wird im Background Window nicht gehen!
-			alert(message);
-			return true;
-
-			//return confirm(message);
-		}
 	}
 
 	//-----------------------------------------------------------------------------------------------------
@@ -567,8 +552,6 @@ namespace AutoarchiveReloadedBootstrap
 		{
 			AutoarchiveReloadedWebextension.loggerWebExtension.info("start...");
 
-			await browser.autoarchive.alert("hello", "world");
-
 			const appInfoLogger = new AppInfoLogger();
 			await appInfoLogger.log();
 
@@ -625,7 +608,7 @@ namespace AutoarchiveReloadedBootstrap
 				return;
 			}
 
-			if (Helper.confirm(browser.i18n.getMessage("dialogStartManualText")))//TODO: browser.i18n.getMessage("dialogTitle")
+			if (await browser.autoarchive.confirm(browser.i18n.getMessage("dialogTitle"), browser.i18n.getMessage("dialogStartManualText")))
 			{
 				if (this.status === States.IN_PROGRESS)
 				{

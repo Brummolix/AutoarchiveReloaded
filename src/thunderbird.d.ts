@@ -248,6 +248,7 @@ declare interface messages
 declare interface AutoarchiveWebExperiment
 {
 	alert(title: string, text: string): Promise<void>;
+	confirm(title: string, text: string): Promise<boolean>;
 }
 
 declare interface Browser

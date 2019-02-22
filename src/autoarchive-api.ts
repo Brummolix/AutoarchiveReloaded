@@ -8,10 +8,14 @@ var autoarchive = class extends ExtensionCommon.ExtensionAPI {
 	{
 		return {
 			autoarchive: {
-				alert: async (title: string, text: string): Promise<any> =>
+				alert: async (title: string, text: string): Promise<void> =>
 				{
-					getThePromptService().alert(null, title, text);
+					await getThePromptService().alert(null, title, text);
 					//Services.wm.getMostRecentWindow("mail:3pane").alert("Hello " + name + "!");
+				},
+				confirm: async (title: string, text: string): Promise<boolean> =>
+				{
+					return await getThePromptService().confirm(null, title, text);
 				},
 			},
 		};
