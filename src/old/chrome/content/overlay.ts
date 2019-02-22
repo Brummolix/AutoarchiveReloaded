@@ -479,10 +479,11 @@ namespace AutoarchiveReloadedBootstrap
 		{
 			for (const message of messageList.messages)
 			{
-				console.log("check message " + message.subject);
+				console.log(message);
+				console.log("check message " + message.id + " " + message.subject);
 				if (await this.shallMessageBeArchived(message, settings))
 				{
-					console.log(message.messageId + " shall be archived");
+					console.log(message.id + " shall be archived");
 					messages.push(message);
 				}
 			}

@@ -198,7 +198,7 @@ declare interface MessageHeader
 	date: Date;
 	flagged: boolean;
 	folder: MailFolder;
-	messageId: number;
+	id: number;
 	read: boolean;
 	recipients: string[];
 	subject: string;
@@ -228,6 +228,10 @@ declare interface messages
 	continueList(messageListId: string): Promise<MessageList>;
 	get(messageId: number): Promise<MessageHeader>;
 	listTags(): Promise<MessageTag>;
+
+	//move(messageIds: number[], destination: MailFolder); //return type?
+	//copy(messageIds: number[], destination: MailFolder); //return type?
+	//delete(messageIds: number[], ?skipTrash:boolean); //return type?
 }
 
 declare interface Browser
