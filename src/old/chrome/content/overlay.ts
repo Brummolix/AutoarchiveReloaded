@@ -299,7 +299,7 @@ namespace AutoarchiveReloadedBootstrap
 
 				let countFoldersToArchive = 0;
 
-				await AutoarchiveReloadedBootstrap.AccountIterator.forEachAccount((account: MailAccount, isAccountArchivable: boolean) =>
+				await AutoarchiveReloadedBootstrap.AccountIterator.forEachAccount(async (account: MailAccount, isAccountArchivable: boolean) =>
 				{
 					AutoarchiveReloadedWebextension.loggerWebExtension.info("check account '" + account.name + "'");
 					if (isAccountArchivable)
@@ -315,8 +315,7 @@ namespace AutoarchiveReloadedBootstrap
 							countFoldersToArchive += foldersToArchive.length;
 							for (const folder of foldersToArchive)
 							{
-								//TODO: await geht hier nicht?
-								this.archiveFolder(folder, accountSettings);
+								await this.archiveFolder(folder, accountSettings);
 							}
 						}
 						else
@@ -508,7 +507,6 @@ namespace AutoarchiveReloadedBootstrap
 		}
 		*/
 
-		//TODO: check consequence for async functions
 		private async archiveFolder(folder: MailFolder, settings: IAccountSettings): Promise<void>
 		{
 			try

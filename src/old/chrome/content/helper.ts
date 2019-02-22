@@ -127,7 +127,7 @@ namespace AutoarchiveReloadedBootstrap
 			const accounts: MailAccount[] = await browser.accounts.list();
 			for (const account of accounts)
 			{
-				forEachDo(account, this.isAccountArchivable(account));
+				await forEachDo(account, this.isAccountArchivable(account));
 			}
 		}
 
