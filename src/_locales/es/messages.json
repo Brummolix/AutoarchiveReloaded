@@ -25,5 +25,14 @@
 	"accountSettingTitle":{"message": "specific settings for account §§TITLE§§"},
 	
 	"toolbarArchive":{"message": "Autoarchivar..."},
-	"toolbarArchiveTooltip":{"message": "Autoarchivar ahora"}
+	"toolbarArchiveTooltip":{"message": "Autoarchivar ahora"},
+	
+	"activityStart":{"message": "AutoarchiveReloaded: Buscando mensajes para archivar en la carpeta %S"},
+	"activityDone":{"message": "AutoarchiveReloaded: carpeta %S"},
+	"activityMessagesToArchive":{"message": "%S mensajes han sido archivados"},
+	"waitForInit":{"message": "Por favor espera hasta que 'AutoarchiveReloaded' este inicializado. Por favor intenta más tarde."},
+	"waitForArchive":{"message": "Por favor espera hasta que el progreso de autoarchivado este terminado. Por favor intenta más tarde."},
+	"dialogTitle":{"message": "AutoarchiveReloaded"},
+	"dialogStartManualText":{"message": "Para archivar mensajes en cuentas IMAP necesitas conectividad a internet (o conexión al servidor de IMAP). De lo contrario (por un error de Thunderbird) los mensajes pueden ser duplicados. ¿Deseas continuar?"},
+	"menuArchive":{"message": "Autoarchivar ahora..."}
 }

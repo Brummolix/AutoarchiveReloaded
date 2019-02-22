@@ -25,5 +25,14 @@
 	"accountSettingTitle":{"message": "specific settings for account §§TITLE§§"},
 	
 	"toolbarArchive":{"message": "Autoarchive..."},
-	"toolbarArchiveTooltip":{"message": "Autoarchive now"}
+	"toolbarArchiveTooltip":{"message": "Autoarchive now"},
+
+	"activityStart":{"message": "AutoarchiveReloaded: Search archive-messages in folder %S"},
+	"activityDone":{"message": "AutoarchiveReloaded: folder %S"},
+	"activityMessagesToArchive":{"message": "%S messages will be archived"},
+	"waitForInit":{"message": "Please wait until AutoarchiveReloaded is initalized. Please try again later."},
+	"waitForArchive":{"message": "Please wait until Autoarchive in progress is done. Please try again later."},
+	"dialogTitle":{"message": "AutoarchiveReloaded"},
+	"dialogStartManualText":{"message": "For archiving messages in IMAP accounts you need an internet connection (or a connection to the IMAP server). Otherwise (because of an Thunderbird bug) messages may be duplicated. Continue (if internet connection is available)?"},
+	"menuArchive":{"message": "Autoarchive now..."}
 }

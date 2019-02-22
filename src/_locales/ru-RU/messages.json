@@ -25,5 +25,14 @@
 	"accountSettingTitle":{"message": "параметры учетной записи §§TITLE§§"},
 	
 	"toolbarArchive":{"message": "Авто архивирование..."},
-	"toolbarArchiveTooltip":{"message": "Архивировать сейчас"}
+	"toolbarArchiveTooltip":{"message": "Архивировать сейчас"},
+
+	"activityStart":{"message": "AutoarchiveReloaded: Поиск архивируемых сообщений в папке %S"},
+	"activityDone":{"message": "AutoarchiveReloaded: папка %S"},
+	"activityMessagesToArchive":{"message": "%S сообщений заархивируется"},
+	"waitForInit":{"message": "Пожалуйста, подождите, пока AutoarchiveReloaded проведет инициализацию. Повторить позже."},
+	"waitForArchive":{"message": "Пожалуйста, подождите, пока AutoarchiveReloaded закончит работу. Повторите позже."},
+	"dialogTitle":{"message": "AutoarchiveReloaded"},
+	"dialogStartManualText":{"message": "Для архивации сообщений IMAP аккаунта должно быть соединение с сервером. В противном случае (из-за ошибки Thunderbird) сообщений могут быть продублированы. Продолжить (если соединение с сервером присутствует)?"},
+	"menuArchive":{"message": "Архивировать сейчас..."}
 }

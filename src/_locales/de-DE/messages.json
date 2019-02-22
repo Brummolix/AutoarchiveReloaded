@@ -25,5 +25,14 @@
 	"accountSettingTitle":{"message": "Spezifische Einstellungen fürs Konto §§TITLE§§"},
 	
 	"toolbarArchive":{"message": "Autoarchivieren..."},
-	"toolbarArchiveTooltip":{"message": "Jetzt Autoarchivieren"}
+	"toolbarArchiveTooltip":{"message": "Jetzt Autoarchivieren"},
+
+	"activityStart":{"message": "AutoarchiveReloaded: Suche zu archivierende Nachrichten in Ordner %S"},
+	"activityDone":{"message": "AutoarchiveReloaded: Ordner %S"},
+	"activityMessagesToArchive":{"message": "%S Nachrichten werden archiviert"},
+	"waitForInit":{"message": "Bitte warten bis AutoarchiveReloaded initialisiert ist. Versuchen Sie es dann erneut."},
+	"waitForArchive":{"message": "Bitte warten bis laufende Archivierung abgeschlossen ist. Versuchen Sie es dann erneut."},
+	"dialogTitle":{"message": "AutoarchiveReloaded"},
+	"dialogStartManualText":{"message": "Für das Archivieren von Nachrichten in IMAP Konten brauchen Sie eine Internet Verbindung (bzw. eine Verbindung zum IMAP Server). Sonst kann es (durch einen Thunderbirdfehler) zu duplizierten Nachrichten kommen. Weitermachen (wenn Internet/Server Verbingung besteht)?"},
+	"menuArchive":{"message": "Jetzt Autoarchivieren..."}
 }
