@@ -105,8 +105,10 @@ type BrowserWindowType = "normal" | "popup" | "panel" | "devtools";
 //https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/windows/Window
 declare class BrowserWindow extends Window
 {
+	public id: number;
 	public title: string;
 	public type: BrowserWindowType;
+	public focused: boolean;
 }
 
 declare interface IListeners<T>
@@ -148,7 +150,7 @@ declare class Extension
 //https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/browserAction
 declare interface BrowserAction
 {
-	onClicked: IListeners<(tab: Tab) => void>;
+	onClicked: IListeners<() => void>;
 }
 
 declare interface TabInfo
@@ -252,6 +254,41 @@ declare interface AutoarchiveWebExperiment
 	startToArchiveMessages(messageIds: number[]): Promise<number>;
 }
 
+type ContextType = "all" | "page" | "frame" | "selection" | "link" | "editable" | "password" | "image" | "video" | "audio" | "browser_action" | "tab" | "message_list" | "folder_pane";
+
+type ItemType = "normal" | "checkbox" | "radio" | "separator";
+
+type ViewType = "tab" | "popup" | "sidebar";
+
+declare interface menuCreateProperties
+{
+	checked?: boolean; //The initial state of a checkbox or radio item: true for selected and false for unselected. Only one radio item can be selected at a time in a given group of radio items.
+	command?: string; //Specifies a command to issue for the context click. Currently supports internal command _execute_browser_action.
+	contexts?: ContextType[]; //List of contexts this menu item will appear in. Defaults to [‘page’] if not specified.
+	documentUrlPatterns?: string[]; //Lets you restrict the item to apply only to documents whose URL matches one of the given patterns. (This applies to frames as well.) For details on the format of a pattern, see Match Patterns.
+	enabled?: boolean; //Whether this context menu item is enabled or disabled. Defaults to true.
+	icons?: object;
+	id?: string; //The unique ID to assign to this item. Mandatory for event pages. Cannot be the same as another ID for this extension.
+	onclick?: () => void; // A function that will be called back when the menu item is clicked. Event pages cannot use this.
+	parentId?: number | string; //The ID of a parent menu item; this makes the item a child of a previously added item.
+	targetUrlPatterns?: string[]; //Similar to documentUrlPatterns, but lets you filter based on the src attribute of img/audio/video tags and the href of anchor tags.
+	title?: string; //The text to be displayed in the item; this is required unless type is ‘separator’. When the context is ‘selection’, you can use %s within the string to show the selected text. For example, if this parameter’s value is “Translate ‘%s’ to Pig Latin” and the user selects the word “cool”, the context menu item for the selection is “Translate ‘cool’ to Pig Latin”.
+	type?: ItemType; //The type of menu item. Defaults to ‘normal’ if not specified.
+	viewTypes?: ViewType[]; //List of view types where the menu item will be shown. Defaults to any view, including those without a viewType.
+	visible: boolean; //Whether the item is visible in the menu.
+}
+
+declare interface menus
+{
+	//returns "The ID of the newly created item."
+	create(createProperties: menuCreateProperties, callback?: () => void): Promise<number|string>;
+
+	//update(id, updateProperties)
+	remove(menuItemId: number | string): void;
+	removeAll(): void;
+	//overrideContext(contextOptions)
+}
+
 declare interface Browser
 {
 	runtime: Runtime;
@@ -264,6 +301,7 @@ declare interface Browser
 	i18n: i18n;
 	accounts: accounts;
 	messages: messages;
+	menus: menus;
 
 	autoarchive: AutoarchiveWebExperiment;
 }

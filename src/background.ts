@@ -21,8 +21,8 @@ try
 	AutoarchiveReloadedWebextension.loggerWebExtension.info("Hello world background.ts");
 
 	//TODO: disable button in mailwindow (or only enable it in mail3pane) -> how to detect?
-	browser.browserAction.onClicked.addListener( (tab: any) =>
-	{
+	browser.browserAction.onClicked.addListener( async () => {
+
 		//TODO: what about this comment?
 		//it would be better to detect if the buttons are configured right now and do nothing in this case
 		//but as we don't know how to do it for a web extension it will be done in the bootstrap part
