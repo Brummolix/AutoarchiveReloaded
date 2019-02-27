@@ -26,17 +26,6 @@ var EXPORTED_SYMBOLS = ["AutoarchiveReloadedBootstrap"];
 
 namespace AutoarchiveReloadedBootstrap
 {
-	//singleton with global helper
-	export class Helper
-	{
-		//TODO: remove
-		public static getMail3Pane(): Mail3Pane
-		{
-			return Cc["@mozilla.org/appshell/window-mediator;1"].getService(Ci.nsIWindowMediator)
-				.getMostRecentWindow("mail:3pane");
-		}
-	}
-
 	//-----------------------------------------------------------------------------------------------------
 
 	//TODO: LegacyExtensionLoggerHelper supported filelogging? is it still possible? Maybe as webapi experiment?
@@ -181,70 +170,23 @@ namespace AutoarchiveReloadedBootstrap
 			//this.activity = activity;
 		}
 
-		public archiveMessages(messages: MessageHeader[]): number
+		public async archiveMessages(messages: MessageHeader[]): Promise<number>
 		{
 			try
 			{
 				AutoarchiveReloadedWebextension.loggerWebExtension.info("start real archiving of '" + this.folder.name + "' (" + messages.length + " messages)");
 
-				/*
-				const mail3PaneWindow: Mail3Pane = Helper.getMail3Pane();
-
-				//TB jumps to the end (after finishing the archiving) if no message is selected
-				//> select the first message (unfortunately it will become unread...)
-				//(but only select the first message if the messages being archived are from the current folder)
-				if (messages.length > 0)
-				{
-					if (messages[0].folder === mail3PaneWindow.gFolderDisplay.displayedFolder)
-					{
-						if (mail3PaneWindow.gFolderDisplay.selectedCount <= 0)
-						{
-							mail3PaneWindow.gFolderDisplay.navigate(Components.interfaces.nsMsgNavigationType.firstMessage);
-						}
-					}
+				const messageIds: number[] = [];
+				for (const message of messages) {
+					messageIds.push(message.id);
 				}
-
-				const batchMover: Ci.BatchMessageMover = new mail3PaneWindow.BatchMessageMover();
-
-				//There are several issues with "this.view.dbView is null" inside "chrome://messenger/content/folderDisplay.js", 1359
-				//see https://github.com/Brummolix/AutoarchiveReloaded/issues/1
-				//see https://github.com/Brummolix/AutoarchiveReloaded/issues/5
-				//see https://github.com/Brummolix/AutoarchiveReloaded/issues/7
-				//something is wrong inside the TB stuff at this moment
-				//the null pointer exception is described here: https://bugzilla.mozilla.org/show_bug.cgi?id=978559 but the Mozilla guys have not done anything about it until now
-				//
-				//one reason is, if no folder is selected (for example if the account is selected only)
-				//therefore we try to select some folder if we find the dbView is null
-				if (mail3PaneWindow.gFolderDisplay)
-				{
-					if (mail3PaneWindow.gFolderDisplay.view)
-					{
-						if (!mail3PaneWindow.gFolderDisplay.view.dbView)
-						{
-							AutoarchiveReloadedWebextension.loggerWebExtension.info("mail3PaneWindow.gFolderDisplay.dbView is null > batchMessageMover will not work");
-							const folderToSelect = this.folder;
-							if (folderToSelect)
-							{
-								AutoarchiveReloadedWebextension.loggerWebExtension.info("> try to select folder " + folderToSelect.name + " " + folderToSelect.URI);
-								//When extension TorBirdy was installed gFolderTreeView.selectFolder did not work.
-								//gFolderDisplay.show worked with and without TorBirdy.
-								mail3PaneWindow.gFolderDisplay.show(folderToSelect);
-							}
-						}
-					}
-				}
-
-				//TODO: do not archive if a imap server is offline (otherwise the archive is done locally but not on the server, if you start next time (and you are online) it may be archived again
-				//-> problem: how to detect imap server problems/problems with i-net connection? (we do not talk about online/offline mode here which you can handle with  MailOfflineMgr!)
-				//I have also reported the real bug to TB: see https://bugzilla.mozilla.org/show_bug.cgi?id=956598
-
-				batchMover.archiveMessages(messages);
-				*/
-				return messages.length;
+				return await browser.autoarchive.startToArchiveMessages(messageIds);
 			}
 			catch (e)
 			{
-				AutoarchiveReloadedWebextension.loggerWebExtension.errorException(e);
+				//TODO: Exceptions from experiment can't be logged???
+				console.log(e);
+				//AutoarchiveReloadedWebextension.loggerWebExtension.errorException(e);
 				return -1;
 			}
 		}
@@ -504,7 +446,7 @@ namespace AutoarchiveReloadedBootstrap
 				let result = 0;
 				if (messages.length > 0)
 				{
-					result = archiver.archiveMessages(messages);
+					result = await archiver.archiveMessages(messages);
 				}
 				//activity.stopAndSetFinal(result);
 				console.log(result);

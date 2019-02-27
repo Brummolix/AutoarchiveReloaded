@@ -249,6 +249,7 @@ declare interface AutoarchiveWebExperiment
 {
 	alert(title: string, text: string): Promise<void>;
 	confirm(title: string, text: string): Promise<boolean>;
+	startToArchiveMessages(messageIds: number[]): Promise<number>;
 }
 
 declare interface Browser
@@ -308,6 +309,7 @@ declare namespace Components
 	{
 		public static import(path: string): void;
 		public static unload(path: string): void;
+		public static defineModuleGetter(param1: any, param2: any, param3: any): void;
 	}
 
 	//https://developer.mozilla.org/en-US/docs/Mozilla/Tech/XPCOM/Reference
