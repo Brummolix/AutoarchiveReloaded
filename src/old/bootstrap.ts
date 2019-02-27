@@ -177,7 +177,8 @@ function shutdown(data: BootstrapData, reason: BootstrapReasons.APP_SHUTDOWN | B
 	//attention, do not rely on the logger in shutdown
 	//it gives "can't access dead object" when accessing the settings
 
-	removeToolbarCustomizationListener(AutoarchiveReloadedBootstrap.Helper.getMail3Pane());
+	//TODO: ?
+	//removeToolbarCustomizationListener(AutoarchiveReloadedBootstrap.Helper.getMail3Pane());
 
 	try
 	{
