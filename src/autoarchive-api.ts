@@ -1,6 +1,9 @@
 ChromeUtils.import("resource://gre/modules/ExtensionCommon.jsm");
 ChromeUtils.import("resource://gre/modules/Services.jsm");
 
+//TODO: AutoarchiveReloadedWebextension.loggerWebExtension is not available here
+//use something other? Or only do console logging? or do not log?
+
 //Attention it HAVE TO be var, otherwise the extension api is not working
 //@ts-ignore: 'autoarchive' is declared but its value is never read
 //tslint:disable-next-line: no-var-keyword prefer-const
@@ -21,6 +24,17 @@ var autoarchive = class extends ExtensionCommon.ExtensionAPI {
 				startToArchiveMessages: async (messageIds: number[]): Promise<number> =>
 				{
 					return _startToArchiveMessages(messageIds);
+				},
+				initToolbarConfigurationObserver: (): void =>
+				{
+					console.log("initToolbarConfigurationObserver");
+					registerToolbarCustomizationListener(getMail3Pane());
+				},
+				//normally it did not have to be async, but the return value did not work in this case
+				isToolbarConfigurationOpen: async (): Promise<boolean> =>
+				{
+					console.log("isToolbarConfigurationOpen " + bIsInToolbarCustomize);
+					return bIsInToolbarCustomize;
 				},
 			},
 		};
@@ -114,4 +128,53 @@ function getMail3Pane(): Mail3Pane
 {
 	return Cc["@mozilla.org/appshell/window-mediator;1"].getService(Ci.nsIWindowMediator)
 		.getMostRecentWindow("mail:3pane");
+}
+
+let bIsInToolbarCustomize: boolean = false;
+
+function registerToolbarCustomizationListener(window: Window): void
+{
+	console.log("registerToolbarCustomizationListener");
+	if (!window)
+	{
+		return;
+	}
+
+	console.log("registerToolbarCustomizationListener add events");
+
+	window.addEventListener("aftercustomization", afterCustomize);
+	window.addEventListener("beforecustomization", beforeCustomize);
+}
+
+//TODO: how to remove?
+//event is still registered after AddOn is deactivated
+//if AddOn is reactivated, 2 listners are registered
+//- using browser.runtime.onSuspend in background script did not work, onSuspend does not exist
+//- using browser.runtime.getBackgroundPage().addListener("unload"), unload event is fired, but web experiment api can not be called
+function removeToolbarCustomizationListener(window: Window): void
+{
+	console.log("removeToolbarCustomizationListener");
+	if (!window)
+	{
+		return;
+	}
+
+	window.removeEventListener("aftercustomization", afterCustomize);
+	window.removeEventListener("beforecustomization", beforeCustomize);
+}
+
+function beforeCustomize(e: Event): void
+{
+	console.log("toolbar customization detected");
+	//AutoarchiveReloadedWebextension.loggerWebExtension.info("toolbar customization detected");
+	bIsInToolbarCustomize = true;
+	console.log(bIsInToolbarCustomize);
+}
+
+function afterCustomize(e: Event): void
+{
+	console.log("toolbar customization ended");
+	//AutoarchiveReloadedWebextension.loggerWebExtension.info("toolbar customization ended");
+	bIsInToolbarCustomize = false;
+	console.log(bIsInToolbarCustomize);
 }

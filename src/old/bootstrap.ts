@@ -35,7 +35,12 @@ enum BootstrapReasons
 
 async function replyToArchiveManually(): Promise<void>
 {
-	if (bIsInToolbarCustomize)
+	console.log("replyToArchiveManually");
+	//TODO: disable button in mailwindow (or only enable it in mail3pane) -> how to detect?
+
+	//it would be better to detect if the buttons are configured right now and do nothing in this case
+	//but as we don't know how to do it for a web extension it will be done in the webexperiment
+	if (await browser.autoarchive.isToolbarConfigurationOpen())
 	{
 		AutoarchiveReloadedWebextension.loggerWebExtension.info("archive manually rejected because of toolbar customization");
 		return;
@@ -136,8 +141,8 @@ function initAutoArchiveReloadedOverlay(): void
 		//therefore we have to wait a bit
 		setTimeout(() =>
 		{
-			//TODO: Menus and toolbarCustomizationListener deactivated
-			AutoarchiveReloadedWebextension.loggerWebExtension.info("Menus and toolbarCustomizationListener deactivated");
+			//TODO: Menus deactivated
+			AutoarchiveReloadedWebextension.loggerWebExtension.info("Menus deactivated");
 
 			/*
 			try
@@ -151,8 +156,6 @@ function initAutoArchiveReloadedOverlay(): void
 						AutoarchiveReloadedBootstrap.Global.onArchiveManually();
 					},
 				});
-
-				registerToolbarCustomizationListener(AutoarchiveReloadedBootstrap.Helper.getMail3Pane());
 			}
 			catch (e)
 			{
@@ -192,40 +195,4 @@ function shutdown(data: BootstrapData, reason: BootstrapReasons.APP_SHUTDOWN | B
 		console.log("AutoArchiveReloaded error");
 		console.log(e);
 	}
-}
-
-let bIsInToolbarCustomize: boolean = false;
-
-function registerToolbarCustomizationListener(window: Window): void
-{
-	if (!window)
-	{
-		return;
-	}
-
-	window.addEventListener("aftercustomization", afterCustomize);
-	window.addEventListener("beforecustomization", beforeCustomize);
-}
-
-function removeToolbarCustomizationListener(window: Window): void
-{
-	if (!window)
-	{
-		return;
-	}
-
-	window.removeEventListener("aftercustomization", afterCustomize);
-	window.removeEventListener("beforecustomization", beforeCustomize);
-}
-
-function beforeCustomize(e: Event): void
-{
-	AutoarchiveReloadedWebextension.loggerWebExtension.info("toolbar customization detected");
-	bIsInToolbarCustomize = true;
-}
-
-function afterCustomize(e: Event): void
-{
-	AutoarchiveReloadedWebextension.loggerWebExtension.info("toolbar customization ended");
-	bIsInToolbarCustomize = false;
 }

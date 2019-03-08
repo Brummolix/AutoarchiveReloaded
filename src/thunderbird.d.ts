@@ -64,6 +64,10 @@ declare interface RuntimeConnectListener extends IListeners<(port: RuntimePort) 
 {
 }
 
+declare interface RuntimeSuspendListener extends IListeners<() => void>
+{
+}
+
 //https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/runtime/getBrowserInfo
 declare interface BrowserInfo
 {
@@ -78,11 +82,13 @@ declare class Runtime
 {
 	public onMessage: RuntimeMessageListeners;
 	public onConnect: RuntimeConnectListener;
+	//public onSuspend: RuntimeSuspendListener; -> does not exist in TB?
 
 	public sendMessage(message: any): Promise<any>;
 	public connect(connectInfo: {name: string}): RuntimePort;
 
 	public getBrowserInfo(): Promise<BrowserInfo>;
+	public getBackgroundPage(): Promise<BrowserWindow>;
 }
 
 //https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/storage/StorageArea
@@ -252,6 +258,8 @@ declare interface AutoarchiveWebExperiment
 	alert(title: string, text: string): Promise<void>;
 	confirm(title: string, text: string): Promise<boolean>;
 	startToArchiveMessages(messageIds: number[]): Promise<number>;
+	initToolbarConfigurationObserver(): void;
+	isToolbarConfigurationOpen(): Promise<boolean>;
 }
 
 type ContextType = "all" | "page" | "frame" | "selection" | "link" | "editable" | "password" | "image" | "video" | "audio" | "browser_action" | "tab" | "message_list" | "folder_pane";

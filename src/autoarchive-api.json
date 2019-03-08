@@ -51,11 +51,17 @@
         ]
 			},
       {
-        "name": "test",
+        "name": "initToolbarConfigurationObserver",
         "type": "function",
         "async": false,
         "parameters": []
-      }
+      },
+      {
+        "name": "isToolbarConfigurationOpen",
+        "type": "function",
+        "async": true,
+        "parameters": []
+			}
 		]
 	}
 ]
