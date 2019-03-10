@@ -22,10 +22,6 @@ AutoarchiveReloaded.loggerWebExtension.info("Hello world helper.ts");
 
 namespace AutoarchiveReloaded
 {
-	//Cu.import("chrome://autoarchiveReloaded/content/overlay.js");
-	//Cu.import("resource:///modules/MailServices.jsm");
-	//Cu.import("resource:///modules/iteratorUtils.jsm");
-
 	export class AccountIterator
 	{
 		public static async forEachAccount(forEachDo: (account: MailAccount, isAccountArchivable: boolean) => void): Promise<void>

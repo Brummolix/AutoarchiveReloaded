@@ -29,7 +29,7 @@
 	},
 
 	"background": {
-		"scripts": ["Logger.js","Logging.js","optionHelper.js","OptionHandling.js","helper.js","overlay.js","background.js"]
+		"scripts": ["Logger.js","Logging.js","optionHelper.js","OptionHandling.js","helper.js","autoarchive.js","background.js"]
 	},
 
 	"browser_action": {

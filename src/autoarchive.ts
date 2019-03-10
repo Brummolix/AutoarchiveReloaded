@@ -19,7 +19,7 @@ Copyright 2012 Alexey Egorov (original version Autoarchive, http://code.google.c
 */
 
 //TODO: remove
-AutoarchiveReloaded.loggerWebExtension.info("Hello world overlay.ts");
+AutoarchiveReloaded.loggerWebExtension.info("Hello world autoarchive.ts");
 
 namespace AutoarchiveReloaded
 {
