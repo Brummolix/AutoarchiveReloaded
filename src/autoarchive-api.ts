@@ -163,8 +163,8 @@ var autoarchive = class extends ExtensionCommon.ExtensionAPI {
 
 		console.log("registerToolbarCustomizationListener add events");
 
-		window.addEventListener("aftercustomization", this.afterCustomize);
-		window.addEventListener("beforecustomization", this.beforeCustomize);
+		window.addEventListener("aftercustomization", this.afterCustomize.bind(this));
+		window.addEventListener("beforecustomization", this.beforeCustomize.bind(this));
 	}
 
 	//TODO: how to remove?
