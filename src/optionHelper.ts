@@ -27,7 +27,7 @@ namespace AutoarchiveReloaded
 			loggerWebExtension.info("loadCurrentSettings done");
 			try
 			{
-				LoggerHelper.setGlobaleEnableInfoLogging(settings.globalSettings.enableInfoLogging);
+				Logger.setGlobaleEnableInfoLogging(settings.globalSettings.enableInfoLogging);
 
 				this.setCurrentPreferences(settings);
 			}

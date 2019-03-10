@@ -18,29 +18,26 @@ Copyright 2018 Brummolix (AutoarchiveReloaded, https://github.com/Brummolix/Auto
 */
 namespace AutoarchiveReloaded
 {
-	export enum LogLevel
+	enum LogLevel
 	{
 		LEVEL_INFO, LEVEL_ERROR,
 	}
 
-	export interface ILoggerHelper
-	{
-		log(msgToLog: string): void;
-		getEnableInfoLogging(): boolean;
-	}
-
 	export class Logger
 	{
-		private loggerHelper: ILoggerHelper;
+		private static readonly ENABLE_INFO_LOGGING_NAME: string = "WebExtensionLoggerHelper_enableInfoLogging";
 
-		constructor(loggerHelper: ILoggerHelper)
+		public static setGlobaleEnableInfoLogging(value: boolean)
 		{
-			this.loggerHelper = loggerHelper;
+			(browser.extension.getBackgroundPage() as any)[Logger.ENABLE_INFO_LOGGING_NAME] = value;
+
+			//webexperiment has different log setting...
+			browser.autoarchive.setInfoLogging(value);
 		}
 
-		public static getExceptionInfo(e: ThunderbirdError): string
+		private static getGlobalEnableInfoLogging(): boolean
 		{
-			return e + "; Source: '" + e.fileName + "'; Line: " + e.lineNumber + "; code: " + e.toSource() + "; stack: " + e.stack;
+			return (browser.extension.getBackgroundPage() as any)[Logger.ENABLE_INFO_LOGGING_NAME];
 		}
 
 		public info(str: string): void
@@ -53,14 +50,14 @@ namespace AutoarchiveReloaded
 			this.log(LogLevel.LEVEL_ERROR, str);
 		}
 
-		public errorException(e: ThunderbirdError): void
+		public errorException(exception: any): void
 		{
-			this.error(Logger.getExceptionInfo(e));
+			console.log(exception);
 		}
 
 		private getLogLevelFromPref(): LogLevel
 		{
-			if (this.loggerHelper.getEnableInfoLogging())
+			if (this.getEnableInfoLogging())
 			{
 				return LogLevel.LEVEL_INFO;
 			}
@@ -92,7 +89,21 @@ namespace AutoarchiveReloaded
 			}
 			strToLog += ": " + str;
 
-			this.loggerHelper.log(strToLog);
+			console.log(strToLog);
+		}
+
+		//this is very tricky!
+		//there exist multiple loggers (one in background scripts and one in option page)
+		//but they should use the same setting for info logging
+		//on the other hand the whole logging handling should be easy and not rely on a lot of things (option handling, read values asynchonously from storage and so on)
+		//therefore we always use the value from a global variable of the background script
+		//additionally the option helper (or someone else) can set the setting via setGlobaleEnableInfoLogging (it will set the variable in the backround scripts)
+		//-> in this way we can have as many loggers as we want, as soon as the settings are available they can set the global value
+		private getEnableInfoLogging(): boolean
+		{
+			return Logger.getGlobalEnableInfoLogging();
 		}
 	}
+
+	export const loggerWebExtension: Logger = new Logger();
 }
