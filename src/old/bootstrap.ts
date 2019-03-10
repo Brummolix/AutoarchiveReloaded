@@ -51,22 +51,6 @@ function setCurrentPreferences(settings: ISettings): void
 	}
 }
 
-function replyToAskForLegacyPreferences(): ISettings | null
-{
-	try
-	{
-		const legacyOptions: AutoarchiveReloadedBootstrap.LegacyOptions = new AutoarchiveReloadedBootstrap.LegacyOptions();
-		const legacySettings = legacyOptions.getLegacyOptions();
-		legacyOptions.markLegacySettingsAsMigrated();
-		return legacySettings;
-	}
-	catch (e)
-	{
-		AutoarchiveReloadedWebextension.loggerWebExtension.errorException(e);
-		throw e;
-	}
-}
-
 async function askForAccounts(): Promise<IAccountInfo[]>
 {
 	try

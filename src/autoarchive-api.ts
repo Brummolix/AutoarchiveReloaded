@@ -1,6 +1,9 @@
 ChromeUtils.import("resource://gre/modules/ExtensionCommon.jsm");
 ChromeUtils.import("resource://gre/modules/Services.jsm");
 
+ChromeUtils.import("resource:///modules/MailServices.jsm");
+ChromeUtils.import("resource:///modules/iteratorUtils.jsm");
+
 //TODO: AutoarchiveReloadedWebextension.loggerWebExtension is not available here
 //use something other? Or only do console logging? or do not log?
 
@@ -37,6 +40,25 @@ var autoarchive = class extends ExtensionCommon.ExtensionAPI {
 				{
 					console.log("isToolbarConfigurationOpen " + this.bIsInToolbarCustomize);
 					return this.bIsInToolbarCustomize;
+				},
+				askForLegacyPreferences: async (accounts: IAccountInfo[]): Promise<ISettings | null> =>
+				{
+					console.log("replyToAskForLegacyPreferences");
+					console.log(accounts);
+					try
+					{
+						const legacyOptions: LegacyOptions = new LegacyOptions();
+						const legacySettings = legacyOptions.getLegacyOptions(accounts);
+						legacyOptions.markLegacySettingsAsMigrated();
+						console.log(legacySettings);
+						return legacySettings;
+					}
+					catch (e)
+					{
+						//AutoarchiveReloadedWebextension.loggerWebExtension.errorException(e);
+						console.log(e);
+						throw e;
+					}
 				},
 			},
 		};
@@ -179,3 +201,102 @@ var autoarchive = class extends ExtensionCommon.ExtensionAPI {
 		console.log(this.bIsInToolbarCustomize);
 	}
 };
+
+class LegacyOptions
+{
+	// returns null if already migrated or no settings!
+	public getLegacyOptions(accounts: IAccountInfo[]): ISettings | null
+	{
+		console.log("getLegacyOptions");
+
+		const prefBranch = this.getInternalLegacyPrefBranch();
+
+		console.log(prefBranch);
+		console.log(prefBranch.getBoolPref("preferencesAlreadyMigrated", false));
+
+		if (prefBranch.getBoolPref("preferencesAlreadyMigrated", false))
+		{
+			return null;
+		}
+
+		const accountSettings: IAccountSettingsArray = this.getLegacyAccountSettings(accounts);
+
+		//no account and no global settings?
+		const aChildArray: string[] = prefBranch.getChildList("", {});
+		console.log(aChildArray);
+		if ((aChildArray.length === 0) && Object.keys(accountSettings).length === 0)
+		{
+			return null;
+		}
+
+		//in an old profile the default values were not stored and we get undefined instead
+		//nevertheless we read everything with default value undefined now and the deepMerge later on will merge it with current default values
+		const legacySettings: ISettings = {
+			globalSettings: {
+				archiveType: prefBranch.getCharPref("archiveType", undefined) as ArchiveType,
+				enableInfoLogging: prefBranch.getBoolPref("enableInfoLogging", undefined),
+			},
+			accountSettings: accountSettings,
+		};
+
+		return legacySettings;
+	}
+
+	public markLegacySettingsAsMigrated(): void
+	{
+		console.log("markLegacySettingsAsMigrated");
+		this.getInternalLegacyPrefBranch().setBoolPref("preferencesAlreadyMigrated", true);
+	}
+
+	private getLegacyAccountSettings(accountInfos: IAccountInfo[]): IAccountSettingsArray
+	{
+		console.log("getLegacyAccountSettings");
+		const accountSettings: IAccountSettingsArray = {};
+
+		for (const accountInfo of accountInfos)
+		{
+			const accounts: Ci.nsIMsgAccount[] = fixIterator(MailServices.accounts.accounts, Ci.nsIMsgAccount);
+			let account;
+			for (const currentAccount of accounts)
+			{
+				if (currentAccount.key === accountInfo.accountId)
+				{
+					account = currentAccount;
+					break;
+				}
+			}
+
+			if (account == null)
+			{
+				continue;
+			}
+
+			const server: Ci.nsIMsgIncomingServer = account.incomingServer;
+			const settingOfAccount: IAccountSettings = {
+				bArchiveOther: server.getBoolValue("archiveMessages"),
+				daysOther: server.getIntValue("archiveMessagesDays"),
+				bArchiveMarked: server.getBoolValue("archiveStarred"),
+				daysMarked: server.getIntValue("archiveStarredDays"),
+				bArchiveTagged: server.getBoolValue("archiveTagged"),
+				daysTagged: server.getIntValue("archiveTaggedDays"),
+				bArchiveUnread: server.getBoolValue("archiveUnread"),
+				daysUnread: server.getIntValue("archiveUnreadDays"),
+			};
+
+			//if nothing is archived (which was the default) we assume that the AddOn was not installed or at least not used
+			//therefore we ignore the settings then and the defaults will be used later on
+			if (settingOfAccount.bArchiveOther || settingOfAccount.bArchiveMarked || settingOfAccount.bArchiveTagged || settingOfAccount.bArchiveUnread)
+			{
+				accountSettings[account.key] = settingOfAccount;
+			}
+		}
+
+		return accountSettings;
+	}
+
+	private getInternalLegacyPrefBranch(): Ci.nsIPrefBranch
+	{
+		const prefs: Ci.nsIPrefService = Components.classes["@mozilla.org/preferences-service;1"].getService(Components.interfaces.nsIPrefService);
+		return prefs.getBranch("extensions.AutoarchiveReloaded.");
+	}
+}

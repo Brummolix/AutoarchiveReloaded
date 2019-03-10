@@ -61,6 +61,36 @@
         "type": "function",
         "async": true,
         "parameters": []
+			},
+      {
+        "name": "askForLegacyPreferences",
+        "type": "function",
+        "async": true,
+        "parameters": [
+				{
+					"name": "accounts",
+					"type": "array",
+					"items": 
+					{
+						"type": "object",
+						"properties": 
+						{
+							"accountId": 
+							{
+								"type": "string"
+							},
+							"accountName": 
+							{
+								"type": "string"
+							},
+							"order": 
+							{
+								"type": "integer"
+							}
+						},
+						"minimum": 0
+					}
+				}]
 			}
 		]
 	}

@@ -114,12 +114,15 @@ namespace AutoarchiveReloadedWebextension
 			return null;
 		}
 
-		public convertLegacyPreferences(): void
+		public async convertLegacyPreferences(): Promise<void>
 		{
 			loggerWebExtension.info("start conversion of legacy preferences (if any)");
 
-			//TODO: can we still convert legacy preference or do we have to skip it?
-			const settings: ISettings | null = replyToAskForLegacyPreferences();
+			const accounts: IAccountInfo[] = await askForAccounts();
+
+			const settings: ISettings | null = await browser.autoarchive.askForLegacyPreferences(accounts);
+			console.log("got ");
+			console.log(settings);
 			try
 			{
 				if (settings)
