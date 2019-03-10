@@ -23,10 +23,6 @@ module.exports = function(grunt) {
 	let outDirExtracted = outDir + "/release/";
 	let outXpi = outDir + "/AutoArchiveReloaded.xpi";
 
-	//TODO: remove shared kram
-	let srcDirShared = outDirExtracted + "webextension/shared/";
-	let destDirShared = outDirExtracted + "chrome/content/shared/";
-
 	// Project configuration.
 	grunt.initConfig({
 		pkg: grunt.file.readJSON("package.json"),
@@ -37,11 +33,6 @@ module.exports = function(grunt) {
 				files: [
 					{ expand: true, cwd: srcDir, src: ["**", "!**/*.ts"], dest: outDirExtracted },
 					{ expand: true, src: ["./licence.txt", "./README.md"], dest: outDirExtracted },
-				],
-			},
-			shared: {
-				files: [
-					{ expand: true, cwd: srcDirShared, src: ["**"], dest: destDirShared }, //cwd:srcDirShared,
 				],
 			},
 		},
@@ -79,7 +70,6 @@ module.exports = function(grunt) {
 					srcDir + "/**/*.ts",
 					srcDir + "/**/*.js",
 					"!src/libs/**/*.js",
-					"!src/old/chrome/content/thunderbird-stdlib/*.js",
 				],
 			},
 		},
@@ -92,6 +82,6 @@ module.exports = function(grunt) {
 	grunt.loadNpmTasks("grunt-tslint");
 
 	// Default task(s).
-	grunt.registerTask("default", ["clean", "copy", "ts:default", "tslint", "copy:shared", "compress"]);
-	grunt.registerTask("release", ["clean", "copy", "ts:release", "tslint", "copy:shared", "compress"]);
+	grunt.registerTask("default", ["clean", "copy", "ts:default", "tslint", "compress"]);
+	grunt.registerTask("release", ["clean", "copy", "ts:release", "tslint", "compress"]);
 };

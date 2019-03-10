@@ -18,12 +18,9 @@ Copyright 2018 Brummolix (AutoarchiveReloaded, https://github.com/Brummolix/Auto
 */
 
 //TODO: remove
-AutoarchiveReloadedWebextension.loggerWebExtension.info("Hello world helper.ts");
+AutoarchiveReloaded.loggerWebExtension.info("Hello world helper.ts");
 
-// tslint:disable-next-line:no-var-keyword
-var EXPORTED_SYMBOLS = ["AutoarchiveReloadedBootstrap"];
-
-namespace AutoarchiveReloadedBootstrap
+namespace AutoarchiveReloaded
 {
 	//Cu.import("chrome://autoarchiveReloaded/content/overlay.js");
 	//Cu.import("resource:///modules/MailServices.jsm");

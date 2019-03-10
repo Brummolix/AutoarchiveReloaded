@@ -16,41 +16,44 @@ Copyright 2018 Brummolix (AutoarchiveReloaded, https://github.com/Brummolix/Auto
     You should have received a copy of the GNU General Public License
     along with AutoarchiveReloaded.  If not, see <http://www.gnu.org/licenses/>.
 */
-startup();
-
-async function startup(): Promise<void>
+namespace AutoarchiveReloaded
 {
-	try
+	export async function startup(): Promise<void>
 	{
-		AutoarchiveReloadedWebextension.loggerWebExtension.info("Hello world background.ts");
+		try
+		{
+			loggerWebExtension.info("Hello world background.ts");
 
-		browser.autoarchive.initToolbarConfigurationObserver();
+			browser.autoarchive.initToolbarConfigurationObserver();
 
-		browser.browserAction.onClicked.addListener(replyToArchiveManually);
+			browser.browserAction.onClicked.addListener(replyToArchiveManually);
 
-		const helper: AutoarchiveReloadedWebextension.OptionHelper = new AutoarchiveReloadedWebextension.OptionHelper();
-		await helper.convertLegacyPreferences();
-		AutoarchiveReloadedBootstrap.Global.startup();
+			const helper: OptionHelper = new OptionHelper();
+			await helper.convertLegacyPreferences();
+			Global.startup();
+		}
+		catch (e)
+		{
+			loggerWebExtension.errorException(e);
+			throw e;
+		}
 	}
-	catch (e)
+
+	async function replyToArchiveManually(): Promise<void>
 	{
-		AutoarchiveReloadedWebextension.loggerWebExtension.errorException(e);
-		throw e;
+		console.log("replyToArchiveManually");
+		//TODO: disable button in mailwindow (or only enable it in mail3pane) -> how to detect?
+
+		//it would be better to detect if the buttons are configured right now and do nothing in this case
+		//but as we don't know how to do it for a web extension it will be done in the webexperiment
+		if (await browser.autoarchive.isToolbarConfigurationOpen())
+		{
+			loggerWebExtension.info("archive manually rejected because of toolbar customization");
+			return;
+		}
+
+		await Global.onArchiveManually();
 	}
 }
 
-async function replyToArchiveManually(): Promise<void>
-{
-	console.log("replyToArchiveManually");
-	//TODO: disable button in mailwindow (or only enable it in mail3pane) -> how to detect?
-
-	//it would be better to detect if the buttons are configured right now and do nothing in this case
-	//but as we don't know how to do it for a web extension it will be done in the webexperiment
-	if (await browser.autoarchive.isToolbarConfigurationOpen())
-	{
-		AutoarchiveReloadedWebextension.loggerWebExtension.info("archive manually rejected because of toolbar customization");
-		return;
-	}
-
-	await AutoarchiveReloadedBootstrap.Global.onArchiveManually();
-}
+AutoarchiveReloaded.startup();

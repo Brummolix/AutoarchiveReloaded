@@ -16,11 +16,7 @@ Copyright 2018 Brummolix (AutoarchiveReloaded, https://github.com/Brummolix/Auto
     You should have received a copy of the GNU General Public License
     along with AutoarchiveReloaded.  If not, see <http://www.gnu.org/licenses/>.
 */
-
-// tslint:disable-next-line:no-var-keyword
-var EXPORTED_SYMBOLS = ["AutoarchiveReloadedShared"];
-
-namespace AutoarchiveReloadedShared
+namespace AutoarchiveReloaded
 {
 	export enum LogLevel
 	{

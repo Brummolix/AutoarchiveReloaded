@@ -72,7 +72,7 @@ async function saveOptions(): Promise<void>
 	}
 	catch (e)
 	{
-		AutoarchiveReloadedWebextension.loggerWebExtension.errorException(e);
+		AutoarchiveReloaded.loggerWebExtension.errorException(e);
 		throw e;
 	}
 
@@ -179,9 +179,9 @@ async function onLoad()
 	}
 	catch (e)
 	{
-		AutoarchiveReloadedWebextension.loggerWebExtension.errorException(e);
+		AutoarchiveReloaded.loggerWebExtension.errorException(e);
 		throw e;
 	}
 }
-let aaHelper: AutoarchiveReloadedWebextension.OptionHelper = new AutoarchiveReloadedWebextension.OptionHelper();
+let aaHelper: AutoarchiveReloaded.OptionHelper = new AutoarchiveReloaded.OptionHelper();
 $(onLoad);

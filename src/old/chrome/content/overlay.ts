@@ -19,12 +19,9 @@ Copyright 2012 Alexey Egorov (original version Autoarchive, http://code.google.c
 */
 
 //TODO: remove
-AutoarchiveReloadedWebextension.loggerWebExtension.info("Hello world overlay.ts");
+AutoarchiveReloaded.loggerWebExtension.info("Hello world overlay.ts");
 
-// tslint:disable-next-line:no-var-keyword
-var EXPORTED_SYMBOLS = ["AutoarchiveReloadedBootstrap"];
-
-namespace AutoarchiveReloadedBootstrap
+namespace AutoarchiveReloaded
 {
 	//-----------------------------------------------------------------------------------------------------
 
@@ -32,7 +29,7 @@ namespace AutoarchiveReloadedBootstrap
 	//TODO: getEnableInfoLogging came from settings?
 
 	/*
-	class LegacyExtensionLoggerHelper implements AutoarchiveReloadedShared.ILoggerHelper
+	class LegacyExtensionLoggerHelper implements ILoggerHelper
 	{
 		private readonly consoleService: Ci.nsIConsoleService = Components.classes["@mozilla.org/consoleservice;1"].getService(Ci.nsIConsoleService);
 
@@ -44,9 +41,9 @@ namespace AutoarchiveReloadedBootstrap
 
 		public getEnableInfoLogging(): boolean
 		{
-			if (AutoarchiveReloadedBootstrap.settings && AutoarchiveReloadedBootstrap.settings.globalSettings && AutoarchiveReloadedBootstrap.settings.globalSettings !== undefined)
+			if (settings && settings.globalSettings && settings.globalSettings !== undefined)
 			{
-				return AutoarchiveReloadedBootstrap.settings.globalSettings.enableInfoLogging;
+				return settings.globalSettings.enableInfoLogging;
 			}
 
 			return false;
@@ -73,7 +70,7 @@ namespace AutoarchiveReloadedBootstrap
 			}
 			catch (e)
 			{
-				Application.console.log("error writing to log file " + AutoarchiveReloadedShared.Logger.getExceptionInfo(e));
+				Application.console.log("error writing to log file " + Logger.getExceptionInfo(e));
 				//trotzdem weitermachen, ist ja nur logging...
 			}
 		}
@@ -108,7 +105,7 @@ namespace AutoarchiveReloadedBootstrap
 			}
 			catch (e)
 			{
-				AutoarchiveReloadedWebextension.loggerWebExtension.errorException(e);
+				loggerWebExtension.errorException(e);
 				throw e;
 			}
 		}
@@ -144,7 +141,7 @@ namespace AutoarchiveReloadedBootstrap
 			}
 			catch (e)
 			{
-				AutoarchiveReloadedWebextension.loggerWebExtension.errorException(e);
+				loggerWebExtension.errorException(e);
 				throw e;
 			}
 		}
@@ -174,7 +171,7 @@ namespace AutoarchiveReloadedBootstrap
 		{
 			try
 			{
-				AutoarchiveReloadedWebextension.loggerWebExtension.info("start real archiving of '" + this.folder.name + "' (" + messages.length + " messages)");
+				loggerWebExtension.info("start real archiving of '" + this.folder.name + "' (" + messages.length + " messages)");
 
 				const messageIds: number[] = [];
 				for (const message of messages) {
@@ -186,7 +183,7 @@ namespace AutoarchiveReloadedBootstrap
 			{
 				//TODO: Exceptions from experiment can't be logged???
 				console.log(e);
-				//AutoarchiveReloadedWebextension.loggerWebExtension.errorException(e);
+				//loggerWebExtension.errorException(e);
 				return -1;
 			}
 		}
@@ -215,16 +212,16 @@ namespace AutoarchiveReloadedBootstrap
 
 				let countFoldersToArchive = 0;
 
-				await AutoarchiveReloadedBootstrap.AccountIterator.forEachAccount(async (account: MailAccount, isAccountArchivable: boolean) =>
+				await AccountIterator.forEachAccount(async (account: MailAccount, isAccountArchivable: boolean) =>
 				{
-					AutoarchiveReloadedWebextension.loggerWebExtension.info("check account '" + account.name + "'");
+					loggerWebExtension.info("check account '" + account.name + "'");
 					if (isAccountArchivable)
 					{
-						const accountSettings = AutoarchiveReloadedBootstrap.settings.accountSettings[account.id];
+						const accountSettings = settings.accountSettings[account.id];
 						SettingsHelper.log(account.name, accountSettings);
 						if (SettingsHelper.isArchivingSomething(accountSettings))
 						{
-							AutoarchiveReloadedWebextension.loggerWebExtension.info("getting folders to archive in account '" + account.name + "'");
+							loggerWebExtension.info("getting folders to archive in account '" + account.name + "'");
 
 							const foldersToArchive = this.getFoldersToArchive(account.folders);
 
@@ -236,12 +233,12 @@ namespace AutoarchiveReloadedBootstrap
 						}
 						else
 						{
-							AutoarchiveReloadedWebextension.loggerWebExtension.info("autoarchive disabled, ignore account '" + account.name + "'");
+							loggerWebExtension.info("autoarchive disabled, ignore account '" + account.name + "'");
 						}
 					}
 					else
 					{
-						AutoarchiveReloadedWebextension.loggerWebExtension.info("ignore account '" + account.name + "'");
+						loggerWebExtension.info("ignore account '" + account.name + "'");
 					}
 				});
 
@@ -250,7 +247,7 @@ namespace AutoarchiveReloadedBootstrap
 			}
 			catch (e)
 			{
-				AutoarchiveReloadedWebextension.loggerWebExtension.errorException(e);
+				loggerWebExtension.errorException(e);
 				throw e;
 			}
 		}
@@ -296,7 +293,7 @@ namespace AutoarchiveReloadedBootstrap
 					}
 					if ( ignore)
 					{
-						AutoarchiveReloadedWebextension.loggerWebExtension.info("ignore folder '" + folder.path + "' (" + folder.type + ")");
+						loggerWebExtension.info("ignore folder '" + folder.path + "' (" + folder.type + ")");
 					}
 					else
 					{
@@ -311,7 +308,7 @@ namespace AutoarchiveReloadedBootstrap
 			}
 			catch (e)
 			{
-				AutoarchiveReloadedWebextension.loggerWebExtension.errorException(e);
+				loggerWebExtension.errorException(e);
 				throw e;
 			}
 		}
@@ -420,7 +417,7 @@ namespace AutoarchiveReloadedBootstrap
 			try
 			{
 				//TODO: log account name instead of accountId?
-				AutoarchiveReloadedWebextension.loggerWebExtension.info("start searching messages to archive in folder '" + folder.path + "' (" + folder.type + ") in account '" + folder.accountId + "'");
+				loggerWebExtension.info("start searching messages to archive in folder '" + folder.path + "' (" + folder.type + ") in account '" + folder.accountId + "'");
 
 				const messages: MessageHeader[] = [];
 				let messageList: MessageList = await browser.messages.list(folder);
@@ -434,7 +431,7 @@ namespace AutoarchiveReloadedBootstrap
 					await this.detectMessagesToArchive(messageList, settings, messages);
 				}
 
-				AutoarchiveReloadedWebextension.loggerWebExtension.info("message search done for '" + folder.name + "' in account '" + folder.accountId + "' -> " + messages.length + " messages found to archive");
+				loggerWebExtension.info("message search done for '" + folder.name + "' in account '" + folder.accountId + "' -> " + messages.length + " messages found to archive");
 
 				//TODO: shall we still support the activity manager?
 				//TODO: where shall we show the progress? Does archiving show a progress?
@@ -455,7 +452,7 @@ namespace AutoarchiveReloadedBootstrap
 			}
 			catch (e)
 			{
-				AutoarchiveReloadedWebextension.loggerWebExtension.errorException(e);
+				loggerWebExtension.errorException(e);
 				throw e;
 			}
 		}
@@ -492,17 +489,17 @@ namespace AutoarchiveReloadedBootstrap
 
 		public static async startup(): Promise<void>
 		{
-			AutoarchiveReloadedWebextension.loggerWebExtension.info("start...");
+			loggerWebExtension.info("start...");
 
 			const appInfoLogger = new AppInfoLogger();
 			await appInfoLogger.log();
 
 			this.status = States.READY_FOR_WORK;
-			AutoarchiveReloadedWebextension.loggerWebExtension.info("ready for work");
+			loggerWebExtension.info("ready for work");
 
-			if (AutoarchiveReloadedBootstrap.settings.globalSettings.archiveType === "startup")
+			if (settings.globalSettings.archiveType === "startup")
 			{
-				AutoarchiveReloadedWebextension.loggerWebExtension.info("archive type at startup");
+				loggerWebExtension.info("archive type at startup");
 
 				//wait some time to give TB time to connect and everything
 				setTimeout(this.onDoArchiveAutomatic.bind(this), 9000);
@@ -512,16 +509,16 @@ namespace AutoarchiveReloadedBootstrap
 			}
 			else
 			{
-				AutoarchiveReloadedWebextension.loggerWebExtension.info("archive type manually");
+				loggerWebExtension.info("archive type manually");
 			}
 		}
 
 		public static async onDoArchiveAutomatic(): Promise<void>
 		{
-			AutoarchiveReloadedWebextension.loggerWebExtension.info("try automatic archive");
+			loggerWebExtension.info("try automatic archive");
 			if (this.status !== States.READY_FOR_WORK)
 			{
-				AutoarchiveReloadedWebextension.loggerWebExtension.info("automatic archive busy, wait");
+				loggerWebExtension.info("automatic archive busy, wait");
 				//busy: wait 5 seconds
 				setTimeout(this.onDoArchiveAutomatic.bind(this), 5000);
 			}
@@ -533,7 +530,7 @@ namespace AutoarchiveReloadedBootstrap
 
 		public static async onDoArchive(): Promise<void>
 		{
-			AutoarchiveReloadedWebextension.loggerWebExtension.info("start archiving");
+			loggerWebExtension.info("start archiving");
 			this.status = States.IN_PROGRESS;
 			const autoarchiveReloaded = new Autoarchiver(this.onArchiveDone.bind(this));
 			await autoarchiveReloaded.archiveAccounts();
@@ -541,10 +538,10 @@ namespace AutoarchiveReloadedBootstrap
 
 		public static async onArchiveManually(): Promise<void>
 		{
-			AutoarchiveReloadedWebextension.loggerWebExtension.info("try manual archive");
+			loggerWebExtension.info("try manual archive");
 			if (this.status === States.UNINITIALZED)
 			{
-				AutoarchiveReloadedWebextension.loggerWebExtension.info("not initialized, cancel");
+				loggerWebExtension.info("not initialized, cancel");
 
 				await browser.autoarchive.alert(browser.i18n.getMessage("dialogTitle"), browser.i18n.getMessage("waitForInit"));
 				return;
@@ -554,7 +551,7 @@ namespace AutoarchiveReloadedBootstrap
 			{
 				if (this.status === States.IN_PROGRESS)
 				{
-					AutoarchiveReloadedWebextension.loggerWebExtension.info("busy with other archive..., cancel");
+					loggerWebExtension.info("busy with other archive..., cancel");
 					await browser.autoarchive.alert(browser.i18n.getMessage("dialogTitle"), browser.i18n.getMessage("waitForArchive"));
 					return;
 				}
@@ -562,13 +559,13 @@ namespace AutoarchiveReloadedBootstrap
 			}
 			else
 			{
-				AutoarchiveReloadedWebextension.loggerWebExtension.info("manual archive canceled by user");
+				loggerWebExtension.info("manual archive canceled by user");
 			}
 		}
 
 		private static onArchiveDone(): void
 		{
-			AutoarchiveReloadedWebextension.loggerWebExtension.info("archive (searching messages to archive) done");
+			loggerWebExtension.info("archive (searching messages to archive) done");
 			this.status = States.READY_FOR_WORK;
 		}
 	}
@@ -606,8 +603,8 @@ namespace AutoarchiveReloadedBootstrap
 
 		public static log(accountName: string, accountSettings: IAccountSettings)
 		{
-			AutoarchiveReloadedWebextension.loggerWebExtension.info("Settings for '" + accountName + "':");
-			AutoarchiveReloadedWebextension.loggerWebExtension.info(JSON.stringify(accountSettings));
+			loggerWebExtension.info("Settings for '" + accountName + "':");
+			loggerWebExtension.info(JSON.stringify(accountSettings));
 		}
 	}
 
@@ -629,13 +626,13 @@ namespace AutoarchiveReloadedBootstrap
 				const window: BrowserWindow = browser.extension.getBackgroundPage();
 				const browserInfo: BrowserInfo = await browser.runtime.getBrowserInfo();
 
-				AutoarchiveReloadedWebextension.loggerWebExtension.info("Application: " + browserInfo.vendor + " " + browserInfo.name + " version " + browserInfo.version + " (" + browserInfo.buildID + ")");
-				AutoarchiveReloadedWebextension.loggerWebExtension.info("SystemInfo: " +  window.navigator.userAgent + "| " + window.navigator.platform);
-				AutoarchiveReloadedWebextension.loggerWebExtension.info("Language: " + window.navigator.language);
+				loggerWebExtension.info("Application: " + browserInfo.vendor + " " + browserInfo.name + " version " + browserInfo.version + " (" + browserInfo.buildID + ")");
+				loggerWebExtension.info("SystemInfo: " +  window.navigator.userAgent + "| " + window.navigator.platform);
+				loggerWebExtension.info("Language: " + window.navigator.language);
 			}
 			catch (e)
 			{
-				AutoarchiveReloadedWebextension.loggerWebExtension.errorException(e);
+				loggerWebExtension.errorException(e);
 				//don't throw... this method is only info logging...
 			}
 		}
@@ -650,18 +647,17 @@ namespace AutoarchiveReloadedBootstrap
 		{
 			try
 			{
-				await AutoarchiveReloadedBootstrap.AccountIterator.forEachAccount((account: MailAccount, isAccountArchivable: boolean) =>
+				await AccountIterator.forEachAccount((account: MailAccount, isAccountArchivable: boolean) =>
 				{
-					AutoarchiveReloadedWebextension.loggerWebExtension.info("Account Info: '" + account.name + "'; type: " +
+					loggerWebExtension.info("Account Info: '" + account.name + "'; type: " +
 						account.type + "; id: " + account.id);
 				});
 			}
 			catch (e)
 			{
-				AutoarchiveReloadedWebextension.loggerWebExtension.errorException(e);
+				loggerWebExtension.errorException(e);
 				//don't throw... this method is only info logging...
 			}
 		}
 	}
-
 }

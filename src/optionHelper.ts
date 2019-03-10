@@ -16,11 +16,7 @@ Copyright 2018 Brummolix (AutoarchiveReloaded, https://github.com/Brummolix/Auto
     You should have received a copy of the GNU General Public License
     along with AutoarchiveReloaded.  If not, see <http://www.gnu.org/licenses/>.
 */
-
-// tslint:disable-next-line:no-var-keyword
-var EXPORTED_SYMBOLS = ["AutoarchiveReloadedWeOptionHelper"];
-
-namespace AutoarchiveReloadedWebextension
+namespace AutoarchiveReloaded
 {
 	export class OptionHelper
 	{
@@ -31,7 +27,7 @@ namespace AutoarchiveReloadedWebextension
 			loggerWebExtension.info("loadCurrentSettings done");
 			try
 			{
-				AutoarchiveReloadedWebextension.LoggerHelper.setGlobaleEnableInfoLogging(settings.globalSettings.enableInfoLogging);
+				LoggerHelper.setGlobaleEnableInfoLogging(settings.globalSettings.enableInfoLogging);
 
 				this.setCurrentPreferences(settings);
 			}
@@ -55,7 +51,7 @@ namespace AutoarchiveReloadedWebextension
 				const result: any = await browser.storage.local.get("settings");
 				//settings read succesfully...
 				loggerWebExtension.info("loaded settings from storage");
-				const oHandling: AutoarchiveReloadedShared.OptionHandling = new AutoarchiveReloadedShared.OptionHandling();
+				const oHandling: OptionHandling = new OptionHandling();
 				const settings: ISettings = oHandling.convertPartialSettings(result.settings);
 
 				//every existing account should have a setting
@@ -155,7 +151,7 @@ namespace AutoarchiveReloadedWebextension
 			try
 			{
 				const nsAccounts: MailAccount[] = [];
-				await AutoarchiveReloadedBootstrap.AccountIterator.forEachAccount((account: MailAccount, isAccountArchivable: boolean) =>
+				await AccountIterator.forEachAccount((account: MailAccount, isAccountArchivable: boolean) =>
 				{
 					if (isAccountArchivable)
 					{
@@ -165,8 +161,8 @@ namespace AutoarchiveReloadedWebextension
 
 				nsAccounts.sort((a: MailAccount, b: MailAccount) =>
 				{
-					const mailTypeA: boolean = AutoarchiveReloadedBootstrap.AccountInfo.isMailType(a);
-					const mailTypeB: boolean = AutoarchiveReloadedBootstrap.AccountInfo.isMailType(b);
+					const mailTypeA: boolean = AccountInfo.isMailType(a);
+					const mailTypeB: boolean = AccountInfo.isMailType(b);
 
 					if (mailTypeA === mailTypeB)
 					{
@@ -196,23 +192,23 @@ namespace AutoarchiveReloadedWebextension
 			}
 			catch (e)
 			{
-				AutoarchiveReloadedWebextension.loggerWebExtension.errorException(e);
+				loggerWebExtension.errorException(e);
 				throw e;
 			}
 		}
 
 		//TODO: is this still the right way to do it? options page and background script (background page) have different scopes!
 		//we get the current preferences at start and on every change of preferences
-		private setCurrentPreferences(settings: ISettings): void
+		private setCurrentPreferences(newSettings: ISettings): void
 		{
-			AutoarchiveReloadedWebextension.loggerWebExtension.info("setCurrentPreferences");
+			loggerWebExtension.info("setCurrentPreferences");
 			try
 			{
-				AutoarchiveReloadedBootstrap.settings = settings;
+				settings = newSettings;
 			}
 			catch (e)
 			{
-				AutoarchiveReloadedWebextension.loggerWebExtension.errorException(e);
+				loggerWebExtension.errorException(e);
 				throw e;
 			}
 		}

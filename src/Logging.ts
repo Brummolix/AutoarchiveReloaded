@@ -17,9 +17,9 @@ Copyright 2018 Brummolix (AutoarchiveReloaded, https://github.com/Brummolix/Auto
     along with AutoarchiveReloaded.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-namespace AutoarchiveReloadedWebextension
+namespace AutoarchiveReloaded
 {
-	export class LoggerHelper implements AutoarchiveReloadedShared.ILoggerHelper
+	export class LoggerHelper implements ILoggerHelper
 	{
 		private static readonly ENABLE_INFO_LOGGING_NAME: string = "WebExtensionLoggerHelper_enableInfoLogging";
 
@@ -51,7 +51,7 @@ namespace AutoarchiveReloadedWebextension
 		}
 	}
 
-	export const loggerWebExtension: AutoarchiveReloadedShared.Logger = new AutoarchiveReloadedShared.Logger(new LoggerHelper());
+	export const loggerWebExtension: Logger = new Logger(new LoggerHelper());
 
 	//TODO: temporarily enable info logging until we have a more stable state
 	LoggerHelper.setGlobaleEnableInfoLogging(true);
