@@ -33,7 +33,7 @@ namespace AutoarchiveReloadedWebextension
 			{
 				AutoarchiveReloadedWebextension.LoggerHelper.setGlobaleEnableInfoLogging(settings.globalSettings.enableInfoLogging);
 
-				setCurrentPreferences(settings);
+				this.setCurrentPreferences(settings);
 			}
 			catch (e)
 			{
@@ -150,5 +150,22 @@ namespace AutoarchiveReloadedWebextension
 				throw e;
 			}
 		}
+
+		//TODO: is this still the right way to do it? options page and background script (background page) have different scopes!
+		//we get the current preferences at start and on every change of preferences
+		private setCurrentPreferences(settings: ISettings): void
+		{
+			AutoarchiveReloadedWebextension.loggerWebExtension.info("setCurrentPreferences");
+			try
+			{
+				AutoarchiveReloadedBootstrap.settings = settings;
+			}
+			catch (e)
+			{
+				AutoarchiveReloadedWebextension.loggerWebExtension.errorException(e);
+				throw e;
+			}
+		}
+
 	}
 }

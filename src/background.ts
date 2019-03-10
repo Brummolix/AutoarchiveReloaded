@@ -22,9 +22,7 @@ try
 
 	browser.autoarchive.initToolbarConfigurationObserver();
 
-	browser.browserAction.onClicked.addListener( async () => {
-		replyToArchiveManually();
-	});
+	browser.browserAction.onClicked.addListener(replyToArchiveManually);
 
 	const helper: AutoarchiveReloadedWebextension.OptionHelper = new AutoarchiveReloadedWebextension.OptionHelper();
 	helper.convertLegacyPreferences();
@@ -33,4 +31,20 @@ catch (e)
 {
 	AutoarchiveReloadedWebextension.loggerWebExtension.errorException(e);
 	throw e;
+}
+
+async function replyToArchiveManually(): Promise<void>
+{
+	console.log("replyToArchiveManually");
+	//TODO: disable button in mailwindow (or only enable it in mail3pane) -> how to detect?
+
+	//it would be better to detect if the buttons are configured right now and do nothing in this case
+	//but as we don't know how to do it for a web extension it will be done in the webexperiment
+	if (await browser.autoarchive.isToolbarConfigurationOpen())
+	{
+		AutoarchiveReloadedWebextension.loggerWebExtension.info("archive manually rejected because of toolbar customization");
+		return;
+	}
+
+	await AutoarchiveReloadedBootstrap.Global.onArchiveManually();
 }

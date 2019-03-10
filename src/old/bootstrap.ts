@@ -20,37 +20,6 @@ Copyright 2018 Brummolix (AutoarchiveReloaded, https://github.com/Brummolix/Auto
 //TODO: remove
 AutoarchiveReloadedWebextension.loggerWebExtension.info("Hello world bootstrap.ts");
 
-async function replyToArchiveManually(): Promise<void>
-{
-	console.log("replyToArchiveManually");
-	//TODO: disable button in mailwindow (or only enable it in mail3pane) -> how to detect?
-
-	//it would be better to detect if the buttons are configured right now and do nothing in this case
-	//but as we don't know how to do it for a web extension it will be done in the webexperiment
-	if (await browser.autoarchive.isToolbarConfigurationOpen())
-	{
-		AutoarchiveReloadedWebextension.loggerWebExtension.info("archive manually rejected because of toolbar customization");
-		return;
-	}
-
-	await AutoarchiveReloadedBootstrap.Global.onArchiveManually();
-}
-
-//we get the current preferences at start and on every change of preferences
-function setCurrentPreferences(settings: ISettings): void
-{
-	AutoarchiveReloadedWebextension.loggerWebExtension.info("setCurrentPreferences");
-	try
-	{
-		AutoarchiveReloadedBootstrap.settings = settings;
-	}
-	catch (e)
-	{
-		AutoarchiveReloadedWebextension.loggerWebExtension.errorException(e);
-		throw e;
-	}
-}
-
 async function askForAccounts(): Promise<IAccountInfo[]>
 {
 	try
