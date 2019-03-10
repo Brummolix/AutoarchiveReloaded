@@ -16,21 +16,27 @@ Copyright 2018 Brummolix (AutoarchiveReloaded, https://github.com/Brummolix/Auto
     You should have received a copy of the GNU General Public License
     along with AutoarchiveReloaded.  If not, see <http://www.gnu.org/licenses/>.
 */
-try
+startup();
+
+async function startup(): Promise<void>
 {
-	AutoarchiveReloadedWebextension.loggerWebExtension.info("Hello world background.ts");
+	try
+	{
+		AutoarchiveReloadedWebextension.loggerWebExtension.info("Hello world background.ts");
 
-	browser.autoarchive.initToolbarConfigurationObserver();
+		browser.autoarchive.initToolbarConfigurationObserver();
 
-	browser.browserAction.onClicked.addListener(replyToArchiveManually);
+		browser.browserAction.onClicked.addListener(replyToArchiveManually);
 
-	const helper: AutoarchiveReloadedWebextension.OptionHelper = new AutoarchiveReloadedWebextension.OptionHelper();
-	helper.convertLegacyPreferences();
-}
-catch (e)
-{
-	AutoarchiveReloadedWebextension.loggerWebExtension.errorException(e);
-	throw e;
+		const helper: AutoarchiveReloadedWebextension.OptionHelper = new AutoarchiveReloadedWebextension.OptionHelper();
+		await helper.convertLegacyPreferences();
+		AutoarchiveReloadedBootstrap.Global.startup();
+	}
+	catch (e)
+	{
+		AutoarchiveReloadedWebextension.loggerWebExtension.errorException(e);
+		throw e;
+	}
 }
 
 async function replyToArchiveManually(): Promise<void>

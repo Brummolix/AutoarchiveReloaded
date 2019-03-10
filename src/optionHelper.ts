@@ -116,14 +116,13 @@ namespace AutoarchiveReloadedWebextension
 				{
 					loggerWebExtension.info("got legacy preferences to convert");
 					await this.savePreferencesAndSendToLegacyAddOn(settings);
-					initAutoArchiveReloadedOverlay();
+					loggerWebExtension.info("legacy preferences converted");
 				}
 				else
 				{
 					loggerWebExtension.info("no legacy preferences to convert");
 					await this.publishCurrentPreferences();
 					loggerWebExtension.info("publishCurrentPreferences done");
-					initAutoArchiveReloadedOverlay();
 				}
 			}
 			catch (e)
@@ -163,25 +162,25 @@ namespace AutoarchiveReloadedWebextension
 						nsAccounts.push(account);
 					}
 				});
-		
+
 				nsAccounts.sort((a: MailAccount, b: MailAccount) =>
 				{
 					const mailTypeA: boolean = AutoarchiveReloadedBootstrap.AccountInfo.isMailType(a);
 					const mailTypeB: boolean = AutoarchiveReloadedBootstrap.AccountInfo.isMailType(b);
-		
+
 					if (mailTypeA === mailTypeB)
 					{
 						return a.name.localeCompare(b.name);
 					}
-		
+
 					if (mailTypeA)
 					{
 						return -1;
 					}
-		
+
 					return 1;
 				});
-		
+
 				const accounts: IAccountInfo[] = [];
 				let currentOrder = 0;
 				nsAccounts.forEach((account) =>
@@ -192,7 +191,7 @@ namespace AutoarchiveReloadedWebextension
 						order: currentOrder++,
 					});
 				});
-		
+
 				return accounts;
 			}
 			catch (e)
