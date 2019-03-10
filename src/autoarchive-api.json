@@ -91,6 +91,17 @@
 						"minimum": 0
 					}
 				}]
+			},
+      {
+        "name": "setInfoLogging",
+        "type": "function",
+        "async": true,
+        "parameters": [
+					{
+            "name": "value",
+						"type": "boolean"
+					}
+				]
 			}
 		]
 	}

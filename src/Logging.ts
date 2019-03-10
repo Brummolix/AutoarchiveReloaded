@@ -26,6 +26,9 @@ namespace AutoarchiveReloaded
 		public static setGlobaleEnableInfoLogging(value: boolean)
 		{
 			(browser.extension.getBackgroundPage() as any)[LoggerHelper.ENABLE_INFO_LOGGING_NAME] = value;
+
+			//webexperiment has different log setting...
+			browser.autoarchive.setInfoLogging(value);
 		}
 
 		private static getGlobalEnableInfoLogging(): boolean

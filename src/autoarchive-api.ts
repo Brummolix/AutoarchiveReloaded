@@ -12,6 +12,7 @@ ChromeUtils.import("resource:///modules/iteratorUtils.jsm");
 //tslint:disable-next-line: no-var-keyword prefer-const
 var autoarchive = class extends ExtensionCommon.ExtensionAPI {
 	private bIsInToolbarCustomize: boolean = false;
+	private bInfoLogging: boolean = false;
 
 	public getAPI(context: any)
 	{
@@ -32,33 +33,32 @@ var autoarchive = class extends ExtensionCommon.ExtensionAPI {
 				},
 				initToolbarConfigurationObserver: (): void =>
 				{
-					console.log("initToolbarConfigurationObserver");
 					this.registerToolbarCustomizationListener(this.getMail3Pane());
 				},
 				//normally it did not have to be async, but the return value did not work in this case
 				isToolbarConfigurationOpen: async (): Promise<boolean> =>
 				{
-					console.log("isToolbarConfigurationOpen " + this.bIsInToolbarCustomize);
 					return this.bIsInToolbarCustomize;
 				},
 				askForLegacyPreferences: async (accounts: IAccountInfo[]): Promise<ISettings | null> =>
 				{
-					console.log("replyToAskForLegacyPreferences");
-					console.log(accounts);
+					this.info("askForLegacyPreferences");
 					try
 					{
 						const legacyOptions: LegacyOptions = new LegacyOptions();
 						const legacySettings = legacyOptions.getLegacyOptions(accounts);
 						legacyOptions.markLegacySettingsAsMigrated();
-						console.log(legacySettings);
 						return legacySettings;
 					}
 					catch (e)
 					{
-						//AutoarchiveReloadedWebextension.loggerWebExtension.errorException(e);
-						console.log(e);
+						this.error(e);
 						throw e;
 					}
+				},
+				setInfoLogging: (value: boolean): void =>
+				{
+					this.bInfoLogging = value;
 				},
 			},
 		};
@@ -71,7 +71,7 @@ var autoarchive = class extends ExtensionCommon.ExtensionAPI {
 
 	private _startToArchiveMessages(messageIds: number[]): number
 	{
-		console.log("startToArchiveMessages");
+		this.info("startToArchiveMessages");
 
 		const mail3PaneWindow: Mail3Pane = this.getMail3Pane();
 		console.log(mail3PaneWindow);
@@ -124,11 +124,11 @@ var autoarchive = class extends ExtensionCommon.ExtensionAPI {
 			{
 				if (!mail3PaneWindow.gFolderDisplay.view.dbView)
 				{
-					AutoarchiveReloadedWebextension.loggerWebExtension.info("mail3PaneWindow.gFolderDisplay.dbView is null > batchMessageMover will not work");
+					this.info("mail3PaneWindow.gFolderDisplay.dbView is null > batchMessageMover will not work");
 					const folderToSelect = this.folder;
 					if (folderToSelect)
 					{
-						AutoarchiveReloadedWebextension.loggerWebExtension.info("> try to select folder " + folderToSelect.name + " " + folderToSelect.URI);
+						this.info("> try to select folder " + folderToSelect.name + " " + folderToSelect.URI);
 						//When extension TorBirdy was installed gFolderTreeView.selectFolder did not work.
 						//gFolderDisplay.show worked with and without TorBirdy.
 						mail3PaneWindow.gFolderDisplay.show(folderToSelect);
@@ -149,19 +149,15 @@ var autoarchive = class extends ExtensionCommon.ExtensionAPI {
 
 	private getMail3Pane(): Mail3Pane
 	{
-		return Cc["@mozilla.org/appshell/window-mediator;1"].getService(Ci.nsIWindowMediator)
-			.getMostRecentWindow("mail:3pane");
+		return Cc["@mozilla.org/appshell/window-mediator;1"].getService(Ci.nsIWindowMediator).getMostRecentWindow("mail:3pane");
 	}
 
 	private registerToolbarCustomizationListener(window: Window): void
 	{
-		console.log("registerToolbarCustomizationListener");
 		if (!window)
 		{
 			return;
 		}
-
-		console.log("registerToolbarCustomizationListener add events");
 
 		window.addEventListener("aftercustomization", this.afterCustomize.bind(this));
 		window.addEventListener("beforecustomization", this.beforeCustomize.bind(this));
@@ -175,7 +171,6 @@ var autoarchive = class extends ExtensionCommon.ExtensionAPI {
 	// @ts-ignore: noUnusedLocals
 	private removeToolbarCustomizationListener(window: Window): void
 	{
-		console.log("removeToolbarCustomizationListener");
 		if (!window)
 		{
 			return;
@@ -187,18 +182,28 @@ var autoarchive = class extends ExtensionCommon.ExtensionAPI {
 
 	private beforeCustomize(e: Event): void
 	{
-		console.log("toolbar customization detected");
-		//AutoarchiveReloadedWebextension.loggerWebExtension.info("toolbar customization detected");
+		this.info("toolbar customization detected");
 		this.bIsInToolbarCustomize = true;
 		console.log(this.bIsInToolbarCustomize);
 	}
 
 	private afterCustomize(e: Event): void
 	{
-		console.log("toolbar customization ended");
-		//AutoarchiveReloadedWebextension.loggerWebExtension.info("toolbar customization ended");
+		this.info("toolbar customization ended");
 		this.bIsInToolbarCustomize = false;
-		console.log(this.bIsInToolbarCustomize);
+	}
+
+	private info(value: any): void
+	{
+		if (this.bInfoLogging)
+		{
+			console.log(value);
+		}
+	}
+
+	private error(value: any): void
+	{
+		console.log(value);
 	}
 };
 
@@ -207,12 +212,7 @@ class LegacyOptions
 	// returns null if already migrated or no settings!
 	public getLegacyOptions(accounts: IAccountInfo[]): ISettings | null
 	{
-		console.log("getLegacyOptions");
-
 		const prefBranch = this.getInternalLegacyPrefBranch();
-
-		console.log(prefBranch);
-		console.log(prefBranch.getBoolPref("preferencesAlreadyMigrated", false));
 
 		if (prefBranch.getBoolPref("preferencesAlreadyMigrated", false))
 		{
@@ -223,7 +223,6 @@ class LegacyOptions
 
 		//no account and no global settings?
 		const aChildArray: string[] = prefBranch.getChildList("", {});
-		console.log(aChildArray);
 		if ((aChildArray.length === 0) && Object.keys(accountSettings).length === 0)
 		{
 			return null;
@@ -244,13 +243,11 @@ class LegacyOptions
 
 	public markLegacySettingsAsMigrated(): void
 	{
-		console.log("markLegacySettingsAsMigrated");
 		this.getInternalLegacyPrefBranch().setBoolPref("preferencesAlreadyMigrated", true);
 	}
 
 	private getLegacyAccountSettings(accountInfos: IAccountInfo[]): IAccountSettingsArray
 	{
-		console.log("getLegacyAccountSettings");
 		const accountSettings: IAccountSettingsArray = {};
 
 		for (const accountInfo of accountInfos)

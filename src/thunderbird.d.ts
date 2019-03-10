@@ -261,6 +261,7 @@ declare interface AutoarchiveWebExperiment
 	initToolbarConfigurationObserver(): void;
 	isToolbarConfigurationOpen(): Promise<boolean>;
 	askForLegacyPreferences(accounts: IAccountInfo[]): ISettings | null;
+	setInfoLogging(value: boolean): void;
 }
 
 type ContextType = "all" | "page" | "frame" | "selection" | "link" | "editable" | "password" | "image" | "video" | "audio" | "browser_action" | "tab" | "message_list" | "folder_pane";
