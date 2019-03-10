@@ -47,7 +47,7 @@ namespace AutoarchiveReloadedWebextension
 		{
 			loggerWebExtension.info("start to load current settings");
 
-			const accounts: IAccountInfo[] = await askForAccounts();
+			const accounts: IAccountInfo[] = await this.askForAccounts();
 
 			try
 			{
@@ -105,7 +105,7 @@ namespace AutoarchiveReloadedWebextension
 		{
 			loggerWebExtension.info("start conversion of legacy preferences (if any)");
 
-			const accounts: IAccountInfo[] = await askForAccounts();
+			const accounts: IAccountInfo[] = await this.askForAccounts();
 
 			const settings: ISettings | null = await browser.autoarchive.askForLegacyPreferences(accounts);
 			console.log("got ");
@@ -151,6 +151,57 @@ namespace AutoarchiveReloadedWebextension
 			}
 		}
 
+		public async askForAccounts(): Promise<IAccountInfo[]>
+		{
+			try
+			{
+				const nsAccounts: MailAccount[] = [];
+				await AutoarchiveReloadedBootstrap.AccountIterator.forEachAccount((account: MailAccount, isAccountArchivable: boolean) =>
+				{
+					if (isAccountArchivable)
+					{
+						nsAccounts.push(account);
+					}
+				});
+		
+				nsAccounts.sort((a: MailAccount, b: MailAccount) =>
+				{
+					const mailTypeA: boolean = AutoarchiveReloadedBootstrap.AccountInfo.isMailType(a);
+					const mailTypeB: boolean = AutoarchiveReloadedBootstrap.AccountInfo.isMailType(b);
+		
+					if (mailTypeA === mailTypeB)
+					{
+						return a.name.localeCompare(b.name);
+					}
+		
+					if (mailTypeA)
+					{
+						return -1;
+					}
+		
+					return 1;
+				});
+		
+				const accounts: IAccountInfo[] = [];
+				let currentOrder = 0;
+				nsAccounts.forEach((account) =>
+				{
+					accounts.push({
+						accountId: account.id,
+						accountName: account.name,
+						order: currentOrder++,
+					});
+				});
+		
+				return accounts;
+			}
+			catch (e)
+			{
+				AutoarchiveReloadedWebextension.loggerWebExtension.errorException(e);
+				throw e;
+			}
+		}
+
 		//TODO: is this still the right way to do it? options page and background script (background page) have different scopes!
 		//we get the current preferences at start and on every change of preferences
 		private setCurrentPreferences(settings: ISettings): void
@@ -166,6 +217,5 @@ namespace AutoarchiveReloadedWebextension
 				throw e;
 			}
 		}
-
 	}
 }

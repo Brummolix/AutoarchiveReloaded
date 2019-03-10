@@ -20,57 +20,6 @@ Copyright 2018 Brummolix (AutoarchiveReloaded, https://github.com/Brummolix/Auto
 //TODO: remove
 AutoarchiveReloadedWebextension.loggerWebExtension.info("Hello world bootstrap.ts");
 
-async function askForAccounts(): Promise<IAccountInfo[]>
-{
-	try
-	{
-		const nsAccounts: MailAccount[] = [];
-		await AutoarchiveReloadedBootstrap.AccountIterator.forEachAccount((account: MailAccount, isAccountArchivable: boolean) =>
-		{
-			if (isAccountArchivable)
-			{
-				nsAccounts.push(account);
-			}
-		});
-
-		nsAccounts.sort((a: MailAccount, b: MailAccount) =>
-		{
-			const mailTypeA: boolean = AutoarchiveReloadedBootstrap.AccountInfo.isMailType(a);
-			const mailTypeB: boolean = AutoarchiveReloadedBootstrap.AccountInfo.isMailType(b);
-
-			if (mailTypeA === mailTypeB)
-			{
-				return a.name.localeCompare(b.name);
-			}
-
-			if (mailTypeA)
-			{
-				return -1;
-			}
-
-			return 1;
-		});
-
-		const accounts: IAccountInfo[] = [];
-		let currentOrder = 0;
-		nsAccounts.forEach((account) =>
-		{
-			accounts.push({
-				accountId: account.id,
-				accountName: account.name,
-				order: currentOrder++,
-			});
-		});
-
-		return accounts;
-	}
-	catch (e)
-	{
-		AutoarchiveReloadedWebextension.loggerWebExtension.errorException(e);
-		throw e;
-	}
-}
-
 function initAutoArchiveReloadedOverlay(): void
 {
 	try

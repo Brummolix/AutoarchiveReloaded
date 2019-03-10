@@ -94,7 +94,7 @@ async function restoreOptions()
 	});
 
 	//Für jeden Account die Einstellungen clonen und die gespeicherten Werte setzen
-	const accounts: IAccountInfo[] = await askForAccounts();
+	const accounts: IAccountInfo[] = await aaHelper.askForAccounts();
 	const accountsSorted: IAccountInfos[] = [];
 	for (const accountId in settings.accountSettings)
 	{
