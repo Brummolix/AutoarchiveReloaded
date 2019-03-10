@@ -20,19 +20,6 @@ Copyright 2018 Brummolix (AutoarchiveReloaded, https://github.com/Brummolix/Auto
 //TODO: remove
 AutoarchiveReloadedWebextension.loggerWebExtension.info("Hello world bootstrap.ts");
 
-//https://developer.mozilla.org/en-US/docs/Archive/Add-ons/Bootstrapped_extensions#Reason_constants
-enum BootstrapReasons
-{
-	APP_STARTUP = 1, 		//The application is starting up.
-	APP_SHUTDOWN = 2, 		//The application is shutting down.
-	ADDON_ENABLE = 3, 		//The add-on is being enabled.
-	ADDON_DISABLE = 4, 		//The add-on is being disabled. (Also sent during uninstallation)
-	ADDON_INSTALL = 5,		//The add-on is being installed.
-	ADDON_UNINSTALL = 6,	//The add-on is being uninstalled.
-	ADDON_UPGRADE = 7,		//The add-on is being upgraded.
-	ADDON_DOWNGRADE = 8,	//The add-on is being downgraded.
-}
-
 async function replyToArchiveManually(): Promise<void>
 {
 	console.log("replyToArchiveManually");
@@ -175,7 +162,7 @@ function initAutoArchiveReloadedOverlay(): void
 	}
 }
 
-function shutdown(data: BootstrapData, reason: BootstrapReasons.APP_SHUTDOWN | BootstrapReasons.ADDON_DISABLE | BootstrapReasons.ADDON_UNINSTALL | BootstrapReasons.ADDON_UPGRADE | BootstrapReasons.ADDON_DOWNGRADE): void
+function shutdown(): void
 {
 	//attention, do not rely on the logger in shutdown
 	//it gives "can't access dead object" when accessing the settings
