@@ -17,7 +17,7 @@ Copyright 2018 Brummolix (AutoarchiveReloaded, https://github.com/Brummolix/Auto
     along with AutoarchiveReloaded.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-function saveOptions(): void
+async function saveOptions(): Promise<void>
 {
 	try
 	{
@@ -48,29 +48,27 @@ function saveOptions(): void
 			}
 		});
 
-		aaHelper.savePreferencesAndSendToLegacyAddOn(settings, () =>
-		{
-			//show toast
-			($ as any).notify({
-				// options
-				message: "__MSG_settingsSaved__",
-			}, {
-					// settings
-					type: "success",
-					allow_dismiss: false,
-					placement: {
-						from: "top",
-						align: "center",
-					},
-					animate: {
-						enter: "animated bounceInDown",
-						exit: "animated bounceOutUp",
-					},
-				});
+		await aaHelper.savePreferencesAndSendToLegacyAddOn(settings);
+		//show toast
+		($ as any).notify({
+			// options
+			message: "__MSG_settingsSaved__",
+		}, {
+				// settings
+				type: "success",
+				allow_dismiss: false,
+				placement: {
+					from: "top",
+					align: "center",
+				},
+				animate: {
+					enter: "animated bounceInDown",
+					exit: "animated bounceOutUp",
+				},
+			});
 
-			//update translations...
-			l10n.updateDocument();
-		});
+		//update translations...
+		l10n.updateDocument();
 	}
 	catch (e)
 	{
@@ -86,64 +84,63 @@ interface IAccountInfos
 	accountSetting: IAccountSettings;
 }
 
-function restoreOptions()
+async function restoreOptions()
 {
-	aaHelper.loadCurrentSettings((settings: ISettings, accounts: IAccountInfo[]) =>
+	const settings: ISettings = await aaHelper.loadCurrentSettings();
+	(document.getElementById("enableInfoLogging") as HTMLInputElement).checked = settings.globalSettings.enableInfoLogging;
+	document.querySelectorAll<HTMLInputElement>('input[name="archiveType"]').forEach((element) =>
 	{
-		(document.getElementById("enableInfoLogging") as HTMLInputElement).checked = settings.globalSettings.enableInfoLogging;
-		document.querySelectorAll<HTMLInputElement>('input[name="archiveType"]').forEach((element) =>
-		{
-			element.checked = (element.value === settings.globalSettings.archiveType);
-		});
+		element.checked = (element.value === settings.globalSettings.archiveType);
+	});
 
-		//Für jeden Account die Einstellungen clonen und die gespeicherten Werte setzen
-		const accountsSorted: IAccountInfos[] = [];
-		for (const accountId in settings.accountSettings)
+	//Für jeden Account die Einstellungen clonen und die gespeicherten Werte setzen
+	const accounts: IAccountInfo[] = await askForAccounts();
+	const accountsSorted: IAccountInfos[] = [];
+	for (const accountId in settings.accountSettings)
+	{
+		if (settings.accountSettings.hasOwnProperty(accountId))
 		{
-			if (settings.accountSettings.hasOwnProperty(accountId))
-			{
-				accountsSorted.push({
-					account: aaHelper.findAccountInfo(accounts, accountId) as IAccountInfo,
-					accountSetting: settings.accountSettings[accountId],
-				});
-			}
+			accountsSorted.push({
+				account: aaHelper.findAccountInfo(accounts, accountId) as IAccountInfo,
+				accountSetting: settings.accountSettings[accountId],
+			});
+		}
+	}
+
+	accountsSorted.sort((a: IAccountInfos, b: IAccountInfos): number =>
+	{
+		if (a.account.order === b.account.order)
+		{
+			return 0;
 		}
 
-		accountsSorted.sort((a: IAccountInfos, b: IAccountInfos): number =>
+		if (a.account.order < b.account.order)
 		{
-			if (a.account.order === b.account.order)
-			{
-				return 0;
-			}
+			return -1;
+		}
 
-			if (a.account.order < b.account.order)
-			{
-				return -1;
-			}
+		return 1;
+	});
 
-			return 1;
-		});
+	accountsSorted.forEach((accountInfos) =>
+	{
+		const account = accountInfos.account;
+		const accountId = accountInfos.account.accountId;
+		const accountSetting = accountInfos.accountSetting;
+		cloneTemplate("§§ID§§-tab", "tablist", account);
+		cloneTemplate("accountContent-§§ID§§", "tabcontent", account);
 
-		accountsSorted.forEach((accountInfos) =>
-		{
-			const account = accountInfos.account;
-			const accountId = accountInfos.account.accountId;
-			const accountSetting = accountInfos.accountSetting;
-			cloneTemplate("§§ID§§-tab", "tablist", account);
-			cloneTemplate("accountContent-§§ID§§", "tabcontent", account);
+		//mark this element as account
+		getJQueryElementForAccount(accountId, "accountContent").data("accountId", accountId);
 
-			//mark this element as account
-			getJQueryElementForAccount(accountId, "accountContent").data("accountId", accountId);
-
-			(getElementForAccount(accountId, "archiveUnread") as HTMLInputElement).checked = accountSetting.bArchiveUnread;
-			(getElementForAccount(accountId, "archiveUnreadDays") as HTMLInputElement).value = accountSetting.daysUnread.toString();
-			(getElementForAccount(accountId, "archiveStarred") as HTMLInputElement).checked = accountSetting.bArchiveMarked;
-			(getElementForAccount(accountId, "archiveStarredDays") as HTMLInputElement).value = accountSetting.daysMarked.toString();
-			(getElementForAccount(accountId, "archiveTagged") as HTMLInputElement).checked = accountSetting.bArchiveTagged;
-			(getElementForAccount(accountId, "archiveTaggedDays") as HTMLInputElement).value = accountSetting.daysTagged.toString();
-			(getElementForAccount(accountId, "archiveMessages") as HTMLInputElement).checked = accountSetting.bArchiveOther;
-			(getElementForAccount(accountId, "archiveMessagesDays") as HTMLInputElement).value = accountSetting.daysOther.toString();
-		});
+		(getElementForAccount(accountId, "archiveUnread") as HTMLInputElement).checked = accountSetting.bArchiveUnread;
+		(getElementForAccount(accountId, "archiveUnreadDays") as HTMLInputElement).value = accountSetting.daysUnread.toString();
+		(getElementForAccount(accountId, "archiveStarred") as HTMLInputElement).checked = accountSetting.bArchiveMarked;
+		(getElementForAccount(accountId, "archiveStarredDays") as HTMLInputElement).value = accountSetting.daysMarked.toString();
+		(getElementForAccount(accountId, "archiveTagged") as HTMLInputElement).checked = accountSetting.bArchiveTagged;
+		(getElementForAccount(accountId, "archiveTaggedDays") as HTMLInputElement).value = accountSetting.daysTagged.toString();
+		(getElementForAccount(accountId, "archiveMessages") as HTMLInputElement).checked = accountSetting.bArchiveOther;
+		(getElementForAccount(accountId, "archiveMessagesDays") as HTMLInputElement).value = accountSetting.daysOther.toString();
 	});
 }
 
@@ -173,12 +170,11 @@ function cloneTemplate(cloneId: string, appendToId: string, accountInfo: IAccoun
 	clone[0].outerHTML = html;
 }
 
-let aaHelper: AutoarchiveReloadedWebextension.OptionHelper = new AutoarchiveReloadedWebextension.OptionHelper();
-$(() =>
+async function onLoad()
 {
 	try
 	{
-		restoreOptions();
+		await restoreOptions();
 		$("#button").click(saveOptions);
 	}
 	catch (e)
@@ -186,4 +182,6 @@ $(() =>
 		AutoarchiveReloadedWebextension.loggerWebExtension.errorException(e);
 		throw e;
 	}
-});
+}
+let aaHelper: AutoarchiveReloadedWebextension.OptionHelper = new AutoarchiveReloadedWebextension.OptionHelper();
+$(onLoad);

@@ -24,27 +24,26 @@ namespace AutoarchiveReloadedWebextension
 {
 	export class OptionHelper
 	{
-		public publishCurrentPreferences(onSuccess: () => void): void
+		//TODO: private?
+		public async publishCurrentPreferences(): Promise<void>
 		{
-			this.loadCurrentSettings((settings: ISettings) =>
+			const settings = await this.loadCurrentSettings();
+			loggerWebExtension.info("loadCurrentSettings done");
+			try
 			{
-				loggerWebExtension.info("loadCurrentSettings done");
-				try
-				{
-					AutoarchiveReloadedWebextension.LoggerHelper.setGlobaleEnableInfoLogging(settings.globalSettings.enableInfoLogging);
+				AutoarchiveReloadedWebextension.LoggerHelper.setGlobaleEnableInfoLogging(settings.globalSettings.enableInfoLogging);
 
-					setCurrentPreferences(settings);
-					onSuccess();
-				}
-				catch (e)
-				{
-					loggerWebExtension.errorException(e);
-					throw e;
-				}
-			});
+				setCurrentPreferences(settings);
+			}
+			catch (e)
+			{
+				//TODO: do not log and throw?
+				loggerWebExtension.errorException(e);
+				throw e;
+			}
 		}
 
-		public async loadCurrentSettings(onSuccesfulDone: (settings: ISettings, accounts: IAccountInfo[]) => void)
+		public async loadCurrentSettings(): Promise<ISettings>
 		{
 			loggerWebExtension.info("start to load current settings");
 
@@ -53,49 +52,37 @@ namespace AutoarchiveReloadedWebextension
 			try
 			{
 				loggerWebExtension.info("got info about accounts");
-				browser.storage.local.get("settings").then((result: any) =>
+				const result: any = await browser.storage.local.get("settings");
+				//settings read succesfully...
+				loggerWebExtension.info("loaded settings from storage");
+				const oHandling: AutoarchiveReloadedShared.OptionHandling = new AutoarchiveReloadedShared.OptionHandling();
+				const settings: ISettings = oHandling.convertPartialSettings(result.settings);
+
+				//every existing account should have a setting
+				accounts.forEach((account) =>
 				{
-					try
+					const accountSetting = settings.accountSettings[account.accountId];
+					if (accountSetting === undefined)
 					{
-						//settings read succesfully...
-						loggerWebExtension.info("loaded settings from storage");
-						const oHandling: AutoarchiveReloadedShared.OptionHandling = new AutoarchiveReloadedShared.OptionHandling();
-						const settings: ISettings = oHandling.convertPartialSettings(result.settings);
-
-						//every existing account should have a setting
-						accounts.forEach((account) =>
-						{
-							const accountSetting = settings.accountSettings[account.accountId];
-							if (accountSetting === undefined)
-							{
-								settings.accountSettings[account.accountId] = oHandling.getDefaultAccountSettings();
-							}
-						});
-
-						//no other account should be there
-						for (const accountId in settings.accountSettings)
-						{
-							if (this.findAccountInfo(accounts, accountId) === null)
-							{
-								delete settings.accountSettings[accountId];
-							}
-						}
-
-						loggerWebExtension.info("settings mixed with default settings");
-						onSuccesfulDone(settings, accounts);
+						settings.accountSettings[account.accountId] = oHandling.getDefaultAccountSettings();
 					}
-					catch (e)
+				});
+
+				//no other account should be there
+				for (const accountId in settings.accountSettings)
+				{
+					if (this.findAccountInfo(accounts, accountId) === null)
 					{
-						loggerWebExtension.errorException(e);
-						throw e;
+						delete settings.accountSettings[accountId];
 					}
-				}, (error: string) =>
-					{
-						loggerWebExtension.error("error while reading settings: " + error);
-					});
+				}
+
+				loggerWebExtension.info("settings mixed with default settings");
+				return settings;
 			}
 			catch (e)
 			{
+				//TODO: do not log and throw!
 				loggerWebExtension.errorException(e);
 				throw e;
 			}
@@ -128,19 +115,15 @@ namespace AutoarchiveReloadedWebextension
 				if (settings)
 				{
 					loggerWebExtension.info("got legacy preferences to convert");
-					this.savePreferencesAndSendToLegacyAddOn(settings, (): void =>
-					{
-						initAutoArchiveReloadedOverlay();
-					});
+					await this.savePreferencesAndSendToLegacyAddOn(settings);
+					initAutoArchiveReloadedOverlay();
 				}
 				else
 				{
 					loggerWebExtension.info("no legacy preferences to convert");
-					this.publishCurrentPreferences((): void =>
-					{
-						loggerWebExtension.info("publishCurrentPreferences done");
-						initAutoArchiveReloadedOverlay();
-					});
+					await this.publishCurrentPreferences();
+					loggerWebExtension.info("publishCurrentPreferences done");
+					initAutoArchiveReloadedOverlay();
 				}
 			}
 			catch (e)
@@ -150,27 +133,22 @@ namespace AutoarchiveReloadedWebextension
 			}
 		}
 
-		public savePreferencesAndSendToLegacyAddOn(settings: ISettings, onSuccess: () => void): void
+		public async savePreferencesAndSendToLegacyAddOn(settings: ISettings): Promise<void>
 		{
 			loggerWebExtension.info("going to save settings");
 
-			//TODO: sometimes we get "Error: WebExtension context not found!", why?
-			browser.storage.local.set({ settings: settings }).then(() =>
+			try
 			{
-				try
-				{
-					loggerWebExtension.info("settings saved");
-					this.publishCurrentPreferences(onSuccess);
-				}
-				catch (e)
-				{
-					loggerWebExtension.errorException(e);
-					throw e;
-				}
-			}, (error: string) =>
-				{
-					loggerWebExtension.error("error while saving settings: " + error);
-				});
+				//TODO: sometimes we get "Error: WebExtension context not found!", why?
+				await browser.storage.local.set({ settings: settings });
+				loggerWebExtension.info("settings saved");
+				await this.publishCurrentPreferences();
+			}
+			catch (e)
+			{
+				loggerWebExtension.errorException(e);
+				throw e;
+			}
 		}
 	}
 }
