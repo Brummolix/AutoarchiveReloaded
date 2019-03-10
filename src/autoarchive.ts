@@ -23,62 +23,6 @@ AutoarchiveReloaded.loggerWebExtension.info("Hello world autoarchive.ts");
 
 namespace AutoarchiveReloaded
 {
-	//-----------------------------------------------------------------------------------------------------
-
-	//TODO: LegacyExtensionLoggerHelper supported filelogging? is it still possible? Maybe as webapi experiment?
-	//TODO: getEnableInfoLogging came from settings?
-
-	/*
-	class LegacyExtensionLoggerHelper implements ILoggerHelper
-	{
-		private readonly consoleService: Ci.nsIConsoleService = Components.classes["@mozilla.org/consoleservice;1"].getService(Ci.nsIConsoleService);
-
-		public log(msgToLog: string): void
-		{
-			this.consoleService.logStringMessage(msgToLog);
-			this.writeToFile(msgToLog);
-		}
-
-		public getEnableInfoLogging(): boolean
-		{
-			if (settings && settings.globalSettings && settings.globalSettings !== undefined)
-			{
-				return settings.globalSettings.enableInfoLogging;
-			}
-
-			return false;
-		}
-
-		private writeToFile(str: string): void
-		{
-			try
-			{
-				//see https://developer.mozilla.org/en-US/Add-ons/Code_snippets/File_I_O
-
-				// get file in the profile directory ("ProfD")
-				const file = FileUtils.getFile("ProfD", ["AutoarchiveReloadedLog.txt"]);
-
-				const foStream = Components.classes["@mozilla.org/network/file-output-stream;1"].createInstance(Components.interfaces.nsIFileOutputStream);
-
-				// tslint:disable-next-line:no-bitwise
-				foStream.init(file, 0x02 | 0x08 | 0x10, -1, 0); //-1 = default 0664, but 0664 does not work, maybe 664...
-
-				const converter = Components.classes["@mozilla.org/intl/converter-output-stream;1"].createInstance(Components.interfaces.nsIConverterOutputStream);
-				converter.init(foStream, "UTF-8", 0, 0);
-				converter.writeString(str + "\r\n");
-				converter.close(); // this closes foStream
-			}
-			catch (e)
-			{
-				Application.console.log("error writing to log file " + Logger.getExceptionInfo(e));
-				//trotzdem weitermachen, ist ja nur logging...
-			}
-		}
-	}
-	*/
-
-	//------------------------------------------------------------------------------
-
 	//for managing the activities in activity view
 	class ActivityManager
 	{
