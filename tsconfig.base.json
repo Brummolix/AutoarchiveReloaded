@@ -1,0 +1,46 @@
+/*!
+Copyright 2018 Brummolix (new version AutoarchiveReloaded, https://github.com/Brummolix/AutoarchiveReloaded )
+
+ This file is part of AutoarchiveReloaded.
+
+    AutoarchiveReloaded is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    AutoarchiveReloaded is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with AutoarchiveReloaded.  If not, see <http://www.gnu.org/licenses/>.
+*/
+{
+    "compilerOptions": {
+        "target": "es2018",
+        //the module stuff does not work in Thunderbird Addons (or I do not know how to make it work...)
+        "module": "none" ,
+        //disabled because it does not work in Thunderbird (NetworkError when attempting to fetch resource)
+        //if it would work we could enable it for debugging purposes and disable it for the release
+        "sourceMap": false,
+
+        //"outDir": "./built/release",
+        "allowJs": false,
+        "rootDir": "src",
+
+        "strict": true,
+        "noImplicitReturns": true,
+        "noUnusedLocals": true,
+        //only for debug release
+        "removeComments":false,
+
+				"forceConsistentCasingInFileNames":true,
+				"plugins": [
+					{ "name": "typescript-tslint-plugin",
+						"ignoreDefinitionFiles": false
+					}],
+
+				"outFile": "./built/release/testoutput.js"
+    }
+}

@@ -31,17 +31,41 @@ module.exports = function(grunt) {
 		copy: {
 			main: {
 				files: [
-					{ expand: true, cwd: srcDir, src: ["**", "!**/*.ts"], dest: outDirExtracted },
+					{ expand: true, cwd: srcDir + "/resources/", src: ["**"], dest: outDirExtracted },
+					{ expand: true, cwd: srcDir + "/backgroundScript/",
+													src: ["**", "!**/*.ts", "!**/tsconfig*.json"], dest: outDirExtracted },
+					{ expand: true, cwd: srcDir + "/test/",
+													src: ["**", "!**/*.ts", "!**/tsconfig*.json"], dest: outDirExtracted },
+					{ expand: true, cwd: srcDir + "/options/",
+													src: ["**", "!**/*.ts", "!**/tsconfig*.json"], dest: outDirExtracted },
+					{ expand: true, cwd: srcDir + "/webexperiment/",
+													src: ["**", "!**/*.ts", "!**/tsconfig*.json"], dest: outDirExtracted },
 					{ expand: true, src: ["./licence.txt", "./README.md"], dest: outDirExtracted },
 				],
 			},
 		},
 		ts: {
-			default: {
-				tsconfig: "./tsconfig.json",
+			background: {
+				tsconfig: "./src/backgroundScript/tsconfig.json",
 			},
-			release: {
-				tsconfig: "./tsconfig.release.json",
+			//TODO: test only, remove
+			backgroundDemo: {
+				tsconfig: "./src/test/tsconfig.json",
+			},
+			settings: {
+				tsconfig: "./src/options/tsconfig.json",
+			},
+			webexperiment: {
+				tsconfig: "./src/webexperiment/tsconfig.json",
+			},
+			release_background: {
+				tsconfig: "./src/backgroundScript/tsconfig.release.json",
+			},
+			release_settings: {
+				tsconfig: "./src/options/tsconfig.release.json",
+			},
+			release_webexperiment: {
+				tsconfig: "./src/webexperiment/tsconfig.release.json",
 			},
 		},
 		// make a zipfile
@@ -69,7 +93,7 @@ module.exports = function(grunt) {
 				src: [
 					srcDir + "/**/*.ts",
 					srcDir + "/**/*.js",
-					"!src/libs/**/*.js",
+					"!src/**/libs/**/*.js",
 				],
 			},
 		},
@@ -82,6 +106,8 @@ module.exports = function(grunt) {
 	grunt.loadNpmTasks("grunt-tslint");
 
 	// Default task(s).
-	grunt.registerTask("default", ["clean", "copy", "ts:default", "tslint", "compress"]);
-	grunt.registerTask("release", ["clean", "copy", "ts:release", "tslint", "compress"]);
+	grunt.registerTask("default",
+		["clean", "copy", "ts:background","ts:backgroundDemo", "ts:settings", "ts:webexperiment", "tslint", "compress"]);
+	grunt.registerTask("release",
+		["clean", "copy", "ts:release_background", "ts:release_settings", "ts:release_webexperiment", "tslint", "compress"]);
 };

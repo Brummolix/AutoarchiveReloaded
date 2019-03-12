@@ -22,3 +22,14 @@ Development hints:
 	npm install MODULENAME --save-dev
 		- it will refresh package.json und package-lock.json
 		- it wil install the module under node_modules (which is excluded from git)
+
+- directory structure
+	src/sharedAll - contains sources used by *all* scripts
+	src/sharedWebextension - contains all sources used by the webextension scripts
+	src/options - contains the sources for the option page
+		uses sharedAll and sharedWebextension
+	src/backgroundScript - contains the sources for the backgroundScript
+		uses sharedAll and sharedWebextension
+	src/webexperiment - contains the sources for the webexperiment API
+		uses sharedAll
+	src/resources - contains all files that are needed additionally
