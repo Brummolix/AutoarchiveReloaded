@@ -29,7 +29,10 @@ namespace AutoarchiveReloaded
 			{
 				Logger.setGlobaleEnableInfoLogging(settings.globalSettings.enableInfoLogging);
 
-				this.setCurrentPreferences(settings);
+				loggerWebExtension.info("setCurrentPreferences");
+				//TODO: is this still the right way to do it? options page and background script (background page) have different scopes!
+				//we get the current preferences at start and on every change of preferences
+				AutoarchiveReloaded.settings = settings;
 			}
 			catch (e)
 			{
@@ -97,6 +100,7 @@ namespace AutoarchiveReloaded
 			return null;
 		}
 
+		//TODO: rename initializePreferences?
 		public async convertLegacyPreferences(): Promise<void>
 		{
 			loggerWebExtension.info("start conversion of legacy preferences (if any)");
@@ -104,8 +108,6 @@ namespace AutoarchiveReloaded
 			const accounts: IAccountInfo[] = await this.askForAccounts();
 
 			const settings: ISettings | null = await browser.autoarchive.askForLegacyPreferences(accounts);
-			console.log("got ");
-			console.log(settings);
 			try
 			{
 				if (settings)
@@ -128,6 +130,7 @@ namespace AutoarchiveReloaded
 			}
 		}
 
+		//TODO: rename savePreferencesAndPublishCurrentPreferences
 		public async savePreferencesAndSendToLegacyAddOn(settings: ISettings): Promise<void>
 		{
 			loggerWebExtension.info("going to save settings");
@@ -189,22 +192,6 @@ namespace AutoarchiveReloaded
 				});
 
 				return accounts;
-			}
-			catch (e)
-			{
-				loggerWebExtension.errorException(e);
-				throw e;
-			}
-		}
-
-		//TODO: is this still the right way to do it? options page and background script (background page) have different scopes!
-		//we get the current preferences at start and on every change of preferences
-		private setCurrentPreferences(newSettings: ISettings): void
-		{
-			loggerWebExtension.info("setCurrentPreferences");
-			try
-			{
-				settings = newSettings;
 			}
 			catch (e)
 			{
