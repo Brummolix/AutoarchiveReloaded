@@ -19,41 +19,6 @@ Copyright 2012 Alexey Egorov (original version Autoarchive, http://code.google.c
 */
 namespace AutoarchiveReloaded
 {
-	//TODO: include in Autoarchiver
-	//for start of real archiving
-	export class SearchListener
-	{
-		private folder: MailFolder;
-		//private activity: ActivityManager;
-
-		constructor(folder: MailFolder /*,activity: ActivityManager*/)
-		{
-			this.folder = folder;
-			//this.activity = activity;
-		}
-
-		public async archiveMessages(messages: MessageHeader[]): Promise<number>
-		{
-			try
-			{
-				loggerWebExtension.info("start real archiving of '" + this.folder.name + "' (" + messages.length + " messages)");
-
-				const messageIds: number[] = [];
-				for (const message of messages) {
-					messageIds.push(message.id);
-				}
-				return await browser.autoarchive.startToArchiveMessages(messageIds);
-			}
-			catch (e)
-			{
-				//TODO: Exceptions from experiment can't be logged???
-				console.log(e);
-				//loggerWebExtension.errorException(e);
-				return -1;
-			}
-		}
-	}
-
 	//todo: rename to Archiver
 	export class Autoarchiver
 	{
@@ -302,12 +267,11 @@ namespace AutoarchiveReloaded
 				const activity = new ActivityManager(undefined as unknown as Ci.nsIMsgFolder); //folder
 				console.log(activity);
 
-				const archiver = new SearchListener(folder/*, activity*/);
-
 				let result = 0;
 				if (messages.length > 0)
 				{
-					result = await archiver.archiveMessages(messages);
+					loggerWebExtension.info("start real archiving of '" + folder.name + "' (" + messages.length + " messages)");
+					result = await this.archiveMessages(messages);
 				}
 				//activity.stopAndSetFinal(result);
 				console.log(result);
@@ -318,6 +282,25 @@ namespace AutoarchiveReloaded
 			{
 				loggerWebExtension.errorException(e);
 				throw e;
+			}
+		}
+
+		private async archiveMessages(messages: MessageHeader[]): Promise<number>
+		{
+			try
+			{
+				const messageIds: number[] = [];
+				for (const message of messages) {
+					messageIds.push(message.id);
+				}
+				return await browser.autoarchive.startToArchiveMessages(messageIds);
+			}
+			catch (e)
+			{
+				//TODO: Exceptions from experiment can't be logged???
+				console.log(e);
+				//loggerWebExtension.errorException(e);
+				return -1;
 			}
 		}
 
