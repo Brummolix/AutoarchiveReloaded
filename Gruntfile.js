@@ -34,8 +34,6 @@ module.exports = function(grunt) {
 					{ expand: true, cwd: srcDir + "/resources/", src: ["**"], dest: outDirExtracted },
 					{ expand: true, cwd: srcDir + "/backgroundScript/",
 													src: ["**", "!**/*.ts", "!**/tsconfig*.json"], dest: outDirExtracted },
-					{ expand: true, cwd: srcDir + "/test/",
-													src: ["**", "!**/*.ts", "!**/tsconfig*.json"], dest: outDirExtracted },
 					{ expand: true, cwd: srcDir + "/options/",
 													src: ["**", "!**/*.ts", "!**/tsconfig*.json"], dest: outDirExtracted },
 					{ expand: true, cwd: srcDir + "/webexperiment/",
@@ -47,10 +45,6 @@ module.exports = function(grunt) {
 		ts: {
 			background: {
 				tsconfig: "./src/backgroundScript/tsconfig.json",
-			},
-			//TODO: test only, remove
-			backgroundDemo: {
-				tsconfig: "./src/test/tsconfig.json",
 			},
 			settings: {
 				tsconfig: "./src/options/tsconfig.json",
@@ -107,7 +101,7 @@ module.exports = function(grunt) {
 
 	// Default task(s).
 	grunt.registerTask("default",
-		["clean", "copy", "ts:background","ts:backgroundDemo", "ts:settings", "ts:webexperiment", "tslint", "compress"]);
+		["clean", "copy", "ts:background", "ts:settings", "ts:webexperiment", "tslint", "compress"]);
 	grunt.registerTask("release",
 		["clean", "copy", "ts:release_background", "ts:release_settings", "ts:release_webexperiment", "tslint", "compress"]);
 };

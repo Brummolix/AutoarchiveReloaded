@@ -23,6 +23,14 @@ Development hints:
 		- it will refresh package.json und package-lock.json
 		- it wil install the module under node_modules (which is excluded from git)
 
+- outfile
+	To be able to put classes in their own files without maintaining a lot of <script> includes and background scripts in manifest.json the each needed script is compiled to one single output.
+	Several classes are shared between the scripts.
+- module system
+	It seem to be not possible to use a module system like commonjs with webexperiment code. The webexperiment api can not be loaded then.
+	In the webextension code it would be possible.
+	Additionally it is not possible to mix both (at least when they share code).
+	Therefore no module system is used and only old-style "/// <reference" hints to ensure the right order
 - directory structure
 	src/sharedAll - contains sources used by *all* scripts
 	src/sharedWebextension - contains all sources used by the webextension scripts
@@ -30,6 +38,6 @@ Development hints:
 		uses sharedAll and sharedWebextension
 	src/backgroundScript - contains the sources for the backgroundScript
 		uses sharedAll and sharedWebextension
-	src/webexperiment - contains the sources for the webexperiment API
+	src/webexperiment - contains the sources for the webexperiment API (stuff which is not yet supported by the webextension api)
 		uses sharedAll
 	src/resources - contains all files that are needed additionally

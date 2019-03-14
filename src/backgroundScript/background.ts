@@ -16,6 +16,9 @@ Copyright 2018 Brummolix (AutoarchiveReloaded, https://github.com/Brummolix/Auto
     You should have received a copy of the GNU General Public License
     along with AutoarchiveReloaded.  If not, see <http://www.gnu.org/licenses/>.
 */
+
+/// <reference path="../sharedWebextension/Logger.ts" />
+
 namespace AutoarchiveReloaded
 {
 	export async function startup(): Promise<void>

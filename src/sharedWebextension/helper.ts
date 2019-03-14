@@ -17,6 +17,8 @@ Copyright 2018 Brummolix (AutoarchiveReloaded, https://github.com/Brummolix/Auto
     along with AutoarchiveReloaded.  If not, see <http://www.gnu.org/licenses/>.
 */
 //TODO: remove
+/// <reference path="Logger.ts" />
+
 AutoarchiveReloaded.loggerWebExtension.info("Hello world helper.ts");
 
 namespace AutoarchiveReloaded

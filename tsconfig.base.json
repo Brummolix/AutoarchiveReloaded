@@ -25,7 +25,6 @@ Copyright 2018 Brummolix (new version AutoarchiveReloaded, https://github.com/Br
         //if it would work we could enable it for debugging purposes and disable it for the release
         "sourceMap": false,
 
-        //"outDir": "./built/release",
         "allowJs": false,
         "rootDir": "src",
 
@@ -38,9 +37,7 @@ Copyright 2018 Brummolix (new version AutoarchiveReloaded, https://github.com/Br
 				"forceConsistentCasingInFileNames":true,
 				"plugins": [
 					{ "name": "typescript-tslint-plugin",
-						"ignoreDefinitionFiles": false
-					}],
-
-				"outFile": "./built/release/testoutput.js"
+						"ignoreDefinitionFiles": false						
+					}]
     }
 }

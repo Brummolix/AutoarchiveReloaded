@@ -56,7 +56,8 @@
 					"private-instance-method"
 				]
 			}
-		]
+		],
+		"no-reference":false
 	},
 	"rulesDirectory": []
 }
