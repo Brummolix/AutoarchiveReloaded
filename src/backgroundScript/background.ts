@@ -29,7 +29,7 @@ namespace AutoarchiveReloaded
 
 			browser.autoarchive.initToolbarConfigurationObserver();
 
-			browser.browserAction.onClicked.addListener(replyToArchiveManually);
+			browser.browserAction.onClicked.addListener(onArchiveManuallyClicked);
 
 			const helper: OptionHelper = new OptionHelper();
 			await helper.convertLegacyPreferences();
@@ -42,7 +42,7 @@ namespace AutoarchiveReloaded
 		}
 	}
 
-	async function replyToArchiveManually(): Promise<void>
+	async function onArchiveManuallyClicked(): Promise<void>
 	{
 		console.log("replyToArchiveManually");
 		//TODO: disable button in mailwindow (or only enable it in mail3pane) -> how to detect?
