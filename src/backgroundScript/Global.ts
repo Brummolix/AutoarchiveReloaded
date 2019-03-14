@@ -79,7 +79,7 @@ namespace AutoarchiveReloaded
 		{
 			loggerWebExtension.info("start archiving");
 			this.status = States.IN_PROGRESS;
-			const autoarchiveReloaded = new Autoarchiver(this.onArchiveDone.bind(this));
+			const autoarchiveReloaded = new Archiver(this.onArchiveDone.bind(this));
 			await autoarchiveReloaded.archiveAccounts();
 		}
 

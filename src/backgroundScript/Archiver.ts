@@ -19,8 +19,7 @@ Copyright 2012 Alexey Egorov (original version Autoarchive, http://code.google.c
 */
 namespace AutoarchiveReloaded
 {
-	//todo: rename to Archiver
-	export class Autoarchiver
+	export class Archiver
 	{
 		//properties:
 		private foldersArchived: number = 0;
