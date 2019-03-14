@@ -78,12 +78,6 @@ async function saveOptions(): Promise<void>
 
 }
 
-interface IAccountInfos
-{
-	account: IAccountInfo;
-	accountSetting: IAccountSettings;
-}
-
 async function restoreOptions()
 {
 	const settings: ISettings = await aaHelper.loadCurrentSettings();

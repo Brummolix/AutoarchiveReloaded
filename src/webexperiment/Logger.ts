@@ -1,5 +1,6 @@
 /*!
-Copyright 2018 Brummolix (AutoarchiveReloaded, https://github.com/Brummolix/AutoarchiveReloaded )
+Copyright 2013-2018 Brummolix (new version AutoarchiveReloaded, https://github.com/Brummolix/AutoarchiveReloaded )
+Copyright 2012 Alexey Egorov (original version Autoarchive, http://code.google.com/p/autoarchive/ )
 
  This file is part of AutoarchiveReloaded.
 
@@ -16,9 +17,22 @@ Copyright 2018 Brummolix (AutoarchiveReloaded, https://github.com/Brummolix/Auto
     You should have received a copy of the GNU General Public License
     along with AutoarchiveReloaded.  If not, see <http://www.gnu.org/licenses/>.
 */
-
-namespace AutoarchiveReloaded
+class Logger
 {
-	//TODO: settings can not be global because they exist multiple times for background scripts and options.html
-	export let settings: ISettings;
+	public infoLogging: boolean = false;
+
+	public info(value: any): void
+	{
+		if (this.infoLogging)
+		{
+			console.log(value);
+		}
+	}
+
+	public error(value: any): void
+	{
+		console.log(value);
+	}
 }
+
+const log: Logger = new Logger();
