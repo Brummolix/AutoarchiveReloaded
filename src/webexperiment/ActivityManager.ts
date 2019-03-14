@@ -45,7 +45,7 @@ namespace AutoarchiveReloaded
 			}
 			catch (e)
 			{
-				loggerWebExtension.errorException(e);
+				log.errorException(e);
 				throw e;
 			}
 		}
@@ -81,7 +81,7 @@ namespace AutoarchiveReloaded
 			}
 			catch (e)
 			{
-				loggerWebExtension.errorException(e);
+				log.errorException(e);
 				throw e;
 			}
 		}

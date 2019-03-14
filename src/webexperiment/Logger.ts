@@ -33,6 +33,11 @@ class Logger
 	{
 		console.log(value);
 	}
+
+	public errorException(value: any): void
+	{
+		this.error(value);
+	}
 }
 
 const log: Logger = new Logger();

@@ -266,8 +266,8 @@ namespace AutoarchiveReloaded
 
 				//TODO: shall we still support the activity manager?
 				//TODO: where shall we show the progress? Does archiving show a progress?
-				const activity = new ActivityManager(undefined as unknown as Ci.nsIMsgFolder); //folder
-				console.log(activity);
+				//const activity = new ActivityManager(undefined as unknown as Ci.nsIMsgFolder); //folder
+				//console.log(activity);
 
 				let result = 0;
 				if (messages.length > 0)
