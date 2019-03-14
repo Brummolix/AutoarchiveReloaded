@@ -31,7 +31,7 @@ module.exports = function(grunt) {
 		copy: {
 			main: {
 				files: [
-					{ expand: true, cwd: srcDir + "/resources/", src: ["**"], dest: outDirExtracted },
+					{ expand: true, cwd: "resources/", src: ["**"], dest: outDirExtracted },
 					{ expand: true, cwd: srcDir + "/backgroundScript/",
 													src: ["**", "!**/*.ts", "!**/tsconfig*.json"], dest: outDirExtracted },
 					{ expand: true, cwd: srcDir + "/options/",
