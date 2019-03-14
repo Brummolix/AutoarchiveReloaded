@@ -22,6 +22,7 @@ Copyright 2018 Brummolix (AutoarchiveReloaded, https://github.com/Brummolix/Auto
 
 // tslint:disable:class-name
 // tslint:disable:interface-name
+// tslint:disable:max-classes-per-file
 
 //general---------------------------------------------------------------------------------------------------------
 
