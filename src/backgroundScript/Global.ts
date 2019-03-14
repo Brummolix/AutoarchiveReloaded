@@ -44,6 +44,9 @@ namespace AutoarchiveReloaded
 			this.status = States.READY_FOR_WORK;
 			loggerWebExtension.info("ready for work");
 
+			const optionHelper: OptionHelper = new OptionHelper();
+			const settings: ISettings = await optionHelper.loadCurrentSettings();
+
 			if (settings.globalSettings.archiveType === "startup")
 			{
 				loggerWebExtension.info("archive type at startup");

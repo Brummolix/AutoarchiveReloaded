@@ -30,9 +30,6 @@ namespace AutoarchiveReloaded
 				Logger.setGlobaleEnableInfoLogging(settings.globalSettings.enableInfoLogging);
 
 				loggerWebExtension.info("setCurrentPreferences");
-				//TODO: is this still the right way to do it? options page and background script (background page) have different scopes!
-				//we get the current preferences at start and on every change of preferences
-				AutoarchiveReloaded.settings = settings;
 			}
 			catch (e)
 			{

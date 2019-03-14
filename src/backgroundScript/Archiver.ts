@@ -40,6 +40,9 @@ namespace AutoarchiveReloaded
 
 				let countFoldersToArchive = 0;
 
+				const optionHelper: OptionHelper = new OptionHelper();
+				const settings: ISettings = await optionHelper.loadCurrentSettings();
+
 				await AccountIterator.forEachAccount(async (account: MailAccount, isAccountArchivable: boolean) =>
 				{
 					loggerWebExtension.info("check account '" + account.name + "'");
