@@ -25,9 +25,6 @@ ChromeUtils.import("resource:///modules/iteratorUtils.jsm");
 
 /// <reference path="ClassicTBHelper.ts" />
 
-//TODO: AutoarchiveReloadedWebextension.loggerWebExtension is not available here
-//use something other? Or only do console logging? or do not log?
-
 //Attention it HAVE TO be var, otherwise the extension api is not working
 //@ts-ignore: 'autoarchive' is declared but its value is never read
 //tslint:disable-next-line: no-var-keyword prefer-const
@@ -92,7 +89,7 @@ var autoarchive = class extends ExtensionCommon.ExtensionAPI {
 				},
 				setInfoLogging: (value: boolean): void =>
 				{
-					log.infoLogging = value;
+					logLevelInfo.enableInfoLogging = value;
 				},
 			},
 		};

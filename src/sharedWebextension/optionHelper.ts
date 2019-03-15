@@ -27,7 +27,7 @@ namespace AutoarchiveReloaded
 			log.info("loadCurrentSettings done");
 			try
 			{
-				Logger.setGlobaleEnableInfoLogging(settings.globalSettings.enableInfoLogging);
+				LogLevelInfo.setGlobaleEnableInfoLogging(settings.globalSettings.enableInfoLogging);
 
 				log.info("setCurrentPreferences");
 			}

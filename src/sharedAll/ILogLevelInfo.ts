@@ -1,0 +1,4 @@
+interface ILogLevelInfo
+{
+	enableInfoLogging: boolean;
+}

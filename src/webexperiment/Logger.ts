@@ -17,27 +17,15 @@ Copyright 2012 Alexey Egorov (original version Autoarchive, http://code.google.c
     You should have received a copy of the GNU General Public License
     along with AutoarchiveReloaded.  If not, see <http://www.gnu.org/licenses/>.
 */
-class Logger
+class LogLevelInfo implements ILogLevelInfo
 {
-	public infoLogging: boolean = false;
+	public enableInfoLogging: boolean = false;
 
-	public info(value: any): void
-	{
-		if (this.infoLogging)
-		{
-			console.log(value);
-		}
-	}
-
-	public error(value: any): void
+	public log(value: any): void
 	{
 		console.log(value);
 	}
-
-	public errorException(value: any): void
-	{
-		this.error(value);
-	}
 }
 
-const log: Logger = new Logger();
+let logLevelInfo: LogLevelInfo = new LogLevelInfo();
+const log: Logger = new Logger(logLevelInfo);
