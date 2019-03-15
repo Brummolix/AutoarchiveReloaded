@@ -105,5 +105,5 @@ namespace AutoarchiveReloaded
 		}
 	}
 
-	export const loggerWebExtension: Logger = new Logger();
+	export const log: Logger = new Logger();
 }

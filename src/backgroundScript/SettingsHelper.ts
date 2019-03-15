@@ -51,8 +51,8 @@ namespace AutoarchiveReloaded
 
 		public static log(accountName: string, accountSettings: IAccountSettings)
 		{
-			loggerWebExtension.info("Settings for '" + accountName + "':");
-			loggerWebExtension.info(JSON.stringify(accountSettings));
+			log.info("Settings for '" + accountName + "':");
+			log.info(JSON.stringify(accountSettings));
 		}
 	}
 }

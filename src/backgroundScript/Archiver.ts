@@ -45,14 +45,14 @@ namespace AutoarchiveReloaded
 
 				await AccountIterator.forEachAccount(async (account: MailAccount, isAccountArchivable: boolean) =>
 				{
-					loggerWebExtension.info("check account '" + account.name + "'");
+					log.info("check account '" + account.name + "'");
 					if (isAccountArchivable)
 					{
 						const accountSettings = settings.accountSettings[account.id];
 						SettingsHelper.log(account.name, accountSettings);
 						if (SettingsHelper.isArchivingSomething(accountSettings))
 						{
-							loggerWebExtension.info("getting folders to archive in account '" + account.name + "'");
+							log.info("getting folders to archive in account '" + account.name + "'");
 
 							const foldersToArchive = this.getFoldersToArchive(account.folders);
 
@@ -64,12 +64,12 @@ namespace AutoarchiveReloaded
 						}
 						else
 						{
-							loggerWebExtension.info("autoarchive disabled, ignore account '" + account.name + "'");
+							log.info("autoarchive disabled, ignore account '" + account.name + "'");
 						}
 					}
 					else
 					{
-						loggerWebExtension.info("ignore account '" + account.name + "'");
+						log.info("ignore account '" + account.name + "'");
 					}
 				});
 
@@ -78,7 +78,7 @@ namespace AutoarchiveReloaded
 			}
 			catch (e)
 			{
-				loggerWebExtension.errorException(e);
+				log.errorException(e);
 				throw e;
 			}
 		}
@@ -124,7 +124,7 @@ namespace AutoarchiveReloaded
 					}
 					if ( ignore)
 					{
-						loggerWebExtension.info("ignore folder '" + folder.path + "' (" + folder.type + ")");
+						log.info("ignore folder '" + folder.path + "' (" + folder.type + ")");
 					}
 					else
 					{
@@ -139,7 +139,7 @@ namespace AutoarchiveReloaded
 			}
 			catch (e)
 			{
-				loggerWebExtension.errorException(e);
+				log.errorException(e);
 				throw e;
 			}
 		}
@@ -248,7 +248,7 @@ namespace AutoarchiveReloaded
 			try
 			{
 				//TODO: log account name instead of accountId?
-				loggerWebExtension.info("start searching messages to archive in folder '" + folder.path + "' (" + folder.type + ") in account '" + folder.accountId + "'");
+				log.info("start searching messages to archive in folder '" + folder.path + "' (" + folder.type + ") in account '" + folder.accountId + "'");
 
 				const messages: MessageHeader[] = [];
 				let messageList: MessageList = await browser.messages.list(folder);
@@ -262,7 +262,7 @@ namespace AutoarchiveReloaded
 					await this.detectMessagesToArchive(messageList, settings, messages);
 				}
 
-				loggerWebExtension.info("message search done for '" + folder.name + "' in account '" + folder.accountId + "' -> " + messages.length + " messages found to archive");
+				log.info("message search done for '" + folder.name + "' in account '" + folder.accountId + "' -> " + messages.length + " messages found to archive");
 
 				//TODO: shall we still support the activity manager?
 				//TODO: where shall we show the progress? Does archiving show a progress?
@@ -272,7 +272,7 @@ namespace AutoarchiveReloaded
 				let result = 0;
 				if (messages.length > 0)
 				{
-					loggerWebExtension.info("start real archiving of '" + folder.name + "' (" + messages.length + " messages)");
+					log.info("start real archiving of '" + folder.name + "' (" + messages.length + " messages)");
 					result = await this.archiveMessages(messages);
 				}
 				//activity.stopAndSetFinal(result);
@@ -282,7 +282,7 @@ namespace AutoarchiveReloaded
 			}
 			catch (e)
 			{
-				loggerWebExtension.errorException(e);
+				log.errorException(e);
 				throw e;
 			}
 		}

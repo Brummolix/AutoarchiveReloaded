@@ -24,33 +24,33 @@ namespace AutoarchiveReloaded
 		public async publishCurrentPreferences(): Promise<void>
 		{
 			const settings = await this.loadCurrentSettings();
-			loggerWebExtension.info("loadCurrentSettings done");
+			log.info("loadCurrentSettings done");
 			try
 			{
 				Logger.setGlobaleEnableInfoLogging(settings.globalSettings.enableInfoLogging);
 
-				loggerWebExtension.info("setCurrentPreferences");
+				log.info("setCurrentPreferences");
 			}
 			catch (e)
 			{
 				//TODO: do not log and throw?
-				loggerWebExtension.errorException(e);
+				log.errorException(e);
 				throw e;
 			}
 		}
 
 		public async loadCurrentSettings(): Promise<ISettings>
 		{
-			loggerWebExtension.info("start to load current settings");
+			log.info("start to load current settings");
 
 			const accounts: IAccountInfo[] = await this.askForAccounts();
 
 			try
 			{
-				loggerWebExtension.info("got info about accounts");
+				log.info("got info about accounts");
 				const result: any = await browser.storage.local.get("settings");
 				//settings read succesfully...
-				loggerWebExtension.info("loaded settings from storage");
+				log.info("loaded settings from storage");
 				const oHandling: OptionHandling = new OptionHandling();
 				const settings: ISettings = oHandling.convertPartialSettings(result.settings);
 
@@ -73,13 +73,13 @@ namespace AutoarchiveReloaded
 					}
 				}
 
-				loggerWebExtension.info("settings mixed with default settings");
+				log.info("settings mixed with default settings");
 				return settings;
 			}
 			catch (e)
 			{
 				//TODO: do not log and throw!
-				loggerWebExtension.errorException(e);
+				log.errorException(e);
 				throw e;
 			}
 		}
@@ -100,7 +100,7 @@ namespace AutoarchiveReloaded
 		//TODO: rename initializePreferences?
 		public async convertLegacyPreferences(): Promise<void>
 		{
-			loggerWebExtension.info("start conversion of legacy preferences (if any)");
+			log.info("start conversion of legacy preferences (if any)");
 
 			const accounts: IAccountInfo[] = await this.askForAccounts();
 
@@ -109,20 +109,20 @@ namespace AutoarchiveReloaded
 			{
 				if (settings)
 				{
-					loggerWebExtension.info("got legacy preferences to convert");
+					log.info("got legacy preferences to convert");
 					await this.savePreferencesAndSendToLegacyAddOn(settings);
-					loggerWebExtension.info("legacy preferences converted");
+					log.info("legacy preferences converted");
 				}
 				else
 				{
-					loggerWebExtension.info("no legacy preferences to convert");
+					log.info("no legacy preferences to convert");
 					await this.publishCurrentPreferences();
-					loggerWebExtension.info("publishCurrentPreferences done");
+					log.info("publishCurrentPreferences done");
 				}
 			}
 			catch (e)
 			{
-				loggerWebExtension.errorException(e);
+				log.errorException(e);
 				throw e;
 			}
 		}
@@ -130,18 +130,18 @@ namespace AutoarchiveReloaded
 		//TODO: rename savePreferencesAndPublishCurrentPreferences
 		public async savePreferencesAndSendToLegacyAddOn(settings: ISettings): Promise<void>
 		{
-			loggerWebExtension.info("going to save settings");
+			log.info("going to save settings");
 
 			try
 			{
 				//TODO: sometimes we get "Error: WebExtension context not found!", why?
 				await browser.storage.local.set({ settings: settings });
-				loggerWebExtension.info("settings saved");
+				log.info("settings saved");
 				await this.publishCurrentPreferences();
 			}
 			catch (e)
 			{
-				loggerWebExtension.errorException(e);
+				log.errorException(e);
 				throw e;
 			}
 		}
@@ -192,7 +192,7 @@ namespace AutoarchiveReloaded
 			}
 			catch (e)
 			{
-				loggerWebExtension.errorException(e);
+				log.errorException(e);
 				throw e;
 			}
 		}

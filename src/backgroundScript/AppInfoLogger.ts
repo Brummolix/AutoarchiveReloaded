@@ -35,13 +35,13 @@ namespace AutoarchiveReloaded
 				const window: BrowserWindow = browser.extension.getBackgroundPage();
 				const browserInfo: BrowserInfo = await browser.runtime.getBrowserInfo();
 
-				loggerWebExtension.info("Application: " + browserInfo.vendor + " " + browserInfo.name + " version " + browserInfo.version + " (" + browserInfo.buildID + ")");
-				loggerWebExtension.info("SystemInfo: " +  window.navigator.userAgent + "| " + window.navigator.platform);
-				loggerWebExtension.info("Language: " + window.navigator.language);
+				log.info("Application: " + browserInfo.vendor + " " + browserInfo.name + " version " + browserInfo.version + " (" + browserInfo.buildID + ")");
+				log.info("SystemInfo: " +  window.navigator.userAgent + "| " + window.navigator.platform);
+				log.info("Language: " + window.navigator.language);
 			}
 			catch (e)
 			{
-				loggerWebExtension.errorException(e);
+				log.errorException(e);
 				//don't throw... this method is only info logging...
 			}
 		}
@@ -58,13 +58,13 @@ namespace AutoarchiveReloaded
 			{
 				await AccountIterator.forEachAccount((account: MailAccount, isAccountArchivable: boolean) =>
 				{
-					loggerWebExtension.info("Account Info: '" + account.name + "'; type: " +
+					log.info("Account Info: '" + account.name + "'; type: " +
 						account.type + "; id: " + account.id);
 				});
 			}
 			catch (e)
 			{
-				loggerWebExtension.errorException(e);
+				log.errorException(e);
 				//don't throw... this method is only info logging...
 			}
 		}

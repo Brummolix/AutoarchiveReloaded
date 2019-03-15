@@ -25,7 +25,7 @@ namespace AutoarchiveReloaded
 	{
 		try
 		{
-			loggerWebExtension.info("Hello world background.ts");
+			log.info("Hello world background.ts");
 
 			browser.autoarchive.initToolbarConfigurationObserver();
 
@@ -37,7 +37,7 @@ namespace AutoarchiveReloaded
 		}
 		catch (e)
 		{
-			loggerWebExtension.errorException(e);
+			log.errorException(e);
 			throw e;
 		}
 	}
@@ -50,7 +50,7 @@ namespace AutoarchiveReloaded
 		//but as we don't know how to do it for a web extension it will be done in the webexperiment
 		if (await browser.autoarchive.isToolbarConfigurationOpen())
 		{
-			loggerWebExtension.info("archive manually rejected because of toolbar customization");
+			log.info("archive manually rejected because of toolbar customization");
 			return;
 		}
 

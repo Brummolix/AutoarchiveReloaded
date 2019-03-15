@@ -36,20 +36,20 @@ namespace AutoarchiveReloaded
 
 		public static async startup(): Promise<void>
 		{
-			loggerWebExtension.info("start...");
+			log.info("start...");
 
 			const appInfoLogger = new AppInfoLogger();
 			await appInfoLogger.log();
 
 			this.status = States.READY_FOR_WORK;
-			loggerWebExtension.info("ready for work");
+			log.info("ready for work");
 
 			const optionHelper: OptionHelper = new OptionHelper();
 			const settings: ISettings = await optionHelper.loadCurrentSettings();
 
 			if (settings.globalSettings.archiveType === "startup")
 			{
-				loggerWebExtension.info("archive type at startup");
+				log.info("archive type at startup");
 
 				//wait some time to give TB time to connect and everything
 				setTimeout(this.onDoArchiveAutomatic.bind(this), 9000);
@@ -59,16 +59,16 @@ namespace AutoarchiveReloaded
 			}
 			else
 			{
-				loggerWebExtension.info("archive type manually");
+				log.info("archive type manually");
 			}
 		}
 
 		public static async onDoArchiveAutomatic(): Promise<void>
 		{
-			loggerWebExtension.info("try automatic archive");
+			log.info("try automatic archive");
 			if (this.status !== States.READY_FOR_WORK)
 			{
-				loggerWebExtension.info("automatic archive busy, wait");
+				log.info("automatic archive busy, wait");
 				//busy: wait 5 seconds
 				setTimeout(this.onDoArchiveAutomatic.bind(this), 5000);
 			}
@@ -80,7 +80,7 @@ namespace AutoarchiveReloaded
 
 		public static async onDoArchive(): Promise<void>
 		{
-			loggerWebExtension.info("start archiving");
+			log.info("start archiving");
 			this.status = States.IN_PROGRESS;
 			const autoarchiveReloaded = new Archiver(this.onArchiveDone.bind(this));
 			await autoarchiveReloaded.archiveAccounts();
@@ -88,10 +88,10 @@ namespace AutoarchiveReloaded
 
 		public static async onArchiveManually(): Promise<void>
 		{
-			loggerWebExtension.info("try manual archive");
+			log.info("try manual archive");
 			if (this.status === States.UNINITIALZED)
 			{
-				loggerWebExtension.info("not initialized, cancel");
+				log.info("not initialized, cancel");
 
 				await browser.autoarchive.alert(browser.i18n.getMessage("dialogTitle"), browser.i18n.getMessage("waitForInit"));
 				return;
@@ -101,7 +101,7 @@ namespace AutoarchiveReloaded
 			{
 				if (this.status === States.IN_PROGRESS)
 				{
-					loggerWebExtension.info("busy with other archive..., cancel");
+					log.info("busy with other archive..., cancel");
 					await browser.autoarchive.alert(browser.i18n.getMessage("dialogTitle"), browser.i18n.getMessage("waitForArchive"));
 					return;
 				}
@@ -109,13 +109,13 @@ namespace AutoarchiveReloaded
 			}
 			else
 			{
-				loggerWebExtension.info("manual archive canceled by user");
+				log.info("manual archive canceled by user");
 			}
 		}
 
 		private static onArchiveDone(): void
 		{
-			loggerWebExtension.info("archive (searching messages to archive) done");
+			log.info("archive (searching messages to archive) done");
 			this.status = States.READY_FOR_WORK;
 		}
 	}

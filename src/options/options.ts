@@ -72,7 +72,7 @@ async function saveOptions(): Promise<void>
 	}
 	catch (e)
 	{
-		AutoarchiveReloaded.loggerWebExtension.errorException(e);
+		AutoarchiveReloaded.log.errorException(e);
 		throw e;
 	}
 
@@ -173,7 +173,7 @@ async function onLoad()
 	}
 	catch (e)
 	{
-		AutoarchiveReloaded.loggerWebExtension.errorException(e);
+		AutoarchiveReloaded.log.errorException(e);
 		throw e;
 	}
 }
