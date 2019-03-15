@@ -43,12 +43,12 @@ declare interface RuntimePortListener extends IListeners<(object: object) => voi
 }
 
 //https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/runtime/Port
-declare class RuntimePort
+interface RuntimePort
 {
-	public onMessage: RuntimePortListener;
+	onMessage: RuntimePortListener;
 
-	public disconnect(): void;
-	public postMessage(object: object): void;
+	disconnect(): void;
+	postMessage(object: object): void;
 }
 
 declare interface RuntimeConnectListener extends IListeners<(port: RuntimePort) => void>
@@ -69,43 +69,43 @@ declare interface BrowserInfo
 }
 
 //https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/runtime
-declare class Runtime
+declare interface Runtime
 {
-	public onMessage: RuntimeMessageListeners;
-	public onConnect: RuntimeConnectListener;
-	//public onSuspend: RuntimeSuspendListener; -> does not exist in TB?
+	onMessage: RuntimeMessageListeners;
+	onConnect: RuntimeConnectListener;
+	//onSuspend: RuntimeSuspendListener; -> does not exist in TB?
 
-	public sendMessage(message: any): Promise<any>;
-	public connect(connectInfo: {name: string}): RuntimePort;
+	sendMessage(message: any): Promise<any>;
+	connect(connectInfo: {name: string}): RuntimePort;
 
-	public getBrowserInfo(): Promise<BrowserInfo>;
-	public getBackgroundPage(): Promise<BrowserWindow>;
+	getBrowserInfo(): Promise<BrowserInfo>;
+	getBackgroundPage(): Promise<BrowserWindow>;
 }
 
 //https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/storage/StorageArea
-declare class StorageType
+declare interface StorageType
 {
-	public get(value: string | string[]): Promise<object>;
-	public set(values: object): Promise<void>;
+	get(value: string | string[]): Promise<object>;
+	set(values: object): Promise<void>;
 }
 
 //https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/storage
-declare class BrowserStorages
+declare interface BrowserStorages
 {
-	public local: StorageType;
-	public sync: StorageType;
-	public managed: StorageType;
+	local: StorageType;
+	sync: StorageType;
+	managed: StorageType;
 }
 
 type BrowserWindowType = "normal" | "popup" | "panel" | "devtools";
 
 //https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/windows/Window
-declare class BrowserWindow extends Window
+declare interface BrowserWindow extends Window
 {
-	public id: number;
-	public title: string;
-	public type: BrowserWindowType;
-	public focused: boolean;
+	id: number;
+	title: string;
+	type: BrowserWindowType;
+	focused: boolean;
 }
 
 declare interface IListeners<T>
@@ -126,22 +126,22 @@ declare interface BrowserWindowInfo
 }
 
 //https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/windows
-declare class BrowserWindows
+declare interface BrowserWindows
 {
-	public WINDOW_ID_CURRENT: number;
-	public readonly onCreated: BrowserWindowCreatedListeners;
+	WINDOW_ID_CURRENT: number;
+	readonly onCreated: BrowserWindowCreatedListeners;
 
-	public remove(windowid: number): Promise<void>;
-	public getCurrent(getInfo?: BrowserWindowInfo): Promise<BrowserWindow>;
-	public getLastFocused(getInfo?: BrowserWindowInfo): Promise<BrowserWindow>;
-	public getAll(getInfo?: BrowserWindowInfo): Promise<BrowserWindow[]>;
-	public get(id: number, getInfo?: BrowserWindowInfo): Promise<BrowserWindow>;
+	remove(windowid: number): Promise<void>;
+	getCurrent(getInfo?: BrowserWindowInfo): Promise<BrowserWindow>;
+	getLastFocused(getInfo?: BrowserWindowInfo): Promise<BrowserWindow>;
+	getAll(getInfo?: BrowserWindowInfo): Promise<BrowserWindow[]>;
+	get(id: number, getInfo?: BrowserWindowInfo): Promise<BrowserWindow>;
 }
 
 //https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/extension
-declare class Extension
+declare interface Extension
 {
-	public getBackgroundPage(): BrowserWindow;
+	getBackgroundPage(): BrowserWindow;
 }
 
 //https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/browserAction
