@@ -44,7 +44,6 @@ namespace AutoarchiveReloaded
 
 	async function onArchiveManuallyClicked(): Promise<void>
 	{
-		console.log("replyToArchiveManually");
 		//TODO: disable button in mailwindow (or only enable it in mail3pane) -> how to detect?
 
 		//it would be better to detect if the buttons are configured right now and do nothing in this case
