@@ -185,13 +185,16 @@ declare interface MailAccount
 	type: string; //e.g. imap, nntp, or pop3.
 }
 
+//TODO: virtual does not exist, yet
+type FolderType = "inbox" | "sent" | "trash" | "junk" | "outbox" | "drafts" | "templates" | "archives";
+
 //https://thunderbird-webextensions.readthedocs.io/en/latest/accounts.html#mailfolder
 declare interface MailFolder
 {
 	accountId: string;
 	path: string;
 	name: string;
-	type: string;
+	type: FolderType;
 }
 
 //https://thunderbird-webextensions.readthedocs.io/en/latest/accounts.html

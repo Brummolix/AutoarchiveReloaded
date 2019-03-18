@@ -91,27 +91,7 @@ namespace AutoarchiveReloaded
 				for (const folder of folders)
 				{
 					log.info("Check folder " + folder.name);
-
-					//Do not archive some special folders (and also no subfolders in there)
-					//inbox - yes
-					//sent - yes, sure
-					//drafts - no, because you want to send them?
-					//trash - no, trash is trash
-					//templates - no, because you want to use it (TODO: does this still exist?)
-					//junk - no junk is junk
-					//archives - no, we do archive
-					//outbox - no, must be sent? (TODO: does this still exist?)
-
-					//TODO: virtual is missing, wait for https://bugzilla.mozilla.org/show_bug.cgi?id=1529791
-					//if this bug is solved, we may also remove the strange catch in archiveFolder
-					//virtual - no, it is virtual :)
-
-					//undefined - yes, normal folder
-
-					//TODO: take type of parent into account!
-					let ignore: boolean = false;
-					ignore = (folder.type === "trash") || (folder.type === "junk") || (folder.type === "outbox") || (folder.type === "drafts") || (folder.type === "templates") || (folder.type === "archives") || (folder.type === "virtual");
-					if ( ignore)
+					if ( this.folderShallBeIgnored(folder, folders))
 					{
 						log.info("ignore folder '" + folder.path + "' (" + folder.type + ")");
 					}
@@ -131,6 +111,61 @@ namespace AutoarchiveReloaded
 				log.errorException(e);
 				throw e;
 			}
+		}
+
+		private folderShallBeIgnored(folder: MailFolder, allFoldersOfAccount: MailFolder[]): boolean
+		{
+			if (this.folderTypeShallBeIgnored(folder.type))
+			{
+				return true;
+			}
+
+			const parent: MailFolder | undefined = this.getFolderParent(folder, allFoldersOfAccount);
+			if (parent === undefined)
+			{
+				return false;
+			}
+
+			return this.folderShallBeIgnored(parent, allFoldersOfAccount);
+		}
+
+		private folderTypeShallBeIgnored(folderType: FolderType): boolean
+		{
+			//Do not archive some special folders (and also no subfolders in there)
+			//inbox - yes
+			//sent - yes, sure
+			//drafts - no, because you want to send them?
+			//trash - no, trash is trash
+			//templates - no, because you want to use it (TODO: does this still exist?)
+			//junk - no junk is junk
+			//archives - no, we do archive
+			//outbox - no, must be sent? (TODO: does this still exist?)
+
+			//TODO: virtual is missing, wait for https://bugzilla.mozilla.org/show_bug.cgi?id=1529791
+			//if this bug is solved, we may also remove the strange catch in archiveFolder
+			//virtual - no, it is virtual :)
+
+			//undefined - yes, normal folder
+			return (folderType === "trash") || (folderType === "junk") || (folderType === "outbox") || (folderType === "drafts") || (folderType === "templates") || (folderType === "archives");
+		}
+
+		private getFolderParent(folder: MailFolder, allFoldersOfAccount: MailFolder[]): MailFolder | undefined
+		{
+			const nIndex = folder.path.lastIndexOf("/");
+			if (nIndex === undefined)
+			{
+				return undefined;
+			}
+			const parentPath = folder.path.substring(0, nIndex);
+
+			for (const currentFolder of allFoldersOfAccount) {
+				if (currentFolder.path === parentPath)
+				{
+					return currentFolder;
+				}
+			}
+
+			return undefined;
 		}
 
 		private async shallMessageBeArchived(messageHeader: MessageHeader, settings: IAccountSettings): Promise<boolean>
