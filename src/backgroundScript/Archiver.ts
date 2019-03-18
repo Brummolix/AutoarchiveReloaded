@@ -21,7 +21,6 @@ namespace AutoarchiveReloaded
 {
 	export class Archiver
 	{
-		//properties:
 		private foldersArchived: number = 0;
 		private onDoneEvent: () => void;
 
@@ -73,7 +72,6 @@ namespace AutoarchiveReloaded
 					}
 				});
 
-				console.log("start checkForArchiveDone");
 				this.checkForArchiveDone(countFoldersToArchive);
 			}
 			catch (e)
@@ -93,6 +91,8 @@ namespace AutoarchiveReloaded
 
 				for (const folder of folders)
 				{
+					log.info("Check folder " + folder.name);
+
 					//Do not archive some special folders (and also no subfolders in there)
 					//inbox - yes
 					//sent - yes, sure
@@ -118,7 +118,7 @@ namespace AutoarchiveReloaded
 						//TODO: maybe we should catch the exception in folder.list instead?
 						if (folder.path.startsWith("/[Gmail]", 0))
 						{
-							console.log("ignored because virtual Gmail folder");
+							log.info(folder.name + " ignored because it is a virtual Gmail folder");
 							ignore = true;
 						}
 					}
@@ -155,10 +155,9 @@ namespace AutoarchiveReloaded
 			//unread
 			if (!messageHeader.read)
 			{
-				console.log("message is unread");
 				if (!settings.bArchiveUnread)
 				{
-					console.log("message unread, but unread messages shall not be archived");
+					//message unread, but unread messages shall not be archived
 					return false;
 				}
 
@@ -169,10 +168,9 @@ namespace AutoarchiveReloaded
 			//marked (starred)
 			if (messageHeader.flagged)
 			{
-				console.log("message is flagged");
 				if (!settings.bArchiveMarked)
 				{
-					console.log("message flagged, but flagged messages shall not be archived");
+					//message flagged, but flagged messages shall not be archived
 					return false;
 				}
 
@@ -183,10 +181,9 @@ namespace AutoarchiveReloaded
 			//tagged
 			if (messageHeader.tags.length > 0)
 			{
-				console.log("message is tagged");
 				if (!settings.bArchiveTagged)
 				{
-					console.log("message tagged, but tagged messages shall not be archived");
+					//message tagged, but tagged messages shall not be archived
 					return false;
 				}
 
@@ -196,20 +193,17 @@ namespace AutoarchiveReloaded
 
 			if (other)
 			{
-				console.log("message is other");
 				if (!settings.bArchiveOther)
 				{
-					console.log("other message, but other messages shall not be archived");
+					//other message, but other messages shall not be archived
 					return false;
 				}
 				ageInDays = Math.max(ageInDays, settings.daysOther);
 			}
 
-			console.log("calculated ageInDays " + ageInDays);
 			const minDate: Date = new Date(Date.now() - ageInDays * 24 * 60 * 60 * 1000);
 			if (messageHeader.date > minDate)
 			{
-				console.log("message newer than " + ageInDays);
 				return false;
 			}
 
@@ -233,11 +227,8 @@ namespace AutoarchiveReloaded
 		{
 			for (const message of messageList.messages)
 			{
-				console.log(message);
-				console.log("check message " + message.id + " " + message.subject);
 				if (await this.shallMessageBeArchived(message, settings))
 				{
-					console.log(message.id + " shall be archived");
 					messages.push(message);
 				}
 			}
@@ -252,13 +243,10 @@ namespace AutoarchiveReloaded
 
 				const messages: MessageHeader[] = [];
 				let messageList: MessageList = await browser.messages.list(folder);
-				console.log("messageList " + messageList + " " + messageList.messages.length);
 				await this.detectMessagesToArchive(messageList, settings, messages);
 
-				console.log("messageList.id " + messageList.id);
 				while (messageList.id) {
 					messageList = await browser.messages.continueList(messageList.id);
-					console.log("messageList " + messageList + " " + messageList.messages.length);
 					await this.detectMessagesToArchive(messageList, settings, messages);
 				}
 
@@ -276,8 +264,8 @@ namespace AutoarchiveReloaded
 					result = await this.archiveMessages(messages);
 				}
 				//activity.stopAndSetFinal(result);
+				//TODO: only logged to prevent not used warning
 				console.log(result);
-
 				this.foldersArchived++;
 			}
 			catch (e)
@@ -299,16 +287,13 @@ namespace AutoarchiveReloaded
 			}
 			catch (e)
 			{
-				//TODO: Exceptions from experiment can't be logged???
-				console.log(e);
-				//loggerWebExtension.errorException(e);
+				log.errorException(e);
 				return -1;
 			}
 		}
 
 		private checkForArchiveDone(foldersToArchive: number): void
 		{
-			console.log("checkForArchiveDone");
 			//wait until all accounts are ready
 			if (this.foldersArchived === foldersToArchive)
 			{
