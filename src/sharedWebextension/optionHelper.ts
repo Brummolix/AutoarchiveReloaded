@@ -27,25 +27,6 @@ namespace AutoarchiveReloaded
 {
 	export class OptionHelper
 	{
-		//TODO: private?
-		public async publishCurrentPreferences(): Promise<void>
-		{
-			const settings = await this.loadCurrentSettings();
-			log.info("loadCurrentSettings done");
-			try
-			{
-				LogLevelInfo.setGlobaleEnableInfoLogging(settings.globalSettings.enableInfoLogging);
-
-				log.info("setCurrentPreferences");
-			}
-			catch (e)
-			{
-				//TODO: do not log and throw?
-				log.errorException(e);
-				throw e;
-			}
-		}
-
 		public async loadCurrentSettings(): Promise<ISettings>
 		{
 			log.info("start to load current settings");
@@ -117,14 +98,14 @@ namespace AutoarchiveReloaded
 				if (settings)
 				{
 					log.info("got legacy preferences to convert");
-					await this.savePreferencesAndSendToLegacyAddOn(settings);
+					await this.savePreferencesAndPublishForLogging(settings);
 					log.info("legacy preferences converted");
 				}
 				else
 				{
 					log.info("no legacy preferences to convert");
-					await this.publishCurrentPreferences();
-					log.info("publishCurrentPreferences done");
+					await this.publishCurrentPreferencesForLogging();
+					log.info("publishForLogging done");
 				}
 			}
 			catch (e)
@@ -134,8 +115,7 @@ namespace AutoarchiveReloaded
 			}
 		}
 
-		//TODO: rename savePreferencesAndPublishCurrentPreferences
-		public async savePreferencesAndSendToLegacyAddOn(settings: ISettings): Promise<void>
+		public async savePreferencesAndPublishForLogging(settings: ISettings): Promise<void>
 		{
 			log.info("going to save settings");
 
@@ -144,7 +124,7 @@ namespace AutoarchiveReloaded
 				//TODO: sometimes we get "Error: WebExtension context not found!", why?
 				await browser.storage.local.set({ settings: settings });
 				log.info("settings saved");
-				await this.publishCurrentPreferences();
+				await this.publishCurrentPreferencesForLogging();
 			}
 			catch (e)
 			{
@@ -199,6 +179,22 @@ namespace AutoarchiveReloaded
 			}
 			catch (e)
 			{
+				log.errorException(e);
+				throw e;
+			}
+		}
+
+		private async publishCurrentPreferencesForLogging(): Promise<void>
+		{
+			const settings = await this.loadCurrentSettings();
+			log.info("loadCurrentSettings done, publish for logging");
+			try
+			{
+				LogLevelInfo.setGlobaleEnableInfoLogging(settings.globalSettings.enableInfoLogging);
+			}
+			catch (e)
+			{
+				//TODO: do not log and throw?
 				log.errorException(e);
 				throw e;
 			}

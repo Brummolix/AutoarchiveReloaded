@@ -48,7 +48,7 @@ async function saveOptions(): Promise<void>
 			}
 		});
 
-		await aaHelper.savePreferencesAndSendToLegacyAddOn(settings);
+		await aaHelper.savePreferencesAndPublishForLogging(settings);
 		//show toast
 		($ as any).notify({
 			// options
