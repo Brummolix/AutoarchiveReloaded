@@ -81,8 +81,7 @@ namespace AutoarchiveReloaded
 			}
 		}
 
-		//determine all folders (recursive, starting with param folder), which we want to archive
-		//write output to inboxFolders array
+		//note: virtual folders (like Gmail has) are reported to archive but a later call to folder.list will fail...
 		private getFoldersToArchive(folders: MailFolder[]): MailFolder[]
 		{
 			try
@@ -103,8 +102,8 @@ namespace AutoarchiveReloaded
 					//archives - no, we do archive
 					//outbox - no, must be sent? (TODO: does this still exist?)
 
-					//TODO: virtual is missing
-					//TODO: https://bugzilla.mozilla.org/show_bug.cgi?id=1529791
+					//TODO: virtual is missing, wait for https://bugzilla.mozilla.org/show_bug.cgi?id=1529791
+					//if this bug is solved, we may also remove the strange catch in archiveFolder
 					//virtual - no, it is virtual :)
 
 					//undefined - yes, normal folder
@@ -112,16 +111,6 @@ namespace AutoarchiveReloaded
 					//TODO: take type of parent into account!
 					let ignore: boolean = false;
 					ignore = (folder.type === "trash") || (folder.type === "junk") || (folder.type === "outbox") || (folder.type === "drafts") || (folder.type === "templates") || (folder.type === "archives") || (folder.type === "virtual");
-					if (!ignore)
-					{
-						//TODO: hack
-						//TODO: maybe we should catch the exception in folder.list instead?
-						if (folder.path.startsWith("/[Gmail]", 0))
-						{
-							log.info(folder.name + " ignored because it is a virtual Gmail folder");
-							ignore = true;
-						}
-					}
 					if ( ignore)
 					{
 						log.info("ignore folder '" + folder.path + "' (" + folder.type + ")");
@@ -242,7 +231,19 @@ namespace AutoarchiveReloaded
 				log.info("start searching messages to archive in folder '" + folder.path + "' (" + folder.type + ") in account '" + folder.accountId + "'");
 
 				const messages: MessageHeader[] = [];
-				let messageList: MessageList = await browser.messages.list(folder);
+
+				let messageList: MessageList;
+				try
+				{
+					messageList = await browser.messages.list(folder);
+				}
+				catch (e)
+				{
+					//as virtual folders crash here, we only log the failure and treat the folder as "archived"...
+					log.errorException(e, "The exception might occur because the folder is a virtual folder... See https://bugzilla.mozilla.org/show_bug.cgi?id=1529791");
+					this.foldersArchived++;
+					return;
+				}
 				await this.detectMessagesToArchive(messageList, settings, messages);
 
 				while (messageList.id) {
@@ -266,6 +267,7 @@ namespace AutoarchiveReloaded
 				//activity.stopAndSetFinal(result);
 				//TODO: only logged to prevent not used warning
 				console.log(result);
+
 				this.foldersArchived++;
 			}
 			catch (e)

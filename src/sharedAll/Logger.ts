@@ -43,9 +43,16 @@ class Logger
 		this.log(LogLevel.LEVEL_ERROR, str);
 	}
 
-	public errorException(exception: any): void
+	public errorException(exception: any, message?: string): void
 	{
-		this.error("Exception occured");
+		if (message === undefined)
+		{
+			this.error("Exception occured");
+		}
+		else
+		{
+			this.error(message);
+		}
 		this.logAny(exception);
 	}
 
