@@ -1,4 +1,5 @@
 
+/// <reference path="../sharedAll/ILogLevelInfo.ts" />
 /// <reference path="../sharedAll/Logger.ts" />
 
 namespace AutoarchiveReloaded

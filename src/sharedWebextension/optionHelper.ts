@@ -16,6 +16,13 @@ Copyright 2018 Brummolix (AutoarchiveReloaded, https://github.com/Brummolix/Auto
     You should have received a copy of the GNU General Public License
     along with AutoarchiveReloaded.  If not, see <http://www.gnu.org/licenses/>.
 */
+
+/// <reference path="AccountInfo.ts" />
+/// <reference path="Logger.ts" />
+/// <reference path="../sharedAll/interfaces.ts" />
+/// <reference path="OptionHandling.ts" />
+/// <reference path="AccountIterator.ts" />
+
 namespace AutoarchiveReloaded
 {
 	export class OptionHelper

@@ -17,6 +17,8 @@ Copyright 2018 Brummolix (AutoarchiveReloaded, https://github.com/Brummolix/Auto
     along with AutoarchiveReloaded.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+/// <reference path="interfaces.ts" />
+
 //Attention:
 //this types are not complete! I only added, what is used by AutoarchiveReloaded at the moment!
 
