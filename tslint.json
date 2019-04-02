@@ -1,6 +1,4 @@
 {
-	//TODO: temporarily set to warning
-	"defaultSeverity": "warning",
 	"extends": [
 		"tslint:recommended"
 	],
