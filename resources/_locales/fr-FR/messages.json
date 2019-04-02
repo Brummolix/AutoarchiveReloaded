@@ -27,9 +27,6 @@
 	"toolbarArchive":{"message": "Archivage automatique..."},
 	"toolbarArchiveTooltip":{"message": "Archiver automatiquement maintenant"},
 
-	"activityStart":{"message": "AutoarchiveReloaded: Rechercher les messages archivés dans le dossier %S"},
-	"activityDone":{"message": "AutoarchiveReloaded: dossier %S"},
-	"activityMessagesToArchive":{"message": "%S messages vont être archivés"},
 	"waitForInit":{"message": "Veuillez patienter pendant que AutoarchiveReloaded s'initialise. Merci d'esssayer à nouveau plus tard."},
 	"waitForArchive":{"message": "Veuillez patienter jusqu'à que l'archivage automatique en cours soit terminé. Merci d'esssayer à nouveau plus tard."},
 	"dialogTitle":{"message": "AutoarchiveReloaded"},

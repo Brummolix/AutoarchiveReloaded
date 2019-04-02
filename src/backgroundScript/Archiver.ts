@@ -288,21 +288,11 @@ namespace AutoarchiveReloaded
 
 				log.info("message search done for '" + folder.name + "' in account '" + folder.accountId + "' -> " + messages.length + " messages found to archive");
 
-				//TODO: shall we still support the activity manager?
-				//TODO: where shall we show the progress? Does archiving show a progress?
-				//const activity = new ActivityManager(undefined as unknown as Ci.nsIMsgFolder); //folder
-				//console.log(activity);
-
-				let result: number = 0;
 				if (messages.length > 0)
 				{
 					log.info("start real archiving of '" + folder.name + "' (" + messages.length + " messages)");
-					//TODO: do we really need this number? Depends on ActivityManager...
-					result = await this.archiveMessages(messages);
+					await this.archiveMessages(messages);
 				}
-				//activity.stopAndSetFinal(result);
-				//TODO: only logged to prevent not used warning
-				console.log(result);
 
 				this.foldersArchived++;
 			}
@@ -313,7 +303,7 @@ namespace AutoarchiveReloaded
 			}
 		}
 
-		private async archiveMessages(messages: MessageHeader[]): Promise<number>
+		private async archiveMessages(messages: MessageHeader[]): Promise<void>
 		{
 			try
 			{
@@ -322,12 +312,10 @@ namespace AutoarchiveReloaded
 					messageIds.push(message.id);
 				}
 				await browser.autoarchive.startToArchiveMessages(messageIds);
-				return messageIds.length;
 			}
 			catch (e)
 			{
 				log.errorException(e);
-				return -1;
 			}
 		}
 

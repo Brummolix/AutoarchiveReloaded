@@ -27,9 +27,6 @@
 	"toolbarArchive":{"message": "Autoarchive..."},
 	"toolbarArchiveTooltip":{"message": "Autoarchive now"},
 
-	"activityStart":{"message": "AutoarchiveReloaded: Search archive-messages in folder %S"},
-	"activityDone":{"message": "AutoarchiveReloaded: folder %S"},
-	"activityMessagesToArchive":{"message": "%S messages will be archived"},
 	"waitForInit":{"message": "Please wait until AutoarchiveReloaded is initalized. Please try again later."},
 	"waitForArchive":{"message": "Please wait until Autoarchive in progress is done. Please try again later."},
 	"dialogTitle":{"message": "AutoarchiveReloaded"},
