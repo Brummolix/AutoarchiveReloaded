@@ -259,8 +259,8 @@ namespace AutoarchiveReloaded
 		{
 			try
 			{
-				//TODO: log account name instead of accountId?
-				log.info("start searching messages to archive in folder '" + folder.path + "' (" + folder.type + ") in account '" + folder.accountId + "'");
+				const mailAccount: MailAccount = await browser.accounts.get(folder.accountId);
+				log.info("start searching messages to archive in folder '" + folder.path + "' (" + folder.type + ") in account '" + mailAccount.name + "'");
 
 				const messages: MessageHeader[] = [];
 
@@ -283,11 +283,11 @@ namespace AutoarchiveReloaded
 					await this.detectMessagesToArchive(messageList, settings, messages);
 				}
 
-				log.info("message search done for '" + folder.name + "' in account '" + folder.accountId + "' -> " + messages.length + " messages found to archive");
+				log.info("message search done for '" + folder.name + "' in account '" + mailAccount.name + "' -> " + messages.length + " messages found to archive");
 
 				if (messages.length > 0)
 				{
-					log.info("start real archiving of '" + folder.name + "' (" + messages.length + " messages)");
+					log.info("start real archiving of '" + folder.name + "' (" + messages.length + " messages) in account '" + mailAccount.name + "'");
 					await this.archiveMessages(messages);
 				}
 
