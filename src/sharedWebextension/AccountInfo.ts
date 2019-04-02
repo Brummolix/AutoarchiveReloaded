@@ -25,9 +25,8 @@ namespace AutoarchiveReloaded
   {
 		public static isMailType(account: MailAccount): boolean
 		{
-			//TODO: are the types still the same? Is there still an exquilla type?
+			//TODO: Is there still an exquilla type?
 			return (account.type === "pop3" || account.type === "imap" || account.type === "exquilla");
-			//return (account.incomingServer.type === "pop3" || account.incomingServer.type === "imap" || account.incomingServer.type === "exquilla");
 		}
   }
 }
