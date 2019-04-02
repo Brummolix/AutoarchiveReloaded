@@ -101,9 +101,6 @@ namespace AutoarchiveReloaded
 					}
 				}
 
-				//TODO: still true?
-				//a Feed account (RSS Feeds) will be listed here, but it is kicked out later because it does not have archive options...
-
 				return foldersToArchive;
 			}
 			catch (e)
