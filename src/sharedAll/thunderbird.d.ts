@@ -177,12 +177,16 @@ declare interface i18n
 }
 
 //https://thunderbird-webextensions.readthedocs.io/en/latest/accounts.html#accounts-mailaccount
+//TODO: does exquilla really exists?
+type AccountType = "pop3" | "imap" | "rss" | "exquilla" | "nntp";
+
+//https://thunderbird-webextensions.readthedocs.io/en/latest/accounts.html#accounts-mailaccount
 declare interface MailAccount
 {
 	folders: MailFolder[];
 	id: string;
 	name: string;
-	type: string; //e.g. imap, nntp, or pop3.
+	type: AccountType;
 }
 
 //TODO: virtual does not exist, yet

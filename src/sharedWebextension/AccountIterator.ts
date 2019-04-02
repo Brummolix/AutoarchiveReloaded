@@ -35,11 +35,11 @@ namespace AutoarchiveReloaded
 
 		private static isAccountArchivable(account: MailAccount): boolean
 		{
-			//TODO: are the types still the same? Is there still an exquilla type?
+			//TODO: Is there still an exquilla type?
 
-			//ignore IRC accounts
-			return (account.type === "mailbox" || account.type === "imap" || account.type === "news" || account.type === "exquilla");
-			//return (account.incomingServer.localStoreType === "mailbox" || account.incomingServer.localStoreType === "imap" || account.incomingServer.localStoreType === "news" || account.incomingServer.localStoreType === "exquilla");
+			//IRC accounts will not be listed... and we would ignore them anyhow
+			//"nntp" is a newsgroup account, "rss" a newsfeed account > we archive them, too (even if an rss account does not have real archive settings)
+			return (account.type === "pop3" || account.type === "imap" || account.type === "rss" || account.type === "nntp" || account.type === "exquilla");
 		}
   }
 }
