@@ -473,8 +473,57 @@ declare namespace ExtensionCommon
 	{
 		public abstract getAPI(context: any): {};
 	}
+
 	class EventManager
 	{
 		constructor(arg: any);
 	}
+}
+
+declare class ExperimentAPIManager
+{
+
+}
+
+//https://thunderbird-webextensions.readthedocs.io/en/latest/how-to/experiments.html
+interface FolderManager
+{
+	get(accountId: string, path: string): Ci.nsIMsgFolder;
+	convert(realFolder: Ci.nsIMsgFolder): MailFolder;
+}
+
+//https://thunderbird-webextensions.readthedocs.io/en/latest/how-to/experiments.html
+interface MessageManager
+{
+	get(messageId: number): Ci.nsIMsgDBHdr;
+	convert(realMessage: Ci.nsIMsgDBHdr): MessageHeader;
+
+	// Start a MessageList from an array or enumerator of nsIMsgDBHdr ???
+	//startMessageList(realFolder.messages);
+}
+
+declare class ParentMessageManager
+{
+
+}
+
+declare class WindowManager
+{
+
+}
+
+//https://thunderbird-webextensions.readthedocs.io/en/latest/how-to/experiments.html
+interface ExtensionContextExtension
+{
+	folderManager: FolderManager;
+	messageManager: MessageManager;
+
+	experimentAPIManager: ExperimentAPIManager;
+	windowManager: WindowManager;
+	parentMessageManager: ParentMessageManager;
+}
+
+interface ExtensionContext
+{
+	extension: ExtensionContextExtension;
 }

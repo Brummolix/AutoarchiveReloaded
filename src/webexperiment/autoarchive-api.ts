@@ -33,7 +33,7 @@ var autoarchive = class extends ExtensionCommon.ExtensionAPI {
 	private archiver: Archiver = new Archiver();
 	private legacyOptions: LegacyOptions = new LegacyOptions();
 
-	public getAPI(context: any)
+	public getAPI(context: ExtensionContext)
 	{
 		return {
 			autoarchive: {
@@ -45,11 +45,11 @@ var autoarchive = class extends ExtensionCommon.ExtensionAPI {
 				{
 					return await ClassicTBHelper.getThePromptService().confirm(null, title, text);
 				},
-				startToArchiveMessages: async (messageIds: number[]): Promise<number> =>
+				startToArchiveMessages: async (messageIds: number[]): Promise<void> =>
 				{
 					try
 					{
-						return this.archiver.startToArchiveMessages(messageIds);
+						this.archiver.startToArchiveMessages(context.extension.messageManager, messageIds);
 					}
 					catch (e)
 					{

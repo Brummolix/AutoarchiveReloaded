@@ -253,7 +253,7 @@ declare interface AutoarchiveWebExperiment
 {
 	alert(title: string, text: string): Promise<void>;
 	confirm(title: string, text: string): Promise<boolean>;
-	startToArchiveMessages(messageIds: number[]): Promise<number>;
+	startToArchiveMessages(messageIds: number[]): Promise<void>;
 	initToolbarConfigurationObserver(): void;
 	isToolbarConfigurationOpen(): Promise<boolean>;
 	askForLegacyPreferences(accounts: IAccountInfo[]): ISettings | null;

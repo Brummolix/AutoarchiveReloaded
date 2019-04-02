@@ -293,10 +293,11 @@ namespace AutoarchiveReloaded
 				//const activity = new ActivityManager(undefined as unknown as Ci.nsIMsgFolder); //folder
 				//console.log(activity);
 
-				let result = 0;
+				let result: number = 0;
 				if (messages.length > 0)
 				{
 					log.info("start real archiving of '" + folder.name + "' (" + messages.length + " messages)");
+					//TODO: do we really need this number? Depends on ActivityManager...
 					result = await this.archiveMessages(messages);
 				}
 				//activity.stopAndSetFinal(result);
@@ -320,7 +321,8 @@ namespace AutoarchiveReloaded
 				for (const message of messages) {
 					messageIds.push(message.id);
 				}
-				return await browser.autoarchive.startToArchiveMessages(messageIds);
+				await browser.autoarchive.startToArchiveMessages(messageIds);
+				return messageIds.length;
 			}
 			catch (e)
 			{

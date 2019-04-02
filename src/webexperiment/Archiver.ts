@@ -19,81 +19,88 @@ Copyright 2012 Alexey Egorov (original version Autoarchive, http://code.google.c
 */
 class Archiver
 {
-	public startToArchiveMessages(messageIds: number[]): number
+	public startToArchiveMessages(messageManager: MessageManager, messageIds: number[]): void
 	{
 		log.info("startToArchiveMessages");
 
+		const realMessages: Ci.nsIMsgDBHdr[] = this.convertMessages(messageIds, messageManager);
+
 		const mail3PaneWindow: Mail3Pane = ClassicTBHelper.getMail3Pane();
-		console.log(mail3PaneWindow);
 
-		//TODO: how to translate a webapi message into nsIMsgDBHdr (or the folders?)
-		//see https://groups.google.com/forum/#!topic/mozilla.dev.apps.thunderbird/zI_3yBYLiCM
-		//see https://bugzilla.mozilla.org/show_bug.cgi?id=1530606
+		const folder: Ci.nsIMsgFolder = realMessages[0].folder;
+		this.selectFirstMessageIfNoMessageIsSelected(folder, mail3PaneWindow);
+		this.selectFolderIfNoneIsSelected(folder, mail3PaneWindow);
 
-		//TODO: or do we have to do *everything* in web experiment :(
-		/*
-		for (const messageId of messageIds) {
-			const msgHdr: any = messageTracker.getMessage(messageId);
-			console.log(msgHdr);
-		}
-		*/
+		//TODO: do not archive if a imap server is offline (otherwise the archive is done locally but not on the server, if you start next time (and you are online) it may be archived again
+		//-> problem: how to detect imap server problems/problems with i-net connection? (we do not talk about online/offline mode here which you can handle with  MailOfflineMgr!)
+		//I have also reported the real bug to TB: see https://bugzilla.mozilla.org/show_bug.cgi?id=956598
 
-		//https://hg.mozilla.org/comm-central/file/tip/mail/components/extensions/parent/ext-messages.js
-		//messageTracker ist in https://hg.mozilla.org/comm-central/file/tip/mail/components/extensions/parent/ext-mail.js
-		//TODO: wie kommt man da ran?
+		this.archiveMessages(mail3PaneWindow, realMessages);
+	}
 
-		/*
-		//TB jumps to the end (after finishing the archiving) if no message is selected
-		//> select the first message (unfortunately it will become unread...)
-		//(but only select the first message if the messages being archived are from the current folder)
-		if (messages.length > 0)
-		{
-			if (messages[0].folder === mail3PaneWindow.gFolderDisplay.displayedFolder)
-			{
-				if (mail3PaneWindow.gFolderDisplay.selectedCount <= 0)
-				{
-					mail3PaneWindow.gFolderDisplay.navigate(Components.interfaces.nsMsgNavigationType.firstMessage);
-				}
-			}
-		}
-
+	private archiveMessages(mail3PaneWindow: Mail3Pane, realMessages: Ci.nsIMsgDBHdr[])
+	{
 		const batchMover: Ci.BatchMessageMover = new mail3PaneWindow.BatchMessageMover();
+		batchMover.archiveMessages(realMessages);
+	}
 
-		//There are several issues with "this.view.dbView is null" inside "chrome://messenger/content/folderDisplay.js", 1359
-		//see https://github.com/Brummolix/AutoarchiveReloaded/issues/1
-		//see https://github.com/Brummolix/AutoarchiveReloaded/issues/5
-		//see https://github.com/Brummolix/AutoarchiveReloaded/issues/7
-		//something is wrong inside the TB stuff at this moment
-		//the null pointer exception is described here: https://bugzilla.mozilla.org/show_bug.cgi?id=978559 but the Mozilla guys have not done anything about it until now
-		//
-		//one reason is, if no folder is selected (for example if the account is selected only)
-		//therefore we try to select some folder if we find the dbView is null
+	//There are several issues with "this.view.dbView is null" inside "chrome://messenger/content/folderDisplay.js", 1359
+	//see https://github.com/Brummolix/AutoarchiveReloaded/issues/1
+	//see https://github.com/Brummolix/AutoarchiveReloaded/issues/5
+	//see https://github.com/Brummolix/AutoarchiveReloaded/issues/7
+	//something is wrong inside the TB stuff at this moment
+	//the null pointer exception is described here: https://bugzilla.mozilla.org/show_bug.cgi?id=978559 but the Mozilla guys have not done anything about it until now
+	//
+	//one reason is, if no folder is selected (for example if the account is selected only)
+	//therefore we try to select some folder if we find the dbView is null
+	private selectFolderIfNoneIsSelected(folder: Ci.nsIMsgFolder, mail3PaneWindow: Mail3Pane)
+	{
 		if (mail3PaneWindow.gFolderDisplay)
 		{
 			if (mail3PaneWindow.gFolderDisplay.view)
 			{
 				if (!mail3PaneWindow.gFolderDisplay.view.dbView)
 				{
-					this.info("mail3PaneWindow.gFolderDisplay.dbView is null > batchMessageMover will not work");
-					const folderToSelect = this.folder;
-					if (folderToSelect)
+					log.info("mail3PaneWindow.gFolderDisplay.dbView is null > batchMessageMover will not work");
+					if (folder)
 					{
-						this.info("> try to select folder " + folderToSelect.name + " " + folderToSelect.URI);
+						log.info("> try to select folder " + folder.name + " " + folder.URI);
 						//When extension TorBirdy was installed gFolderTreeView.selectFolder did not work.
 						//gFolderDisplay.show worked with and without TorBirdy.
-						mail3PaneWindow.gFolderDisplay.show(folderToSelect);
+						mail3PaneWindow.gFolderDisplay.show(folder);
 					}
 				}
 			}
 		}
+	}
 
-		//TODO: do not archive if a imap server is offline (otherwise the archive is done locally but not on the server, if you start next time (and you are online) it may be archived again
-		//-> problem: how to detect imap server problems/problems with i-net connection? (we do not talk about online/offline mode here which you can handle with  MailOfflineMgr!)
-		//I have also reported the real bug to TB: see https://bugzilla.mozilla.org/show_bug.cgi?id=956598
+	//TB jumps to the end (after finishing the archiving) if no message is selected
+	//> select the first message (unfortunately it will become unread...)
+	//(but only select the first message if the messages being archived are from the current folder)
+	private selectFirstMessageIfNoMessageIsSelected(folder: Ci.nsIMsgFolder, mail3PaneWindow: Mail3Pane)
+	{
+		if (folder === mail3PaneWindow.gFolderDisplay.displayedFolder)
+		{
+			if (mail3PaneWindow.gFolderDisplay.selectedCount <= 0)
+			{
+				mail3PaneWindow.gFolderDisplay.navigate(Components.interfaces.nsMsgNavigationType.firstMessage);
+			}
+		}
+		return folder;
+	}
 
-		batchMover.archiveMessages(messages);
-		*/
+	private convertMessages(messageIds: number[], messageManager: MessageManager)
+	{
+		//how to translate a webapi message into nsIMsgDBHdr?
+		//see https://groups.google.com/forum/#!topic/mozilla.dev.apps.thunderbird/zI_3yBYLiCM
+		//see https://bugzilla.mozilla.org/show_bug.cgi?id=1530606
+		//see https://thunderbird-webextensions.readthedocs.io/en/latest/how-to/experiments.html
 
-		return messageIds.length;
+		const realMessages: Ci.nsIMsgDBHdr[] = [];
+		for (const messageId of messageIds)
+		{
+			realMessages.push(messageManager.get(messageId));
+		}
+		return realMessages;
 	}
 }
