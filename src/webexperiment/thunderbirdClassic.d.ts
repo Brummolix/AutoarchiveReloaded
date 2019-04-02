@@ -104,7 +104,6 @@ declare namespace Components
 			public archiveMessages(messages: nsIMsgDBHdr[]): void;
 		}
 
-		//TODO: remove
 		//https://developer.mozilla.org/en-US/docs/Mozilla/Tech/XPCOM/Reference/Interface/nsIMsgAccount
 		class nsIMsgAccount
 		{
