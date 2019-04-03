@@ -90,7 +90,7 @@ namespace AutoarchiveReloaded
 
 				for (const folder of folders)
 				{
-					log.info("Check folder " + folder.name);
+					log.info("Check folder " + folder.name + " (" + folder.type + ")");
 					if ( this.folderShallBeIgnored(folder, folders))
 					{
 						log.info("ignore folder '" + folder.path + "' (" + folder.type + ")");
@@ -133,7 +133,7 @@ namespace AutoarchiveReloaded
 			//sent - yes, sure
 			//drafts - no, because you want to send them?
 			//trash - no, trash is trash
-			//templates - no, because you want to use it (TODO: does this still exist?)
+			//templates - no, because you want to use it
 			//junk - no junk is junk
 			//archives - no, we do archive
 			//outbox - no, must be sent? (TODO: does this still exist?)
