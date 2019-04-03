@@ -17,6 +17,10 @@ Copyright 2012 Alexey Egorov (original version Autoarchive, http://code.google.c
     You should have received a copy of the GNU General Public License
     along with AutoarchiveReloaded.  If not, see <http://www.gnu.org/licenses/>.
 */
+
+let iteratorUtils: IteratorUtils = ChromeUtils.import("resource:///modules/iteratorUtils.jsm");
+let mailservices: MailServicesExport = ChromeUtils.import("resource:///modules/MailServices.jsm");
+
 class LegacyOptions
 {
 	public askForLegacyPreferences(accounts: IAccountInfo[]): ISettings | null
@@ -69,7 +73,7 @@ class LegacyOptions
 
 		for (const accountInfo of accountInfos)
 		{
-			const accounts: Ci.nsIMsgAccount[] = fixIterator(MailServices.accounts.accounts, Ci.nsIMsgAccount);
+			const accounts: Ci.nsIMsgAccount[] = iteratorUtils.fixIterator(mailservices.MailServices.accounts.accounts, Ci.nsIMsgAccount);
 			let account;
 			for (const currentAccount of accounts)
 			{

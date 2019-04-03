@@ -17,11 +17,6 @@ Copyright 2012 Alexey Egorov (original version Autoarchive, http://code.google.c
     You should have received a copy of the GNU General Public License
     along with AutoarchiveReloaded.  If not, see <http://www.gnu.org/licenses/>.
 */
-ChromeUtils.import("resource://gre/modules/ExtensionCommon.jsm");
-ChromeUtils.import("resource://gre/modules/Services.jsm");
-
-ChromeUtils.import("resource:///modules/MailServices.jsm");
-ChromeUtils.import("resource:///modules/iteratorUtils.jsm");
 
 /// <reference path="ClassicTBHelper.ts" />
 

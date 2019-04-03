@@ -43,11 +43,18 @@ declare interface nsIJSCID
 	createInstance<T>(type: Type<T>): T;
 }
 
+type IteratorUtilsPath = "resource:///modules/iteratorUtils.jsm";
+type MailServicesPath = "resource:///modules/MailServices.jsm";
+
 declare namespace Components
 {
 	class utils
 	{
-		public static import(path: string): void;
+		//with TB67 the import is only possible with returning the imports, see https://wiki.mozilla.org/Thunderbird/Add-ons_Guide_63
+		//therefore the import function returns different types depending on the input path
+
+		public static import(path: IteratorUtilsPath): IteratorUtils;
+		public static import(path: MailServicesPath): MailServicesExport;
 		public static unload(path: string): void;
 		public static defineModuleGetter(param1: any, param2: any, param3: any): void;
 	}
@@ -364,9 +371,14 @@ declare class MailServicesAccounts
 	public accounts: Ci.nsISimpleEnumerator<Ci.nsIMsgAccount>;
 }
 
-declare class MailServices
+declare interface MailServicesExport
 {
-	public static accounts: MailServicesAccounts;
+	MailServices: MailServices;
+}
+
+declare interface MailServices
+{
+	accounts: MailServicesAccounts;
 }
 
 //https://developer.mozilla.org/en-US/docs/Mozilla/JavaScript_code_modules/Add-on_Manager/Addon
@@ -385,7 +397,10 @@ declare class AddonManager
 	public static getAllAddons(AddonListCallback: (addons: Addon[]) => void): void;
 }
 
-declare function fixIterator<T>(collection: Ci.nsISimpleEnumerator<T>, objectType: Type<T>): T[];
+interface IteratorUtils
+{
+	fixIterator<T>(collection: Ci.nsISimpleEnumerator<T>, objectType: Type<T>): T[];
+}
 
 //not official API
 declare class FolderDisplayViewDb
