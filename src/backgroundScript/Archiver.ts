@@ -230,7 +230,7 @@ namespace AutoarchiveReloaded
 
 			//TODO: How do we know, that archiving is possible at all?
 			//look into the first message of a folder and give it to a webapi experiment?
-			//maybe first check, what happens at all if archiving is disabled
+			//(right now simply nothing happens when you archive in such an account)
 
 			/*
 			//check if archive is possible for this message/in this account
