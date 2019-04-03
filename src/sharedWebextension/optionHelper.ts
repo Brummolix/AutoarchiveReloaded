@@ -85,8 +85,7 @@ namespace AutoarchiveReloaded
 			return null;
 		}
 
-		//TODO: rename initializePreferences?
-		public async convertLegacyPreferences(): Promise<void>
+		public async initializePreferencesAtStartup(): Promise<void>
 		{
 			log.info("start conversion of legacy preferences (if any)");
 
@@ -105,7 +104,7 @@ namespace AutoarchiveReloaded
 				{
 					log.info("no legacy preferences to convert");
 					await this.publishCurrentPreferencesForLogging();
-					log.info("publishForLogging done");
+					log.info("publishCurrentPreferencesForLogging done");
 				}
 			}
 			catch (e)

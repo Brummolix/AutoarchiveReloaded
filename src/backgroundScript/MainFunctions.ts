@@ -28,13 +28,13 @@ namespace AutoarchiveReloaded
 	}
 
 	//TODO: rename
-	//TODO: singleton
+	//TODO: singleton?
 	//singleton with global /startup/ui functions
-	export class Global
+	export class MainFunctions
 	{
 		private static status: States = States.UNINITIALZED;
 
-		public static async startup(): Promise<void>
+		public static async startupAndInitialzeAutomaticArchiving(): Promise<void>
 		{
 			log.info("start...");
 
@@ -63,29 +63,6 @@ namespace AutoarchiveReloaded
 			}
 		}
 
-		public static async onDoArchiveAutomatic(): Promise<void>
-		{
-			log.info("try automatic archive");
-			if (this.status !== States.READY_FOR_WORK)
-			{
-				log.info("automatic archive busy, wait");
-				//busy: wait 5 seconds
-				setTimeout(this.onDoArchiveAutomatic.bind(this), 5000);
-			}
-			else
-			{
-				await this.onDoArchive();
-			}
-		}
-
-		public static async onDoArchive(): Promise<void>
-		{
-			log.info("start archiving");
-			this.status = States.IN_PROGRESS;
-			const autoarchiveReloaded = new Archiver(this.onArchiveDone.bind(this));
-			await autoarchiveReloaded.archiveAccounts();
-		}
-
 		public static async onArchiveManually(): Promise<void>
 		{
 			log.info("try manual archive");
@@ -111,6 +88,29 @@ namespace AutoarchiveReloaded
 			{
 				log.info("manual archive canceled by user");
 			}
+		}
+
+		private static async onDoArchiveAutomatic(): Promise<void>
+		{
+			log.info("try automatic archive");
+			if (this.status !== States.READY_FOR_WORK)
+			{
+				log.info("automatic archive busy, wait");
+				//busy: wait 5 seconds
+				setTimeout(this.onDoArchiveAutomatic.bind(this), 5000);
+			}
+			else
+			{
+				await this.onDoArchive();
+			}
+		}
+
+		private static async onDoArchive(): Promise<void>
+		{
+			log.info("start archiving");
+			this.status = States.IN_PROGRESS;
+			const autoarchiveReloaded = new Archiver(this.onArchiveDone.bind(this));
+			await autoarchiveReloaded.archiveAccounts();
 		}
 
 		private static onArchiveDone(): void

@@ -25,15 +25,15 @@ namespace AutoarchiveReloaded
 	{
 		try
 		{
-			log.info("Hello world background.ts");
+			log.info("Autoarchive background script started");
 
 			browser.autoarchive.initToolbarConfigurationObserver();
 
 			browser.browserAction.onClicked.addListener(onArchiveManuallyClicked);
 
-			const helper: OptionHelper = new OptionHelper();
-			await helper.convertLegacyPreferences();
-			Global.startup();
+			const optionHelper: OptionHelper = new OptionHelper();
+			await optionHelper.initializePreferencesAtStartup();
+			await MainFunctions.startupAndInitialzeAutomaticArchiving();
 		}
 		catch (e)
 		{
@@ -54,7 +54,7 @@ namespace AutoarchiveReloaded
 			return;
 		}
 
-		await Global.onArchiveManually();
+		await MainFunctions.onArchiveManually();
 	}
 }
 
