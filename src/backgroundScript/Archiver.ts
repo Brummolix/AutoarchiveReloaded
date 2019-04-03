@@ -167,8 +167,6 @@ namespace AutoarchiveReloaded
 
 		private async shallMessageBeArchived(messageHeader: MessageHeader, settings: IAccountSettings): Promise<boolean>
 		{
-			//TODO: früher wurden MsgStatus Ci.nsMsgMessageFlags.IMAPDeleted ausgeschlossen, braucht man das noch?
-
 			//determine ageInDays
 			let ageInDays: number = 0;
 			let other: boolean = true;
