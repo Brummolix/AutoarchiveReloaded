@@ -65,7 +65,7 @@ Copyright 2019 Brummolix (new version AutoarchiveReloaded, https://github.com/Br
 					"private-constructor",
 					"public-static-method",
 					"protected-static-method",
-					"private-static-method",
+					"private-static-method"
 				]
 			}
 		],
