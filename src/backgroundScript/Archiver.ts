@@ -21,24 +21,12 @@ namespace AutoarchiveReloaded
 {
 	export class Archiver
 	{
-		private foldersArchived: number = 0;
-		private onDoneEvent: () => void;
-
-		constructor(onDoneEvent: () => void)
-		{
-			this.onDoneEvent = onDoneEvent;
-		}
-
 		//archive messages for all accounts
 		//(depending on the autoarchive options of the account)
 		public async archiveAccounts(): Promise<void>
 		{
 			try
 			{
-				this.foldersArchived = 0;
-
-				let countFoldersToArchive = 0;
-
 				const optionHelper: OptionHelper = new OptionHelper();
 				const settings: ISettings = await optionHelper.loadCurrentSettings();
 
@@ -54,8 +42,6 @@ namespace AutoarchiveReloaded
 							log.info("getting folders to archive in account '" + account.name + "'");
 
 							const foldersToArchive = this.getFoldersToArchive(account.folders);
-
-							countFoldersToArchive += foldersToArchive.length;
 							for (const folder of foldersToArchive)
 							{
 								await this.archiveFolder(folder, accountSettings);
@@ -71,8 +57,6 @@ namespace AutoarchiveReloaded
 						log.info("ignore account '" + account.name + "'");
 					}
 				});
-
-				this.checkForArchiveDone(countFoldersToArchive);
 			}
 			catch (e)
 			{
@@ -271,7 +255,6 @@ namespace AutoarchiveReloaded
 				{
 					//as virtual folders crash here, we only log the failure and treat the folder as "archived"...
 					log.errorException(e, "The exception might occur because the folder is a virtual folder... See https://bugzilla.mozilla.org/show_bug.cgi?id=1529791");
-					this.foldersArchived++;
 					return;
 				}
 				await this.detectMessagesToArchive(messageList, settings, messages);
@@ -288,8 +271,6 @@ namespace AutoarchiveReloaded
 					log.info("start real archiving of '" + folder.name + "' (" + messages.length + " messages) in account '" + mailAccount.name + "'");
 					await this.archiveMessages(messages);
 				}
-
-				this.foldersArchived++;
 			}
 			catch (e)
 			{
@@ -311,20 +292,6 @@ namespace AutoarchiveReloaded
 			catch (e)
 			{
 				log.errorException(e);
-			}
-		}
-
-		private checkForArchiveDone(foldersToArchive: number): void
-		{
-			//wait until all accounts are ready
-			if (this.foldersArchived === foldersToArchive)
-			{
-				//fire event
-				this.onDoneEvent();
-			}
-			else
-			{
-				setTimeout(this.checkForArchiveDone.bind(this, foldersToArchive), 500);
 			}
 		}
 	}

@@ -109,12 +109,8 @@ namespace AutoarchiveReloaded
 		{
 			log.info("start archiving");
 			this.status = States.IN_PROGRESS;
-			const autoarchiveReloaded = new Archiver(this.onArchiveDone.bind(this));
+			const autoarchiveReloaded = new Archiver();
 			await autoarchiveReloaded.archiveAccounts();
-		}
-
-		private static onArchiveDone(): void
-		{
 			log.info("archive (searching messages to archive) done");
 			this.status = States.READY_FOR_WORK;
 		}
