@@ -19,20 +19,17 @@ Copyright 2012 Alexey Egorov (original version Autoarchive, http://code.google.c
 */
 namespace AutoarchiveReloaded
 {
-	//TODO: rename
-	enum States
+	enum GlobalStates
 	{
 		UNINITIALZED,
 		READY_FOR_WORK,
 		IN_PROGRESS,
 	}
 
-	//TODO: rename
-	//TODO: singleton?
-	//singleton with global /startup/ui functions
+	//global static startup/ui functions
 	export class MainFunctions
 	{
-		private static status: States = States.UNINITIALZED;
+		private static status: GlobalStates = GlobalStates.UNINITIALZED;
 
 		public static async startupAndInitialzeAutomaticArchiving(): Promise<void>
 		{
@@ -41,7 +38,7 @@ namespace AutoarchiveReloaded
 			const appInfoLogger = new AppInfoLogger();
 			await appInfoLogger.log();
 
-			this.status = States.READY_FOR_WORK;
+			this.status = GlobalStates.READY_FOR_WORK;
 			log.info("ready for work");
 
 			const optionHelper: OptionHelper = new OptionHelper();
@@ -66,7 +63,7 @@ namespace AutoarchiveReloaded
 		public static async onArchiveManually(): Promise<void>
 		{
 			log.info("try manual archive");
-			if (this.status === States.UNINITIALZED)
+			if (this.status === GlobalStates.UNINITIALZED)
 			{
 				log.info("not initialized, cancel");
 
@@ -76,7 +73,7 @@ namespace AutoarchiveReloaded
 
 			if (await browser.autoarchive.confirm(browser.i18n.getMessage("dialogTitle"), browser.i18n.getMessage("dialogStartManualText")))
 			{
-				if (this.status === States.IN_PROGRESS)
+				if (this.status === GlobalStates.IN_PROGRESS)
 				{
 					log.info("busy with other archive..., cancel");
 					await browser.autoarchive.alert(browser.i18n.getMessage("dialogTitle"), browser.i18n.getMessage("waitForArchive"));
@@ -93,7 +90,7 @@ namespace AutoarchiveReloaded
 		private static async onDoArchiveAutomatic(): Promise<void>
 		{
 			log.info("try automatic archive");
-			if (this.status !== States.READY_FOR_WORK)
+			if (this.status !== GlobalStates.READY_FOR_WORK)
 			{
 				log.info("automatic archive busy, wait");
 				//busy: wait 5 seconds
@@ -108,11 +105,11 @@ namespace AutoarchiveReloaded
 		private static async onDoArchive(): Promise<void>
 		{
 			log.info("start archiving");
-			this.status = States.IN_PROGRESS;
+			this.status = GlobalStates.IN_PROGRESS;
 			const autoarchiveReloaded = new Archiver();
 			await autoarchiveReloaded.archiveAccounts();
 			log.info("archive (searching messages to archive) done");
-			this.status = States.READY_FOR_WORK;
+			this.status = GlobalStates.READY_FOR_WORK;
 		}
 	}
 }

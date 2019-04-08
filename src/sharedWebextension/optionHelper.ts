@@ -20,7 +20,7 @@ Copyright 2018-2019 Brummolix (AutoarchiveReloaded, https://github.com/Brummolix
 /// <reference path="AccountInfo.ts" />
 /// <reference path="Logger.ts" />
 /// <reference path="../sharedAll/interfaces.ts" />
-/// <reference path="OptionHandling.ts" />
+/// <reference path="DefaultSettings.ts" />
 /// <reference path="AccountIterator.ts" />
 
 namespace AutoarchiveReloaded
@@ -31,7 +31,7 @@ namespace AutoarchiveReloaded
 		{
 			log.info("start to load current settings");
 
-			const accounts: IAccountInfo[] = await this.askForAccounts();
+			const accounts: IAccountInfo[] = await AccountInfo.askForAccounts();
 
 			try
 			{
@@ -39,27 +39,11 @@ namespace AutoarchiveReloaded
 				const result: any = await browser.storage.local.get("settings");
 				//settings read succesfully...
 				log.info("loaded settings from storage");
-				const oHandling: OptionHandling = new OptionHandling();
+				const oHandling: DefaultSettings = new DefaultSettings();
 				const settings: ISettings = oHandling.convertPartialSettings(result.settings);
 
-				//every existing account should have a setting
-				accounts.forEach((account) =>
-				{
-					const accountSetting = settings.accountSettings[account.accountId];
-					if (accountSetting === undefined)
-					{
-						settings.accountSettings[account.accountId] = oHandling.getDefaultAccountSettings();
-					}
-				});
-
-				//no other account should be there
-				for (const accountId in settings.accountSettings)
-				{
-					if (this.findAccountInfo(accounts, accountId) === null)
-					{
-						delete settings.accountSettings[accountId];
-					}
-				}
+				this.ensureEveryExistingAccountHaveSettings(accounts, settings, oHandling);
+				this.removeOutdatedAccountsFromSettings(settings, accounts);
 
 				log.info("settings mixed with default settings");
 				return settings;
@@ -72,24 +56,34 @@ namespace AutoarchiveReloaded
 			}
 		}
 
-		public findAccountInfo(accountSettings: IAccountInfo[], id: string): IAccountInfo | null
+		private removeOutdatedAccountsFromSettings(settings: ISettings, accounts: IAccountInfo[])
 		{
-			for (const accountSetting of accountSettings)
+			for (const accountId in settings.accountSettings)
 			{
-				if (accountSetting.accountId === id)
+				if (AccountInfo.findAccountInfo(accounts, accountId) === null)
 				{
-					return accountSetting;
+					delete settings.accountSettings[accountId];
 				}
 			}
+		}
 
-			return null;
+		private ensureEveryExistingAccountHaveSettings(accounts: IAccountInfo[], settings: ISettings, oHandling: DefaultSettings)
+		{
+			accounts.forEach((account) =>
+			{
+				const accountSetting = settings.accountSettings[account.accountId];
+				if (accountSetting === undefined)
+				{
+					settings.accountSettings[account.accountId] = oHandling.getDefaultAccountSettings();
+				}
+			});
 		}
 
 		public async initializePreferencesAtStartup(): Promise<void>
 		{
 			log.info("start conversion of legacy preferences (if any)");
 
-			const accounts: IAccountInfo[] = await this.askForAccounts();
+			const accounts: IAccountInfo[] = await AccountInfo.askForAccounts();
 
 			const settings: ISettings | null = await browser.autoarchive.askForLegacyPreferences(accounts);
 			try
@@ -124,57 +118,6 @@ namespace AutoarchiveReloaded
 				await browser.storage.local.set({ settings: settings });
 				log.info("settings saved");
 				await this.publishCurrentPreferencesForLogging();
-			}
-			catch (e)
-			{
-				log.errorException(e);
-				throw e;
-			}
-		}
-
-		public async askForAccounts(): Promise<IAccountInfo[]>
-		{
-			try
-			{
-				const nsAccounts: MailAccount[] = [];
-				await AccountIterator.forEachAccount((account: MailAccount, isAccountArchivable: boolean) =>
-				{
-					if (isAccountArchivable)
-					{
-						nsAccounts.push(account);
-					}
-				});
-
-				nsAccounts.sort((a: MailAccount, b: MailAccount) =>
-				{
-					const mailTypeA: boolean = AccountInfo.isMailType(a);
-					const mailTypeB: boolean = AccountInfo.isMailType(b);
-
-					if (mailTypeA === mailTypeB)
-					{
-						return a.name.localeCompare(b.name);
-					}
-
-					if (mailTypeA)
-					{
-						return -1;
-					}
-
-					return 1;
-				});
-
-				const accounts: IAccountInfo[] = [];
-				let currentOrder = 0;
-				nsAccounts.forEach((account) =>
-				{
-					accounts.push({
-						accountId: account.id,
-						accountName: account.name,
-						order: currentOrder++,
-					});
-				});
-
-				return accounts;
 			}
 			catch (e)
 			{

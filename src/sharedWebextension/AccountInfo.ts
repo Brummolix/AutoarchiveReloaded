@@ -28,5 +28,69 @@ namespace AutoarchiveReloaded
 			//TODO: Is there still an exquilla type?
 			return (account.type === "pop3" || account.type === "imap" || account.type === "exquilla");
 		}
+
+		public static findAccountInfo(accountSettings: IAccountInfo[], id: string): IAccountInfo | null
+		{
+			for (const accountSetting of accountSettings)
+			{
+				if (accountSetting.accountId === id)
+				{
+					return accountSetting;
+				}
+			}
+
+			return null;
+		}
+
+		public static async askForAccounts(): Promise<IAccountInfo[]>
+		{
+			try
+			{
+				const nsAccounts: MailAccount[] = [];
+				await AccountIterator.forEachAccount((account: MailAccount, isAccountArchivable: boolean) =>
+				{
+					if (isAccountArchivable)
+					{
+						nsAccounts.push(account);
+					}
+				});
+
+				nsAccounts.sort((a: MailAccount, b: MailAccount) =>
+				{
+					const mailTypeA: boolean = AccountInfo.isMailType(a);
+					const mailTypeB: boolean = AccountInfo.isMailType(b);
+
+					if (mailTypeA === mailTypeB)
+					{
+						return a.name.localeCompare(b.name);
+					}
+
+					if (mailTypeA)
+					{
+						return -1;
+					}
+
+					return 1;
+				});
+
+				const accounts: IAccountInfo[] = [];
+				let currentOrder = 0;
+				nsAccounts.forEach((account) =>
+				{
+					accounts.push({
+						accountId: account.id,
+						accountName: account.name,
+						order: currentOrder++,
+					});
+				});
+
+				return accounts;
+			}
+			catch (e)
+			{
+				log.errorException(e);
+				throw e;
+			}
+		}
   }
 }

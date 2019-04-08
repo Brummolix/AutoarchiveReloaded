@@ -32,36 +32,40 @@ namespace AutoarchiveReloaded
 
 				await AccountIterator.forEachAccount(async (account: MailAccount, isAccountArchivable: boolean) =>
 				{
-					log.info("check account '" + account.name + "'");
-					if (isAccountArchivable)
-					{
-						const accountSettings = settings.accountSettings[account.id];
-						SettingsHelper.log(account.name, accountSettings);
-						if (SettingsHelper.isArchivingSomething(accountSettings))
-						{
-							log.info("getting folders to archive in account '" + account.name + "'");
-
-							const foldersToArchive = this.getFoldersToArchive(account.folders);
-							for (const folder of foldersToArchive)
-							{
-								await this.archiveFolder(folder, accountSettings);
-							}
-						}
-						else
-						{
-							log.info("autoarchive disabled, ignore account '" + account.name + "'");
-						}
-					}
-					else
-					{
-						log.info("ignore account '" + account.name + "'");
-					}
+					await this.archiveAccount(account, isAccountArchivable, settings);
 				});
 			}
 			catch (e)
 			{
 				log.errorException(e);
 				throw e;
+			}
+		}
+
+		private async archiveAccount(account: MailAccount, isAccountArchivable: boolean, settings: ISettings): Promise<void>
+		{
+			log.info("check account '" + account.name + "'");
+			if (isAccountArchivable)
+			{
+				const accountSettings = settings.accountSettings[account.id];
+				SettingsHelper.log(account.name, accountSettings);
+				if (SettingsHelper.isArchivingSomething(accountSettings))
+				{
+					log.info("getting folders to archive in account '" + account.name + "'");
+					const foldersToArchive = this.getFoldersToArchive(account.folders);
+					for (const folder of foldersToArchive)
+					{
+						await this.archiveFolder(folder, accountSettings);
+					}
+				}
+				else
+				{
+					log.info("autoarchive disabled, ignore account '" + account.name + "'");
+				}
+			}
+			else
+			{
+				log.info("ignore account '" + account.name + "'");
 			}
 		}
 
@@ -149,6 +153,64 @@ namespace AutoarchiveReloaded
 			return undefined;
 		}
 
+		private async archiveFolder(folder: MailFolder, settings: IAccountSettings): Promise<void>
+		{
+			try
+			{
+				const mailAccount: MailAccount = await browser.accounts.get(folder.accountId);
+				log.info("start searching messages to archive in folder '" + folder.path + "' (" + folder.type + ") in account '" + mailAccount.name + "'");
+				const messages: MessageHeader[] = await this.searchMessagesToArchive(folder, settings);
+				log.info("message search done for '" + folder.name + "' in account '" + mailAccount.name + "' -> " + messages.length + " messages found to archive");
+
+				if (messages.length > 0)
+				{
+					log.info("start real archiving of '" + folder.name + "' (" + messages.length + " messages) in account '" + mailAccount.name + "'");
+					await this.archiveMessages(messages);
+				}
+			}
+			catch (e)
+			{
+				log.errorException(e);
+				throw e;
+			}
+		}
+
+		private async searchMessagesToArchive(folder: MailFolder, settings: IAccountSettings): Promise<MessageHeader[]>
+		{
+			const messages: MessageHeader[] = [];
+
+			let messageList: MessageList;
+			try
+			{
+				messageList = await browser.messages.list(folder);
+			}
+			catch (e)
+			{
+				//as virtual folders crash here, we only log the failure and treat the folder as "archived"...
+				log.errorException(e, "The exception might occur because the folder is a virtual folder... See https://bugzilla.mozilla.org/show_bug.cgi?id=1529791");
+				return messages;
+			}
+			await this.detectMessagesToArchive(messageList, settings, messages);
+
+			while (messageList.id) {
+				messageList = await browser.messages.continueList(messageList.id);
+				await this.detectMessagesToArchive(messageList, settings, messages);
+			}
+
+			return messages;
+		}
+
+		private async detectMessagesToArchive(messageList: MessageList, settings: IAccountSettings, messages: MessageHeader[]): Promise<void>
+		{
+			for (const message of messageList.messages)
+			{
+				if (await this.shallMessageBeArchived(message, settings))
+				{
+					messages.push(message);
+				}
+			}
+		}
+
 		private async shallMessageBeArchived(messageHeader: MessageHeader, settings: IAccountSettings): Promise<boolean>
 		{
 			//determine ageInDays
@@ -224,59 +286,6 @@ namespace AutoarchiveReloaded
 			}
 			*/
 			return true;
-		}
-
-		private async detectMessagesToArchive(messageList: MessageList, settings: IAccountSettings, messages: MessageHeader[]): Promise<void>
-		{
-			for (const message of messageList.messages)
-			{
-				if (await this.shallMessageBeArchived(message, settings))
-				{
-					messages.push(message);
-				}
-			}
-		}
-
-		private async archiveFolder(folder: MailFolder, settings: IAccountSettings): Promise<void>
-		{
-			try
-			{
-				const mailAccount: MailAccount = await browser.accounts.get(folder.accountId);
-				log.info("start searching messages to archive in folder '" + folder.path + "' (" + folder.type + ") in account '" + mailAccount.name + "'");
-
-				const messages: MessageHeader[] = [];
-
-				let messageList: MessageList;
-				try
-				{
-					messageList = await browser.messages.list(folder);
-				}
-				catch (e)
-				{
-					//as virtual folders crash here, we only log the failure and treat the folder as "archived"...
-					log.errorException(e, "The exception might occur because the folder is a virtual folder... See https://bugzilla.mozilla.org/show_bug.cgi?id=1529791");
-					return;
-				}
-				await this.detectMessagesToArchive(messageList, settings, messages);
-
-				while (messageList.id) {
-					messageList = await browser.messages.continueList(messageList.id);
-					await this.detectMessagesToArchive(messageList, settings, messages);
-				}
-
-				log.info("message search done for '" + folder.name + "' in account '" + mailAccount.name + "' -> " + messages.length + " messages found to archive");
-
-				if (messages.length > 0)
-				{
-					log.info("start real archiving of '" + folder.name + "' (" + messages.length + " messages) in account '" + mailAccount.name + "'");
-					await this.archiveMessages(messages);
-				}
-			}
-			catch (e)
-			{
-				log.errorException(e);
-				throw e;
-			}
 		}
 
 		private async archiveMessages(messages: MessageHeader[]): Promise<void>

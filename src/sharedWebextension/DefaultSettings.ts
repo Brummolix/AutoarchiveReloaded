@@ -21,7 +21,7 @@ Copyright 2018-2019 Brummolix (AutoarchiveReloaded, https://github.com/Brummolix
 
 namespace AutoarchiveReloaded
 {
-	export class OptionHandling
+	export class DefaultSettings
 	{
 		public getDefaultAccountSettings(): IAccountSettings
 		{
