@@ -58,7 +58,6 @@ class ToolbarCustomizationDetection
 	{
 		log.info("toolbar customization detected");
 		this.bIsInToolbarCustomize = true;
-		console.log(this.bIsInToolbarCustomize);
 	}
 
 	private afterCustomize(e: Event): void
