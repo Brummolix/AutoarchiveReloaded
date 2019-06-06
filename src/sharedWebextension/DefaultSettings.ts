@@ -62,7 +62,7 @@ namespace AutoarchiveReloaded
 				return defaultValues;
 			}
 
-			const clone: T = Object.assign({}, defaultValues);
+			const clone: any = Object.assign({}, defaultValues);
 			for (const key in valuesToMerge)
 			{
 				if (valuesToMerge.hasOwnProperty(key))

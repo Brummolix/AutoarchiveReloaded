@@ -28,11 +28,7 @@ Copyright 2019 Brummolix (AutoarchiveReloaded, https://github.com/Brummolix/Auto
 
 //define a Type "keyword"
 //see https://github.com/Microsoft/TypeScript/issues/20719
-// tslint:disable-next-line:interface-name
-interface Type<T> extends Function
-{
-	new(...args: any[]): T;
-}
+type Type<T> = new(...args: any[]) => T;
 
 //LegacyAddOn--------------------------------------------------------------------------------------------------
 
@@ -441,7 +437,7 @@ declare class ThunderbirdNavigator extends Navigator
 declare class Mail3Pane extends Ci.nsIDOMWindow
 {
 	public gFolderDisplay: FolderDisplay;
-	public BatchMessageMover: { new(): Ci.BatchMessageMover }; //tricky, this is an inner class
+	public BatchMessageMover: new() => Ci.BatchMessageMover; //tricky, this is an inner class
 	public navigator: ThunderbirdNavigator;
 
 	public getIdentityForHeader(msg: Ci.nsIMsgDBHdr): MessageIdentity;
