@@ -244,7 +244,11 @@ namespace AutoarchiveReloaded
 			}
 
 			//tagged
-			if (messageHeader.tags.length > 0)
+
+			//GMail uses the tag "junk" to mark junk mails, but they shall not be classified as normal "tags"
+			const tags = messageHeader.tags.filter((tag) => tag !== "junk");
+
+			if (tags.length > 0)
 			{
 				if (!settings.bArchiveTagged)
 				{
