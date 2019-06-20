@@ -299,8 +299,9 @@ namespace AutoarchiveReloaded
 				const messageIds: number[] = [];
 				for (const message of messages) {
 					messageIds.push(message.id);
-				}
-				await browser.autoarchive.startToArchiveMessages(messageIds);
+			}
+
+				await browser.messages.archive(messageIds);
 			}
 			catch (e)
 			{

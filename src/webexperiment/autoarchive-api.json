@@ -35,22 +35,6 @@
         ]
       },
       {
-        "name": "startToArchiveMessages",
-        "type": "function",
-        "async": true,
-        "parameters": [
-          {
-            "name": "messageIds",
-						"type": "array",
-						"description": "The IDs of the messages to archive",
-						"items": {
-              "type": "integer",
-              "minimum": 1
-            }
-					}
-        ]
-			},
-      {
         "name": "initToolbarConfigurationObserver",
         "type": "function",
         "async": false,

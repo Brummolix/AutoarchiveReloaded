@@ -25,7 +25,6 @@ Copyright 2012 Alexey Egorov (original version Autoarchive, http://code.google.c
 //tslint:disable-next-line: no-var-keyword prefer-const
 var autoarchive = class extends ExtensionCommon.ExtensionAPI {
 	private toolbarCustomizationDetection: ToolbarCustomizationDetection = new ToolbarCustomizationDetection();
-	private archiver: Archiver = new Archiver();
 	private legacyOptions: LegacyOptions = new LegacyOptions();
 
 	public getAPI(context: ExtensionContext)
@@ -39,18 +38,6 @@ var autoarchive = class extends ExtensionCommon.ExtensionAPI {
 				confirm: async (title: string, text: string): Promise<boolean> =>
 				{
 					return await ClassicTBHelper.getThePromptService().confirm(null, title, text);
-				},
-				startToArchiveMessages: async (messageIds: number[]): Promise<void> =>
-				{
-					try
-					{
-						this.archiver.startToArchiveMessages(context.extension.messageManager, messageIds);
-					}
-					catch (e)
-					{
-						log.error(e);
-						throw e;
-					}
 				},
 				initToolbarConfigurationObserver: (): void =>
 				{

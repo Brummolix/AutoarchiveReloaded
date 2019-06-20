@@ -9,7 +9,7 @@
 	"browser_specific_settings": {
 		"gecko": {
 			"id": "AutoarchiveReloaded@brummolix.addons.mozilla.org",
-			"strict_min_version": "67"
+			"strict_min_version": "68"
 		}
 	},
 
@@ -20,7 +20,7 @@
 		"open_in_tab":true
 	},
 	
-	"permissions": ["storage","accountsRead","messagesRead"],
+	"permissions": ["storage","accountsRead","messagesRead","messagesMove"],
 
 	"applications": {
 		"gecko": {

@@ -250,14 +250,14 @@ declare interface messages
 
 	//move(messageIds: number[], destination: MailFolder); //return type?
 	//copy(messageIds: number[], destination: MailFolder); //return type?
-	//delete(messageIds: number[], ?skipTrash:boolean); //return type?
+  //delete(messageIds: number[], ?skipTrash:boolean); //return type?
+	archive(messageIds: number[]): Promise<void>;
 }
 
 declare interface AutoarchiveWebExperiment
 {
 	alert(title: string, text: string): Promise<void>;
 	confirm(title: string, text: string): Promise<boolean>;
-	startToArchiveMessages(messageIds: number[]): Promise<void>;
 	initToolbarConfigurationObserver(): void;
 	isToolbarConfigurationOpen(): Promise<boolean>;
 	askForLegacyPreferences(accounts: IAccountInfo[]): ISettings | null;
