@@ -7,7 +7,7 @@
     "archiveTypeTitle": {"message":"Archiver automatiquement"},
     "archiveTypeManual": {"message": "manuellement seulement (via le menu/outils) - recommendé"},
     "archiveTypeStartup": {"message": "à chaque démarrage de Thunderbird (et répété après chaque jour)"},
-    "enableInfoLoggingOption": {"message": "activer la journalisation étendue (console d'erreurs et fichier AutoarchiveReloadedLog.txt dans le dossier de votre profil)"},
+    "enableInfoLoggingOption": {"message": "activer la journalisation étendue (console d'erreurs)"},
     "globalSettingsStartupDescription":{"message":"L'archivage automatique après le démarrage de Thunderbird n'est pas recommandé pour les comptes IMAP, car il peut y avoir des problèmes si le serveur / la connexion Internet sont absents (les messages sont archivés deux fois)."},
 	"saveSettings":{"message":"Sauvegarder les paramètres"},
 	"settingsSaved":{"message":"Paramètres sauvegardés."},

@@ -7,7 +7,7 @@
     "archiveTypeTitle": {"message":"Режим работы авто архивирования"},
     "archiveTypeManual": {"message": "вручную (Инструменты->Архивировать сейчас) - рекомендовано"},
     "archiveTypeStartup": {"message": "при каждом запуске Thunderbird (повторяется каждый день)"},
-    "enableInfoLoggingOption": {"message": "активировать расширенный лог (ошибки консоли и файл AutoarchiveReloadedLog.txt поместятся в профиль вашей учетки)"},
+    "enableInfoLoggingOption": {"message": "активировать расширенный лог (ошибки консоли)"},
     "globalSettingsStartupDescription":{"message":"Авто архивация после старта Thunderbird не рекомендутеся для IMAP аккаутов, так как могут быть проблемы если подключение к серверу отсутствует  (сообщения могу архивироваться дважды)."},
 	"saveSettings":{"message":"Сохранить настройки"},
 	"settingsSaved":{"message":"Настройки сохранены."},

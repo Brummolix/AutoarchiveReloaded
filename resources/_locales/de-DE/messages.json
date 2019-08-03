@@ -7,7 +7,7 @@
     "archiveTypeTitle": {"message":"Autoarchiv Zeitpunkt"},
     "archiveTypeManual": {"message":"nur manuell (mit Menü/Symbolleiste) - empfohlen"},
     "archiveTypeStartup": {"message":"bei jedem Start von Thunderbird (und wiederholt nach jeweils 1 Tag)"},
-    "enableInfoLoggingOption": {"message": "erweitertes Logging aktivieren (Fehlerkonsole und AutoarchiveReloadedLog.txt Datei in Ihrem Profilordner)"},
+    "enableInfoLoggingOption": {"message": "erweitertes Logging aktivieren (in der Fehlerkonsole)"},
     "globalSettingsStartupDescription":{"message":"Die Archivierung bei jedem Start kann bei IMAP Konten momentan nicht empfohlen werden, weil es Probleme geben kann, wenn keine Verbindung zum Server besteht (Nachrichten werden unter Umständen doppelt archiviert)."},
 	"saveSettings":{"message":"Einstellungen speichern"},
 	"settingsSaved":{"message":"Die Einstellungen wurden gespeichert."},
