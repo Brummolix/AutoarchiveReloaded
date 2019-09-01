@@ -6,10 +6,10 @@
 	"author": "__MSG_addOnAuthor__",
 	"homepage_url": "http://brummolix.github.io/AutoarchiveReloaded/",
 	
-	"browser_specific_settings": {
+	"applications": {
 		"gecko": {
 			"id": "AutoarchiveReloaded@brummolix.addons.mozilla.org",
-			"strict_min_version": "68"
+			"strict_min_version": "68.0"
 		}
 	},
 
@@ -21,12 +21,6 @@
 	},
 	
 	"permissions": ["storage","accountsRead","messagesRead","messagesMove"],
-
-	"applications": {
-		"gecko": {
-		  "id": "AutoarchiveReloaded@brummolix.addons.mozilla.org"
-		}
-	},
 
 	"background": {
 		"scripts": ["background.js"]
@@ -55,5 +49,5 @@
         "script": "autoarchive-api.js"
       }
     }
-}
+	}
 }
