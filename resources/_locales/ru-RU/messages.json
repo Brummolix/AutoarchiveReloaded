@@ -5,11 +5,12 @@
     "settingsHeadline": {"message": "Настройки расширения AutoarchiveReloaded"},
     "globalSettingsDescription": {"message":"Пожалуйста, посмотрите настройки каждого аккаунта. Без настройки автоархивация не будет работать."},
     "archiveTypeTitle": {"message":"Режим работы авто архивирования"},
-    "archiveTypeManual": {"message": "вручную (Инструменты->Архивировать сейчас) - рекомендовано"},
+    "archiveTypeManual": {"message": "вручную (Панель инструментов) - рекомендовано"},
     "archiveTypeStartup": {"message": "при каждом запуске Thunderbird (повторяется каждый день)"},
     "enableInfoLoggingOption": {"message": "активировать расширенный лог (ошибки консоли)"},
     "globalSettingsStartupDescription":{"message":"Авто архивация после старта Thunderbird не рекомендутеся для IMAP аккаутов, так как могут быть проблемы если подключение к серверу отсутствует  (сообщения могу архивироваться дважды)."},
 	"saveSettings":{"message":"Сохранить настройки"},
+	"usageHelp":{"message":"You can start autoarchiving manually via an own symbol in the toolbar. If the symbol is not there, you have to set this up once. In the main tab of Thunderbird press the right mouse button at the toolbar and choose 'customize'. Find the Autoarchive symbol und drag at the toolbar."},
 	"settingsSaved":{"message":"Настройки сохранены."},
 
     "settingsDescription2":{"message":"Пожалуйста помните: Помимо этих опций Вы также должны настроить настройки ахивирования в настройках почтового ящика в разделе Копии и Папки! Примечание: Эти настройки не доступны для подписок(RSS) или локальных папок. Вы можете архивировать их только с настройками по умолчанию (или установить в глобальном конфиге вручную 'mail.identity.default.archive_granularity' / 'mail.identity.default.archive_keep_folder_structure')."},

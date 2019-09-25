@@ -5,11 +5,12 @@
     "settingsHeadline": {"message": "AutoarchiveReloaded settings"},
     "globalSettingsDescription": {"message":"Please see also the settings at every account. Without them nothing will be archived automatically."},
     "archiveTypeTitle": {"message":"Autoarchive time"},
-    "archiveTypeManual": {"message": "manually only (via menu/toolbar) - recommended"},
+    "archiveTypeManual": {"message": "manually only (via toolbar) - recommended"},
     "archiveTypeStartup": {"message": "at every Thunderbird startup (and repeated after every day)"},
     "enableInfoLoggingOption": {"message": "activate extended Logging (in the error console)"},
     "globalSettingsStartupDescription":{"message":"Autoarchiving after Thunderbird start is not recommended for IMAP accounts, because there may be problems if the server/internet connection is missing (messages are archived twice)."},
 	"saveSettings":{"message":"Save settings"},
+	"usageHelp":{"message":"You can start autoarchiving manually via an own symbol in the toolbar. If the symbol is not there, you have to set this up once. In the main tab of Thunderbird press the right mouse button at the toolbar and choose 'customize'. Find the Autoarchive symbol und drag at the toolbar."},
 	"settingsSaved":{"message":"Settings saved."},
 
     "settingsDescription2":{"message": "Please also remember: Beside this options you also have to set up the Thunderbird archive settings under 'Copies & Folders'! Note: These settings are not available for feed accounts (e.g. RSS) or local folders. You can archive them only with default settings (or die set the globalen configs 'mail.identity.default.archive_granularity' / 'mail.identity.default.archive_keep_folder_structure' manually)."},

@@ -5,11 +5,12 @@
     "settingsHeadline": {"message": "AutoarchiveReloaded Einstellungen"},
     "globalSettingsDescription": {"message":"Bitte beachten Sie auch die Konto-spezifischen Einstellungen. Ohne diese wird nichts automatisch archiviert."},
     "archiveTypeTitle": {"message":"Autoarchiv Zeitpunkt"},
-    "archiveTypeManual": {"message":"nur manuell (mit Menü/Symbolleiste) - empfohlen"},
+    "archiveTypeManual": {"message":"nur manuell (über Symbolleiste) - empfohlen"},
     "archiveTypeStartup": {"message":"bei jedem Start von Thunderbird (und wiederholt nach jeweils 1 Tag)"},
     "enableInfoLoggingOption": {"message": "erweitertes Logging aktivieren (in der Fehlerkonsole)"},
     "globalSettingsStartupDescription":{"message":"Die Archivierung bei jedem Start kann bei IMAP Konten momentan nicht empfohlen werden, weil es Probleme geben kann, wenn keine Verbindung zum Server besteht (Nachrichten werden unter Umständen doppelt archiviert)."},
 	"saveSettings":{"message":"Einstellungen speichern"},
+	"usageHelp":{"message":"Die AutoArchivierung kann über einen eigenes Symbol in der Symbolleiste gestartet werden. Wenn das Symbol in der Symbolleiste nicht sichtbar ist, müssen Sie es sich einmalig an die gewünschte Stelle legen. Drücken Sie dazu im Haupt Tab von Thunderbird mit der rechten Maustaste auf die Symbolleiste und wählen Sie 'anpassen...'. Suchen Sie dann das Autoarchivieren Symbol und ziehen Sie es an die gewünschte Stelle."},
 	"settingsSaved":{"message":"Die Einstellungen wurden gespeichert."},
 
     "settingsDescription2":{"message": "Bitte beachten: Neben den Einstellungen hier, müssen auch noch die Thunderbird Archiv Einstellungen unter 'Kopien & Ordner' vorgenommen werden. In Konten für Feeds (z.B. RSS) und lokalen Ordnern sind diese allerdings nicht verfügbar. Dort können Sie nur mit den Standardeinstellungen archivieren (oder die globalen Optionen 'mail.identity.default.archive_granularity' / 'mail.identity.default.archive_keep_folder_structure' manuell setzen)."},
