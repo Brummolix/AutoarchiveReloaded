@@ -2,29 +2,29 @@
 	"addOnDescription": {"message": "Archivez automatiquement les vieux messages"},
 	"addOnAuthor": {"message": "Brummolix (version originale créée par Alexey Egorov)"},
 
-    "settingsHeadline": {"message": "Paramètres d'AutoarchiveReloaded"},
-    "globalSettingsDescription": {"message":"Veuillez également définir les paramètres de chaque compte. Sans cela rien ne sera archivé automatiquement."},
-    "archiveTypeTitle": {"message":"Archiver automatiquement"},
-    "archiveTypeManual": {"message": "manuellement seulement (via le outils) - recommendé"},
-    "archiveTypeStartup": {"message": "à chaque démarrage de Thunderbird (et répété après chaque jour)"},
-    "enableInfoLoggingOption": {"message": "activer la journalisation étendue (console d'erreurs)"},
-    "globalSettingsStartupDescription":{"message":"L'archivage automatique après le démarrage de Thunderbird n'est pas recommandé pour les comptes IMAP, car il peut y avoir des problèmes si le serveur / la connexion Internet sont absents (les messages sont archivés deux fois)."},
+	"settingsHeadline": {"message": "Paramètres d'AutoarchiveReloaded"},
+	"globalSettingsDescription": {"message":"Veuillez également définir les paramètres de chaque compte. Sans cela rien ne sera archivé automatiquement."},
+	"archiveTypeTitle": {"message":"Archiver automatiquement"},
+	"archiveTypeManual": {"message": "manuellement seulement (via le outils) - recommendé"},
+	"archiveTypeStartup": {"message": "à chaque démarrage de Thunderbird (et répété après chaque jour)"},
+	"enableInfoLoggingOption": {"message": "activer la journalisation étendue (console d'erreurs)"},
+	"globalSettingsStartupDescription":{"message":"L'archivage automatique après le démarrage de Thunderbird n'est pas recommandé pour les comptes IMAP, car il peut y avoir des problèmes si le serveur / la connexion Internet sont absents (les messages sont archivés deux fois)."},
 	"saveSettings":{"message":"Sauvegarder les paramètres"},
 	"usageHelp":{"message":"You can start autoarchiving manually via an own symbol in the toolbar. If the symbol is not there, you have to set this up once. In the main tab of Thunderbird press the right mouse button at the toolbar and choose 'customize'. Find the Autoarchive symbol und drag at the toolbar."},
 	"settingsSaved":{"message":"Paramètres sauvegardés."},
+ 
+	"settingsDescription2":{"message": "Souvenez-vous: En plus de cette option vous devez également configurer les paramètres d'archivage de Thunderbird dans 'Copies & Dossiers'! Note: Ces paramètres ne sont pas disponibles pour les comptes de flux (ex: RSS) ou les dossiers locaux. Vous pouvez seulement les archiver avec les paramètres par défaut (ou en définissant manuellement les préférences globales 'mail.identity.default.archive_granularity' / 'mail.identity.default.archive_keep_folder_structure')."},
 
-    "settingsDescription2":{"message": "Souvenez-vous: En plus de cette option vous devez également configurer les paramètres d'archivage de Thunderbird dans 'Copies & Dossiers'! Note: Ces paramètres ne sont pas disponibles pour les comptes de flux (ex: RSS) ou les dossiers locaux. Vous pouvez seulement les archiver avec les paramètres par défaut (ou en définissant manuellement les préférences globales 'mail.identity.default.archive_granularity' / 'mail.identity.default.archive_keep_folder_structure')."},
-    
-    "archiveMessages":{"message": "Archiver tous les autres messages de plus de "},
-    "archiveTagged":{"message": "Archives les messages étiquetés (avec des mots-clés) de plus de "},
-    "archiveStarred":{"message": "Archives les messages suivis (avec une étoile) de plus de "},
-    "archiveUnread":{"message": "Archiver les messages non-lus de plus de "},
-    
-    "days":{"message": "jours"},
-    "globalSettings":{"message": "General"},
-    "logging":{"message": "Journalisation"},
+	"archiveMessages":{"message": "Archiver tous les autres messages de plus de "},
+	"archiveTagged":{"message": "Archives les messages étiquetés (avec des mots-clés) de plus de "},
+	"archiveStarred":{"message": "Archives les messages suivis (avec une étoile) de plus de "},
+	"archiveUnread":{"message": "Archiver les messages non-lus de plus de "},
+
+	"days":{"message": "jours"},
+	"globalSettings":{"message": "General"},
+	"logging":{"message": "Journalisation"},
 	"accountSettingTitle":{"message": "paramètres spécifiques au compte §§TITLE§§"},
-	
+
 	"toolbarArchive":{"message": "Archivage automatique..."},
 	"toolbarArchiveTooltip":{"message": "Archiver automatiquement maintenant"},
 

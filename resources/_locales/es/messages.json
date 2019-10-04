@@ -2,32 +2,32 @@
 	"addOnDescription": {"message": "Archiva correos antiguos automáticamente"},
 	"addOnAuthor": {"message": "Brummolix (versión original creada por Alexey Egorov)"},
 
-    "settingsHeadline": {"message": "Configuración de auto-archivado"},
-    "globalSettingsDescription": {"message":"Por favor revisa también la configurción de cada cuenta. Sin esto no se archivara automáticamente."},
-    "archiveTypeTitle": {"message":"Modo de autoarchivado"},
-    "archiveTypeManual": {"message": "Únicamente manual (via barra de herramientas) - recomendado"},
-    "archiveTypeStartup": {"message": "Al iniciar Thunderbird (y repetir cada día)"},
-    "enableInfoLoggingOption": {"message": "Activar extensión de rastreo (consola)"},
-    "globalSettingsStartupDescription":{"message":"No es recomendado autoarchivar después de iniciar Thunderbird para cuentas IMAP, puede causar problemas si no cuenta con una conexión a Internet o al servidor de IMAP (los mensajes pueden ser duplicados)."},
+	"settingsHeadline": {"message": "Configuración de auto-archivado"},
+	"globalSettingsDescription": {"message":"Por favor revisa también la configurción de cada cuenta. Sin esto no se archivara automáticamente."},
+	"archiveTypeTitle": {"message":"Modo de autoarchivado"},
+	"archiveTypeManual": {"message": "Únicamente manual (via barra de herramientas) - recomendado"},
+	"archiveTypeStartup": {"message": "Al iniciar Thunderbird (y repetir cada día)"},
+	"enableInfoLoggingOption": {"message": "Activar extensión de rastreo (consola)"},
+	"globalSettingsStartupDescription":{"message":"No es recomendado autoarchivar después de iniciar Thunderbird para cuentas IMAP, puede causar problemas si no cuenta con una conexión a Internet o al servidor de IMAP (los mensajes pueden ser duplicados)."},
 	"saveSettings":{"message":"Save settings"},
 	"usageHelp":{"message":"You can start autoarchiving manually via an own symbol in the toolbar. If the symbol is not there, you have to set this up once. In the main tab of Thunderbird press the right mouse button at the toolbar and choose 'customize'. Find the Autoarchive symbol und drag at the toolbar."},
 	"settingsSaved":{"message":"Settings saved."},
 
-    "settingsDescription2":{"message": "Por favor recuerda: ¡A un lado de estas opciones tienes la configuración de archivado de Thunderbird en 'Copias y carpetas'! Estas configuraciones no estan disponibles para cuentas RSS o 'Carpetas locales'. Puedes archivarlos únicamente con la configuración predeterminada (o en el 'Editor de confiuración' en 'Configuración avanzada' modificando manualmente las entradas 'mail.identity.default.archive_granularity' y 'mail.identity.default.archive_keep_folder_structure')."},
-    
-    "archiveMessages":{"message": "Archivar todos los otros mensajes mas viejos que "},
-    "archiveTagged":{"message": "Archivar los mensajes etiquetados mas viejos que "},
-    "archiveStarred":{"message": "Archivar los mensajes destacados mas viejos que "},
-    "archiveUnread":{"message": "Archivar los mensajes no leídos mas viejos que "},
-    
-    "days":{"message": "días"},
-    "globalSettings":{"message": "General"},
-    "logging":{"message": "Logging"},
+	"settingsDescription2":{"message": "Por favor recuerda: ¡A un lado de estas opciones tienes la configuración de archivado de Thunderbird en 'Copias y carpetas'! Estas configuraciones no estan disponibles para cuentas RSS o 'Carpetas locales'. Puedes archivarlos únicamente con la configuración predeterminada (o en el 'Editor de confiuración' en 'Configuración avanzada' modificando manualmente las entradas 'mail.identity.default.archive_granularity' y 'mail.identity.default.archive_keep_folder_structure')."},
+
+	"archiveMessages":{"message": "Archivar todos los otros mensajes mas viejos que "},
+	"archiveTagged":{"message": "Archivar los mensajes etiquetados mas viejos que "},
+	"archiveStarred":{"message": "Archivar los mensajes destacados mas viejos que "},
+	"archiveUnread":{"message": "Archivar los mensajes no leídos mas viejos que "},
+
+	"days":{"message": "días"},
+	"globalSettings":{"message": "General"},
+	"logging":{"message": "Logging"},
 	"accountSettingTitle":{"message": "specific settings for account §§TITLE§§"},
-	
+
 	"toolbarArchive":{"message": "Autoarchivar..."},
 	"toolbarArchiveTooltip":{"message": "Autoarchivar ahora"},
-	
+
 	"waitForInit":{"message": "Por favor espera hasta que 'AutoarchiveReloaded' este inicializado. Por favor intenta más tarde."},
 	"waitForArchive":{"message": "Por favor espera hasta que el progreso de autoarchivado este terminado. Por favor intenta más tarde."},
 	"dialogStartManualText":{"message": "Para archivar mensajes en cuentas IMAP necesitas conectividad a internet (o conexión al servidor de IMAP). De lo contrario (por un error de Thunderbird) los mensajes pueden ser duplicados. ¿Deseas continuar?"},
