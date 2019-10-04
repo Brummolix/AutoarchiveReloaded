@@ -30,7 +30,6 @@
 
 	"waitForInit":{"message": "Пожалуйста, подождите, пока AutoarchiveReloaded проведет инициализацию. Повторить позже."},
 	"waitForArchive":{"message": "Пожалуйста, подождите, пока AutoarchiveReloaded закончит работу. Повторите позже."},
-	"dialogTitle":{"message": "AutoarchiveReloaded"},
 	"dialogStartManualText":{"message": "Для архивации сообщений IMAP аккаунта должно быть соединение с сервером. В противном случае (из-за ошибки Thunderbird) сообщений могут быть продублированы. Продолжить (если соединение с сервером присутствует)?"},
-	"menuArchive":{"message": "Архивировать сейчас..."}
+	"buttonArchive":{"message": "Архивировать сейчас"}
 }

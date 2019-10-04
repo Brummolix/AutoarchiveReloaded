@@ -27,13 +27,10 @@ namespace AutoarchiveReloaded
 		{
 			log.info("Autoarchive background script started");
 
-			browser.autoarchive.initToolbarConfigurationObserver();
-
-			browser.browserAction.onClicked.addListener(onArchiveManuallyClicked);
-
 			const optionHelper: OptionHelper = new OptionHelper();
 			await optionHelper.initializePreferencesAtStartup();
 			await MainFunctions.startupAndInitialzeAutomaticArchiving();
+			browser.runtime.onMessage.addListener(handleMessage);
 		}
 		catch (e)
 		{
@@ -42,19 +39,23 @@ namespace AutoarchiveReloaded
 		}
 	}
 
-	async function onArchiveManuallyClicked(): Promise<void>
-	{
-		//TODO: disable button in mailwindow (or only enable it in mail3pane) -> how to detect?
-
-		//it would be better to detect if the buttons are configured right now and do nothing in this case
-		//but as we don't know how to do it for a web extension it will be done in the webexperiment
-		if (await browser.autoarchive.isToolbarConfigurationOpen())
+	function handleMessage(request: any, sender: RuntimeMessageSender, sendResponse: RuntimeMessageResponseFunction) {
+		switch (request.message)
 		{
-			log.info("archive manually rejected because of toolbar customization");
-			return;
+			case "getArchiveStatus":
+			{
+				log.info("background script getArchiveStatus");
+				sendResponse({status: MainFunctions.getStatus()});
+				break;
+			}
+			case "archiveManually":
+			{
+				log.info("user choosed to archive manually");
+				MainFunctions.onArchiveManually(); //without await...
+				sendResponse(null);
+				break;
+			}
 		}
-
-		await MainFunctions.onArchiveManually();
 	}
 }
 

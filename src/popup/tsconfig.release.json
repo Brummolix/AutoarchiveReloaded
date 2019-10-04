@@ -1,6 +1,5 @@
 /*!
-Copyright 2013-2019 Brummolix (new version AutoarchiveReloaded, https://github.com/Brummolix/AutoarchiveReloaded )
-Copyright 2012 Alexey Egorov (original version Autoarchive, http://code.google.com/p/autoarchive/ )
+Copyright 2018-2019 Brummolix (new version AutoarchiveReloaded, https://github.com/Brummolix/AutoarchiveReloaded )
 
  This file is part of AutoarchiveReloaded.
 
@@ -17,15 +16,9 @@ Copyright 2012 Alexey Egorov (original version Autoarchive, http://code.google.c
     You should have received a copy of the GNU General Public License
     along with AutoarchiveReloaded.  If not, see <http://www.gnu.org/licenses/>.
 */
-class ClassicTBHelper
 {
-	public static getThePromptService(): Ci.nsIPromptService
-	{
-		return Components.classes["@mozilla.org/embedcomp/prompt-service;1"].getService(Components.interfaces.nsIPromptService);
-	}
-
-	public static getMail3Pane(): Mail3Pane
-	{
-		return Cc["@mozilla.org/appshell/window-mediator;1"].getService(Ci.nsIWindowMediator).getMostRecentWindow("mail:3pane");
-	}
+    "extends": "tsconfig.json",
+    "compilerOptions": {
+        "removeComments":true
+    }
 }

@@ -34,7 +34,8 @@ declare class RuntimeMessageSender
 }
 
 //https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/runtime/onMessage
-type RuntimeMessageListener = (message: any, sender: RuntimeMessageSender, sendResponse: (response: object | null) => void) => void;
+type RuntimeMessageResponseFunction = (response: object | null) => void;
+type RuntimeMessageListener = (message: any, sender: RuntimeMessageSender, sendResponse: RuntimeMessageResponseFunction) => void;
 
 declare interface RuntimeMessageListeners extends IListeners<RuntimeMessageListener>
 {
@@ -256,10 +257,6 @@ declare interface messages
 
 declare interface AutoarchiveWebExperiment
 {
-	alert(title: string, text: string): Promise<void>;
-	confirm(title: string, text: string): Promise<boolean>;
-	initToolbarConfigurationObserver(): void;
-	isToolbarConfigurationOpen(): Promise<boolean>;
 	askForLegacyPreferences(accounts: IAccountInfo[]): ISettings | null;
 	setInfoLogging(value: boolean): void;
 }

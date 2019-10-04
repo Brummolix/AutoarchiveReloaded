@@ -3,50 +3,6 @@
     "namespace": "autoarchive",
     "functions": [
       {
-        "name": "alert",
-        "type": "function",
-        "description": "show message",
-        "async": true,
-        "parameters": [
-          {
-            "name": "title",
-            "type": "string"
-					},
-          {
-            "name": "text",
-            "type": "string"
-          }
-        ]
-			},
-      {
-        "name": "confirm",
-        "type": "function",
-        "description": "ask for confirmation",
-        "async": true,
-        "parameters": [
-          {
-            "name": "title",
-            "type": "string"
-					},
-          {
-            "name": "text",
-            "type": "string"
-          }
-        ]
-      },
-      {
-        "name": "initToolbarConfigurationObserver",
-        "type": "function",
-        "async": false,
-        "parameters": []
-      },
-      {
-        "name": "isToolbarConfigurationOpen",
-        "type": "function",
-        "async": true,
-        "parameters": []
-			},
-      {
         "name": "askForLegacyPreferences",
         "type": "function",
         "async": true,

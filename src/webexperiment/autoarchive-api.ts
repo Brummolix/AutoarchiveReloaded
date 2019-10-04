@@ -18,44 +18,16 @@ Copyright 2012 Alexey Egorov (original version Autoarchive, http://code.google.c
     along with AutoarchiveReloaded.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-/// <reference path="ClassicTBHelper.ts" />
-
 //Attention it HAVE TO be var, otherwise the extension api is not working
 //@ts-ignore: 'autoarchive' is declared but its value is never read
 //tslint:disable-next-line: no-var-keyword prefer-const
 var autoarchive = class extends ExtensionCommon.ExtensionAPI {
-	private toolbarCustomizationDetection: ToolbarCustomizationDetection = new ToolbarCustomizationDetection();
 	private legacyOptions: LegacyOptions = new LegacyOptions();
 
 	public getAPI(context: ExtensionContext)
 	{
 		return {
 			autoarchive: {
-				alert: async (title: string, text: string): Promise<void> =>
-				{
-					await ClassicTBHelper.getThePromptService().alert(null, title, text);
-				},
-				confirm: async (title: string, text: string): Promise<boolean> =>
-				{
-					return await ClassicTBHelper.getThePromptService().confirm(null, title, text);
-				},
-				initToolbarConfigurationObserver: (): void =>
-				{
-					try
-					{
-						this.toolbarCustomizationDetection.registerToolbarCustomizationListener(ClassicTBHelper.getMail3Pane());
-					}
-					catch (e)
-					{
-						log.error(e);
-						throw e;
-					}
-				},
-				//normally it did not have to be async, but the return value did not work in this case
-				isToolbarConfigurationOpen: async (): Promise<boolean> =>
-				{
-					return this.toolbarCustomizationDetection.isInToolbarCustomize;
-				},
 				askForLegacyPreferences: async (accounts: IAccountInfo[]): Promise<ISettings | null> =>
 				{
 					log.info("askForLegacyPreferences");

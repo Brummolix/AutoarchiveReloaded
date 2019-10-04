@@ -38,6 +38,8 @@ module.exports = function(grunt) {
 													src: ["**", "!**/*.ts", "!**/tsconfig*.json"], dest: outDirExtracted },
 					{ expand: true, cwd: srcDir + "/webexperiment/",
 													src: ["**", "!**/*.ts", "!**/tsconfig*.json"], dest: outDirExtracted },
+					{ expand: true, cwd: srcDir + "/popup/",
+													src: ["**", "!**/*.ts", "!**/tsconfig*.json"], dest: outDirExtracted },
 					{ expand: true, src: ["./licence.txt", "./README.md"], dest: outDirExtracted },
 				],
 			},
@@ -52,6 +54,9 @@ module.exports = function(grunt) {
 			webexperiment: {
 				tsconfig: "./src/webexperiment/tsconfig.json",
 			},
+			popup: {
+				tsconfig: "./src/popup/tsconfig.json",
+			},
 			release_background: {
 				tsconfig: "./src/backgroundScript/tsconfig.release.json",
 			},
@@ -60,6 +65,9 @@ module.exports = function(grunt) {
 			},
 			release_webexperiment: {
 				tsconfig: "./src/webexperiment/tsconfig.release.json",
+			},
+			release_popup: {
+				tsconfig: "./src/popup/tsconfig.release.json",
 			},
 		},
 		// make a zipfile
@@ -101,7 +109,8 @@ module.exports = function(grunt) {
 
 	// Default task(s).
 	grunt.registerTask("default",
-		["clean", "copy", "ts:background", "ts:settings", "ts:webexperiment", "tslint", "compress"]);
+		["clean", "copy", "ts:background", "ts:settings", "ts:webexperiment", "ts:popup","tslint", "compress"]);
 	grunt.registerTask("release",
-		["clean", "copy", "ts:release_background", "ts:release_settings", "ts:release_webexperiment", "tslint", "compress"]);
+		["clean", "copy", "ts:release_background", "ts:release_settings", "ts:release_webexperiment", "ts:release_popup", 
+		 "tslint", "compress"]);
 };

@@ -17,15 +17,11 @@ Copyright 2012 Alexey Egorov (original version Autoarchive, http://code.google.c
     You should have received a copy of the GNU General Public License
     along with AutoarchiveReloaded.  If not, see <http://www.gnu.org/licenses/>.
 */
+
+/// <reference path="../sharedWebextension/GlobalStates.ts" />
+
 namespace AutoarchiveReloaded
 {
-	enum GlobalStates
-	{
-		UNINITIALZED,
-		READY_FOR_WORK,
-		IN_PROGRESS,
-	}
-
 	//global static startup/ui functions
 	export class MainFunctions
 	{
@@ -60,31 +56,14 @@ namespace AutoarchiveReloaded
 			}
 		}
 
+		public static getStatus(): GlobalStates
+		{
+			return this.status;
+		}
+
 		public static async onArchiveManually(): Promise<void>
 		{
-			log.info("try manual archive");
-			if (this.status === GlobalStates.UNINITIALZED)
-			{
-				log.info("not initialized, cancel");
-
-				await browser.autoarchive.alert(browser.i18n.getMessage("dialogTitle"), browser.i18n.getMessage("waitForInit"));
-				return;
-			}
-
-			if (await browser.autoarchive.confirm(browser.i18n.getMessage("dialogTitle"), browser.i18n.getMessage("dialogStartManualText")))
-			{
-				if (this.status === GlobalStates.IN_PROGRESS)
-				{
-					log.info("busy with other archive..., cancel");
-					await browser.autoarchive.alert(browser.i18n.getMessage("dialogTitle"), browser.i18n.getMessage("waitForArchive"));
-					return;
-				}
-				await this.onDoArchive();
-			}
-			else
-			{
-				log.info("manual archive canceled by user");
-			}
+			await this.onDoArchive();
 		}
 
 		private static async onDoArchiveAutomatic(): Promise<void>

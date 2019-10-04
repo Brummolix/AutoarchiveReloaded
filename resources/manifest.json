@@ -29,7 +29,8 @@
 	"browser_action": {
 		"browser_style": true,
 		"default_icon": "skin/button.svg",
-		"default_title": "__MSG_toolbarArchive__"
+		"default_title": "__MSG_toolbarArchive__",
+		"default_popup": "popup.html"
 	  },
 
 	"default_locale":"en",
