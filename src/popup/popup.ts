@@ -1,9 +1,9 @@
-/// <reference path="../sharedWebextension/GlobalStates.ts" />
+/// <reference path="../sharedAll/GlobalStates.ts" />
 
 async function initialize()
 {
-	const message: any = {message: "getArchiveStatus"};
-	const response: any = await browser.runtime.sendMessage(message);
+	const message: IGetArchiveStatusMessageRequest = {message: "getArchiveStatus"};
+	const response: IGetArchiveStatusResponse = await browser.runtime.sendMessage(message);
 	const status: AutoarchiveReloaded.GlobalStates = response.status;
 
 	switch (status)
@@ -34,7 +34,7 @@ async function initialize()
 
 async function onManualArchive(): Promise<void>
 {
-	const message: any = {message: "archiveManually"};
+	const message: IArchiveManuallyMessageRequest = {message: "archiveManually"};
 	browser.runtime.sendMessage(message);
 	window.close();
 }

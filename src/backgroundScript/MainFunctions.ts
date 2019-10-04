@@ -18,7 +18,7 @@ Copyright 2012 Alexey Egorov (original version Autoarchive, http://code.google.c
     along with AutoarchiveReloaded.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-/// <reference path="../sharedWebextension/GlobalStates.ts" />
+/// <reference path="../sharedAll/GlobalStates.ts" />
 
 namespace AutoarchiveReloaded
 {

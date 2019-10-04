@@ -39,7 +39,7 @@ namespace AutoarchiveReloaded
 		}
 	}
 
-	function handleMessage(request: any, sender: RuntimeMessageSender, sendResponse: RuntimeMessageResponseFunction) {
+	function handleMessage(request: IArchiveManuallyMessageRequest|IGetArchiveStatusMessageRequest, sender: RuntimeMessageSender, sendResponse: RuntimeMessageResponseFunction) {
 		switch (request.message)
 		{
 			case "getArchiveStatus":

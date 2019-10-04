@@ -18,6 +18,7 @@ Copyright 2018-2019 Brummolix (AutoarchiveReloaded, https://github.com/Brummolix
 */
 
 /// <reference path="interfaces.ts" />
+/// <reference path="IMessages.ts" />
 
 //Attention:
 //this types are not complete! I only added, what is used by AutoarchiveReloaded at the moment!
@@ -34,8 +35,8 @@ declare class RuntimeMessageSender
 }
 
 //https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/runtime/onMessage
-type RuntimeMessageResponseFunction = (response: object | null) => void;
-type RuntimeMessageListener = (message: any, sender: RuntimeMessageSender, sendResponse: RuntimeMessageResponseFunction) => void;
+type RuntimeMessageResponseFunction = (response: IGetArchiveStatusResponse | null) => void;
+type RuntimeMessageListener = (message: IGetArchiveStatusMessageRequest|IArchiveManuallyMessageRequest, sender: RuntimeMessageSender, sendResponse: RuntimeMessageResponseFunction) => void;
 
 declare interface RuntimeMessageListeners extends IListeners<RuntimeMessageListener>
 {
@@ -78,7 +79,8 @@ declare interface Runtime
 	onConnect: RuntimeConnectListener;
 	//onSuspend: RuntimeSuspendListener; -> does not exist in TB?
 
-	sendMessage(message: any): Promise<any>;
+	sendMessage(message: IGetArchiveStatusMessageRequest): Promise<IGetArchiveStatusResponse>;
+	sendMessage(message: IArchiveManuallyMessageRequest): Promise<void>;
 	connect(connectInfo: {name: string}): RuntimePort;
 
 	getBrowserInfo(): Promise<BrowserInfo>;
