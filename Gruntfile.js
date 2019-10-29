@@ -109,8 +109,8 @@ module.exports = function(grunt) {
 
 	// Default task(s).
 	grunt.registerTask("default",
-		["clean", "copy", "ts:background", "ts:settings", "ts:webexperiment", "ts:popup","tslint", "compress"]);
+		["clean", "copy", "ts:background", "ts:settings", "ts:webexperiment", "ts:popup", "tslint"]);
 	grunt.registerTask("release",
-		["clean", "copy", "ts:release_background", "ts:release_settings", "ts:release_webexperiment", "ts:release_popup", 
+		["clean", "copy", "ts:release_background", "ts:release_settings", "ts:release_webexperiment", "ts:release_popup",
 		 "tslint", "compress"]);
 };
