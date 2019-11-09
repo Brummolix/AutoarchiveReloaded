@@ -185,7 +185,7 @@ declare interface i18n
 
 //https://thunderbird-webextensions.readthedocs.io/en/latest/accounts.html#accounts-mailaccount
 //TODO: does exquilla really exists?
-type AccountType = "pop3" | "imap" | "rss" | "exquilla" | "nntp";
+type AccountType = "pop3" | "imap" | "rss" | "exquilla" | "nntp" | "none";
 
 //https://thunderbird-webextensions.readthedocs.io/en/latest/accounts.html#accounts-mailaccount
 declare interface MailAccount

@@ -39,7 +39,8 @@ namespace AutoarchiveReloaded
 
 			//IRC accounts will not be listed... and we would ignore them anyhow
 			//"nntp" is a newsgroup account, "rss" a newsfeed account > we archive them, too (even if an rss account does not have real archive settings)
-			return (account.type === "pop3" || account.type === "imap" || account.type === "rss" || account.type === "nntp" || account.type === "exquilla");
+			//a local folder is "none"
+			return (account.type === "pop3" || account.type === "imap" || account.type === "rss" || account.type === "nntp" || account.type === "exquilla" || account.type === "none");
 		}
   }
 }
