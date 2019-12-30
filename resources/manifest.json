@@ -1,6 +1,6 @@
 {
 	"manifest_version":2,
-	"version":"1.0.0.2",
+	"version":"1.0.0.3",
 	"name": "AutoarchiveReloaded",
 	"description": "__MSG_addOnDescription__",
 	"author": "__MSG_addOnAuthor__",
