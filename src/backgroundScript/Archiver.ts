@@ -246,7 +246,7 @@ namespace AutoarchiveReloaded
 			//tagged
 
 			//GMail uses the tag "junk" to mark junk mails, but they shall not be classified as normal "tags"
-			const tags = messageHeader.tags.filter((tag) => tag !== "junk");
+			const tags = messageHeader.tags.filter((tag) => (tag !== "junk" && tag !== "nonjunk") );
 
 			if (tags.length > 0)
 			{
