@@ -18,6 +18,8 @@ Copyright 2012 Alexey Egorov (original version Autoarchive, http://code.google.c
     along with AutoarchiveReloaded.  If not, see <http://www.gnu.org/licenses/>.
 */
 /// <reference path="../sharedAll/thunderbird.d.ts" />
+/// <reference path="AccountIterator.ts" />
+/// <reference path="../sharedWebextension/Logger.ts" />
 
 namespace AutoarchiveReloaded
 {
