@@ -20,8 +20,6 @@ Copyright 2012 Alexey Egorov (original version Autoarchive, http://code.google.c
 
 /// <reference path="../sharedAll/thunderbird.d.ts" />
 
-//import { browser, MailAccount } from "../sharedAll/thunderbird";
-
 export class AccountIterator
 {
 	public static async forEachAccount(forEachDo: (account: MailAccount, isAccountArchivable: boolean) => void): Promise<void>
