@@ -17,8 +17,9 @@ Copyright 2018-2019 Brummolix (AutoarchiveReloaded, https://github.com/Brummolix
     along with AutoarchiveReloaded.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-/// <reference path="interfaces.ts" />
-/// <reference path="IMessages.ts" />
+//Attention this file should have NO global imports! Only local imports like import("./something").type are allowed
+//otherwise TS creates code with import instead of simpy using the stuff
+//see https://stackoverflow.com/questions/39040108/import-class-in-definition-file-d-ts
 
 //Attention:
 //this types are not complete! I only added, what is used by AutoarchiveReloaded at the moment!
@@ -35,8 +36,8 @@ declare class RuntimeMessageSender
 }
 
 //https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/runtime/onMessage
-type RuntimeMessageResponseFunction = (response: IGetArchiveStatusResponse | null) => void;
-type RuntimeMessageListener = (message: IGetArchiveStatusMessageRequest|IArchiveManuallyMessageRequest, sender: RuntimeMessageSender, sendResponse: RuntimeMessageResponseFunction) => void;
+type RuntimeMessageResponseFunction = (response: import("./IMessages").IGetArchiveStatusResponse | null) => void;
+type RuntimeMessageListener = (message: import("./IMessages").IGetArchiveStatusMessageRequest|import("./IMessages").IArchiveManuallyMessageRequest, sender: RuntimeMessageSender, sendResponse: RuntimeMessageResponseFunction) => void;
 
 declare interface RuntimeMessageListeners extends IListeners<RuntimeMessageListener>
 {
@@ -81,8 +82,8 @@ declare interface Runtime
 	onConnect: RuntimeConnectListener;
 	//onSuspend: RuntimeSuspendListener; -> does not exist in TB?
 
-	sendMessage(message: IGetArchiveStatusMessageRequest): Promise<IGetArchiveStatusResponse>;
-	sendMessage(message: IArchiveManuallyMessageRequest): Promise<void>;
+	sendMessage(message: import("./IMessages").IGetArchiveStatusMessageRequest): Promise<import("./IMessages").IGetArchiveStatusResponse>;
+	sendMessage(message: import("./IMessages").IArchiveManuallyMessageRequest): Promise<void>;
 	connect(connectInfo: {name: string}): RuntimePort;
 
 	getBrowserInfo(): Promise<BrowserInfo>;
@@ -265,7 +266,8 @@ declare interface messages
 
 declare interface AutoarchiveWebExperiment
 {
-	askForLegacyPreferences(accounts: IAccountInfo[]): ISettings | null;
+	// tslint:disable-next-line: array-type
+	askForLegacyPreferences(accounts: import("../sharedAll/interfaces").IAccountInfo[]): import("../sharedAll/interfaces").ISettings | null;
 	setInfoLogging(value: boolean): void;
 }
 

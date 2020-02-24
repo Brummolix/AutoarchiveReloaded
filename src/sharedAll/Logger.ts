@@ -17,14 +17,14 @@ Copyright 2018-2019 Brummolix (AutoarchiveReloaded, https://github.com/Brummolix
     along with AutoarchiveReloaded.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-/// <reference path="ILogLevelInfo.ts" />
+import { ILogLevelInfo } from "./ILogLevelInfo";
 
 enum LogLevel
 {
 	LEVEL_INFO, LEVEL_ERROR,
 }
 
-class Logger
+export class Logger
 {
 	private logLevelInfo: ILogLevelInfo;
 

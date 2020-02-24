@@ -16,15 +16,15 @@ Copyright 2018-2019 Brummolix (AutoarchiveReloaded, https://github.com/Brummolix
     You should have received a copy of the GNU General Public License
     along with AutoarchiveReloaded.  If not, see <http://www.gnu.org/licenses/>.
 */
-type ArchiveType = "manual" | "startup";
+export type ArchiveType = "manual" | "startup";
 
-interface IGlobalSettings
+export interface IGlobalSettings
 {
 	archiveType: ArchiveType;
 	enableInfoLogging: boolean;
 }
 
-interface IAccountSettings
+export interface IAccountSettings
 {
 	bArchiveOther: boolean;
 	daysOther: number;
@@ -36,12 +36,12 @@ interface IAccountSettings
 	daysUnread: number;
 }
 
-interface IAccountSettingsArray
+export interface IAccountSettingsArray
 {
 	[key: string]: IAccountSettings;
 }
 
-interface ISettings
+export interface ISettings
 {
 	globalSettings: IGlobalSettings;
 
@@ -56,7 +56,7 @@ interface ISettings
 	accountSettings: IAccountSettingsArray;
 }
 
-interface IAccountInfo
+export interface IAccountInfo
 {
 	accountId: string;
 	accountName: string;

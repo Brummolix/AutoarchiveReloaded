@@ -1,30 +1,35 @@
-/// <reference path="../sharedAll/GlobalStates.ts" />
+
+/// <reference path="../sharedAll/thunderbird.d.ts" />
+
+import { GlobalStates } from "../sharedAll/GlobalStates";
+import { IArchiveManuallyMessageRequest, IGetArchiveStatusMessageRequest, IGetArchiveStatusResponse } from "../sharedAll/IMessages";
+import { log } from "../sharedWebextension/Logger";
 
 async function initialize()
 {
 	const message: IGetArchiveStatusMessageRequest = {message: "getArchiveStatus"};
 	const response: IGetArchiveStatusResponse = await browser.runtime.sendMessage(message);
-	const status: AutoarchiveReloaded.GlobalStates = response.status;
+	const status: GlobalStates = response.status;
 
 	switch (status)
 	{
-		case AutoarchiveReloaded.GlobalStates.UNINITIALZED:
+		case GlobalStates.UNINITIALZED:
 		{
-			AutoarchiveReloaded.log.info("not initialized, cancel");
+			log.info("not initialized, cancel");
 			$("#text").text(browser.i18n.getMessage("waitForInit"));
 			$("#button").hide();
 			break;
 		}
-		case AutoarchiveReloaded.GlobalStates.IN_PROGRESS:
+		case GlobalStates.IN_PROGRESS:
 		{
-			AutoarchiveReloaded.log.info("busy with other archive..., cancel");
+			log.info("busy with other archive..., cancel");
 			$("#text").text(browser.i18n.getMessage("waitForArchive"));
 			$("#button").hide();
 			break;
 		}
-		case AutoarchiveReloaded.GlobalStates.READY_FOR_WORK:
+		case GlobalStates.READY_FOR_WORK:
 		{
-			AutoarchiveReloaded.log.info("user can start archiving");
+			log.info("user can start archiving");
 			$("#text").text(browser.i18n.getMessage("dialogStartManualText"));
 			$("#button").show();
 			break;
@@ -48,7 +53,7 @@ async function onLoad()
 	}
 	catch (e)
 	{
-		AutoarchiveReloaded.log.errorException(e);
+		log.errorException(e);
 		throw e;
 	}
 }

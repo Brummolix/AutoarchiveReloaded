@@ -17,56 +17,57 @@ Copyright 2012 Alexey Egorov (original version Autoarchive, http://code.google.c
     You should have received a copy of the GNU General Public License
     along with AutoarchiveReloaded.  If not, see <http://www.gnu.org/licenses/>.
 */
-namespace AutoarchiveReloaded
+
+import { AccountIterator } from "../sharedWebextension/AccountIterator";
+import { log } from "../sharedWebextension/Logger";
+
+export class AppInfoLogger
 {
-	export class AppInfoLogger
+	public async log(): Promise<void>
 	{
-		public async log(): Promise<void>
+		await this.logAppInfo();
+		this.logAddonInfo();
+		await this.logAccountInfo();
+	}
+
+	private async logAppInfo(): Promise<void>
+	{
+		try
 		{
-			await this.logAppInfo();
-			this.logAddonInfo();
-			await this.logAccountInfo();
+			const window: BrowserWindow = browser.extension.getBackgroundPage();
+			const browserInfo: BrowserInfo = await browser.runtime.getBrowserInfo();
+
+			log.info("Application: " + browserInfo.vendor + " " + browserInfo.name + " version " + browserInfo.version + " (" + browserInfo.buildID + ")");
+			log.info("SystemInfo: " +  window.navigator.userAgent + "| " + window.navigator.platform);
+			log.info("Language: " + window.navigator.language);
 		}
-
-		private async logAppInfo(): Promise<void>
+		catch (e)
 		{
-			try
-			{
-				const window: BrowserWindow = browser.extension.getBackgroundPage();
-				const browserInfo: BrowserInfo = await browser.runtime.getBrowserInfo();
-
-				log.info("Application: " + browserInfo.vendor + " " + browserInfo.name + " version " + browserInfo.version + " (" + browserInfo.buildID + ")");
-				log.info("SystemInfo: " +  window.navigator.userAgent + "| " + window.navigator.platform);
-				log.info("Language: " + window.navigator.language);
-			}
-			catch (e)
-			{
-				log.errorException(e);
-				//don't throw... this method is only info logging...
-			}
+			log.errorException(e);
+			//don't throw... this method is only info logging...
 		}
+	}
 
-		private logAddonInfo(): void
+	private logAddonInfo(): void
+	{
+		//we could get infos about addons with the browser.management API, but then we would also need the "management" permission
+		//seem to be a bit overdosed only for logging of the information
+	}
+
+	private async logAccountInfo(): Promise<void>
+	{
+		try
 		{
-			//we could get infos about addons with the browser.management API, but then we would also need the "management" permission
-			//seem to be a bit overdosed only for logging of the information
+			await AccountIterator.forEachAccount((account: MailAccount, isAccountArchivable: boolean) =>
+			{
+				log.info("Account Info: '" + account.name + "'; type: " +
+					account.type + "; id: " + account.id);
+			});
 		}
-
-		private async logAccountInfo(): Promise<void>
+		catch (e)
 		{
-			try
-			{
-				await AccountIterator.forEachAccount((account: MailAccount, isAccountArchivable: boolean) =>
-				{
-					log.info("Account Info: '" + account.name + "'; type: " +
-						account.type + "; id: " + account.id);
-				});
-			}
-			catch (e)
-			{
-				log.errorException(e);
-				//don't throw... this method is only info logging...
-			}
+			log.errorException(e);
+			//don't throw... this method is only info logging...
 		}
 	}
 }

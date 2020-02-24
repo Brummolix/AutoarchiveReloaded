@@ -18,77 +18,79 @@ Copyright 2012 Alexey Egorov (original version Autoarchive, http://code.google.c
     along with AutoarchiveReloaded.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-/// <reference path="../sharedAll/GlobalStates.ts" />
+import { GlobalStates } from "../sharedAll/GlobalStates";
+import { ISettings } from "../sharedAll/interfaces";
+import { log } from "../sharedWebextension/Logger";
+import { OptionHelper } from "../sharedWebextension/optionHelper";
+import { AppInfoLogger } from "./AppInfoLogger";
+import { Archiver } from "./Archiver";
 
-namespace AutoarchiveReloaded
+//global static startup/ui functions
+export class MainFunctions
 {
-	//global static startup/ui functions
-	export class MainFunctions
+	private static status: GlobalStates = GlobalStates.UNINITIALZED;
+
+	public static async startupAndInitialzeAutomaticArchiving(): Promise<void>
 	{
-		private static status: GlobalStates = GlobalStates.UNINITIALZED;
+		log.info("start...");
 
-		public static async startupAndInitialzeAutomaticArchiving(): Promise<void>
+		const appInfoLogger = new AppInfoLogger();
+		await appInfoLogger.log();
+
+		this.status = GlobalStates.READY_FOR_WORK;
+		log.info("ready for work");
+
+		const optionHelper: OptionHelper = new OptionHelper();
+		const settings: ISettings = await optionHelper.loadCurrentSettings();
+
+		if (settings.globalSettings.archiveType === "startup")
 		{
-			log.info("start...");
+			log.info("archive type at startup");
 
-			const appInfoLogger = new AppInfoLogger();
-			await appInfoLogger.log();
+			//wait some time to give TB time to connect and everything
+			setTimeout(this.onDoArchiveAutomatic.bind(this), 9000);
 
-			this.status = GlobalStates.READY_FOR_WORK;
-			log.info("ready for work");
-
-			const optionHelper: OptionHelper = new OptionHelper();
-			const settings: ISettings = await optionHelper.loadCurrentSettings();
-
-			if (settings.globalSettings.archiveType === "startup")
-			{
-				log.info("archive type at startup");
-
-				//wait some time to give TB time to connect and everything
-				setTimeout(this.onDoArchiveAutomatic.bind(this), 9000);
-
-				//repeat after one day (if someone has open Thunderbird all the time)
-				setInterval(this.onDoArchiveAutomatic.bind(this), 86400000);
-			}
-			else
-			{
-				log.info("archive type manually");
-			}
+			//repeat after one day (if someone has open Thunderbird all the time)
+			setInterval(this.onDoArchiveAutomatic.bind(this), 86400000);
 		}
-
-		public static getStatus(): GlobalStates
+		else
 		{
-			return this.status;
+			log.info("archive type manually");
 		}
+	}
 
-		public static async onArchiveManually(): Promise<void>
+	public static getStatus(): GlobalStates
+	{
+		return this.status;
+	}
+
+	public static async onArchiveManually(): Promise<void>
+	{
+		await this.onDoArchive();
+	}
+
+	private static async onDoArchiveAutomatic(): Promise<void>
+	{
+		log.info("try automatic archive");
+		if (this.status !== GlobalStates.READY_FOR_WORK)
+		{
+			log.info("automatic archive busy, wait");
+			//busy: wait 5 seconds
+			setTimeout(this.onDoArchiveAutomatic.bind(this), 5000);
+		}
+		else
 		{
 			await this.onDoArchive();
 		}
+	}
 
-		private static async onDoArchiveAutomatic(): Promise<void>
-		{
-			log.info("try automatic archive");
-			if (this.status !== GlobalStates.READY_FOR_WORK)
-			{
-				log.info("automatic archive busy, wait");
-				//busy: wait 5 seconds
-				setTimeout(this.onDoArchiveAutomatic.bind(this), 5000);
-			}
-			else
-			{
-				await this.onDoArchive();
-			}
-		}
-
-		private static async onDoArchive(): Promise<void>
-		{
-			log.info("start archiving");
-			this.status = GlobalStates.IN_PROGRESS;
-			const autoarchiveReloaded = new Archiver();
-			await autoarchiveReloaded.archiveAccounts();
-			log.info("archive (searching messages to archive) done");
-			this.status = GlobalStates.READY_FOR_WORK;
-		}
+	private static async onDoArchive(): Promise<void>
+	{
+		log.info("start archiving");
+		this.status = GlobalStates.IN_PROGRESS;
+		const autoarchiveReloaded = new Archiver();
+		await autoarchiveReloaded.archiveAccounts();
+		log.info("archive (searching messages to archive) done");
+		this.status = GlobalStates.READY_FOR_WORK;
 	}
 }

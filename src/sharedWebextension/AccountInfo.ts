@@ -18,81 +18,80 @@ Copyright 2012 Alexey Egorov (original version Autoarchive, http://code.google.c
     along with AutoarchiveReloaded.  If not, see <http://www.gnu.org/licenses/>.
 */
 /// <reference path="../sharedAll/thunderbird.d.ts" />
-/// <reference path="AccountIterator.ts" />
-/// <reference path="../sharedWebextension/Logger.ts" />
 
-namespace AutoarchiveReloaded
+import { IAccountInfo } from "../sharedAll/interfaces";
+import {log} from "../sharedWebextension/Logger";
+import { AccountIterator } from "./AccountIterator";
+
+export class AccountInfo
 {
-	export class AccountInfo
-  {
-		public static isMailType(account: MailAccount): boolean
+	public static isMailType(account: MailAccount): boolean
+	{
+		//TODO: Is there still an exquilla type?
+		return (account.type === "pop3" || account.type === "imap" || account.type === "exquilla");
+	}
+
+	public static findAccountInfo(accountSettings: IAccountInfo[], id: string): IAccountInfo | null
+	{
+		for (const accountSetting of accountSettings)
 		{
-			//TODO: Is there still an exquilla type?
-			return (account.type === "pop3" || account.type === "imap" || account.type === "exquilla");
+			if (accountSetting.accountId === id)
+			{
+				return accountSetting;
+			}
 		}
 
-		public static findAccountInfo(accountSettings: IAccountInfo[], id: string): IAccountInfo | null
+		return null;
+	}
+
+	public static async askForAccounts(): Promise<IAccountInfo[]>
+	{
+		try
 		{
-			for (const accountSetting of accountSettings)
+			const nsAccounts: MailAccount[] = [];
+			await AccountIterator.forEachAccount((account: MailAccount, isAccountArchivable: boolean) =>
 			{
-				if (accountSetting.accountId === id)
+				if (isAccountArchivable)
 				{
-					return accountSetting;
+					nsAccounts.push(account);
 				}
-			}
+			});
 
-			return null;
+			nsAccounts.sort((a: MailAccount, b: MailAccount) =>
+			{
+				const mailTypeA: boolean = AccountInfo.isMailType(a);
+				const mailTypeB: boolean = AccountInfo.isMailType(b);
+
+				if (mailTypeA === mailTypeB)
+				{
+					return a.name.localeCompare(b.name);
+				}
+
+				if (mailTypeA)
+				{
+					return -1;
+				}
+
+				return 1;
+			});
+
+			const accounts: IAccountInfo[] = [];
+			let currentOrder = 0;
+			nsAccounts.forEach((account) =>
+			{
+				accounts.push({
+					accountId: account.id,
+					accountName: account.name,
+					order: currentOrder++,
+				});
+			});
+
+			return accounts;
 		}
-
-		public static async askForAccounts(): Promise<IAccountInfo[]>
+		catch (e)
 		{
-			try
-			{
-				const nsAccounts: MailAccount[] = [];
-				await AccountIterator.forEachAccount((account: MailAccount, isAccountArchivable: boolean) =>
-				{
-					if (isAccountArchivable)
-					{
-						nsAccounts.push(account);
-					}
-				});
-
-				nsAccounts.sort((a: MailAccount, b: MailAccount) =>
-				{
-					const mailTypeA: boolean = AccountInfo.isMailType(a);
-					const mailTypeB: boolean = AccountInfo.isMailType(b);
-
-					if (mailTypeA === mailTypeB)
-					{
-						return a.name.localeCompare(b.name);
-					}
-
-					if (mailTypeA)
-					{
-						return -1;
-					}
-
-					return 1;
-				});
-
-				const accounts: IAccountInfo[] = [];
-				let currentOrder = 0;
-				nsAccounts.forEach((account) =>
-				{
-					accounts.push({
-						accountId: account.id,
-						accountName: account.name,
-						order: currentOrder++,
-					});
-				});
-
-				return accounts;
-			}
-			catch (e)
-			{
-				log.errorException(e);
-				throw e;
-			}
+			log.errorException(e);
+			throw e;
 		}
-  }
+	}
 }

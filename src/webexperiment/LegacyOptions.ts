@@ -18,10 +18,12 @@ Copyright 2012 Alexey Egorov (original version Autoarchive, http://code.google.c
     along with AutoarchiveReloaded.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-let iteratorUtils: IteratorUtils = ChromeUtils.import("resource:///modules/iteratorUtils.jsm");
-let mailservices: MailServicesExport = ChromeUtils.import("resource:///modules/MailServices.jsm");
+import { ArchiveType, IAccountInfo, IAccountSettings, IAccountSettingsArray, ISettings } from "../sharedAll/interfaces";
 
-class LegacyOptions
+const iteratorUtils: IteratorUtils = Components.utils.import("resource:///modules/iteratorUtils.jsm");
+const mailservices: MailServicesExport = Components.utils.import("resource:///modules/MailServices.jsm");
+
+export class LegacyOptions
 {
 	public askForLegacyPreferences(accounts: IAccountInfo[]): ISettings | null
 	{

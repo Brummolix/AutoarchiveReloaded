@@ -20,27 +20,26 @@ Copyright 2012 Alexey Egorov (original version Autoarchive, http://code.google.c
 
 /// <reference path="../sharedAll/thunderbird.d.ts" />
 
-namespace AutoarchiveReloaded
+//import { browser, MailAccount } from "../sharedAll/thunderbird";
+
+export class AccountIterator
 {
-	export class AccountIterator
+	public static async forEachAccount(forEachDo: (account: MailAccount, isAccountArchivable: boolean) => void): Promise<void>
 	{
-		public static async forEachAccount(forEachDo: (account: MailAccount, isAccountArchivable: boolean) => void): Promise<void>
+		const accounts: MailAccount[] = await browser.accounts.list();
+		for (const account of accounts)
 		{
-			const accounts: MailAccount[] = await browser.accounts.list();
-			for (const account of accounts)
-			{
-				await forEachDo(account, this.isAccountArchivable(account));
-			}
+			await forEachDo(account, this.isAccountArchivable(account));
 		}
+	}
 
-		private static isAccountArchivable(account: MailAccount): boolean
-		{
-			//TODO: Is there still an exquilla type?
+	private static isAccountArchivable(account: MailAccount): boolean
+	{
+		//TODO: Is there still an exquilla type?
 
-			//IRC accounts will not be listed... and we would ignore them anyhow
-			//"nntp" is a newsgroup account, "rss" a newsfeed account > we archive them, too (even if an rss account does not have real archive settings)
-			//a local folder is "none"
-			return (account.type === "pop3" || account.type === "imap" || account.type === "rss" || account.type === "nntp" || account.type === "exquilla" || account.type === "none");
-		}
-  }
+		//IRC accounts will not be listed... and we would ignore them anyhow
+		//"nntp" is a newsgroup account, "rss" a newsfeed account > we archive them, too (even if an rss account does not have real archive settings)
+		//a local folder is "none"
+		return (account.type === "pop3" || account.type === "imap" || account.type === "rss" || account.type === "nntp" || account.type === "exquilla" || account.type === "none");
+	}
 }

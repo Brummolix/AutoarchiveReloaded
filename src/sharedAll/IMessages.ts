@@ -1,16 +1,16 @@
-/// <reference path="../sharedAll/GlobalStates.ts" />
+import { GlobalStates } from "./GlobalStates";
 
-interface IGetArchiveStatusMessageRequest
+export interface IGetArchiveStatusMessageRequest
 {
 	message: "getArchiveStatus";
 }
 
-interface IGetArchiveStatusResponse
+export interface IGetArchiveStatusResponse
 {
-	status: AutoarchiveReloaded.GlobalStates;
+	status: GlobalStates;
 }
 
-interface IArchiveManuallyMessageRequest
+export interface IArchiveManuallyMessageRequest
 {
 	message: "archiveManually";
 }

@@ -17,7 +17,11 @@ Copyright 2018-2019 Brummolix (AutoarchiveReloaded, https://github.com/Brummolix
     along with AutoarchiveReloaded.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-/// <reference path="../sharedWebextension/AccountInfo.ts" />
+import { ArchiveType, IAccountInfo, ISettings } from "../sharedAll/interfaces";
+import { AccountInfo } from "../sharedWebextension/AccountInfo";
+import { log } from "../sharedWebextension/Logger";
+import { OptionHelper } from "../sharedWebextension/optionHelper";
+import { IAccountInfos } from "./IAccountInfos";
 
 async function saveOptions(): Promise<void>
 {
@@ -74,7 +78,7 @@ async function saveOptions(): Promise<void>
 	}
 	catch (e)
 	{
-		AutoarchiveReloaded.log.errorException(e);
+		log.errorException(e);
 		throw e;
 	}
 
@@ -90,14 +94,14 @@ async function restoreOptions()
 	});
 
 	//Für jeden Account die Einstellungen clonen und die gespeicherten Werte setzen
-	const accounts: IAccountInfo[] = await AutoarchiveReloaded.AccountInfo.askForAccounts();
+	const accounts: IAccountInfo[] = await AccountInfo.askForAccounts();
 	const accountsSorted: IAccountInfos[] = [];
 	for (const accountId in settings.accountSettings)
 	{
 		if (settings.accountSettings.hasOwnProperty(accountId))
 		{
 			accountsSorted.push({
-				account: AutoarchiveReloaded.AccountInfo.findAccountInfo(accounts, accountId) as IAccountInfo,
+				account: AccountInfo.findAccountInfo(accounts, accountId) as IAccountInfo,
 				accountSetting: settings.accountSettings[accountId],
 			});
 		}
@@ -175,9 +179,9 @@ async function onLoad()
 	}
 	catch (e)
 	{
-		AutoarchiveReloaded.log.errorException(e);
+		log.errorException(e);
 		throw e;
 	}
 }
-let optionHelper: AutoarchiveReloaded.OptionHelper = new AutoarchiveReloaded.OptionHelper();
+const optionHelper: OptionHelper = new OptionHelper();
 $(onLoad);

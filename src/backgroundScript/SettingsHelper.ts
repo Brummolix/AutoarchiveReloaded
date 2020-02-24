@@ -17,42 +17,43 @@ Copyright 2012 Alexey Egorov (original version Autoarchive, http://code.google.c
     You should have received a copy of the GNU General Public License
     along with AutoarchiveReloaded.  If not, see <http://www.gnu.org/licenses/>.
 */
-namespace AutoarchiveReloaded
+
+import { IAccountSettings } from "../sharedAll/interfaces";
+import { log } from "../sharedWebextension/Logger";
+
+export class SettingsHelper
 {
-	export class SettingsHelper
+	public static isArchivingSomething(accountSettings: IAccountSettings): boolean
 	{
-		public static isArchivingSomething(accountSettings: IAccountSettings): boolean
+		return (accountSettings.bArchiveOther || accountSettings.bArchiveMarked || accountSettings.bArchiveTagged || accountSettings.bArchiveUnread);
+	}
+
+	public static getMinAge(accountSettings: IAccountSettings): number
+	{
+		let minAge = Number.MAX_VALUE;
+		if (accountSettings.bArchiveOther)
 		{
-			return (accountSettings.bArchiveOther || accountSettings.bArchiveMarked || accountSettings.bArchiveTagged || accountSettings.bArchiveUnread);
+			minAge = Math.min(accountSettings.daysOther, minAge);
+		}
+		if (accountSettings.bArchiveMarked)
+		{
+			minAge = Math.min(accountSettings.daysMarked, minAge);
+		}
+		if (accountSettings.bArchiveTagged)
+		{
+			minAge = Math.min(accountSettings.daysTagged, minAge);
+		}
+		if (accountSettings.bArchiveUnread)
+		{
+			minAge = Math.min(accountSettings.daysUnread, minAge);
 		}
 
-		public static getMinAge(accountSettings: IAccountSettings): number
-		{
-			let minAge = Number.MAX_VALUE;
-			if (accountSettings.bArchiveOther)
-			{
-				minAge = Math.min(accountSettings.daysOther, minAge);
-			}
-			if (accountSettings.bArchiveMarked)
-			{
-				minAge = Math.min(accountSettings.daysMarked, minAge);
-			}
-			if (accountSettings.bArchiveTagged)
-			{
-				minAge = Math.min(accountSettings.daysTagged, minAge);
-			}
-			if (accountSettings.bArchiveUnread)
-			{
-				minAge = Math.min(accountSettings.daysUnread, minAge);
-			}
+		return minAge;
+	}
 
-			return minAge;
-		}
-
-		public static log(accountName: string, accountSettings: IAccountSettings)
-		{
-			log.info("Settings for '" + accountName + "':");
-			log.info(JSON.stringify(accountSettings));
-		}
+	public static log(accountName: string, accountSettings: IAccountSettings)
+	{
+		log.info("Settings for '" + accountName + "':");
+		log.info(JSON.stringify(accountSettings));
 	}
 }

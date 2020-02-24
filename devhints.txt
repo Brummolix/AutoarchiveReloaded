@@ -8,6 +8,7 @@ Development hints:
 - how to install?
 	- install Visual Studio code
 	- install some special build tools (windows only, installs Visual Studio Build and Python)
+		(I think with the current node installer this step is no longer needed, as the installer installs the build tools if you tick the checkbox at install)
 		- open elevated shell/powershell
 		- run "npm install --global --production windows-build-tools"
 			(this is needed for the node-gyp package which is needed by the grunt-contrib-compress package which is needed for the grunt build
@@ -21,16 +22,11 @@ Development hints:
 - how to install a new npm/grunt module?
 	npm install MODULENAME --save-dev
 		- it will refresh package.json und package-lock.json
-		- it wil install the module under node_modules (which is excluded from git)
+		- it will install the module under node_modules (which is excluded from git)
 
-- outfile
-	To be able to put classes in their own files without maintaining a lot of <script> includes and background scripts in manifest.json the each needed script is compiled to one single output.
-	Several classes are shared between the scripts.
 - module system
-	It seem to be not possible to use a module system like commonjs with webexperiment code. The webexperiment api can not be loaded then.
-	In the webextension code it would be possible.
-	Additionally it is not possible to mix both (at least when they share code).
-	Therefore no module system is used and only old-style "/// <reference" hints to ensure the right order
+	Typescript code uses import/export statements (except the hand-written Thunderbird d.ts files, they are only imported via /// <reference path)
+	The code is translated from typescript to Js and then packed with webpack to single js files including all needed modules.
 - directory structure
 	src/sharedAll - contains sources used by *all* scripts
 	src/sharedWebextension - contains all sources used by the webextension scripts

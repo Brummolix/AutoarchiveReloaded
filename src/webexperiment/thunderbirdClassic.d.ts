@@ -17,12 +17,18 @@ Copyright 2019 Brummolix (AutoarchiveReloaded, https://github.com/Brummolix/Auto
     along with AutoarchiveReloaded.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+//Attention this file should have NO global imports! Only local imports like import("./something").type are allowed
+//otherwise TS creates code with import instead of simpy using the stuff
+//see https://stackoverflow.com/questions/39040108/import-class-in-definition-file-d-ts
+
 //Attention:
 //this types are not complete! I only added, what is used by AutoarchiveReloaded at the moment!
 
 // tslint:disable:class-name
 // tslint:disable:interface-name
 // tslint:disable:max-classes-per-file
+
+/// <reference path="../sharedAll/thunderbird.d.ts" />
 
 //general---------------------------------------------------------------------------------------------------------
 
@@ -336,7 +342,7 @@ declare namespace Components
 	}
 
 	//https://developer.mozilla.org/en-US/docs/Mozilla/Tech/XPCOM/Language_Bindings/Components.classes
-	export let classes: { [key: string]: nsIJSCID; };
+	let classes: { [key: string]: nsIJSCID; };
 }
 
 import Cu = Components.utils;

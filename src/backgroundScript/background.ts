@@ -17,46 +17,46 @@ Copyright 2019 Brummolix (AutoarchiveReloaded, https://github.com/Brummolix/Auto
     along with AutoarchiveReloaded.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-/// <reference path="../sharedWebextension/Logger.ts" />
+import { IArchiveManuallyMessageRequest, IGetArchiveStatusMessageRequest } from "../sharedAll/IMessages";
+import {log} from "../sharedWebextension/Logger";
+import { OptionHelper } from "../sharedWebextension/optionHelper";
+import { MainFunctions } from "./MainFunctions";
 
-namespace AutoarchiveReloaded
+export async function startup(): Promise<void>
 {
-	export async function startup(): Promise<void>
+	try
 	{
-		try
-		{
-			log.info("Autoarchive background script started");
+		log.info("Autoarchive background script started");
 
-			const optionHelper: OptionHelper = new OptionHelper();
-			await optionHelper.initializePreferencesAtStartup();
-			await MainFunctions.startupAndInitialzeAutomaticArchiving();
-			browser.runtime.onMessage.addListener(handleMessage);
-		}
-		catch (e)
-		{
-			log.errorException(e);
-			throw e;
-		}
+		const optionHelper: OptionHelper = new OptionHelper();
+		await optionHelper.initializePreferencesAtStartup();
+		await MainFunctions.startupAndInitialzeAutomaticArchiving();
+		browser.runtime.onMessage.addListener(handleMessage);
 	}
+	catch (e)
+	{
+		log.errorException(e);
+		throw e;
+	}
+}
 
-	function handleMessage(request: IArchiveManuallyMessageRequest|IGetArchiveStatusMessageRequest, sender: RuntimeMessageSender, sendResponse: RuntimeMessageResponseFunction) {
-		switch (request.message)
+function handleMessage(request: IArchiveManuallyMessageRequest|IGetArchiveStatusMessageRequest, sender: RuntimeMessageSender, sendResponse: RuntimeMessageResponseFunction) {
+	switch (request.message)
+	{
+		case "getArchiveStatus":
 		{
-			case "getArchiveStatus":
-			{
-				log.info("background script getArchiveStatus");
-				sendResponse({status: MainFunctions.getStatus()});
-				break;
-			}
-			case "archiveManually":
-			{
-				log.info("user choosed to archive manually");
-				MainFunctions.onArchiveManually(); //without await...
-				sendResponse(null);
-				break;
-			}
+			log.info("background script getArchiveStatus");
+			sendResponse({status: MainFunctions.getStatus()});
+			break;
+		}
+		case "archiveManually":
+		{
+			log.info("user choosed to archive manually");
+			MainFunctions.onArchiveManually(); //without await...
+			sendResponse(null);
+			break;
 		}
 	}
 }
 
-AutoarchiveReloaded.startup();
+startup();

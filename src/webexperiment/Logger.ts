@@ -17,6 +17,10 @@ Copyright 2012 Alexey Egorov (original version Autoarchive, http://code.google.c
     You should have received a copy of the GNU General Public License
     along with AutoarchiveReloaded.  If not, see <http://www.gnu.org/licenses/>.
 */
+
+import { ILogLevelInfo } from "../sharedAll/ILogLevelInfo";
+import {Logger} from "../sharedAll/Logger";
+
 class LogLevelInfo implements ILogLevelInfo
 {
 	public enableInfoLogging: boolean = false;
@@ -27,5 +31,5 @@ class LogLevelInfo implements ILogLevelInfo
 	}
 }
 
-let logLevelInfo: LogLevelInfo = new LogLevelInfo();
-const log: Logger = new Logger(logLevelInfo);
+export const logLevelInfo: LogLevelInfo = new LogLevelInfo();
+export const log: Logger = new Logger(logLevelInfo);

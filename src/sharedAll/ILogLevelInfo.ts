@@ -16,7 +16,7 @@ Copyright 2019 Brummolix (new version AutoarchiveReloaded, https://github.com/Br
     You should have received a copy of the GNU General Public License
     along with AutoarchiveReloaded.  If not, see <http://www.gnu.org/licenses/>.
 */
-interface ILogLevelInfo
+export interface ILogLevelInfo
 {
 	enableInfoLogging: boolean;
 }

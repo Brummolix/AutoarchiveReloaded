@@ -16,6 +16,9 @@ Copyright 2018-2019 Brummolix (new version AutoarchiveReloaded, https://github.c
     You should have received a copy of the GNU General Public License
     along with AutoarchiveReloaded.  If not, see <http://www.gnu.org/licenses/>.
 */
+
+const webpackConfig = require("./webpack.config.js");
+
 module.exports = function(grunt) {
 
 	let srcDir = "src/";
@@ -45,30 +48,15 @@ module.exports = function(grunt) {
 			},
 		},
 		ts: {
-			background: {
-				tsconfig: "./src/backgroundScript/tsconfig.json",
+			debug: {
+				tsconfig: "./tsconfig.json",
 			},
-			settings: {
-				tsconfig: "./src/options/tsconfig.json",
+			release: {
+				tsconfig: "./tsconfig.release.json",
 			},
-			webexperiment: {
-				tsconfig: "./src/webexperiment/tsconfig.json",
-			},
-			popup: {
-				tsconfig: "./src/popup/tsconfig.json",
-			},
-			release_background: {
-				tsconfig: "./src/backgroundScript/tsconfig.release.json",
-			},
-			release_settings: {
-				tsconfig: "./src/options/tsconfig.release.json",
-			},
-			release_webexperiment: {
-				tsconfig: "./src/webexperiment/tsconfig.release.json",
-			},
-			release_popup: {
-				tsconfig: "./src/popup/tsconfig.release.json",
-			},
+		},
+		webpack: {
+			myConfig: webpackConfig,
 		},
 		// make a zipfile
 		compress: {
@@ -106,11 +94,12 @@ module.exports = function(grunt) {
 	grunt.loadNpmTasks("grunt-ts");
 	grunt.loadNpmTasks("grunt-contrib-compress");
 	grunt.loadNpmTasks("grunt-tslint");
+	grunt.loadNpmTasks("grunt-webpack");
 
 	// Default task(s).
 	grunt.registerTask("default",
-		["clean", "copy", "ts:background", "ts:settings", "ts:webexperiment", "ts:popup","tslint", "compress"]);
+		["clean", "copy", "ts:debug", "webpack", "tslint", "compress"]);
+
 	grunt.registerTask("release",
-		["clean", "copy", "ts:release_background", "ts:release_settings", "ts:release_webexperiment", "ts:release_popup", 
-		 "tslint", "compress"]);
+		["clean", "copy", "ts:release", "webpack", "tslint", "compress"]);
 };

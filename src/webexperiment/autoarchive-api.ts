@@ -18,10 +18,15 @@ Copyright 2012 Alexey Egorov (original version Autoarchive, http://code.google.c
     along with AutoarchiveReloaded.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-//Attention it HAVE TO be var, otherwise the extension api is not working
-//@ts-ignore: 'autoarchive' is declared but its value is never read
-//tslint:disable-next-line: no-var-keyword prefer-const
-var autoarchive = class extends ExtensionCommon.ExtensionAPI {
+import { IAccountInfo, ISettings } from "../sharedAll/interfaces";
+import { LegacyOptions } from "./LegacyOptions";
+import {log, logLevelInfo} from "./Logger";
+
+//This class must be the default export, because the default is exported by webpack (see configuration) on a "var autoarchive"
+//(The only way Thunderbird wants it...)
+
+// tslint:disable-next-line: class-name
+export default class autoarchive extends ExtensionCommon.ExtensionAPI {
 	private legacyOptions: LegacyOptions = new LegacyOptions();
 
 	public getAPI(context: ExtensionContext)
@@ -48,4 +53,4 @@ var autoarchive = class extends ExtensionCommon.ExtensionAPI {
 			},
 		};
 	}
-};
+}
