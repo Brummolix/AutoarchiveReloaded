@@ -24,9 +24,10 @@ Copyright 2019 Brummolix (AutoarchiveReloaded, https://github.com/Brummolix/Auto
 //Attention:
 //this types are not complete! I only added, what is used by AutoarchiveReloaded at the moment!
 
-// tslint:disable:class-name
-// tslint:disable:interface-name
-// tslint:disable:max-classes-per-file
+/* eslint-disable @typescript-eslint/class-name-casing */
+/* eslint-disable @typescript-eslint/no-unused-vars */
+
+/* eslint-disable max-classes-per-file */
 
 /// <reference path="../sharedAll/thunderbird.d.ts" />
 
@@ -342,7 +343,7 @@ declare namespace Components
 	}
 
 	//https://developer.mozilla.org/en-US/docs/Mozilla/Tech/XPCOM/Language_Bindings/Components.classes
-	let classes: { [key: string]: nsIJSCID; };
+	let classes: { [key: string]: nsIJSCID };
 }
 
 import Cu = Components.utils;
@@ -470,17 +471,11 @@ declare interface nsIWindowWatcher
 	registerNotification(observer: nsIObserver): void;
 }
 
-//https://developer.mozilla.org/en-US/docs/Mozilla/Tech/XPCOM/Reference/Interface/nsIWindowMediator
-declare class nsIWindowMediator
-{
-	public getMostRecentWindow(id: string): Window;
-}
-
 //https://developer.mozilla.org/en-US/docs/Mozilla/JavaScript_code_modules/Services.jsm
 declare namespace Services
 {
 	let ww: nsIWindowWatcher;
-	let wm: nsIWindowMediator;
+	let wm: Ci.nsIWindowMediator;
 }
 
 declare namespace ExtensionCommon
@@ -492,7 +487,7 @@ declare namespace ExtensionCommon
 
 	class EventManager
 	{
-		constructor(arg: any);
+		public constructor(arg: any);
 	}
 }
 

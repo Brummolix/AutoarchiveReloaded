@@ -17,16 +17,14 @@ Copyright 2018-2019 Brummolix (AutoarchiveReloaded, https://github.com/Brummolix
     along with AutoarchiveReloaded.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+/* eslint-disable @typescript-eslint/no-empty-interface */
+
 //Attention this file should have NO global imports! Only local imports like import("./something").type are allowed
 //otherwise TS creates code with import instead of simpy using the stuff
 //see https://stackoverflow.com/questions/39040108/import-class-in-definition-file-d-ts
 
 //Attention:
 //this types are not complete! I only added, what is used by AutoarchiveReloaded at the moment!
-
-// tslint:disable:class-name
-// tslint:disable:interface-name
-// tslint:disable:max-classes-per-file
 
 //WebExtension Stuff---------------------------------------------------------------------------------------------------------
 
@@ -39,11 +37,11 @@ declare class RuntimeMessageSender
 type RuntimeMessageResponseFunction = (response: import("./IMessages").IGetArchiveStatusResponse | null) => void;
 type RuntimeMessageListener = (message: import("./IMessages").IGetArchiveStatusMessageRequest|import("./IMessages").IArchiveManuallyMessageRequest, sender: RuntimeMessageSender, sendResponse: RuntimeMessageResponseFunction) => void;
 
-declare interface RuntimeMessageListeners extends IListeners<RuntimeMessageListener>
+declare interface RuntimeMessageListeners extends Listeners<RuntimeMessageListener>
 {
 }
 
-declare interface RuntimePortListener extends IListeners<(object: object) => void>
+declare interface RuntimePortListener extends Listeners<(object: object) => void>
 {
 }
 
@@ -56,11 +54,11 @@ interface RuntimePort
 	postMessage(object: object): void;
 }
 
-declare interface RuntimeConnectListener extends IListeners<(port: RuntimePort) => void>
+declare interface RuntimeConnectListener extends Listeners<(port: RuntimePort) => void>
 {
 }
 
-declare interface RuntimeSuspendListener extends IListeners<() => void>
+declare interface RuntimeSuspendListener extends Listeners<() => void>
 {
 }
 
@@ -118,14 +116,14 @@ declare interface BrowserWindow extends Window
 	focused: boolean;
 }
 
-declare interface IListeners<T>
+declare interface Listeners<T>
 {
 	addListener(callback: T): void;
 	removeListener(listener: T): void;
 	hasListener(listener: T): boolean;
 }
 
-declare interface BrowserWindowCreatedListeners extends IListeners< (window: BrowserWindow) => void>
+declare interface BrowserWindowCreatedListeners extends Listeners< (window: BrowserWindow) => void>
 {
 }
 
@@ -157,7 +155,7 @@ declare interface Extension
 //https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/browserAction
 declare interface BrowserAction
 {
-	onClicked: IListeners<() => void>;
+	onClicked: Listeners<() => void>;
 }
 
 declare interface TabInfo
@@ -174,12 +172,12 @@ declare interface Tab
 //https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/tabs
 declare interface BrowserTabs
 {
-	onCreated: IListeners<(tab: Tab) => void>;
+	onCreated: Listeners<(tab: Tab) => void>;
 
 	query(queryInfo: TabInfo | {}): Promise<Tab[]>;
 }
 
-declare interface i18n
+declare interface Internationalization
 {
 	getMessage(messageName: string, substitutions?: string | string[]): string;
 }
@@ -212,7 +210,7 @@ declare interface MailFolder
 }
 
 //https://thunderbird-webextensions.readthedocs.io/en/latest/accounts.html
-declare interface accounts
+declare interface Accounts
 {
 	list(): Promise<MailAccount[]>;
 	get(accountId: string): Promise<MailAccount>;
@@ -251,7 +249,7 @@ declare interface MessageTag
 }
 
 //https://thunderbird-webextensions.readthedocs.io/en/latest/messages.html
-declare interface messages
+declare interface Messages
 {
 	list(folder: MailFolder): Promise<MessageList>;
 	continueList(messageListId: string): Promise<MessageList>;
@@ -260,14 +258,14 @@ declare interface messages
 
 	//move(messageIds: number[], destination: MailFolder); //return type?
 	//copy(messageIds: number[], destination: MailFolder); //return type?
-  //delete(messageIds: number[], ?skipTrash:boolean); //return type?
+	//delete(messageIds: number[], ?skipTrash:boolean); //return type?
 	archive(messageIds: number[]): Promise<void>;
 }
 
 declare interface AutoarchiveWebExperiment
 {
 	// tslint:disable-next-line: array-type
-	askForLegacyPreferences(accounts: import("../sharedAll/interfaces").IAccountInfo[]): import("../sharedAll/interfaces").ISettings | null;
+	askForLegacyPreferences(accounts: import("../sharedAll/interfaces").IAccountInfo[]): import("../sharedAll/interfaces").ISettings|null;
 	setInfoLogging(value: boolean): void;
 }
 
@@ -302,7 +300,7 @@ declare interface OnClickData
 	wasChecked?: boolean; //A flag indicating the state of a checkbox or radio item before it was clicked.
 }
 
-declare interface menuCreateProperties
+declare interface MenuCreateProperties
 {
 	checked?: boolean; //The initial state of a checkbox or radio item: true for selected and false for unselected. Only one radio item can be selected at a time in a given group of radio items.
 	command?: string; //Specifies a command to issue for the context click. Currently supports internal command _execute_browser_action.
@@ -320,10 +318,10 @@ declare interface menuCreateProperties
 	visible: boolean; //Whether the item is visible in the menu.
 }
 
-declare interface menus
+declare interface Menus
 {
 	//returns "The ID of the newly created item."
-	create(createProperties: menuCreateProperties, callback?: () => void): Promise<number|string>;
+	create(createProperties: MenuCreateProperties, callback?: () => void): Promise<number|string>;
 
 	//update(id, updateProperties)
 	remove(menuItemId: number | string): void;
@@ -340,12 +338,12 @@ declare interface Browser
 	browserAction: BrowserAction;
 	tabs: BrowserTabs;
 
-	i18n: i18n;
-	accounts: accounts;
-	messages: messages;
-	menus: menus;
+	i18n: Internationalization;
+	accounts: Accounts;
+	messages: Messages;
+	menus: Menus;
 
 	autoarchive: AutoarchiveWebExperiment;
 }
 
-declare var browser: Browser;
+declare const browser: Browser;
