@@ -1,6 +1,3 @@
-/* eslint-disable prefer-arrow/prefer-arrow-functions */
-//TODO: temporarily or permanently???
-
 /*!
 Copyright 2018-2019 Brummolix (new version AutoarchiveReloaded, https://github.com/Brummolix/AutoarchiveReloaded )
 
@@ -20,10 +17,13 @@ Copyright 2018-2019 Brummolix (new version AutoarchiveReloaded, https://github.c
     along with AutoarchiveReloaded.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+//this is no typescript file!
+/* eslint-disable @typescript-eslint/explicit-function-return-type */
+
+// eslint-disable-next-line @typescript-eslint/no-var-requires
 const webpackConfig = require("./webpack.config.js");
 
-module.exports = function(grunt)
-{
+module.exports = grunt => {
 	const srcDir = "src/";
 	const outDir = "built/";
 	const outDirExtracted = outDir + "/release/";

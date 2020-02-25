@@ -60,7 +60,25 @@ module.exports = {
                 }
             }
         ],
-        "@typescript-eslint/member-ordering": "error",
+        "@typescript-eslint/member-ordering": [
+					"error",
+					{
+						"default": [
+							// Fields
+							'static-field',
+							'instance-field',
+							'abstract-field',
+
+							// Constructors
+							'constructor',
+
+							// Methods
+							'static-method',
+							'instance-method',
+							'abstract-method',
+						]
+					}
+				],
         "@typescript-eslint/no-empty-function": "error",
         "@typescript-eslint/no-empty-interface": "error",
         "@typescript-eslint/no-explicit-any": "off",

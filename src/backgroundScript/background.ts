@@ -1,6 +1,3 @@
-/* eslint-disable prefer-arrow/prefer-arrow-functions */
-//TODO: temporarily or permanently???
-
 /*!
 Copyright 2019 Brummolix (AutoarchiveReloaded, https://github.com/Brummolix/AutoarchiveReloaded )
 
@@ -20,12 +17,13 @@ Copyright 2019 Brummolix (AutoarchiveReloaded, https://github.com/Brummolix/Auto
     along with AutoarchiveReloaded.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+/* eslint-disable prefer-arrow/prefer-arrow-functions */
 import { IArchiveManuallyMessageRequest, IGetArchiveStatusMessageRequest } from "../sharedAll/IMessages";
 import {log} from "../sharedWebextension/Logger";
 import { OptionHelper } from "../sharedWebextension/optionHelper";
 import { MainFunctions } from "./MainFunctions";
 
-export async function startup(): Promise<void>
+async function startup(): Promise<void>
 {
 	try
 	{

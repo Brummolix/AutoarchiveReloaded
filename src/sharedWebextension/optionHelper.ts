@@ -53,6 +53,7 @@ export class OptionHelper
 		}
 	}
 
+
 	private removeOutdatedAccountsFromSettings(settings: ISettings, accounts: IAccountInfo[]): void
 	{
 		for (const accountId in settings.accountSettings)
@@ -76,7 +77,6 @@ export class OptionHelper
 		});
 	}
 
-	// eslint-disable-next-line @typescript-eslint/member-ordering
 	public async initializePreferencesAtStartup(): Promise<void>
 	{
 		log.info("start conversion of legacy preferences (if any)");
@@ -106,7 +106,6 @@ export class OptionHelper
 		}
 	}
 
-	// eslint-disable-next-line @typescript-eslint/member-ordering
 	public async savePreferencesAndPublishForLogging(settings: ISettings): Promise<void>
 	{
 		log.info("going to save settings");

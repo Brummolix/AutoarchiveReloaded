@@ -1,5 +1,4 @@
 /* eslint-disable prefer-arrow/prefer-arrow-functions */
-//TODO: temporarily or permanently?
 
 /*!
 Copyright 2018-2019 Brummolix (AutoarchiveReloaded, https://github.com/Brummolix/AutoarchiveReloaded )
