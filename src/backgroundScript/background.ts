@@ -18,7 +18,7 @@ Copyright 2019 Brummolix (AutoarchiveReloaded, https://github.com/Brummolix/Auto
 */
 
 /* eslint-disable prefer-arrow/prefer-arrow-functions */
-import { IArchiveManuallyMessageRequest, IGetArchiveStatusMessageRequest } from "../sharedAll/IMessages";
+import { ArchiveManuallyMessageRequest, GetArchiveStatusMessageRequest } from "../sharedAll/Messages";
 import {log} from "../sharedWebextension/Logger";
 import { OptionHelper } from "../sharedWebextension/optionHelper";
 import { MainFunctions } from "./MainFunctions";
@@ -41,7 +41,7 @@ async function startup(): Promise<void>
 	}
 }
 
-function handleMessage(request: IArchiveManuallyMessageRequest|IGetArchiveStatusMessageRequest, sender: RuntimeMessageSender, sendResponse: RuntimeMessageResponseFunction): void {
+function handleMessage(request: ArchiveManuallyMessageRequest|GetArchiveStatusMessageRequest, sender: RuntimeMessageSender, sendResponse: RuntimeMessageResponseFunction): void {
 	switch (request.message)
 	{
 		case "getArchiveStatus":

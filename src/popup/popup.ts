@@ -4,13 +4,13 @@
 /// <reference path="../sharedAll/thunderbird.d.ts" />
 
 import { GlobalStates } from "../sharedAll/GlobalStates";
-import { IArchiveManuallyMessageRequest, IGetArchiveStatusMessageRequest, IGetArchiveStatusResponse } from "../sharedAll/IMessages";
+import { ArchiveManuallyMessageRequest, GetArchiveStatusMessageRequest, GetArchiveStatusResponse } from "../sharedAll/Messages";
 import { log } from "../sharedWebextension/Logger";
 
 async function initialize(): Promise<void>
 {
-	const message: IGetArchiveStatusMessageRequest = {message: "getArchiveStatus"};
-	const response: IGetArchiveStatusResponse = await browser.runtime.sendMessage(message);
+	const message: GetArchiveStatusMessageRequest = {message: "getArchiveStatus"};
+	const response: GetArchiveStatusResponse = await browser.runtime.sendMessage(message);
 	const status: GlobalStates = response.status;
 
 	switch (status)
@@ -41,7 +41,7 @@ async function initialize(): Promise<void>
 
 function onManualArchive(): void
 {
-	const message: IArchiveManuallyMessageRequest = {message: "archiveManually"};
+	const message: ArchiveManuallyMessageRequest = {message: "archiveManually"};
 	browser.runtime.sendMessage(message);
 	window.close();
 }

@@ -1,16 +1,16 @@
 import { GlobalStates } from "./GlobalStates";
 
-export interface IGetArchiveStatusMessageRequest
+export interface GetArchiveStatusMessageRequest
 {
 	message: "getArchiveStatus";
 }
 
-export interface IGetArchiveStatusResponse
+export interface GetArchiveStatusResponse
 {
 	status: GlobalStates;
 }
 
-export interface IArchiveManuallyMessageRequest
+export interface ArchiveManuallyMessageRequest
 {
 	message: "archiveManually";
 }

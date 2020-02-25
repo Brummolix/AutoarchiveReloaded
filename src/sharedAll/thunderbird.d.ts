@@ -34,8 +34,8 @@ declare class RuntimeMessageSender
 }
 
 //https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/runtime/onMessage
-type RuntimeMessageResponseFunction = (response: import("./IMessages").IGetArchiveStatusResponse | null) => void;
-type RuntimeMessageListener = (message: import("./IMessages").IGetArchiveStatusMessageRequest|import("./IMessages").IArchiveManuallyMessageRequest, sender: RuntimeMessageSender, sendResponse: RuntimeMessageResponseFunction) => void;
+type RuntimeMessageResponseFunction = (response: import("./Messages").GetArchiveStatusResponse | null) => void;
+type RuntimeMessageListener = (message: import("./Messages").GetArchiveStatusMessageRequest|import("./Messages").ArchiveManuallyMessageRequest, sender: RuntimeMessageSender, sendResponse: RuntimeMessageResponseFunction) => void;
 
 declare interface RuntimeMessageListeners extends Listeners<RuntimeMessageListener>
 {
@@ -80,8 +80,8 @@ declare interface Runtime
 	onConnect: RuntimeConnectListener;
 	//onSuspend: RuntimeSuspendListener; -> does not exist in TB?
 
-	sendMessage(message: import("./IMessages").IGetArchiveStatusMessageRequest): Promise<import("./IMessages").IGetArchiveStatusResponse>;
-	sendMessage(message: import("./IMessages").IArchiveManuallyMessageRequest): Promise<void>;
+	sendMessage(message: import("./Messages").GetArchiveStatusMessageRequest): Promise<import("./Messages").GetArchiveStatusResponse>;
+	sendMessage(message: import("./Messages").ArchiveManuallyMessageRequest): Promise<void>;
 	connect(connectInfo: {name: string}): RuntimePort;
 
 	getBrowserInfo(): Promise<BrowserInfo>;
