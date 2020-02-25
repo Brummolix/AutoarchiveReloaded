@@ -1,3 +1,6 @@
+/* eslint-disable prefer-arrow/prefer-arrow-functions */
+//TODO: temporarily or permanently???
+
 /*!
 Copyright 2019 Brummolix (AutoarchiveReloaded, https://github.com/Brummolix/AutoarchiveReloaded )
 
@@ -40,7 +43,7 @@ export async function startup(): Promise<void>
 	}
 }
 
-function handleMessage(request: IArchiveManuallyMessageRequest|IGetArchiveStatusMessageRequest, sender: RuntimeMessageSender, sendResponse: RuntimeMessageResponseFunction) {
+function handleMessage(request: IArchiveManuallyMessageRequest|IGetArchiveStatusMessageRequest, sender: RuntimeMessageSender, sendResponse: RuntimeMessageResponseFunction): void {
 	switch (request.message)
 	{
 		case "getArchiveStatus":

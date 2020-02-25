@@ -53,7 +53,7 @@ export class OptionHelper
 		}
 	}
 
-	private removeOutdatedAccountsFromSettings(settings: ISettings, accounts: IAccountInfo[])
+	private removeOutdatedAccountsFromSettings(settings: ISettings, accounts: IAccountInfo[]): void
 	{
 		for (const accountId in settings.accountSettings)
 		{
@@ -64,9 +64,9 @@ export class OptionHelper
 		}
 	}
 
-	private ensureEveryExistingAccountHaveSettings(accounts: IAccountInfo[], settings: ISettings, oHandling: DefaultSettings)
+	private ensureEveryExistingAccountHaveSettings(accounts: IAccountInfo[], settings: ISettings, oHandling: DefaultSettings): void
 	{
-		accounts.forEach((account) =>
+		accounts.forEach(account =>
 		{
 			const accountSetting = settings.accountSettings[account.accountId];
 			if (accountSetting === undefined)
@@ -76,13 +76,14 @@ export class OptionHelper
 		});
 	}
 
+	// eslint-disable-next-line @typescript-eslint/member-ordering
 	public async initializePreferencesAtStartup(): Promise<void>
 	{
 		log.info("start conversion of legacy preferences (if any)");
 
 		const accounts: IAccountInfo[] = await AccountInfo.askForAccounts();
 
-		const settings: ISettings | null = await browser.autoarchive.askForLegacyPreferences(accounts);
+		const settings: ISettings | null = browser.autoarchive.askForLegacyPreferences(accounts);
 		try
 		{
 			if (settings)
@@ -105,6 +106,7 @@ export class OptionHelper
 		}
 	}
 
+	// eslint-disable-next-line @typescript-eslint/member-ordering
 	public async savePreferencesAndPublishForLogging(settings: ISettings): Promise<void>
 	{
 		log.info("going to save settings");

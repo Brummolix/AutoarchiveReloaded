@@ -30,6 +30,7 @@ export class SettingsHelper
 
 	public static getMinAge(accountSettings: IAccountSettings): number
 	{
+		// eslint-disable-next-line id-blacklist
 		let minAge = Number.MAX_VALUE;
 		if (accountSettings.bArchiveOther)
 		{
@@ -51,7 +52,7 @@ export class SettingsHelper
 		return minAge;
 	}
 
-	public static log(accountName: string, accountSettings: IAccountSettings)
+	public static log(accountName: string, accountSettings: IAccountSettings): void
 	{
 		log.info("Settings for '" + accountName + "':");
 		log.info(JSON.stringify(accountSettings));

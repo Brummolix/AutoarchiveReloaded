@@ -77,7 +77,7 @@ export class AccountInfo
 
 			const accounts: IAccountInfo[] = [];
 			let currentOrder = 0;
-			nsAccounts.forEach((account) =>
+			nsAccounts.forEach(account =>
 			{
 				accounts.push({
 					accountId: account.id,

@@ -35,7 +35,7 @@ export class DefaultSettings
 		};
 	}
 
-	public convertPartialSettings(partialSettings: { [key: string]: any; }): ISettings
+	public convertPartialSettings(partialSettings: { [key: string]: any }): ISettings
 	{
 		const defaultSettings: ISettings = this.getDefaultSettings();
 		const concatedSettings: ISettings = this.deepMerge(defaultSettings, partialSettings);
@@ -47,13 +47,13 @@ export class DefaultSettings
 			{
 				const accountSetting = concatedSettings.accountSettings[accountId];
 				concatedSettings.accountSettings[accountId] = this.deepMerge(this.getDefaultAccountSettings(), accountSetting);
-				}
+			}
 		}
 
 		return concatedSettings;
 	}
 
-	private deepMerge<T extends { [key: string]: any; }>(defaultValues: T, valuesToMerge: { [key: string]: any; }): T
+	private deepMerge<T extends { [key: string]: any }>(defaultValues: T, valuesToMerge: { [key: string]: any }): T
 	{
 		if (valuesToMerge === undefined || valuesToMerge === null)
 		{

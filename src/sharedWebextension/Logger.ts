@@ -24,7 +24,7 @@ export class LogLevelInfo implements ILogLevelInfo
 {
 	private static readonly ENABLE_INFO_LOGGING_NAME: string = "WebExtensionLoggerHelper_enableInfoLogging";
 
-	public static setGlobaleEnableInfoLogging(value: boolean)
+	public static setGlobaleEnableInfoLogging(value: boolean): void
 	{
 		(browser.extension.getBackgroundPage() as any)[LogLevelInfo.ENABLE_INFO_LOGGING_NAME] = value;
 
