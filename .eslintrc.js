@@ -46,7 +46,7 @@ module.exports = {
 								
             }
         ],
-        "@typescript-eslint/interface-name-prefix": "off",//TODO: error?
+        "@typescript-eslint/interface-name-prefix": "error",
         "@typescript-eslint/member-delimiter-style": [
             "error",
             {
