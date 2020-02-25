@@ -1,3 +1,6 @@
+/* eslint-disable prefer-arrow/prefer-arrow-functions */
+//TODO: temporarily or permanently???
+
 /*!
 Copyright 2018-2019 Brummolix (new version AutoarchiveReloaded, https://github.com/Brummolix/AutoarchiveReloaded )
 
@@ -19,12 +22,12 @@ Copyright 2018-2019 Brummolix (new version AutoarchiveReloaded, https://github.c
 
 const webpackConfig = require("./webpack.config.js");
 
-module.exports = function(grunt) {
-
-	let srcDir = "src/";
-	let outDir = "built/";
-	let outDirExtracted = outDir + "/release/";
-	let outXpi = outDir + "/AutoArchiveReloaded.xpi";
+module.exports = function(grunt)
+{
+	const srcDir = "src/";
+	const outDir = "built/";
+	const outDirExtracted = outDir + "/release/";
+	const outXpi = outDir + "/AutoArchiveReloaded.xpi";
 
 	// Project configuration.
 	grunt.initConfig({
@@ -36,13 +39,13 @@ module.exports = function(grunt) {
 				files: [
 					{ expand: true, cwd: "resources/", src: ["**"], dest: outDirExtracted },
 					{ expand: true, cwd: srcDir + "/backgroundScript/",
-													src: ["**", "!**/*.ts", "!**/tsconfig*.json"], dest: outDirExtracted },
+						src: ["**", "!**/*.ts", "!**/tsconfig*.json"], dest: outDirExtracted },
 					{ expand: true, cwd: srcDir + "/options/",
-													src: ["**", "!**/*.ts", "!**/tsconfig*.json"], dest: outDirExtracted },
+						src: ["**", "!**/*.ts", "!**/tsconfig*.json"], dest: outDirExtracted },
 					{ expand: true, cwd: srcDir + "/webexperiment/",
-													src: ["**", "!**/*.ts", "!**/tsconfig*.json"], dest: outDirExtracted },
+						src: ["**", "!**/*.ts", "!**/tsconfig*.json"], dest: outDirExtracted },
 					{ expand: true, cwd: srcDir + "/popup/",
-													src: ["**", "!**/*.ts", "!**/tsconfig*.json"], dest: outDirExtracted },
+						src: ["**", "!**/*.ts", "!**/tsconfig*.json"], dest: outDirExtracted },
 					{ expand: true, src: ["./licence.txt", "./README.md"], dest: outDirExtracted },
 				],
 			},
@@ -70,22 +73,12 @@ module.exports = function(grunt) {
 				],
 			},
 		},
-		tslint: {
-			options: {
-				// can be a configuration object or a filepath to tslint.json
-				configuration: "./tslint.json",
-				// If set to true, tslint errors will be reported, but not fail the task
-				// If set to false, tslint errors will be reported, and the task will fail
-				force: false,
-				fix: false,
-			},
-			files: {
-				src: [
-					srcDir + "/**/*.ts",
-					srcDir + "/**/*.js",
-					"!src/**/libs/**/*.js",
-				],
-			},
+		eslint: {
+			target: [
+				srcDir + "/**/*.ts",
+				srcDir + "/**/*.js",
+				"!src/**/libs/**/*.js",
+			],
 		},
 	});
 
@@ -93,13 +86,13 @@ module.exports = function(grunt) {
 	grunt.loadNpmTasks("grunt-contrib-clean");
 	grunt.loadNpmTasks("grunt-ts");
 	grunt.loadNpmTasks("grunt-contrib-compress");
-	grunt.loadNpmTasks("grunt-tslint");
 	grunt.loadNpmTasks("grunt-webpack");
+	grunt.loadNpmTasks("grunt-eslint");
 
 	// Default task(s).
 	grunt.registerTask("default",
-		["clean", "copy", "ts:debug", "webpack", "tslint", "compress"]);
+		["clean", "copy", "ts:debug", "webpack", "eslint", "compress"]);
 
 	grunt.registerTask("release",
-		["clean", "copy", "ts:release", "webpack", "tslint", "compress"]);
+		["clean", "copy", "ts:release", "webpack", "eslint", "compress"]);
 };
