@@ -23,7 +23,7 @@ import { ArchiveType, IAccountInfo, ISettings } from "../sharedAll/interfaces";
 import { AccountInfo } from "../sharedWebextension/AccountInfo";
 import { log } from "../sharedWebextension/Logger";
 import { OptionHelper } from "../sharedWebextension/optionHelper";
-import { IAccountInfos } from "./IAccountInfos";
+import { AccountInfos } from "./AccountInfos";
 
 async function saveOptions(): Promise<void>
 {
@@ -98,7 +98,7 @@ async function restoreOptions(): Promise<void>
 
 	//Für jeden Account die Einstellungen clonen und die gespeicherten Werte setzen
 	const accounts: IAccountInfo[] = await AccountInfo.askForAccounts();
-	const accountsSorted: IAccountInfos[] = [];
+	const accountsSorted: AccountInfos[] = [];
 	for (const accountId in settings.accountSettings)
 	{
 		if (settings.accountSettings.hasOwnProperty(accountId))
@@ -110,7 +110,7 @@ async function restoreOptions(): Promise<void>
 		}
 	}
 
-	accountsSorted.sort((a: IAccountInfos, b: IAccountInfos): number =>
+	accountsSorted.sort((a: AccountInfos, b: AccountInfos): number =>
 	{
 		if (a.account.order === b.account.order)
 		{

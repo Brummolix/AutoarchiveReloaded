@@ -20,7 +20,7 @@ Copyright 2012 Alexey Egorov (original version Autoarchive, http://code.google.c
 
 import { IAccountInfo, IAccountSettings } from "../sharedAll/interfaces";
 
-export interface IAccountInfos
+export interface AccountInfos
 {
 	account: IAccountInfo;
 	accountSetting: IAccountSettings;
