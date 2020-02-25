@@ -25,15 +25,16 @@ import {log, logLevelInfo} from "./Logger";
 //This class must be the default export, because the default is exported by webpack (see configuration) on a "var autoarchive"
 //(The only way Thunderbird wants it...)
 
-// tslint:disable-next-line: class-name
+// eslint-disable-next-line @typescript-eslint/class-name-casing
 export default class autoarchive extends ExtensionCommon.ExtensionAPI {
 	private legacyOptions: LegacyOptions = new LegacyOptions();
 
-	public getAPI(context: ExtensionContext)
+	// eslint-disable-next-line @typescript-eslint/no-unused-vars
+	public getAPI(context: ExtensionContext): any
 	{
 		return {
 			autoarchive: {
-				askForLegacyPreferences: async (accounts: IAccountInfo[]): Promise<ISettings | null> =>
+				askForLegacyPreferences: (accounts: IAccountInfo[]): ISettings | null =>
 				{
 					log.info("askForLegacyPreferences");
 					try

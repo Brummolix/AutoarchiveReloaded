@@ -22,7 +22,7 @@ Copyright 2012 Alexey Egorov (original version Autoarchive, http://code.google.c
 
 export class AccountIterator
 {
-	public static async forEachAccount(forEachDo: (account: MailAccount, isAccountArchivable: boolean) => void): Promise<void>
+	public static async forEachAccount(forEachDo: (account: MailAccount, isAccountArchivable: boolean) => Promise<void> | void): Promise<void>
 	{
 		const accounts: MailAccount[] = await browser.accounts.list();
 		for (const account of accounts)

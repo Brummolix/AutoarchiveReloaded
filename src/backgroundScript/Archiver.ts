@@ -35,7 +35,7 @@ export class Archiver
 			const optionHelper: OptionHelper = new OptionHelper();
 			const settings: ISettings = await optionHelper.loadCurrentSettings();
 
-			await AccountIterator.forEachAccount(async (account: MailAccount, isAccountArchivable: boolean) =>
+			await AccountIterator.forEachAccount(async (account: MailAccount, isAccountArchivable: boolean): Promise<void> =>
 			{
 				await this.archiveAccount(account, isAccountArchivable, settings);
 			});
@@ -211,28 +211,28 @@ export class Archiver
 			log.errorException(e, "The exception might occur because the folder is a virtual folder... See https://bugzilla.mozilla.org/show_bug.cgi?id=1529791");
 			return messages;
 		}
-		await this.detectMessagesToArchive(messageList, settings, messages);
+		this.detectMessagesToArchive(messageList, settings, messages);
 
 		while (messageList.id) {
 			messageList = await browser.messages.continueList(messageList.id);
-			await this.detectMessagesToArchive(messageList, settings, messages);
+			this.detectMessagesToArchive(messageList, settings, messages);
 		}
 
 		return messages;
 	}
 
-	private async detectMessagesToArchive(messageList: MessageList, settings: IAccountSettings, messages: MessageHeader[]): Promise<void>
+	private detectMessagesToArchive(messageList: MessageList, settings: IAccountSettings, messages: MessageHeader[]): void
 	{
 		for (const message of messageList.messages)
 		{
-			if (await this.shallMessageBeArchived(message, settings))
+			if (this.shallMessageBeArchived(message, settings))
 			{
 				messages.push(message);
 			}
 		}
 	}
 
-	private async shallMessageBeArchived(messageHeader: MessageHeader, settings: IAccountSettings): Promise<boolean>
+	private shallMessageBeArchived(messageHeader: MessageHeader, settings: IAccountSettings): boolean
 	{
 		//determine ageInDays
 		let ageInDays: number = 0;
@@ -267,7 +267,7 @@ export class Archiver
 		//tagged
 
 		//GMail uses the tag "junk" to mark junk mails, but they shall not be classified as normal "tags"
-		const tags = messageHeader.tags.filter((tag) => (tag !== "junk" && tag !== "nonjunk") );
+		const tags = messageHeader.tags.filter(tag => (tag !== "junk" && tag !== "nonjunk") );
 
 		if (tags.length > 0)
 		{
@@ -320,7 +320,7 @@ export class Archiver
 			const messageIds: number[] = [];
 			for (const message of messages) {
 				messageIds.push(message.id);
-		}
+			}
 
 			await browser.messages.archive(messageIds);
 		}

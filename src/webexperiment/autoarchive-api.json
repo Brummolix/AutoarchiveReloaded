@@ -5,7 +5,7 @@
       {
         "name": "askForLegacyPreferences",
         "type": "function",
-        "async": true,
+        "async": false,
         "parameters": [
 				{
 					"name": "accounts",
