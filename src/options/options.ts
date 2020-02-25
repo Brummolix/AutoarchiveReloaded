@@ -1,3 +1,6 @@
+/* eslint-disable prefer-arrow/prefer-arrow-functions */
+//TODO: temporarily or permanently?
+
 /*!
 Copyright 2018-2019 Brummolix (AutoarchiveReloaded, https://github.com/Brummolix/AutoarchiveReloaded )
 
@@ -60,18 +63,19 @@ async function saveOptions(): Promise<void>
 			// options
 			message: "__MSG_settingsSaved__",
 		}, {
-				// settings
-				type: "success",
-				allow_dismiss: false,
-				placement: {
-					from: "top",
-					align: "center",
-				},
-				animate: {
-					enter: "animated bounceInDown",
-					exit: "animated bounceOutUp",
-				},
-			});
+			// settings
+			type: "success",
+			// eslint-disable-next-line camelcase, @typescript-eslint/camelcase
+			allow_dismiss: false,
+			placement: {
+				from: "top",
+				align: "center",
+			},
+			animate: {
+				enter: "animated bounceInDown",
+				exit: "animated bounceOutUp",
+			},
+		});
 
 		//update translations...
 		l10n.updateDocument();
@@ -84,11 +88,11 @@ async function saveOptions(): Promise<void>
 
 }
 
-async function restoreOptions()
+async function restoreOptions(): Promise<void>
 {
 	const settings: ISettings = await optionHelper.loadCurrentSettings();
 	(document.getElementById("enableInfoLogging") as HTMLInputElement).checked = settings.globalSettings.enableInfoLogging;
-	document.querySelectorAll<HTMLInputElement>('input[name="archiveType"]').forEach((element) =>
+	document.querySelectorAll<HTMLInputElement>('input[name="archiveType"]').forEach(element =>
 	{
 		element.checked = (element.value === settings.globalSettings.archiveType);
 	});
@@ -122,7 +126,7 @@ async function restoreOptions()
 		return 1;
 	});
 
-	accountsSorted.forEach((accountInfos) =>
+	accountsSorted.forEach(accountInfos =>
 	{
 		const account = accountInfos.account;
 		const accountId = accountInfos.account.accountId;
@@ -156,7 +160,7 @@ function getElementForAccount(accountId: string, elementId: string): HTMLElement
 	return getJQueryElementForAccount(accountId, elementId)[0];
 }
 
-function cloneTemplate(cloneId: string, appendToId: string, accountInfo: IAccountInfo)
+function cloneTemplate(cloneId: string, appendToId: string, accountInfo: IAccountInfo): void
 {
 	const clone = $("#" + cloneId).clone(true, true);
 	clone.appendTo("#" + appendToId);
@@ -170,7 +174,7 @@ function cloneTemplate(cloneId: string, appendToId: string, accountInfo: IAccoun
 	clone[0].outerHTML = html;
 }
 
-async function onLoad()
+async function onLoad(): Promise<void>
 {
 	try
 	{
@@ -184,4 +188,5 @@ async function onLoad()
 	}
 }
 const optionHelper: OptionHelper = new OptionHelper();
+// eslint-disable-next-line @typescript-eslint/no-misused-promises
 $(onLoad);

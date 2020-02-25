@@ -19,8 +19,7 @@ Copyright 2018-2019 Brummolix (AutoarchiveReloaded, https://github.com/Brummolix
 
 import { ILogLevelInfo } from "./ILogLevelInfo";
 
-enum LogLevel
-{
+enum LogLevel {
 	LEVEL_INFO, LEVEL_ERROR,
 }
 
@@ -28,7 +27,7 @@ export class Logger
 {
 	private logLevelInfo: ILogLevelInfo;
 
-	constructor(logLevelInfo: ILogLevelInfo)
+	public constructor(logLevelInfo: ILogLevelInfo)
 	{
 		this.logLevelInfo = logLevelInfo;
 	}
@@ -93,7 +92,7 @@ export class Logger
 		this.logAny(strToLog);
 	}
 
-	private logAny(value: any)
+	private logAny(value: any): void
 	{
 		console.log(value);
 	}

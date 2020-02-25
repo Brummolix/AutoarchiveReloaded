@@ -1,3 +1,5 @@
+/* eslint-disable prefer-arrow/prefer-arrow-functions */
+//TODO: temporarily or permanently?
 
 /// <reference path="../sharedAll/thunderbird.d.ts" />
 
@@ -5,7 +7,7 @@ import { GlobalStates } from "../sharedAll/GlobalStates";
 import { IArchiveManuallyMessageRequest, IGetArchiveStatusMessageRequest, IGetArchiveStatusResponse } from "../sharedAll/IMessages";
 import { log } from "../sharedWebextension/Logger";
 
-async function initialize()
+async function initialize(): Promise<void>
 {
 	const message: IGetArchiveStatusMessageRequest = {message: "getArchiveStatus"};
 	const response: IGetArchiveStatusResponse = await browser.runtime.sendMessage(message);
@@ -37,14 +39,14 @@ async function initialize()
 	}
 }
 
-async function onManualArchive(): Promise<void>
+function onManualArchive(): void
 {
 	const message: IArchiveManuallyMessageRequest = {message: "archiveManually"};
 	browser.runtime.sendMessage(message);
 	window.close();
 }
 
-async function onLoad()
+async function onLoad(): Promise<void>
 {
 	try
 	{
@@ -58,4 +60,5 @@ async function onLoad()
 	}
 }
 
+// eslint-disable-next-line @typescript-eslint/no-misused-promises
 $(onLoad);
