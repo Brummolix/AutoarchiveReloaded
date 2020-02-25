@@ -20,7 +20,7 @@ Copyright 2018-2019 Brummolix (AutoarchiveReloaded, https://github.com/Brummolix
 import { IAccountInfo, ISettings } from "../sharedAll/interfaces";
 import { AccountInfo } from "./AccountInfo";
 import { DefaultSettings } from "./DefaultSettings";
-import { log, LogLevelInfo } from "./Logger";
+import { log, LogLevelInfoWebExtension } from "./Logger";
 
 export class OptionHelper
 {
@@ -130,7 +130,7 @@ export class OptionHelper
 		log.info("loadCurrentSettings done, publish for logging");
 		try
 		{
-			LogLevelInfo.setGlobaleEnableInfoLogging(settings.globalSettings.enableInfoLogging);
+			LogLevelInfoWebExtension.setGlobaleEnableInfoLogging(settings.globalSettings.enableInfoLogging);
 		}
 		catch (e)
 		{

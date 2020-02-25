@@ -18,10 +18,10 @@ Copyright 2012 Alexey Egorov (original version Autoarchive, http://code.google.c
     along with AutoarchiveReloaded.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import { ILogLevelInfo } from "../sharedAll/ILogLevelInfo";
+import { LogLevelInfo } from "../sharedAll/LogLevelInfo";
 import {Logger} from "../sharedAll/Logger";
 
-class LogLevelInfo implements ILogLevelInfo
+class LogLevelInfoWebexperiment implements LogLevelInfo
 {
 	public enableInfoLogging: boolean = false;
 
@@ -31,5 +31,5 @@ class LogLevelInfo implements ILogLevelInfo
 	}
 }
 
-export const logLevelInfo: LogLevelInfo = new LogLevelInfo();
+export const logLevelInfo: LogLevelInfoWebexperiment = new LogLevelInfoWebexperiment();
 export const log: Logger = new Logger(logLevelInfo);

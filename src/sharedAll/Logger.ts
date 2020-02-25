@@ -17,7 +17,7 @@ Copyright 2018-2019 Brummolix (AutoarchiveReloaded, https://github.com/Brummolix
     along with AutoarchiveReloaded.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import { ILogLevelInfo } from "./ILogLevelInfo";
+import { LogLevelInfo } from "./LogLevelInfo";
 
 enum LogLevel {
 	LEVEL_INFO, LEVEL_ERROR,
@@ -25,9 +25,9 @@ enum LogLevel {
 
 export class Logger
 {
-	private logLevelInfo: ILogLevelInfo;
+	private logLevelInfo: LogLevelInfo;
 
-	public constructor(logLevelInfo: ILogLevelInfo)
+	public constructor(logLevelInfo: LogLevelInfo)
 	{
 		this.logLevelInfo = logLevelInfo;
 	}

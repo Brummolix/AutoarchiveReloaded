@@ -17,16 +17,16 @@ Copyright 2019 Brummolix (new version AutoarchiveReloaded, https://github.com/Br
     along with AutoarchiveReloaded.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import {ILogLevelInfo} from "../sharedAll/ILogLevelInfo";
+import {LogLevelInfo} from "../sharedAll/LogLevelInfo";
 import {Logger} from "../sharedAll/Logger";
 
-export class LogLevelInfo implements ILogLevelInfo
+export class LogLevelInfoWebExtension implements LogLevelInfo
 {
 	private static readonly ENABLE_INFO_LOGGING_NAME: string = "WebExtensionLoggerHelper_enableInfoLogging";
 
 	public static setGlobaleEnableInfoLogging(value: boolean): void
 	{
-		(browser.extension.getBackgroundPage() as any)[LogLevelInfo.ENABLE_INFO_LOGGING_NAME] = value;
+		(browser.extension.getBackgroundPage() as any)[LogLevelInfoWebExtension.ENABLE_INFO_LOGGING_NAME] = value;
 
 		//webexperiment has different log setting...
 		browser.autoarchive.setInfoLogging(value);
@@ -34,7 +34,7 @@ export class LogLevelInfo implements ILogLevelInfo
 
 	private static getGlobalEnableInfoLogging(): boolean
 	{
-		return (browser.extension.getBackgroundPage() as any)[LogLevelInfo.ENABLE_INFO_LOGGING_NAME];
+		return (browser.extension.getBackgroundPage() as any)[LogLevelInfoWebExtension.ENABLE_INFO_LOGGING_NAME];
 	}
 
 	//this is very tricky!
@@ -46,8 +46,8 @@ export class LogLevelInfo implements ILogLevelInfo
 	//-> in this way we can have as many loggers as we want, as soon as the settings are available they can set the global value
 	public get enableInfoLogging(): boolean
 	{
-		return LogLevelInfo.getGlobalEnableInfoLogging();
+		return LogLevelInfoWebExtension.getGlobalEnableInfoLogging();
 	}
 }
 
-export const log: Logger = new Logger(new LogLevelInfo());
+export const log: Logger = new Logger(new LogLevelInfoWebExtension());
