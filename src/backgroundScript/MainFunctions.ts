@@ -19,7 +19,7 @@ Copyright 2012 Alexey Egorov (original version Autoarchive, http://code.google.c
 */
 
 import { GlobalStates } from "../sharedAll/GlobalStates";
-import { ISettings } from "../sharedAll/interfaces";
+import { Settings } from "../sharedAll/interfaces";
 import { log } from "../sharedWebextension/Logger";
 import { OptionHelper } from "../sharedWebextension/optionHelper";
 import { AppInfoLogger } from "./AppInfoLogger";
@@ -41,7 +41,7 @@ export class MainFunctions
 		log.info("ready for work");
 
 		const optionHelper: OptionHelper = new OptionHelper();
-		const settings: ISettings = await optionHelper.loadCurrentSettings();
+		const settings: Settings = await optionHelper.loadCurrentSettings();
 
 		if (settings.globalSettings.archiveType === "startup")
 		{

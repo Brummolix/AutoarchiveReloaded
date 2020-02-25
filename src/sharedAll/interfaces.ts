@@ -18,13 +18,13 @@ Copyright 2018-2019 Brummolix (AutoarchiveReloaded, https://github.com/Brummolix
 */
 export type ArchiveType = "manual" | "startup";
 
-export interface IGlobalSettings
+export interface GlobalSettings
 {
 	archiveType: ArchiveType;
 	enableInfoLogging: boolean;
 }
 
-export interface IAccountSettings
+export interface AccountSettings
 {
 	bArchiveOther: boolean;
 	daysOther: number;
@@ -36,14 +36,14 @@ export interface IAccountSettings
 	daysUnread: number;
 }
 
-export interface IAccountSettingsArray
+export interface AccountSettingsArray
 {
-	[key: string]: IAccountSettings;
+	[key: string]: AccountSettings;
 }
 
-export interface ISettings
+export interface Settings
 {
-	globalSettings: IGlobalSettings;
+	globalSettings: GlobalSettings;
 
 	//we do not use a Map because it is not seralized/deserialized with JSON.stringify and therefore also not stored in the local storage
 	//accountSettings: Map<string,IAccountSettings>;
@@ -53,10 +53,10 @@ export interface ISettings
 	//accountSettings: TSMap<string,IAccountSettings>;
 
 	//therefore we use a plain old object with an associative array
-	accountSettings: IAccountSettingsArray;
+	accountSettings: AccountSettingsArray;
 }
 
-export interface IAccountInfo
+export interface AccountInfo
 {
 	accountId: string;
 	accountName: string;

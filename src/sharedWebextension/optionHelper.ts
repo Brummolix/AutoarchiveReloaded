@@ -17,18 +17,18 @@ Copyright 2018-2019 Brummolix (AutoarchiveReloaded, https://github.com/Brummolix
     along with AutoarchiveReloaded.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import { IAccountInfo, ISettings } from "../sharedAll/interfaces";
-import { AccountInfo } from "./AccountInfo";
+import { AccountInfo, Settings } from "../sharedAll/interfaces";
+import { AccountInfoProvider } from "./AccountInfo";
 import { DefaultSettings } from "./DefaultSettings";
 import { log, LogLevelInfoWebExtension } from "./Logger";
 
 export class OptionHelper
 {
-	public async loadCurrentSettings(): Promise<ISettings>
+	public async loadCurrentSettings(): Promise<Settings>
 	{
 		log.info("start to load current settings");
 
-		const accounts: IAccountInfo[] = await AccountInfo.askForAccounts();
+		const accounts: AccountInfo[] = await AccountInfoProvider.askForAccounts();
 
 		try
 		{
@@ -37,7 +37,7 @@ export class OptionHelper
 			//settings read succesfully...
 			log.info("loaded settings from storage");
 			const oHandling: DefaultSettings = new DefaultSettings();
-			const settings: ISettings = oHandling.convertPartialSettings(result.settings);
+			const settings: Settings = oHandling.convertPartialSettings(result.settings);
 
 			this.ensureEveryExistingAccountHaveSettings(accounts, settings, oHandling);
 			this.removeOutdatedAccountsFromSettings(settings, accounts);
@@ -54,18 +54,18 @@ export class OptionHelper
 	}
 
 
-	private removeOutdatedAccountsFromSettings(settings: ISettings, accounts: IAccountInfo[]): void
+	private removeOutdatedAccountsFromSettings(settings: Settings, accounts: AccountInfo[]): void
 	{
 		for (const accountId in settings.accountSettings)
 		{
-			if (AccountInfo.findAccountInfo(accounts, accountId) === null)
+			if (AccountInfoProvider.findAccountInfo(accounts, accountId) === null)
 			{
 				delete settings.accountSettings[accountId];
 			}
 		}
 	}
 
-	private ensureEveryExistingAccountHaveSettings(accounts: IAccountInfo[], settings: ISettings, oHandling: DefaultSettings): void
+	private ensureEveryExistingAccountHaveSettings(accounts: AccountInfo[], settings: Settings, oHandling: DefaultSettings): void
 	{
 		accounts.forEach(account =>
 		{
@@ -81,9 +81,9 @@ export class OptionHelper
 	{
 		log.info("start conversion of legacy preferences (if any)");
 
-		const accounts: IAccountInfo[] = await AccountInfo.askForAccounts();
+		const accounts: AccountInfo[] = await AccountInfoProvider.askForAccounts();
 
-		const settings: ISettings | null = browser.autoarchive.askForLegacyPreferences(accounts);
+		const settings: Settings | null = browser.autoarchive.askForLegacyPreferences(accounts);
 		try
 		{
 			if (settings)
@@ -106,7 +106,7 @@ export class OptionHelper
 		}
 	}
 
-	public async savePreferencesAndPublishForLogging(settings: ISettings): Promise<void>
+	public async savePreferencesAndPublishForLogging(settings: Settings): Promise<void>
 	{
 		log.info("going to save settings");
 

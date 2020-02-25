@@ -18,17 +18,17 @@ Copyright 2012 Alexey Egorov (original version Autoarchive, http://code.google.c
     along with AutoarchiveReloaded.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import { IAccountSettings } from "../sharedAll/interfaces";
+import { AccountSettings } from "../sharedAll/interfaces";
 import { log } from "../sharedWebextension/Logger";
 
 export class SettingsHelper
 {
-	public static isArchivingSomething(accountSettings: IAccountSettings): boolean
+	public static isArchivingSomething(accountSettings: AccountSettings): boolean
 	{
 		return (accountSettings.bArchiveOther || accountSettings.bArchiveMarked || accountSettings.bArchiveTagged || accountSettings.bArchiveUnread);
 	}
 
-	public static getMinAge(accountSettings: IAccountSettings): number
+	public static getMinAge(accountSettings: AccountSettings): number
 	{
 		// eslint-disable-next-line id-blacklist
 		let minAge = Number.MAX_VALUE;
@@ -52,7 +52,7 @@ export class SettingsHelper
 		return minAge;
 	}
 
-	public static log(accountName: string, accountSettings: IAccountSettings): void
+	public static log(accountName: string, accountSettings: AccountSettings): void
 	{
 		log.info("Settings for '" + accountName + "':");
 		log.info(JSON.stringify(accountSettings));

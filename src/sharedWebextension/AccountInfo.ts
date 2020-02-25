@@ -19,11 +19,11 @@ Copyright 2012 Alexey Egorov (original version Autoarchive, http://code.google.c
 */
 /// <reference path="../sharedAll/thunderbird.d.ts" />
 
-import { IAccountInfo } from "../sharedAll/interfaces";
+import { AccountInfo } from "../sharedAll/interfaces";
 import {log} from "../sharedWebextension/Logger";
 import { AccountIterator } from "./AccountIterator";
 
-export class AccountInfo
+export class AccountInfoProvider
 {
 	public static isMailType(account: MailAccount): boolean
 	{
@@ -31,7 +31,7 @@ export class AccountInfo
 		return (account.type === "pop3" || account.type === "imap" || account.type === "exquilla");
 	}
 
-	public static findAccountInfo(accountSettings: IAccountInfo[], id: string): IAccountInfo | null
+	public static findAccountInfo(accountSettings: AccountInfo[], id: string): AccountInfo | null
 	{
 		for (const accountSetting of accountSettings)
 		{
@@ -44,7 +44,7 @@ export class AccountInfo
 		return null;
 	}
 
-	public static async askForAccounts(): Promise<IAccountInfo[]>
+	public static async askForAccounts(): Promise<AccountInfo[]>
 	{
 		try
 		{
@@ -59,8 +59,8 @@ export class AccountInfo
 
 			nsAccounts.sort((a: MailAccount, b: MailAccount) =>
 			{
-				const mailTypeA: boolean = AccountInfo.isMailType(a);
-				const mailTypeB: boolean = AccountInfo.isMailType(b);
+				const mailTypeA: boolean = AccountInfoProvider.isMailType(a);
+				const mailTypeB: boolean = AccountInfoProvider.isMailType(b);
 
 				if (mailTypeA === mailTypeB)
 				{
@@ -75,7 +75,7 @@ export class AccountInfo
 				return 1;
 			});
 
-			const accounts: IAccountInfo[] = [];
+			const accounts: AccountInfo[] = [];
 			let currentOrder = 0;
 			nsAccounts.forEach(account =>
 			{

@@ -18,10 +18,10 @@ Copyright 2012 Alexey Egorov (original version Autoarchive, http://code.google.c
     along with AutoarchiveReloaded.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import { IAccountInfo, IAccountSettings } from "../sharedAll/interfaces";
+import { AccountInfo, AccountSettings } from "../sharedAll/interfaces";
 
 export interface AccountInfos
 {
-	account: IAccountInfo;
-	accountSetting: IAccountSettings;
+	account: AccountInfo;
+	accountSetting: AccountSettings;
 }

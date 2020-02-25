@@ -18,7 +18,7 @@ Copyright 2012 Alexey Egorov (original version Autoarchive, http://code.google.c
     along with AutoarchiveReloaded.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import { IAccountSettings, ISettings } from "../sharedAll/interfaces";
+import { AccountSettings, Settings } from "../sharedAll/interfaces";
 import { AccountIterator } from "../sharedWebextension/AccountIterator";
 import { log } from "../sharedWebextension/Logger";
 import { OptionHelper } from "../sharedWebextension/optionHelper";
@@ -33,7 +33,7 @@ export class Archiver
 		try
 		{
 			const optionHelper: OptionHelper = new OptionHelper();
-			const settings: ISettings = await optionHelper.loadCurrentSettings();
+			const settings: Settings = await optionHelper.loadCurrentSettings();
 
 			await AccountIterator.forEachAccount(async (account: MailAccount, isAccountArchivable: boolean): Promise<void> =>
 			{
@@ -47,7 +47,7 @@ export class Archiver
 		}
 	}
 
-	private async archiveAccount(account: MailAccount, isAccountArchivable: boolean, settings: ISettings): Promise<void>
+	private async archiveAccount(account: MailAccount, isAccountArchivable: boolean, settings: Settings): Promise<void>
 	{
 		log.info("check account '" + account.name + "'");
 		if (isAccountArchivable)
@@ -174,7 +174,7 @@ export class Archiver
 		return undefined;
 	}
 
-	private async archiveFolder(folder: MailFolder, settings: IAccountSettings): Promise<void>
+	private async archiveFolder(folder: MailFolder, settings: AccountSettings): Promise<void>
 	{
 		try
 		{
@@ -196,7 +196,7 @@ export class Archiver
 		}
 	}
 
-	private async searchMessagesToArchive(folder: MailFolder, settings: IAccountSettings): Promise<MessageHeader[]>
+	private async searchMessagesToArchive(folder: MailFolder, settings: AccountSettings): Promise<MessageHeader[]>
 	{
 		const messages: MessageHeader[] = [];
 
@@ -221,7 +221,7 @@ export class Archiver
 		return messages;
 	}
 
-	private detectMessagesToArchive(messageList: MessageList, settings: IAccountSettings, messages: MessageHeader[]): void
+	private detectMessagesToArchive(messageList: MessageList, settings: AccountSettings, messages: MessageHeader[]): void
 	{
 		for (const message of messageList.messages)
 		{
@@ -232,7 +232,7 @@ export class Archiver
 		}
 	}
 
-	private shallMessageBeArchived(messageHeader: MessageHeader, settings: IAccountSettings): boolean
+	private shallMessageBeArchived(messageHeader: MessageHeader, settings: AccountSettings): boolean
 	{
 		//determine ageInDays
 		let ageInDays: number = 0;

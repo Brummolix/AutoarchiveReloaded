@@ -19,8 +19,8 @@ Copyright 2018-2019 Brummolix (AutoarchiveReloaded, https://github.com/Brummolix
     along with AutoarchiveReloaded.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import { ArchiveType, IAccountInfo, ISettings } from "../sharedAll/interfaces";
-import { AccountInfo } from "../sharedWebextension/AccountInfo";
+import { ArchiveType, AccountInfo, Settings } from "../sharedAll/interfaces";
+import { AccountInfoProvider } from "../sharedWebextension/AccountInfo";
 import { log } from "../sharedWebextension/Logger";
 import { OptionHelper } from "../sharedWebextension/optionHelper";
 import { AccountInfos } from "./AccountInfos";
@@ -29,7 +29,7 @@ async function saveOptions(): Promise<void>
 {
 	try
 	{
-		const settings: ISettings = {
+		const settings: Settings = {
 			globalSettings: {
 				archiveType: $("[name=archiveType]:checked").val() as ArchiveType,
 				enableInfoLogging: (document.getElementById("enableInfoLogging") as HTMLInputElement).checked,
@@ -89,7 +89,7 @@ async function saveOptions(): Promise<void>
 
 async function restoreOptions(): Promise<void>
 {
-	const settings: ISettings = await optionHelper.loadCurrentSettings();
+	const settings: Settings = await optionHelper.loadCurrentSettings();
 	(document.getElementById("enableInfoLogging") as HTMLInputElement).checked = settings.globalSettings.enableInfoLogging;
 	document.querySelectorAll<HTMLInputElement>('input[name="archiveType"]').forEach(element =>
 	{
@@ -97,14 +97,14 @@ async function restoreOptions(): Promise<void>
 	});
 
 	//Für jeden Account die Einstellungen clonen und die gespeicherten Werte setzen
-	const accounts: IAccountInfo[] = await AccountInfo.askForAccounts();
+	const accounts: AccountInfo[] = await AccountInfoProvider.askForAccounts();
 	const accountsSorted: AccountInfos[] = [];
 	for (const accountId in settings.accountSettings)
 	{
 		if (settings.accountSettings.hasOwnProperty(accountId))
 		{
 			accountsSorted.push({
-				account: AccountInfo.findAccountInfo(accounts, accountId) as IAccountInfo,
+				account: AccountInfoProvider.findAccountInfo(accounts, accountId) as AccountInfo,
 				accountSetting: settings.accountSettings[accountId],
 			});
 		}
@@ -159,7 +159,7 @@ function getElementForAccount(accountId: string, elementId: string): HTMLElement
 	return getJQueryElementForAccount(accountId, elementId)[0];
 }
 
-function cloneTemplate(cloneId: string, appendToId: string, accountInfo: IAccountInfo): void
+function cloneTemplate(cloneId: string, appendToId: string, accountInfo: AccountInfo): void
 {
 	const clone = $("#" + cloneId).clone(true, true);
 	clone.appendTo("#" + appendToId);

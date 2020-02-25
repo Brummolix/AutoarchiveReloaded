@@ -17,11 +17,11 @@ Copyright 2018-2019 Brummolix (AutoarchiveReloaded, https://github.com/Brummolix
     along with AutoarchiveReloaded.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import { IAccountSettings, IGlobalSettings, ISettings } from "../sharedAll/interfaces";
+import { AccountSettings, GlobalSettings, Settings } from "../sharedAll/interfaces";
 
 export class DefaultSettings
 {
-	public getDefaultAccountSettings(): IAccountSettings
+	public getDefaultAccountSettings(): AccountSettings
 	{
 		return {
 			bArchiveOther: false,
@@ -35,10 +35,10 @@ export class DefaultSettings
 		};
 	}
 
-	public convertPartialSettings(partialSettings: { [key: string]: any }): ISettings
+	public convertPartialSettings(partialSettings: { [key: string]: any }): Settings
 	{
-		const defaultSettings: ISettings = this.getDefaultSettings();
-		const concatedSettings: ISettings = this.deepMerge(defaultSettings, partialSettings);
+		const defaultSettings: Settings = this.getDefaultSettings();
+		const concatedSettings: Settings = this.deepMerge(defaultSettings, partialSettings);
 
 		//use defaultSettings for all accounts, too
 		for (const accountId in concatedSettings.accountSettings)
@@ -84,7 +84,7 @@ export class DefaultSettings
 		return clone;
 	}
 
-	private getDefaultSettings(): ISettings
+	private getDefaultSettings(): Settings
 	{
 		return {
 			globalSettings: this.getDefaultGlobalSettings(),
@@ -92,7 +92,7 @@ export class DefaultSettings
 		};
 	}
 
-	private getDefaultGlobalSettings(): IGlobalSettings
+	private getDefaultGlobalSettings(): GlobalSettings
 	{
 		return {
 			archiveType: "manual",

@@ -265,7 +265,7 @@ declare interface Messages
 declare interface AutoarchiveWebExperiment
 {
 	// tslint:disable-next-line: array-type
-	askForLegacyPreferences(accounts: import("../sharedAll/interfaces").IAccountInfo[]): import("../sharedAll/interfaces").ISettings|null;
+	askForLegacyPreferences(accounts: import("../sharedAll/interfaces").AccountInfo[]): import("../sharedAll/interfaces").Settings|null;
 	setInfoLogging(value: boolean): void;
 }
 

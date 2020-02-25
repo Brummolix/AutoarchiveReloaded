@@ -18,7 +18,7 @@ Copyright 2012 Alexey Egorov (original version Autoarchive, http://code.google.c
     along with AutoarchiveReloaded.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import { IAccountInfo, ISettings } from "../sharedAll/interfaces";
+import { AccountInfo, Settings } from "../sharedAll/interfaces";
 import { LegacyOptions } from "./LegacyOptions";
 import {log, logLevelInfo} from "./Logger";
 
@@ -34,7 +34,7 @@ export default class autoarchive extends ExtensionCommon.ExtensionAPI {
 	{
 		return {
 			autoarchive: {
-				askForLegacyPreferences: (accounts: IAccountInfo[]): ISettings | null =>
+				askForLegacyPreferences: (accounts: AccountInfo[]): Settings | null =>
 				{
 					log.info("askForLegacyPreferences");
 					try
