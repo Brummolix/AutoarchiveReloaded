@@ -1,6 +1,7 @@
 //development does not work in Thunderbird, it will raise CSP errors because of an included "eval"
 //production minifies the code which I don't like because errors are all reported on line 1 then
 const theMode = "none";
+// eslint-disable-next-line @typescript-eslint/no-var-requires
 const path = require("path");
 const outputPath = path.resolve(__dirname, "./built/release/");
 
