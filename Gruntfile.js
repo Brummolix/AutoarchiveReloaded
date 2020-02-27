@@ -58,6 +58,13 @@ module.exports = grunt => {
 				tsconfig: "./tsconfig.release.json",
 			},
 		},
+		mochaTest: {
+			test: {
+				options: {
+					reporter: "spec",
+				src: ["./built/compile/**/*.test.js"],
+			},
+		},
 		webpack: {
 			myConfig: webpackConfig,
 		},
@@ -88,11 +95,12 @@ module.exports = grunt => {
 	grunt.loadNpmTasks("grunt-contrib-compress");
 	grunt.loadNpmTasks("grunt-webpack");
 	grunt.loadNpmTasks("grunt-eslint");
+	grunt.loadNpmTasks("grunt-mocha-test");
 
 	// Default task(s).
 	grunt.registerTask("default",
-		["clean", "copy", "ts:debug", "webpack", "eslint", "compress"]);
+		["clean", "copy", "ts:debug", "webpack", "compress", "mochaTest", "eslint"]);
 
 	grunt.registerTask("release",
-		["clean", "copy", "ts:release", "webpack", "eslint", "compress"]);
+		["clean", "copy", "ts:release", "webpack", "compress","mochaTest", "eslint"]);
 };
