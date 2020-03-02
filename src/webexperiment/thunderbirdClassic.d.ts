@@ -35,6 +35,7 @@ Copyright 2019 Brummolix (AutoarchiveReloaded, https://github.com/Brummolix/Auto
 
 //define a Type "keyword"
 //see https://github.com/Microsoft/TypeScript/issues/20719
+// eslint-disable-next-line @typescript-eslint/type-annotation-spacing
 type Type<T> = new(...args: any[]) => T;
 
 //LegacyAddOn--------------------------------------------------------------------------------------------------
@@ -444,6 +445,7 @@ declare class ThunderbirdNavigator extends Navigator
 declare class Mail3Pane extends Ci.nsIDOMWindow
 {
 	public gFolderDisplay: FolderDisplay;
+	// eslint-disable-next-line @typescript-eslint/type-annotation-spacing
 	public BatchMessageMover: new() => Ci.BatchMessageMover; //tricky, this is an inner class
 	public navigator: ThunderbirdNavigator;
 
