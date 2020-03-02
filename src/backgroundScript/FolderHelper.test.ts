@@ -82,7 +82,7 @@ describe("FolderHelper", () => {
 			const folders: MailFolder[] = [folder1, folder2, folder3];
 			const allfolders = FolderHelper.getFoldersRecursivly(folders);
 
-			assert.that(allfolders).is.equalTo([folder1, folder2, folder3, subFolder1_1, subfolder1_2, subfolder2_1, subfolder2_1_1, subfolder2_1_2]);
+			assert.that(allfolders).is.equalTo([folder1, subFolder1_1, subfolder1_2, folder2, subfolder2_1, subfolder2_1_1, subfolder2_1_2, folder3]);
 		});
 	});
 });

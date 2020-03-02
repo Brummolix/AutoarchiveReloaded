@@ -7,9 +7,10 @@ export class FolderHelper
 		{
 			return [];
 		}
-		let allFolders: MailFolder[] = folders.slice();
+		let allFolders: MailFolder[] = [];
 		for (const folder of folders)
 		{
+			allFolders.push(folder);
 			allFolders = allFolders.concat(this.getFoldersRecursivly(folder.subFolders));
 		}
 
