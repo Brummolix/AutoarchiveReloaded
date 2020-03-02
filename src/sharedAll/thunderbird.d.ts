@@ -205,7 +205,7 @@ declare interface MailFolder
 	path: string;
 	name: string;
 	type: FolderType;
-	subFolders: MailFolder[] | undefined; //this is only available starting with TB v74, before the MailFolder returned by MailAccount.folders contained ALL folders recursively
+	subFolders?: MailFolder[]; //this is only available starting with TB v74, before the MailFolder returned by MailAccount.folders contained ALL folders recursively
 
 }
 
