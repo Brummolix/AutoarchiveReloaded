@@ -23,6 +23,7 @@ import { AccountIterator } from "../sharedWebextension/AccountIterator";
 import { log } from "../sharedWebextension/Logger";
 import { OptionHelper } from "../sharedWebextension/optionHelper";
 import { SettingsHelper } from "./SettingsHelper";
+import { FolderHelper } from "./FolderHelper";
 
 export class Archiver
 {
@@ -57,7 +58,7 @@ export class Archiver
 			if (SettingsHelper.isArchivingSomething(accountSettings))
 			{
 				log.info("getting folders to archive in account '" + account.name + "'");
-				const foldersToArchive = this.getFoldersToArchive(this.getFoldersRecursivly(account.folders));
+				const foldersToArchive = this.getFoldersToArchive(FolderHelper.getFoldersRecursivly(account.folders));
 				for (const folder of foldersToArchive)
 				{
 					await this.archiveFolder(folder, accountSettings);
@@ -72,22 +73,6 @@ export class Archiver
 		{
 			log.info("ignore account '" + account.name + "'");
 		}
-	}
-
-	//#41 - before TB 74 the folders were filled completely, starting with TB 64 one must traverse all subfolders
-	private getFoldersRecursivly(folders: MailFolder[] | undefined): MailFolder[]
-	{
-		if (folders === undefined)
-		{
-			return [];
-		}
-		let allFolders: MailFolder[] = folders.slice();
-		for (const folder of folders)
-		{
-			allFolders = allFolders.concat(this.getFoldersRecursivly(folder.subFolders));
-		}
-
-		return allFolders;
 	}
 
 	//note: virtual folders (like Gmail has) are reported to archive but a later call to folder.list will fail...
