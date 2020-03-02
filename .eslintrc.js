@@ -136,7 +136,7 @@ module.exports = {
             "Undefined"
         ],
         "id-match": "error",
-        "import/order": "error",
+				"import/order": "off", //turned off, as it seem to report wrong results on windows?
         "max-classes-per-file": [
             "error",
             1
