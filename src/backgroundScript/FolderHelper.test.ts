@@ -3,8 +3,8 @@
 
 /// <reference path="../sharedAll/thunderbird.d.ts" />
 
-import { FolderHelper } from "./FolderHelper";
 import { assert } from "assertthat";
+import { FolderHelper } from "./FolderHelper";
 
 describe("FolderHelper", () => {
 	describe("#getFoldersRecursivly()", () => {
