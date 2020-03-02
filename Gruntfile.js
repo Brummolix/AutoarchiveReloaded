@@ -62,6 +62,7 @@ module.exports = grunt => {
 			test: {
 				options: {
 					reporter: "spec",
+				},
 				src: ["./built/compile/**/*.test.js"],
 			},
 		},
