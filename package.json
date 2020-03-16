@@ -34,6 +34,7 @@
         "tslint": "^6.1.0",
         "typescript": "^3.8.3",
         "typescript-tslint-plugin": "^0.3.1",
-        "webpack": "^4.42.0"
+        "webpack": "^4.42.0",
+        "minimist": ">=1.2.2"
     }
 }
