@@ -1,3 +1,8 @@
 {
-  "editor.insertSpaces": false
+	"editor.insertSpaces": false,
+	"editor.defaultFormatter": "esbenp.prettier-vscode",
+	"[javascript]": { "editor.formatOnSave": true },
+	"[typescript]": { "editor.formatOnSave": true },
+	"[html]": { "editor.formatOnSave": true },
+	"[json]": { "editor.formatOnSave": true }
 }

@@ -29,42 +29,34 @@ Copyright 2018-2020 Brummolix (AutoarchiveReloaded, https://github.com/Brummolix
 //WebExtension Stuff---------------------------------------------------------------------------------------------------------
 
 //https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/runtime/MessageSender
-declare class RuntimeMessageSender
-{
-}
+declare class RuntimeMessageSender {}
 
 //https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/runtime/onMessage
 type RuntimeMessageResponseFunction = (response: import("./Messages").GetArchiveStatusResponse | null) => void;
-type RuntimeMessageListener = (message: import("./Messages").GetArchiveStatusMessageRequest|import("./Messages").ArchiveManuallyMessageRequest, sender: RuntimeMessageSender, sendResponse: RuntimeMessageResponseFunction) => void;
+type RuntimeMessageListener = (
+	message: import("./Messages").GetArchiveStatusMessageRequest | import("./Messages").ArchiveManuallyMessageRequest,
+	sender: RuntimeMessageSender,
+	sendResponse: RuntimeMessageResponseFunction
+) => void;
 
-declare interface RuntimeMessageListeners extends Listeners<RuntimeMessageListener>
-{
-}
+declare interface RuntimeMessageListeners extends Listeners<RuntimeMessageListener> {}
 
-declare interface RuntimePortListener extends Listeners<(object: object) => void>
-{
-}
+declare interface RuntimePortListener extends Listeners<(object: object) => void> {}
 
 //https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/runtime/Port
-interface RuntimePort
-{
+interface RuntimePort {
 	onMessage: RuntimePortListener;
 
 	disconnect(): void;
 	postMessage(object: object): void;
 }
 
-declare interface RuntimeConnectListener extends Listeners<(port: RuntimePort) => void>
-{
-}
+declare interface RuntimeConnectListener extends Listeners<(port: RuntimePort) => void> {}
 
-declare interface RuntimeSuspendListener extends Listeners<() => void>
-{
-}
+declare interface RuntimeSuspendListener extends Listeners<() => void> {}
 
 //https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/runtime/getBrowserInfo
-declare interface BrowserInfo
-{
+declare interface BrowserInfo {
 	name: string; // value representing the browser name, for example "Firefox".
 	vendor: string; // value representing the browser's vendor, for example "Mozilla".
 	version: string; // representing the browser's version, for example "51.0" or "51.0a2".
@@ -72,9 +64,8 @@ declare interface BrowserInfo
 }
 
 //https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/runtime
-declare interface Runtime
-{
-	lastError: null| Error;
+declare interface Runtime {
+	lastError: null | Error;
 
 	onMessage: RuntimeMessageListeners;
 	onConnect: RuntimeConnectListener;
@@ -82,7 +73,7 @@ declare interface Runtime
 
 	sendMessage(message: import("./Messages").GetArchiveStatusMessageRequest): Promise<import("./Messages").GetArchiveStatusResponse>;
 	sendMessage(message: import("./Messages").ArchiveManuallyMessageRequest): Promise<void>;
-	connect(connectInfo: {name: string}): RuntimePort;
+	connect(connectInfo: { name: string }): RuntimePort;
 
 	getBrowserInfo(): Promise<BrowserInfo>;
 	getBackgroundPage(): Promise<BrowserWindow>;
@@ -91,15 +82,13 @@ declare interface Runtime
 }
 
 //https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/storage/StorageArea
-declare interface StorageType
-{
+declare interface StorageType {
 	get(value: string | string[]): Promise<object>;
 	set(values: object): Promise<void>;
 }
 
 //https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/storage
-declare interface BrowserStorages
-{
+declare interface BrowserStorages {
 	local: StorageType;
 	sync: StorageType;
 	managed: StorageType;
@@ -108,34 +97,28 @@ declare interface BrowserStorages
 type BrowserWindowType = "normal" | "popup" | "panel" | "devtools";
 
 //https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/windows/Window
-declare interface BrowserWindow extends Window
-{
+declare interface BrowserWindow extends Window {
 	id: number;
 	title: string;
 	type: BrowserWindowType;
 	focused: boolean;
 }
 
-declare interface Listeners<T>
-{
+declare interface Listeners<T> {
 	addListener(callback: T): void;
 	removeListener(listener: T): void;
 	hasListener(listener: T): boolean;
 }
 
-declare interface BrowserWindowCreatedListeners extends Listeners< (window: BrowserWindow) => void>
-{
-}
+declare interface BrowserWindowCreatedListeners extends Listeners<(window: BrowserWindow) => void> {}
 
-declare interface BrowserWindowInfo
-{
+declare interface BrowserWindowInfo {
 	populate?: boolean; //If true, the windows.Window object will have a tabs property that contains a list of tabs.Tab objects representing the tabs in the window. The Tab objects only contain the url, title and favIconUrl properties if the extension's manifest file includes the "tabs" permission.
 	windowTypes?: BrowserWindowType[]; //An array of windows.WindowType objects. If set, the windows.Window returned will be filtered based on its type. If unset the default filter is set to ['normal', 'panel', 'popup'], with 'panel' window types limited to the extension's own windows.
 }
 
 //https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/windows
-declare interface BrowserWindows
-{
+declare interface BrowserWindows {
 	WINDOW_ID_CURRENT: number;
 	readonly onCreated: BrowserWindowCreatedListeners;
 
@@ -147,38 +130,32 @@ declare interface BrowserWindows
 }
 
 //https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/extension
-declare interface Extension
-{
+declare interface Extension {
 	getBackgroundPage(): BrowserWindow;
 }
 
 //https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/browserAction
-declare interface BrowserAction
-{
+declare interface BrowserAction {
 	onClicked: Listeners<() => void>;
 }
 
-declare interface TabInfo
-{
+declare interface TabInfo {
 	url: string;
 }
 
 //https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/tabs/Tab
-declare interface Tab
-{
+declare interface Tab {
 	url?: string;
 }
 
 //https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/tabs
-declare interface BrowserTabs
-{
+declare interface BrowserTabs {
 	onCreated: Listeners<(tab: Tab) => void>;
 
 	query(queryInfo: TabInfo | {}): Promise<Tab[]>;
 }
 
-declare interface Internationalization
-{
+declare interface Internationalization {
 	getMessage(messageName: string, substitutions?: string | string[]): string;
 }
 
@@ -187,8 +164,7 @@ declare interface Internationalization
 type AccountType = "pop3" | "imap" | "rss" | "exquilla" | "nntp" | "none";
 
 //https://thunderbird-webextensions.readthedocs.io/en/latest/accounts.html#accounts-mailaccount
-declare interface MailAccount
-{
+declare interface MailAccount {
 	folders: MailFolder[];
 	id: string;
 	name: string;
@@ -199,26 +175,22 @@ declare interface MailAccount
 type FolderType = "inbox" | "sent" | "trash" | "junk" | "outbox" | "drafts" | "templates" | "archives";
 
 //https://thunderbird-webextensions.readthedocs.io/en/latest/accounts.html#mailfolder
-declare interface MailFolder
-{
+declare interface MailFolder {
 	accountId: string;
 	path: string;
 	name: string;
 	type: FolderType;
 	subFolders?: MailFolder[]; //this is only available starting with TB v74, before the MailFolder returned by MailAccount.folders contained ALL folders recursively
-
 }
 
 //https://thunderbird-webextensions.readthedocs.io/en/latest/accounts.html
-declare interface Accounts
-{
+declare interface Accounts {
 	list(): Promise<MailAccount[]>;
 	get(accountId: string): Promise<MailAccount>;
 }
 
 //https://thunderbird-webextensions.readthedocs.io/en/latest/messages.html#messageheader
-declare interface MessageHeader
-{
+declare interface MessageHeader {
 	author: string;
 	bccList: string[];
 	ccList: string[];
@@ -233,15 +205,13 @@ declare interface MessageHeader
 }
 
 //https://thunderbird-webextensions.readthedocs.io/en/latest/messages.html#messagelist
-declare interface MessageList
-{
+declare interface MessageList {
 	id: string;
 	messages: MessageHeader[];
 }
 
 //https://thunderbird-webextensions.readthedocs.io/en/latest/messages.html#messagetag
-declare interface MessageTag
-{
+declare interface MessageTag {
 	color: string; //Tag color
 	key: string; // Distinct tag identifier – use this string when referring to a tag
 	ordinal: string; //Custom sort string (usually empty)
@@ -249,8 +219,7 @@ declare interface MessageTag
 }
 
 //https://thunderbird-webextensions.readthedocs.io/en/latest/messages.html
-declare interface Messages
-{
+declare interface Messages {
 	list(folder: MailFolder): Promise<MessageList>;
 	continueList(messageListId: string): Promise<MessageList>;
 	get(messageId: number): Promise<MessageHeader>;
@@ -262,34 +231,46 @@ declare interface Messages
 	archive(messageIds: number[]): Promise<void>;
 }
 
-declare interface AutoarchiveWebExperiment
-{
+declare interface AutoarchiveWebExperiment {
 	// tslint:disable-next-line: array-type
-	askForLegacyPreferences(accounts: import("../sharedAll/interfaces").AccountInfo[]): import("../sharedAll/interfaces").Settings|null;
+	askForLegacyPreferences(accounts: import("../sharedAll/interfaces").AccountInfo[]): import("../sharedAll/interfaces").Settings | null;
 	setInfoLogging(value: boolean): void;
 }
 
-type ContextType = "all" | "page" | "frame" | "selection" | "link" | "editable" | "password" | "image" | "video" | "audio" | "browser_action" | "tab" | "message_list" | "folder_pane";
+type ContextType =
+	| "all"
+	| "page"
+	| "frame"
+	| "selection"
+	| "link"
+	| "editable"
+	| "password"
+	| "image"
+	| "video"
+	| "audio"
+	| "browser_action"
+	| "tab"
+	| "message_list"
+	| "folder_pane";
 
 type ItemType = "normal" | "checkbox" | "radio" | "separator";
 
 type ViewType = "tab" | "popup" | "sidebar";
 
 //https://thunderbird-webextensions.readthedocs.io/en/latest/menus.html#menus-onclickdata
-declare interface OnClickData
-{
-	editable: boolean; 	//A flag indicating whether the element is editable (text input, textarea, etc.).
+declare interface OnClickData {
+	editable: boolean; //A flag indicating whether the element is editable (text input, textarea, etc.).
 	menuItemId: number | string; // The ID of the menu item that was clicked.
 	modifiers: string[]; // An array of keyboard modifiers that were held while the menu item was clicked.
-	button?: number; 		// An integer value of button by which menu item was clicked.
-	checked?: boolean;	// A flag indicating the state of a checkbox or radio item after it is clicked.
+	button?: number; // An integer value of button by which menu item was clicked.
+	checked?: boolean; // A flag indicating the state of a checkbox or radio item after it is clicked.
 	displayedFolder?: MailFolder; // The displayed folder, if the context menu was opened in the message list.
-	frameId?: number;		// The id of the frame of the element where the context menu was clicked.
-	frameUrl?: string; 	// The URL of the frame of the element where the context menu was clicked, if it was in a frame.
-	linkText?: string;	//If the element is a link, the text of that link.
-	linkUrl?: string; 	//If the element is a link, the URL it points to.
+	frameId?: number; // The id of the frame of the element where the context menu was clicked.
+	frameUrl?: string; // The URL of the frame of the element where the context menu was clicked, if it was in a frame.
+	linkText?: string; //If the element is a link, the text of that link.
+	linkUrl?: string; //If the element is a link, the URL it points to.
 	mediaType?: string; //One of ‘image’, ‘video’, or ‘audio’ if the context menu was activated on one of these types of elements.
-	pageUrl?: string; 	//The URL of the page where the menu item was clicked. This property is not set if the click occurred in a context where there is no current page, such as in a launcher context menu.
+	pageUrl?: string; //The URL of the page where the menu item was clicked. This property is not set if the click occurred in a context where there is no current page, such as in a launcher context menu.
 	parentMenuItemId?: number | string; //The parent ID, if any, for the item clicked.
 	selectedFolder?: MailFolder; //The selected folder, if the context menu was opened in the folder pane.
 	selectedMessages?: MessageList; //The selected messages, if the context menu was opened in the message list.
@@ -300,8 +281,7 @@ declare interface OnClickData
 	wasChecked?: boolean; //A flag indicating the state of a checkbox or radio item before it was clicked.
 }
 
-declare interface MenuCreateProperties
-{
+declare interface MenuCreateProperties {
 	checked?: boolean; //The initial state of a checkbox or radio item: true for selected and false for unselected. Only one radio item can be selected at a time in a given group of radio items.
 	command?: string; //Specifies a command to issue for the context click. Currently supports internal command _execute_browser_action.
 	contexts?: ContextType[]; //List of contexts this menu item will appear in. Defaults to [‘page’] if not specified.
@@ -318,10 +298,9 @@ declare interface MenuCreateProperties
 	visible: boolean; //Whether the item is visible in the menu.
 }
 
-declare interface Menus
-{
+declare interface Menus {
 	//returns "The ID of the newly created item."
-	create(createProperties: MenuCreateProperties, callback?: () => void): Promise<number|string>;
+	create(createProperties: MenuCreateProperties, callback?: () => void): Promise<number | string>;
 
 	//update(id, updateProperties)
 	remove(menuItemId: number | string): void;
@@ -329,8 +308,7 @@ declare interface Menus
 	//overrideContext(contextOptions)
 }
 
-declare interface Browser
-{
+declare interface Browser {
 	runtime: Runtime;
 	storage: BrowserStorages;
 	windows: BrowserWindows;

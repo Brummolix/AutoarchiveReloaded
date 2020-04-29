@@ -25,10 +25,8 @@ import { log } from "../sharedWebextension/Logger";
 import { OptionHelper } from "../sharedWebextension/optionHelper";
 import { AccountInfos } from "./AccountInfos";
 
-async function saveOptions(): Promise<void>
-{
-	try
-	{
+async function saveOptions(): Promise<void> {
+	try {
 		const settings: Settings = {
 			globalSettings: {
 				archiveType: $("[name=archiveType]:checked").val() as ArchiveType,
@@ -38,71 +36,67 @@ async function saveOptions(): Promise<void>
 		};
 
 		//fill the settings for all accounts
-		$("#tabcontent").children().each((index: number, element: HTMLElement) =>
-		{
-			const accountId: string = $(element).data("accountId");
-			if (accountId)
-			{
-				settings.accountSettings[accountId] = {
-					bArchiveUnread: (getElementForAccount(accountId, "archiveUnread") as HTMLInputElement).checked,
-					daysUnread: Number((getElementForAccount(accountId, "archiveUnreadDays") as HTMLInputElement).value),
-					bArchiveMarked: (getElementForAccount(accountId, "archiveStarred") as HTMLInputElement).checked,
-					daysMarked: Number((getElementForAccount(accountId, "archiveStarredDays") as HTMLInputElement).value),
-					bArchiveTagged: (getElementForAccount(accountId, "archiveTagged") as HTMLInputElement).checked,
-					daysTagged: Number((getElementForAccount(accountId, "archiveTaggedDays") as HTMLInputElement).value),
-					bArchiveOther: (getElementForAccount(accountId, "archiveMessages") as HTMLInputElement).checked,
-					daysOther: Number((getElementForAccount(accountId, "archiveMessagesDays") as HTMLInputElement).value),
-				};
-			}
-		});
+		$("#tabcontent")
+			.children()
+			.each((index: number, element: HTMLElement) => {
+				const accountId: string = $(element).data("accountId");
+				if (accountId) {
+					settings.accountSettings[accountId] = {
+						bArchiveUnread: (getElementForAccount(accountId, "archiveUnread") as HTMLInputElement).checked,
+						daysUnread: Number((getElementForAccount(accountId, "archiveUnreadDays") as HTMLInputElement).value),
+						bArchiveMarked: (getElementForAccount(accountId, "archiveStarred") as HTMLInputElement).checked,
+						daysMarked: Number((getElementForAccount(accountId, "archiveStarredDays") as HTMLInputElement).value),
+						bArchiveTagged: (getElementForAccount(accountId, "archiveTagged") as HTMLInputElement).checked,
+						daysTagged: Number((getElementForAccount(accountId, "archiveTaggedDays") as HTMLInputElement).value),
+						bArchiveOther: (getElementForAccount(accountId, "archiveMessages") as HTMLInputElement).checked,
+						daysOther: Number((getElementForAccount(accountId, "archiveMessagesDays") as HTMLInputElement).value),
+					};
+				}
+			});
 
 		await optionHelper.savePreferencesAndPublishForLogging(settings);
 		//show toast
-		($ as any).notify({
-			// options
-			message: "__MSG_settingsSaved__",
-		}, {
-			// settings
-			type: "success",
-			// eslint-disable-next-line camelcase, @typescript-eslint/camelcase
-			allow_dismiss: false,
-			placement: {
-				from: "top",
-				align: "center",
+		($ as any).notify(
+			{
+				// options
+				message: "__MSG_settingsSaved__",
 			},
-			animate: {
-				enter: "animated bounceInDown",
-				exit: "animated bounceOutUp",
-			},
-		});
+			{
+				// settings
+				type: "success",
+				// eslint-disable-next-line camelcase, @typescript-eslint/camelcase
+				allow_dismiss: false,
+				placement: {
+					from: "top",
+					align: "center",
+				},
+				animate: {
+					enter: "animated bounceInDown",
+					exit: "animated bounceOutUp",
+				},
+			}
+		);
 
 		//update translations...
 		l10n.updateDocument();
-	}
-	catch (e)
-	{
+	} catch (e) {
 		log.errorException(e);
 		throw e;
 	}
-
 }
 
-async function restoreOptions(): Promise<void>
-{
+async function restoreOptions(): Promise<void> {
 	const settings: Settings = await optionHelper.loadCurrentSettings();
 	(document.getElementById("enableInfoLogging") as HTMLInputElement).checked = settings.globalSettings.enableInfoLogging;
-	document.querySelectorAll<HTMLInputElement>('input[name="archiveType"]').forEach(element =>
-	{
-		element.checked = (element.value === settings.globalSettings.archiveType);
+	document.querySelectorAll<HTMLInputElement>('input[name="archiveType"]').forEach((element) => {
+		element.checked = element.value === settings.globalSettings.archiveType;
 	});
 
 	//Für jeden Account die Einstellungen clonen und die gespeicherten Werte setzen
 	const accounts: AccountInfo[] = await AccountInfoProvider.askForAccounts();
 	const accountsSorted: AccountInfos[] = [];
-	for (const accountId in settings.accountSettings)
-	{
-		if (settings.accountSettings.hasOwnProperty(accountId))
-		{
+	for (const accountId in settings.accountSettings) {
+		if (settings.accountSettings.hasOwnProperty(accountId)) {
 			accountsSorted.push({
 				account: AccountInfoProvider.findAccountInfo(accounts, accountId) as AccountInfo,
 				accountSetting: settings.accountSettings[accountId],
@@ -110,23 +104,19 @@ async function restoreOptions(): Promise<void>
 		}
 	}
 
-	accountsSorted.sort((a: AccountInfos, b: AccountInfos): number =>
-	{
-		if (a.account.order === b.account.order)
-		{
+	accountsSorted.sort((a: AccountInfos, b: AccountInfos): number => {
+		if (a.account.order === b.account.order) {
 			return 0;
 		}
 
-		if (a.account.order < b.account.order)
-		{
+		if (a.account.order < b.account.order) {
 			return -1;
 		}
 
 		return 1;
 	});
 
-	accountsSorted.forEach(accountInfos =>
-	{
+	accountsSorted.forEach((accountInfos) => {
 		const account = accountInfos.account;
 		const accountId = accountInfos.account.accountId;
 		const accountSetting = accountInfos.accountSetting;
@@ -147,20 +137,17 @@ async function restoreOptions(): Promise<void>
 	});
 }
 
-function getJQueryElementForAccount(accountId: string, elementId: string): JQuery
-{
+function getJQueryElementForAccount(accountId: string, elementId: string): JQuery {
 	const id = elementId + "-" + accountId;
 	const jQueryElem = $("#" + id);
 	return jQueryElem;
 }
 
-function getElementForAccount(accountId: string, elementId: string): HTMLElement
-{
+function getElementForAccount(accountId: string, elementId: string): HTMLElement {
 	return getJQueryElementForAccount(accountId, elementId)[0];
 }
 
-function cloneTemplate(cloneId: string, appendToId: string, accountInfo: AccountInfo): void
-{
+function cloneTemplate(cloneId: string, appendToId: string, accountInfo: AccountInfo): void {
 	const clone = $("#" + cloneId).clone(true, true);
 	clone.appendTo("#" + appendToId);
 
@@ -173,15 +160,11 @@ function cloneTemplate(cloneId: string, appendToId: string, accountInfo: Account
 	clone[0].outerHTML = html;
 }
 
-async function onLoad(): Promise<void>
-{
-	try
-	{
+async function onLoad(): Promise<void> {
+	try {
 		await restoreOptions();
 		$("#button").click(saveOptions);
-	}
-	catch (e)
-	{
+	} catch (e) {
 		log.errorException(e);
 		throw e;
 	}

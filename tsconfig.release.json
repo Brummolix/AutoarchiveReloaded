@@ -17,8 +17,8 @@ Copyright 2019-2020 Brummolix (new version AutoarchiveReloaded, https://github.c
     along with AutoarchiveReloaded.  If not, see <http://www.gnu.org/licenses/>.
 */
 {
-    "extends": "./tsconfig.json",
-    "compilerOptions": {
-        "removeComments":true
-    }
+	"extends": "./tsconfig.json",
+	"compilerOptions": {
+		"removeComments": true
+	}
 }

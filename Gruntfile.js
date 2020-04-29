@@ -23,7 +23,7 @@ Copyright 2018-2020 Brummolix (new version AutoarchiveReloaded, https://github.c
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const webpackConfig = require("./webpack.config.js");
 
-module.exports = grunt => {
+module.exports = (grunt) => {
 	const srcDir = "src/";
 	const outDir = "built/";
 	const outDirExtracted = outDir + "/release/";
@@ -38,14 +38,10 @@ module.exports = grunt => {
 			main: {
 				files: [
 					{ expand: true, cwd: "resources/", src: ["**"], dest: outDirExtracted },
-					{ expand: true, cwd: srcDir + "/backgroundScript/",
-						src: ["**", "!**/*.ts", "!**/tsconfig*.json"], dest: outDirExtracted },
-					{ expand: true, cwd: srcDir + "/options/",
-						src: ["**", "!**/*.ts", "!**/tsconfig*.json"], dest: outDirExtracted },
-					{ expand: true, cwd: srcDir + "/webexperiment/",
-						src: ["**", "!**/*.ts", "!**/tsconfig*.json"], dest: outDirExtracted },
-					{ expand: true, cwd: srcDir + "/popup/",
-						src: ["**", "!**/*.ts", "!**/tsconfig*.json"], dest: outDirExtracted },
+					{ expand: true, cwd: srcDir + "/backgroundScript/", src: ["**", "!**/*.ts", "!**/tsconfig*.json"], dest: outDirExtracted },
+					{ expand: true, cwd: srcDir + "/options/", src: ["**", "!**/*.ts", "!**/tsconfig*.json"], dest: outDirExtracted },
+					{ expand: true, cwd: srcDir + "/webexperiment/", src: ["**", "!**/*.ts", "!**/tsconfig*.json"], dest: outDirExtracted },
+					{ expand: true, cwd: srcDir + "/popup/", src: ["**", "!**/*.ts", "!**/tsconfig*.json"], dest: outDirExtracted },
 					{ expand: true, src: ["./licence.txt", "./README.md"], dest: outDirExtracted },
 				],
 			},
@@ -82,11 +78,7 @@ module.exports = grunt => {
 			},
 		},
 		eslint: {
-			target: [
-				srcDir + "/**/*.ts",
-				srcDir + "/**/*.js",
-				"!src/**/libs/**/*.js",
-			],
+			target: [srcDir + "/**/*.ts", srcDir + "/**/*.js", "!src/**/libs/**/*.js"],
 		},
 	});
 
@@ -99,9 +91,7 @@ module.exports = grunt => {
 	grunt.loadNpmTasks("grunt-mocha-test");
 
 	// Default task(s).
-	grunt.registerTask("default",
-		["clean", "copy", "ts:debug", "webpack", "compress", "mochaTest", "eslint"]);
+	grunt.registerTask("default", ["clean", "copy", "ts:debug", "webpack", "compress", "mochaTest", "eslint"]);
 
-	grunt.registerTask("release",
-		["clean", "copy", "ts:release", "webpack", "compress","mochaTest", "eslint"]);
+	grunt.registerTask("release", ["clean", "copy", "ts:release", "webpack", "compress", "mochaTest", "eslint"]);
 };

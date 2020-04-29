@@ -1,44 +1,41 @@
 [
-  {
-    "namespace": "autoarchive",
-    "functions": [
-      {
-        "name": "askForLegacyPreferences",
-        "type": "function",
-        "async": false,
-        "parameters": [
-				{
-					"name": "accounts",
-					"type": "array",
-					"items": 
+	{
+		"namespace": "autoarchive",
+		"functions": [
+			{
+				"name": "askForLegacyPreferences",
+				"type": "function",
+				"async": false,
+				"parameters": [
 					{
-						"type": "object",
-						"properties": 
-						{
-							"accountId": 
-							{
-								"type": "string"
+						"name": "accounts",
+						"type": "array",
+						"items": {
+							"type": "object",
+							"properties": {
+								"accountId": {
+									"type": "string"
+								},
+
+								"accountName": {
+									"type": "string"
+								},
+								"order": {
+									"type": "integer"
+								}
 							},
-							"accountName": 
-							{
-								"type": "string"
-							},
-							"order": 
-							{
-								"type": "integer"
-							}
-						},
-						"minimum": 0
+							"minimum": 0
+						}
 					}
-				}]
+				]
 			},
-      {
-        "name": "setInfoLogging",
-        "type": "function",
-        "async": true,
-        "parameters": [
+			{
+				"name": "setInfoLogging",
+				"type": "function",
+				"async": true,
+				"parameters": [
 					{
-            "name": "value",
+						"name": "value",
 						"type": "boolean"
 					}
 				]

@@ -26,12 +26,10 @@ import { AppInfoLogger } from "./AppInfoLogger";
 import { Archiver } from "./Archiver";
 
 //global static startup/ui functions
-export class MainFunctions
-{
+export class MainFunctions {
 	private static status: GlobalStates = GlobalStates.UNINITIALZED;
 
-	public static async startupAndInitialzeAutomaticArchiving(): Promise<void>
-	{
+	public static async startupAndInitialzeAutomaticArchiving(): Promise<void> {
 		log.info("start...");
 
 		const appInfoLogger = new AppInfoLogger();
@@ -43,8 +41,7 @@ export class MainFunctions
 		const optionHelper: OptionHelper = new OptionHelper();
 		const settings: Settings = await optionHelper.loadCurrentSettings();
 
-		if (settings.globalSettings.archiveType === "startup")
-		{
+		if (settings.globalSettings.archiveType === "startup") {
 			log.info("archive type at startup");
 
 			//wait some time to give TB time to connect and everything
@@ -52,40 +49,31 @@ export class MainFunctions
 
 			//repeat after one day (if someone has open Thunderbird all the time)
 			setInterval(this.onDoArchiveAutomatic.bind(this), 86400000);
-		}
-		else
-		{
+		} else {
 			log.info("archive type manually");
 		}
 	}
 
-	public static getStatus(): GlobalStates
-	{
+	public static getStatus(): GlobalStates {
 		return this.status;
 	}
 
-	public static async onArchiveManually(): Promise<void>
-	{
+	public static async onArchiveManually(): Promise<void> {
 		await this.onDoArchive();
 	}
 
-	private static async onDoArchiveAutomatic(): Promise<void>
-	{
+	private static async onDoArchiveAutomatic(): Promise<void> {
 		log.info("try automatic archive");
-		if (this.status !== GlobalStates.READY_FOR_WORK)
-		{
+		if (this.status !== GlobalStates.READY_FOR_WORK) {
 			log.info("automatic archive busy, wait");
 			//busy: wait 5 seconds
 			setTimeout(this.onDoArchiveAutomatic.bind(this), 5000);
-		}
-		else
-		{
+		} else {
 			await this.onDoArchive();
 		}
 	}
 
-	private static async onDoArchive(): Promise<void>
-	{
+	private static async onDoArchive(): Promise<void> {
 		log.info("start archiving");
 		this.status = GlobalStates.IN_PROGRESS;
 		const autoarchiveReloaded = new Archiver();

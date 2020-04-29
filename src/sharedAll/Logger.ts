@@ -20,71 +20,56 @@ Copyright 2018-2020 Brummolix (AutoarchiveReloaded, https://github.com/Brummolix
 import { LogLevelInfo } from "./LogLevelInfo";
 
 enum LogLevel {
-	LEVEL_INFO, LEVEL_ERROR,
+	LEVEL_INFO,
+	LEVEL_ERROR,
 }
 
-export class Logger
-{
+export class Logger {
 	private logLevelInfo: LogLevelInfo;
 
-	public constructor(logLevelInfo: LogLevelInfo)
-	{
+	public constructor(logLevelInfo: LogLevelInfo) {
 		this.logLevelInfo = logLevelInfo;
 	}
 
-	public info(str: string): void
-	{
+	public info(str: string): void {
 		this.log(LogLevel.LEVEL_INFO, str);
 	}
 
-	public error(str: string): void
-	{
+	public error(str: string): void {
 		this.log(LogLevel.LEVEL_ERROR, str);
 	}
 
-	public errorException(exception: any, message?: string): void
-	{
-		if (message === undefined)
-		{
+	public errorException(exception: any, message?: string): void {
+		if (message === undefined) {
 			this.error("Exception occured");
-		}
-		else
-		{
+		} else {
 			this.error(message);
 		}
 		this.logAny(exception);
 	}
 
-	private getLogLevelFromPref(): LogLevel
-	{
-		if (this.logLevelInfo.enableInfoLogging)
-		{
+	private getLogLevelFromPref(): LogLevel {
+		if (this.logLevelInfo.enableInfoLogging) {
 			return LogLevel.LEVEL_INFO;
 		}
 
 		return LogLevel.LEVEL_ERROR;
 	}
 
-	private log(levelToLog: LogLevel, str: string): void
-	{
-		if (levelToLog < this.getLogLevelFromPref())
-		{
+	private log(levelToLog: LogLevel, str: string): void {
+		if (levelToLog < this.getLogLevelFromPref()) {
 			return;
 		}
 
 		this.logEntry(levelToLog, str);
 	}
 
-	private logEntry(levelToLog: LogLevel, str: string): void
-	{
+	private logEntry(levelToLog: LogLevel, str: string): void {
 		const date = new Date();
 		let strToLog = date.toLocaleString() + " - AutoarchiveReloaded - ";
-		if (levelToLog === LogLevel.LEVEL_INFO)
-		{
+		if (levelToLog === LogLevel.LEVEL_INFO) {
 			strToLog += "INFO";
-		}
-		else
-		{
+		} else {
 			strToLog += "ERROR";
 		}
 		strToLog += ": " + str;
@@ -92,8 +77,7 @@ export class Logger
 		this.logAny(strToLog);
 	}
 
-	private logAny(value: any): void
-	{
+	private logAny(value: any): void {
 		console.log(value);
 	}
 }

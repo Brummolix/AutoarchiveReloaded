@@ -25,103 +25,79 @@ import { OptionHelper } from "../sharedWebextension/optionHelper";
 import { SettingsHelper } from "./SettingsHelper";
 import { FolderHelper } from "./FolderHelper";
 
-export class Archiver
-{
+export class Archiver {
 	//archive messages for all accounts
 	//(depending on the autoarchive options of the account)
-	public async archiveAccounts(): Promise<void>
-	{
-		try
-		{
+	public async archiveAccounts(): Promise<void> {
+		try {
 			const optionHelper: OptionHelper = new OptionHelper();
 			const settings: Settings = await optionHelper.loadCurrentSettings();
 
-			await AccountIterator.forEachAccount(async (account: MailAccount, isAccountArchivable: boolean): Promise<void> =>
-			{
-				await this.archiveAccount(account, isAccountArchivable, settings);
-			});
-		}
-		catch (e)
-		{
+			await AccountIterator.forEachAccount(
+				async (account: MailAccount, isAccountArchivable: boolean): Promise<void> => {
+					await this.archiveAccount(account, isAccountArchivable, settings);
+				}
+			);
+		} catch (e) {
 			log.errorException(e);
 			throw e;
 		}
 	}
 
-	private async archiveAccount(account: MailAccount, isAccountArchivable: boolean, settings: Settings): Promise<void>
-	{
+	private async archiveAccount(account: MailAccount, isAccountArchivable: boolean, settings: Settings): Promise<void> {
 		log.info("check account '" + account.name + "'");
-		if (isAccountArchivable)
-		{
+		if (isAccountArchivable) {
 			const accountSettings = settings.accountSettings[account.id];
 			SettingsHelper.log(account.name, accountSettings);
-			if (SettingsHelper.isArchivingSomething(accountSettings))
-			{
+			if (SettingsHelper.isArchivingSomething(accountSettings)) {
 				log.info("getting folders to archive in account '" + account.name + "'");
 				const foldersToArchive = this.getFoldersToArchive(FolderHelper.getFoldersRecursivly(account.folders));
-				for (const folder of foldersToArchive)
-				{
+				for (const folder of foldersToArchive) {
 					await this.archiveFolder(folder, accountSettings);
 				}
-			}
-			else
-			{
+			} else {
 				log.info("autoarchive disabled, ignore account '" + account.name + "'");
 			}
-		}
-		else
-		{
+		} else {
 			log.info("ignore account '" + account.name + "'");
 		}
 	}
 
 	//note: virtual folders (like Gmail has) are reported to archive but a later call to folder.list will fail...
-	private getFoldersToArchive(folders: MailFolder[]): MailFolder[]
-	{
-		try
-		{
-			const foldersToArchive: MailFolder [] = [];
+	private getFoldersToArchive(folders: MailFolder[]): MailFolder[] {
+		try {
+			const foldersToArchive: MailFolder[] = [];
 
-			for (const folder of folders)
-			{
+			for (const folder of folders) {
 				log.info("Check folder " + folder.name + " (" + folder.type + ")");
-				if ( this.folderShallBeIgnored(folder, folders))
-				{
+				if (this.folderShallBeIgnored(folder, folders)) {
 					log.info("ignore folder '" + folder.path + "' (" + folder.type + ")");
-				}
-				else
-				{
+				} else {
 					foldersToArchive.push(folder);
 				}
 			}
 
 			return foldersToArchive;
-		}
-		catch (e)
-		{
+		} catch (e) {
 			log.errorException(e);
 			throw e;
 		}
 	}
 
-	private folderShallBeIgnored(folder: MailFolder, allFoldersOfAccount: MailFolder[]): boolean
-	{
-		if (this.folderTypeShallBeIgnored(folder.type))
-		{
+	private folderShallBeIgnored(folder: MailFolder, allFoldersOfAccount: MailFolder[]): boolean {
+		if (this.folderTypeShallBeIgnored(folder.type)) {
 			return true;
 		}
 
 		const parent: MailFolder | undefined = this.getFolderParent(folder, allFoldersOfAccount);
-		if (parent === undefined)
-		{
+		if (parent === undefined) {
 			return false;
 		}
 
 		return this.folderShallBeIgnored(parent, allFoldersOfAccount);
 	}
 
-	private folderTypeShallBeIgnored(folderType: FolderType): boolean
-	{
+	private folderTypeShallBeIgnored(folderType: FolderType): boolean {
 		//Do not archive some special folders (and also no subfolders in there)
 		//inbox - yes
 		//sent - yes, sure
@@ -137,21 +113,25 @@ export class Archiver
 		//virtual - no, it is virtual :)
 
 		//undefined - yes, normal folder
-		return (folderType === "trash") || (folderType === "junk") || (folderType === "outbox") || (folderType === "drafts") || (folderType === "templates") || (folderType === "archives");
+		return (
+			folderType === "trash" ||
+			folderType === "junk" ||
+			folderType === "outbox" ||
+			folderType === "drafts" ||
+			folderType === "templates" ||
+			folderType === "archives"
+		);
 	}
 
-	private getFolderParent(folder: MailFolder, allFoldersOfAccount: MailFolder[]): MailFolder | undefined
-	{
+	private getFolderParent(folder: MailFolder, allFoldersOfAccount: MailFolder[]): MailFolder | undefined {
 		const nIndex = folder.path.lastIndexOf("/");
-		if (nIndex === undefined)
-		{
+		if (nIndex === undefined) {
 			return undefined;
 		}
 		const parentPath = folder.path.substring(0, nIndex);
 
 		for (const currentFolder of allFoldersOfAccount) {
-			if (currentFolder.path === parentPath)
-			{
+			if (currentFolder.path === parentPath) {
 				return currentFolder;
 			}
 		}
@@ -159,39 +139,30 @@ export class Archiver
 		return undefined;
 	}
 
-	private async archiveFolder(folder: MailFolder, settings: AccountSettings): Promise<void>
-	{
-		try
-		{
+	private async archiveFolder(folder: MailFolder, settings: AccountSettings): Promise<void> {
+		try {
 			const mailAccount: MailAccount = await browser.accounts.get(folder.accountId);
 			log.info("start searching messages to archive in folder '" + folder.path + "' (" + folder.type + ") in account '" + mailAccount.name + "'");
 			const messages: MessageHeader[] = await this.searchMessagesToArchive(folder, settings);
 			log.info("message search done for '" + folder.name + "' in account '" + mailAccount.name + "' -> " + messages.length + " messages found to archive");
 
-			if (messages.length > 0)
-			{
+			if (messages.length > 0) {
 				log.info("start real archiving of '" + folder.name + "' (" + messages.length + " messages) in account '" + mailAccount.name + "'");
 				await this.archiveMessages(messages);
 			}
-		}
-		catch (e)
-		{
+		} catch (e) {
 			log.errorException(e);
 			throw e;
 		}
 	}
 
-	private async searchMessagesToArchive(folder: MailFolder, settings: AccountSettings): Promise<MessageHeader[]>
-	{
+	private async searchMessagesToArchive(folder: MailFolder, settings: AccountSettings): Promise<MessageHeader[]> {
 		const messages: MessageHeader[] = [];
 
 		let messageList: MessageList;
-		try
-		{
+		try {
 			messageList = await browser.messages.list(folder);
-		}
-		catch (e)
-		{
+		} catch (e) {
 			//as virtual folders crash here, we only log the failure and treat the folder as "archived"...
 			log.errorException(e, "The exception might occur because the folder is a virtual folder... See https://bugzilla.mozilla.org/show_bug.cgi?id=1529791");
 			return messages;
@@ -206,28 +177,22 @@ export class Archiver
 		return messages;
 	}
 
-	private detectMessagesToArchive(messageList: MessageList, settings: AccountSettings, messages: MessageHeader[]): void
-	{
-		for (const message of messageList.messages)
-		{
-			if (this.shallMessageBeArchived(message, settings))
-			{
+	private detectMessagesToArchive(messageList: MessageList, settings: AccountSettings, messages: MessageHeader[]): void {
+		for (const message of messageList.messages) {
+			if (this.shallMessageBeArchived(message, settings)) {
 				messages.push(message);
 			}
 		}
 	}
 
-	private shallMessageBeArchived(messageHeader: MessageHeader, settings: AccountSettings): boolean
-	{
+	private shallMessageBeArchived(messageHeader: MessageHeader, settings: AccountSettings): boolean {
 		//determine ageInDays
 		let ageInDays: number = 0;
 		let other: boolean = true;
 
 		//unread
-		if (!messageHeader.read)
-		{
-			if (!settings.bArchiveUnread)
-			{
+		if (!messageHeader.read) {
+			if (!settings.bArchiveUnread) {
 				//message unread, but unread messages shall not be archived
 				return false;
 			}
@@ -237,10 +202,8 @@ export class Archiver
 		}
 
 		//marked (starred)
-		if (messageHeader.flagged)
-		{
-			if (!settings.bArchiveMarked)
-			{
+		if (messageHeader.flagged) {
+			if (!settings.bArchiveMarked) {
 				//message flagged, but flagged messages shall not be archived
 				return false;
 			}
@@ -252,12 +215,10 @@ export class Archiver
 		//tagged
 
 		//GMail uses the tag "junk" to mark junk mails, but they shall not be classified as normal "tags"
-		const tags = messageHeader.tags.filter(tag => (tag !== "junk" && tag !== "nonjunk") );
+		const tags = messageHeader.tags.filter((tag) => tag !== "junk" && tag !== "nonjunk");
 
-		if (tags.length > 0)
-		{
-			if (!settings.bArchiveTagged)
-			{
+		if (tags.length > 0) {
+			if (!settings.bArchiveTagged) {
 				//message tagged, but tagged messages shall not be archived
 				return false;
 			}
@@ -266,10 +227,8 @@ export class Archiver
 			ageInDays = Math.max(ageInDays, settings.daysTagged);
 		}
 
-		if (other)
-		{
-			if (!settings.bArchiveOther)
-			{
+		if (other) {
+			if (!settings.bArchiveOther) {
 				//other message, but other messages shall not be archived
 				return false;
 			}
@@ -277,8 +236,7 @@ export class Archiver
 		}
 
 		const minDate: Date = new Date(Date.now() - ageInDays * 24 * 60 * 60 * 1000);
-		if (messageHeader.date > minDate)
-		{
+		if (messageHeader.date > minDate) {
 			return false;
 		}
 
@@ -298,19 +256,15 @@ export class Archiver
 		return true;
 	}
 
-	private async archiveMessages(messages: MessageHeader[]): Promise<void>
-	{
-		try
-		{
+	private async archiveMessages(messages: MessageHeader[]): Promise<void> {
+		try {
 			const messageIds: number[] = [];
 			for (const message of messages) {
 				messageIds.push(message.id);
 			}
 
 			await browser.messages.archive(messageIds);
-		}
-		catch (e)
-		{
+		} catch (e) {
 			log.errorException(e);
 		}
 	}

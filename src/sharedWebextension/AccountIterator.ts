@@ -18,24 +18,27 @@ Copyright 2012 Alexey Egorov (original version Autoarchive, http://code.google.c
     along with AutoarchiveReloaded.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-export class AccountIterator
-{
-	public static async forEachAccount(forEachDo: (account: MailAccount, isAccountArchivable: boolean) => Promise<void> | void): Promise<void>
-	{
+export class AccountIterator {
+	public static async forEachAccount(forEachDo: (account: MailAccount, isAccountArchivable: boolean) => Promise<void> | void): Promise<void> {
 		const accounts: MailAccount[] = await browser.accounts.list();
-		for (const account of accounts)
-		{
+		for (const account of accounts) {
 			await forEachDo(account, this.isAccountArchivable(account));
 		}
 	}
 
-	private static isAccountArchivable(account: MailAccount): boolean
-	{
+	private static isAccountArchivable(account: MailAccount): boolean {
 		//TODO: Is there still an exquilla type?
 
 		//IRC accounts will not be listed... and we would ignore them anyhow
 		//"nntp" is a newsgroup account, "rss" a newsfeed account > we archive them, too (even if an rss account does not have real archive settings)
 		//a local folder is "none"
-		return (account.type === "pop3" || account.type === "imap" || account.type === "rss" || account.type === "nntp" || account.type === "exquilla" || account.type === "none");
+		return (
+			account.type === "pop3" ||
+			account.type === "imap" ||
+			account.type === "rss" ||
+			account.type === "nntp" ||
+			account.type === "exquilla" ||
+			account.type === "none"
+		);
 	}
 }

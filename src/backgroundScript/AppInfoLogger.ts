@@ -21,50 +21,38 @@ along with AutoarchiveReloaded.  If not, see <http://www.gnu.org/licenses/>.
 import { AccountIterator } from "../sharedWebextension/AccountIterator";
 import { log } from "../sharedWebextension/Logger";
 
-export class AppInfoLogger
-{
-	public async log(): Promise<void>
-	{
+export class AppInfoLogger {
+	public async log(): Promise<void> {
 		await this.logAppInfo();
 		this.logAddonInfo();
 		await this.logAccountInfo();
 	}
 
-	private async logAppInfo(): Promise<void>
-	{
-		try
-		{
+	private async logAppInfo(): Promise<void> {
+		try {
 			const window: BrowserWindow = browser.extension.getBackgroundPage();
 			const browserInfo: BrowserInfo = await browser.runtime.getBrowserInfo();
 
 			log.info("Application: " + browserInfo.vendor + " " + browserInfo.name + " version " + browserInfo.version + " (" + browserInfo.buildID + ")");
-			log.info("SystemInfo: " +  window.navigator.userAgent + "| " + window.navigator.platform);
+			log.info("SystemInfo: " + window.navigator.userAgent + "| " + window.navigator.platform);
 			log.info("Language: " + window.navigator.language);
-		}
-		catch (e)
-		{
+		} catch (e) {
 			log.errorException(e);
 			//don't throw... this method is only info logging...
 		}
 	}
 
-	private logAddonInfo(): void
-	{
+	private logAddonInfo(): void {
 		//we could get infos about addons with the browser.management API, but then we would also need the "management" permission
 		//seem to be a bit overdosed only for logging of the information
 	}
 
-	private async logAccountInfo(): Promise<void>
-	{
-		try
-		{
-			await AccountIterator.forEachAccount((account: MailAccount, isAccountArchivable: boolean) =>
-			{
-				log.info("Account Info: '" + account.name + "'; type: " +	account.type + "; id: " + account.id + "; isAccountArchivable: " + isAccountArchivable);
+	private async logAccountInfo(): Promise<void> {
+		try {
+			await AccountIterator.forEachAccount((account: MailAccount, isAccountArchivable: boolean) => {
+				log.info("Account Info: '" + account.name + "'; type: " + account.type + "; id: " + account.id + "; isAccountArchivable: " + isAccountArchivable);
 			});
-		}
-		catch (e)
-		{
+		} catch (e) {
 			log.errorException(e);
 			//don't throw... this method is only info logging...
 		}

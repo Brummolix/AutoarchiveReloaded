@@ -16,7 +16,6 @@ Copyright 2019-2020 Brummolix (new version AutoarchiveReloaded, https://github.c
     You should have received a copy of the GNU General Public License
     along with AutoarchiveReloaded.  If not, see <http://www.gnu.org/licenses/>.
 */
-export interface LogLevelInfo
-{
+export interface LogLevelInfo {
 	enableInfoLogging: boolean;
 }

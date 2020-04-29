@@ -20,8 +20,7 @@ Copyright 2012 Alexey Egorov (original version Autoarchive, http://code.google.c
 
 import { AccountInfo, AccountSettings } from "../sharedAll/interfaces";
 
-export interface AccountInfos
-{
+export interface AccountInfos {
 	account: AccountInfo;
 	accountSetting: AccountSettings;
 }

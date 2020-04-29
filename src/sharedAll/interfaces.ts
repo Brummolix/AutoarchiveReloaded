@@ -18,14 +18,12 @@ Copyright 2018-2020 Brummolix (AutoarchiveReloaded, https://github.com/Brummolix
 */
 export type ArchiveType = "manual" | "startup";
 
-export interface GlobalSettings
-{
+export interface GlobalSettings {
 	archiveType: ArchiveType;
 	enableInfoLogging: boolean;
 }
 
-export interface AccountSettings
-{
+export interface AccountSettings {
 	bArchiveOther: boolean;
 	daysOther: number;
 	bArchiveMarked: boolean;
@@ -36,13 +34,11 @@ export interface AccountSettings
 	daysUnread: number;
 }
 
-export interface AccountSettingsArray
-{
+export interface AccountSettingsArray {
 	[key: string]: AccountSettings;
 }
 
-export interface Settings
-{
+export interface Settings {
 	globalSettings: GlobalSettings;
 
 	//we do not use a Map because it is not seralized/deserialized with JSON.stringify and therefore also not stored in the local storage
@@ -56,8 +52,7 @@ export interface Settings
 	accountSettings: AccountSettingsArray;
 }
 
-export interface AccountInfo
-{
+export interface AccountInfo {
 	accountId: string;
 	accountName: string;
 	order: number;

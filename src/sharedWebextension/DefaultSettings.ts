@@ -19,10 +19,8 @@ Copyright 2018-2020 Brummolix (AutoarchiveReloaded, https://github.com/Brummolix
 
 import { AccountSettings, GlobalSettings, Settings } from "../sharedAll/interfaces";
 
-export class DefaultSettings
-{
-	public getDefaultAccountSettings(): AccountSettings
-	{
+export class DefaultSettings {
+	public getDefaultAccountSettings(): AccountSettings {
 		return {
 			bArchiveOther: false,
 			daysOther: 360,
@@ -35,16 +33,13 @@ export class DefaultSettings
 		};
 	}
 
-	public convertPartialSettings(partialSettings: { [key: string]: any }): Settings
-	{
+	public convertPartialSettings(partialSettings: { [key: string]: any }): Settings {
 		const defaultSettings: Settings = this.getDefaultSettings();
 		const concatedSettings: Settings = this.deepMerge(defaultSettings, partialSettings);
 
 		//use defaultSettings for all accounts, too
-		for (const accountId in concatedSettings.accountSettings)
-		{
-			if ( concatedSettings.accountSettings.hasOwnProperty(accountId) )
-			{
+		for (const accountId in concatedSettings.accountSettings) {
+			if (concatedSettings.accountSettings.hasOwnProperty(accountId)) {
 				const accountSetting = concatedSettings.accountSettings[accountId];
 				concatedSettings.accountSettings[accountId] = this.deepMerge(this.getDefaultAccountSettings(), accountSetting);
 			}
@@ -53,28 +48,20 @@ export class DefaultSettings
 		return concatedSettings;
 	}
 
-	private deepMerge<T extends { [key: string]: any }>(defaultValues: T, valuesToMerge: { [key: string]: any }): T
-	{
-		if (valuesToMerge === undefined || valuesToMerge === null)
-		{
+	private deepMerge<T extends { [key: string]: any }>(defaultValues: T, valuesToMerge: { [key: string]: any }): T {
+		if (valuesToMerge === undefined || valuesToMerge === null) {
 			return defaultValues;
 		}
 
 		const clone: any = Object.assign({}, defaultValues);
-		for (const key in valuesToMerge)
-		{
-			if (valuesToMerge.hasOwnProperty(key))
-			{
+		for (const key in valuesToMerge) {
+			if (valuesToMerge.hasOwnProperty(key)) {
 				const elem: any = valuesToMerge[key];
-				if ((elem !== undefined) && (elem !== null))
-				{
+				if (elem !== undefined && elem !== null) {
 					//do not use Object.keys here, as TB 64 gives keys also for strings and even numbers
-					if (typeof elem !== "object")
-					{
+					if (typeof elem !== "object") {
 						clone[key] = elem;
-					}
-					else
-					{
+					} else {
 						clone[key] = this.deepMerge(clone[key], elem);
 					}
 				}
@@ -84,16 +71,14 @@ export class DefaultSettings
 		return clone;
 	}
 
-	private getDefaultSettings(): Settings
-	{
+	private getDefaultSettings(): Settings {
 		return {
 			globalSettings: this.getDefaultGlobalSettings(),
 			accountSettings: {},
 		};
 	}
 
-	private getDefaultGlobalSettings(): GlobalSettings
-	{
+	private getDefaultGlobalSettings(): GlobalSettings {
 		return {
 			archiveType: "manual",
 			enableInfoLogging: false,

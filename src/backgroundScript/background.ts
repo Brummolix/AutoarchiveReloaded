@@ -19,26 +19,22 @@ Copyright 2019-2020 Brummolix (AutoarchiveReloaded, https://github.com/Brummolix
 
 /* eslint-disable prefer-arrow/prefer-arrow-functions */
 import { ArchiveManuallyMessageRequest, GetArchiveStatusMessageRequest } from "../sharedAll/Messages";
-import {log} from "../sharedWebextension/Logger";
+import { log } from "../sharedWebextension/Logger";
 import { OptionHelper } from "../sharedWebextension/optionHelper";
 import { MainFunctions } from "./MainFunctions";
 
 /**
  * the main startup function of the background script
  */
-async function startup(): Promise<void>
-{
-	try
-	{
+async function startup(): Promise<void> {
+	try {
 		log.info("Autoarchive background script started");
 
 		const optionHelper: OptionHelper = new OptionHelper();
 		await optionHelper.initializePreferencesAtStartup();
 		await MainFunctions.startupAndInitialzeAutomaticArchiving();
 		browser.runtime.onMessage.addListener(handleMessage);
-	}
-	catch (e)
-	{
+	} catch (e) {
 		log.errorException(e);
 		throw e;
 	}
@@ -51,17 +47,18 @@ async function startup(): Promise<void>
  * @param sender the sender
  * @param sendResponse the function to receive the response
  */
-function handleMessage(request: ArchiveManuallyMessageRequest|GetArchiveStatusMessageRequest, sender: RuntimeMessageSender, sendResponse: RuntimeMessageResponseFunction): void {
-	switch (request.message)
-	{
-		case "getArchiveStatus":
-		{
+function handleMessage(
+	request: ArchiveManuallyMessageRequest | GetArchiveStatusMessageRequest,
+	sender: RuntimeMessageSender,
+	sendResponse: RuntimeMessageResponseFunction
+): void {
+	switch (request.message) {
+		case "getArchiveStatus": {
 			log.info("background script getArchiveStatus");
-			sendResponse({status: MainFunctions.getStatus()});
+			sendResponse({ status: MainFunctions.getStatus() });
 			break;
 		}
-		case "archiveManually":
-		{
+		case "archiveManually": {
 			log.info("user choosed to archive manually");
 			MainFunctions.onArchiveManually(); //without await...
 			sendResponse(null);

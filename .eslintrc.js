@@ -7,7 +7,9 @@ module.exports = {
     "extends": [
         "plugin:@typescript-eslint/recommended",
 				"plugin:@typescript-eslint/recommended-requiring-type-checking",
-				"plugin:jsdoc/recommended"
+				"plugin:jsdoc/recommended",
+				"prettier",
+				"plugin:prettier/recommended"
     ],
     "parser": "@typescript-eslint/parser",
     "parserOptions": {
@@ -16,12 +18,14 @@ module.exports = {
     },
     "plugins": [
         "@typescript-eslint",
-				"@typescript-eslint/tslint",
 				"prefer-arrow",
 				"eslint-plugin-import",
-				"jsdoc"
+				"jsdoc",
+				"prettier"
     ],
     "rules": {
+				"prettier/prettier": "error",
+
 				"jsdoc/require-jsdoc": 0, // we can enable once we have filled in descriptions of all functions
 				"jsdoc/require-param": 0,
 				"jsdoc/require-param-type": 0,
@@ -38,20 +42,6 @@ module.exports = {
                 "accessibility": "explicit"
             }
 				],
-        "@typescript-eslint/indent": [
-            "error",
-            "tab",
-            {
-                "FunctionDeclaration": {
-                    "parameters": "first"
-                },
-                "FunctionExpression": {
-                    "parameters": "first"
-								},
-								"SwitchCase": 1,
-								
-            }
-        ],
         "@typescript-eslint/interface-name-prefix": "error",
         "@typescript-eslint/member-delimiter-style": [
             "error",
@@ -96,13 +86,6 @@ module.exports = {
         "@typescript-eslint/prefer-for-of": "error",
         "@typescript-eslint/prefer-function-type": "error",
         "@typescript-eslint/prefer-namespace-keyword": "error",
-        "@typescript-eslint/quotes": [
-            "error",
-            "double",
-            {
-                "avoidEscape": true
-            }
-        ],
         "@typescript-eslint/semi": [
             "error",
             "always"
@@ -111,10 +94,6 @@ module.exports = {
         "@typescript-eslint/type-annotation-spacing": "error",
         "@typescript-eslint/unified-signatures": "error",
         "arrow-body-style": "error",
-        "arrow-parens": [
-            "error",
-            "as-needed"
-        ],
         "camelcase": "error",
         "comma-dangle": [
             "error",
@@ -197,23 +176,6 @@ module.exports = {
         "spaced-comment": "off",
         "use-isnan": "error",
         "valid-typeof": "off",
-        "@typescript-eslint/tslint/config": [
-            "error",
-            {
-                "rules": {
-                    "import-spacing": true,
-                    "whitespace": [
-                        true,
-                        "check-branch",
-                        "check-decl",
-                        "check-operator",
-                        "check-separator",
-                        "check-type",
-                        "check-typecast"
-                    ]
-                }
-            }
-				],
 				"@typescript-eslint/no-inferrable-types": "off"
 		},
 };

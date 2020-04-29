@@ -20,7 +20,7 @@ Copyright 2012 Alexey Egorov (original version Autoarchive, http://code.google.c
 
 import { AccountInfo, Settings } from "../sharedAll/interfaces";
 import { LegacyOptions } from "./LegacyOptions";
-import {log, logLevelInfo} from "./Logger";
+import { log, logLevelInfo } from "./Logger";
 
 //This class must be the default export, because the default is exported by webpack (see configuration) on a "var autoarchive"
 //(The only way Thunderbird wants it...)
@@ -30,25 +30,19 @@ export default class autoarchive extends ExtensionCommon.ExtensionAPI {
 	private legacyOptions: LegacyOptions = new LegacyOptions();
 
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars
-	public getAPI(context: ExtensionContext): any
-	{
+	public getAPI(context: ExtensionContext): any {
 		return {
 			autoarchive: {
-				askForLegacyPreferences: (accounts: AccountInfo[]): Settings | null =>
-				{
+				askForLegacyPreferences: (accounts: AccountInfo[]): Settings | null => {
 					log.info("askForLegacyPreferences");
-					try
-					{
+					try {
 						return this.legacyOptions.askForLegacyPreferences(accounts);
-					}
-					catch (e)
-					{
+					} catch (e) {
 						log.error(e);
 						throw e;
 					}
 				},
-				setInfoLogging: (value: boolean): void =>
-				{
+				setInfoLogging: (value: boolean): void => {
 					logLevelInfo.enableInfoLogging = value;
 				},
 			},

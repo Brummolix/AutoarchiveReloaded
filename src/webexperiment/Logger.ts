@@ -19,14 +19,12 @@ Copyright 2012 Alexey Egorov (original version Autoarchive, http://code.google.c
 */
 
 import { LogLevelInfo } from "../sharedAll/LogLevelInfo";
-import {Logger} from "../sharedAll/Logger";
+import { Logger } from "../sharedAll/Logger";
 
-class LogLevelInfoWebexperiment implements LogLevelInfo
-{
+class LogLevelInfoWebexperiment implements LogLevelInfo {
 	public enableInfoLogging: boolean = false;
 
-	public log(value: any): void
-	{
+	public log(value: any): void {
 		console.log(value);
 	}
 }

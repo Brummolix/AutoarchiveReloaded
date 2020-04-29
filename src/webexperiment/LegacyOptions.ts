@@ -23,22 +23,18 @@ import { ArchiveType, AccountInfo, AccountSettings, AccountSettingsArray, Settin
 const iteratorUtils: IteratorUtils = Components.utils.import("resource:///modules/iteratorUtils.jsm");
 const mailservices: MailServicesExport = Components.utils.import("resource:///modules/MailServices.jsm");
 
-export class LegacyOptions
-{
-	public askForLegacyPreferences(accounts: AccountInfo[]): Settings | null
-	{
+export class LegacyOptions {
+	public askForLegacyPreferences(accounts: AccountInfo[]): Settings | null {
 		const legacySettings = this.getLegacyOptions(accounts);
 		this.markLegacySettingsAsMigrated();
 		return legacySettings;
 	}
 
 	// returns null if already migrated or no settings!
-	private getLegacyOptions(accounts: AccountInfo[]): Settings | null
-	{
+	private getLegacyOptions(accounts: AccountInfo[]): Settings | null {
 		const prefBranch = this.getInternalLegacyPrefBranch();
 
-		if (prefBranch.getBoolPref("preferencesAlreadyMigrated", false))
-		{
+		if (prefBranch.getBoolPref("preferencesAlreadyMigrated", false)) {
 			return null;
 		}
 
@@ -46,8 +42,7 @@ export class LegacyOptions
 
 		//no account and no global settings?
 		const aChildArray: string[] = prefBranch.getChildList("", {});
-		if ((aChildArray.length === 0) && Object.keys(accountSettings).length === 0)
-		{
+		if (aChildArray.length === 0 && Object.keys(accountSettings).length === 0) {
 			return null;
 		}
 
@@ -64,30 +59,24 @@ export class LegacyOptions
 		return legacySettings;
 	}
 
-	private markLegacySettingsAsMigrated(): void
-	{
+	private markLegacySettingsAsMigrated(): void {
 		this.getInternalLegacyPrefBranch().setBoolPref("preferencesAlreadyMigrated", true);
 	}
 
-	private getLegacyAccountSettings(accountInfos: AccountInfo[]): AccountSettingsArray
-	{
+	private getLegacyAccountSettings(accountInfos: AccountInfo[]): AccountSettingsArray {
 		const accountSettings: AccountSettingsArray = {};
 
-		for (const accountInfo of accountInfos)
-		{
+		for (const accountInfo of accountInfos) {
 			const accounts: Ci.nsIMsgAccount[] = iteratorUtils.fixIterator(mailservices.MailServices.accounts.accounts, Ci.nsIMsgAccount);
 			let account;
-			for (const currentAccount of accounts)
-			{
-				if (currentAccount.key === accountInfo.accountId)
-				{
+			for (const currentAccount of accounts) {
+				if (currentAccount.key === accountInfo.accountId) {
 					account = currentAccount;
 					break;
 				}
 			}
 
-			if (account == null)
-			{
+			if (account == null) {
 				continue;
 			}
 
@@ -105,8 +94,7 @@ export class LegacyOptions
 
 			//if nothing is archived (which was the default) we assume that the AddOn was not installed or at least not used
 			//therefore we ignore the settings then and the defaults will be used later on
-			if (settingOfAccount.bArchiveOther || settingOfAccount.bArchiveMarked || settingOfAccount.bArchiveTagged || settingOfAccount.bArchiveUnread)
-			{
+			if (settingOfAccount.bArchiveOther || settingOfAccount.bArchiveMarked || settingOfAccount.bArchiveTagged || settingOfAccount.bArchiveUnread) {
 				accountSettings[account.key] = settingOfAccount;
 			}
 		}
@@ -114,8 +102,7 @@ export class LegacyOptions
 		return accountSettings;
 	}
 
-	private getInternalLegacyPrefBranch(): Ci.nsIPrefBranch
-	{
+	private getInternalLegacyPrefBranch(): Ci.nsIPrefBranch {
 		const prefs: Ci.nsIPrefService = Components.classes["@mozilla.org/preferences-service;1"].getService(Components.interfaces.nsIPrefService);
 		return prefs.getBranch("extensions.AutoarchiveReloaded.");
 	}

@@ -19,17 +19,14 @@ Copyright 2020 Brummolix (AutoarchiveReloaded, https://github.com/Brummolix/Auto
 
 import { GlobalStates } from "./GlobalStates";
 
-export interface GetArchiveStatusMessageRequest
-{
+export interface GetArchiveStatusMessageRequest {
 	message: "getArchiveStatus";
 }
 
-export interface GetArchiveStatusResponse
-{
+export interface GetArchiveStatusResponse {
 	status: GlobalStates;
 }
 
-export interface ArchiveManuallyMessageRequest
-{
+export interface ArchiveManuallyMessageRequest {
 	message: "archiveManually";
 }

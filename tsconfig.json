@@ -17,28 +17,24 @@ Copyright 2018-2020 Brummolix (new version AutoarchiveReloaded, https://github.c
     along with AutoarchiveReloaded.  If not, see <http://www.gnu.org/licenses/>.
 */
 {
-    "compilerOptions": {
-				"outDir": "./built/compile/",
+	"compilerOptions": {
+		"outDir": "./built/compile/",
 
-        "target": "es2018",
-        "module": "CommonJS" ,
-        //disabled because it does not work in Thunderbird (NetworkError when attempting to fetch resource)
-        //if it would work we could enable it for debugging purposes and disable it for the release
-        "sourceMap": false,
+		"target": "es2018",
+		"module": "CommonJS",
+		//disabled because it does not work in Thunderbird (NetworkError when attempting to fetch resource)
+		//if it would work we could enable it for debugging purposes and disable it for the release
+		"sourceMap": false,
 
-        "allowJs": false,
-        "rootDir": "src",
+		"allowJs": false,
+		"rootDir": "src",
 
-        "strict": true,
-        "noImplicitReturns": true,
-        "noUnusedLocals": true,
-        //only for debug release
-        "removeComments":false,
+		"strict": true,
+		"noImplicitReturns": true,
+		"noUnusedLocals": true,
+		//only for debug release
+		"removeComments": false,
 
-				"forceConsistentCasingInFileNames":true,
-				"plugins": [
-					{ "name": "typescript-tslint-plugin",
-						"ignoreDefinitionFiles": false						
-					}]
-    }
+		"forceConsistentCasingInFileNames": true
+	}
 }

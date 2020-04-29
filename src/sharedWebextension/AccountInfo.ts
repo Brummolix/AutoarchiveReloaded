@@ -19,23 +19,18 @@ Copyright 2012 Alexey Egorov (original version Autoarchive, http://code.google.c
 */
 
 import { AccountInfo } from "../sharedAll/interfaces";
-import {log} from "../sharedWebextension/Logger";
+import { log } from "../sharedWebextension/Logger";
 import { AccountIterator } from "./AccountIterator";
 
-export class AccountInfoProvider
-{
-	public static isMailType(account: MailAccount): boolean
-	{
+export class AccountInfoProvider {
+	public static isMailType(account: MailAccount): boolean {
 		//TODO: Is there still an exquilla type?
-		return (account.type === "pop3" || account.type === "imap" || account.type === "exquilla");
+		return account.type === "pop3" || account.type === "imap" || account.type === "exquilla";
 	}
 
-	public static findAccountInfo(accountSettings: AccountInfo[], id: string): AccountInfo | null
-	{
-		for (const accountSetting of accountSettings)
-		{
-			if (accountSetting.accountId === id)
-			{
+	public static findAccountInfo(accountSettings: AccountInfo[], id: string): AccountInfo | null {
+		for (const accountSetting of accountSettings) {
+			if (accountSetting.accountId === id) {
 				return accountSetting;
 			}
 		}
@@ -43,31 +38,24 @@ export class AccountInfoProvider
 		return null;
 	}
 
-	public static async askForAccounts(): Promise<AccountInfo[]>
-	{
-		try
-		{
+	public static async askForAccounts(): Promise<AccountInfo[]> {
+		try {
 			const nsAccounts: MailAccount[] = [];
-			await AccountIterator.forEachAccount((account: MailAccount, isAccountArchivable: boolean) =>
-			{
-				if (isAccountArchivable)
-				{
+			await AccountIterator.forEachAccount((account: MailAccount, isAccountArchivable: boolean) => {
+				if (isAccountArchivable) {
 					nsAccounts.push(account);
 				}
 			});
 
-			nsAccounts.sort((a: MailAccount, b: MailAccount) =>
-			{
+			nsAccounts.sort((a: MailAccount, b: MailAccount) => {
 				const mailTypeA: boolean = AccountInfoProvider.isMailType(a);
 				const mailTypeB: boolean = AccountInfoProvider.isMailType(b);
 
-				if (mailTypeA === mailTypeB)
-				{
+				if (mailTypeA === mailTypeB) {
 					return a.name.localeCompare(b.name);
 				}
 
-				if (mailTypeA)
-				{
+				if (mailTypeA) {
 					return -1;
 				}
 
@@ -76,8 +64,7 @@ export class AccountInfoProvider
 
 			const accounts: AccountInfo[] = [];
 			let currentOrder = 0;
-			nsAccounts.forEach(account =>
-			{
+			nsAccounts.forEach((account) => {
 				accounts.push({
 					accountId: account.id,
 					accountName: account.name,
@@ -86,9 +73,7 @@ export class AccountInfoProvider
 			});
 
 			return accounts;
-		}
-		catch (e)
-		{
+		} catch (e) {
 			log.errorException(e);
 			throw e;
 		}

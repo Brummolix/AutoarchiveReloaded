@@ -17,18 +17,14 @@ Copyright 2020 Brummolix (AutoarchiveReloaded, https://github.com/Brummolix/Auto
     along with AutoarchiveReloaded.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-export class FolderHelper
-{
+export class FolderHelper {
 	//#41 - before TB 74 the folders were filled completely, starting with TB 64 one must traverse all subfolders
-	public static getFoldersRecursivly(folders?: MailFolder[]): MailFolder[]
-	{
-		if (folders === undefined)
-		{
+	public static getFoldersRecursivly(folders?: MailFolder[]): MailFolder[] {
+		if (folders === undefined) {
 			return [];
 		}
 		let allFolders: MailFolder[] = [];
-		for (const folder of folders)
-		{
+		for (const folder of folders) {
 			allFolders.push(folder);
 			allFolders = allFolders.concat(this.getFoldersRecursivly(folder.subFolders));
 		}

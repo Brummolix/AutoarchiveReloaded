@@ -22,16 +22,13 @@ import { AccountInfoProvider } from "./AccountInfo";
 import { DefaultSettings } from "./DefaultSettings";
 import { log, LogLevelInfoWebExtension } from "./Logger";
 
-export class OptionHelper
-{
-	public async loadCurrentSettings(): Promise<Settings>
-	{
+export class OptionHelper {
+	public async loadCurrentSettings(): Promise<Settings> {
 		log.info("start to load current settings");
 
 		const accounts: AccountInfo[] = await AccountInfoProvider.askForAccounts();
 
-		try
-		{
+		try {
 			log.info("got info about accounts");
 			const result: any = await browser.storage.local.get("settings");
 			//settings read succesfully...
@@ -44,96 +41,72 @@ export class OptionHelper
 
 			log.info("settings mixed with default settings");
 			return settings;
-		}
-		catch (e)
-		{
+		} catch (e) {
 			//TODO: do not log and throw!
 			log.errorException(e);
 			throw e;
 		}
 	}
 
-
-	private removeOutdatedAccountsFromSettings(settings: Settings, accounts: AccountInfo[]): void
-	{
-		for (const accountId in settings.accountSettings)
-		{
-			if (AccountInfoProvider.findAccountInfo(accounts, accountId) === null)
-			{
+	private removeOutdatedAccountsFromSettings(settings: Settings, accounts: AccountInfo[]): void {
+		for (const accountId in settings.accountSettings) {
+			if (AccountInfoProvider.findAccountInfo(accounts, accountId) === null) {
 				delete settings.accountSettings[accountId];
 			}
 		}
 	}
 
-	private ensureEveryExistingAccountHaveSettings(accounts: AccountInfo[], settings: Settings, oHandling: DefaultSettings): void
-	{
-		accounts.forEach(account =>
-		{
+	private ensureEveryExistingAccountHaveSettings(accounts: AccountInfo[], settings: Settings, oHandling: DefaultSettings): void {
+		accounts.forEach((account) => {
 			const accountSetting = settings.accountSettings[account.accountId];
-			if (accountSetting === undefined)
-			{
+			if (accountSetting === undefined) {
 				settings.accountSettings[account.accountId] = oHandling.getDefaultAccountSettings();
 			}
 		});
 	}
 
-	public async initializePreferencesAtStartup(): Promise<void>
-	{
+	public async initializePreferencesAtStartup(): Promise<void> {
 		log.info("start conversion of legacy preferences (if any)");
 
 		const accounts: AccountInfo[] = await AccountInfoProvider.askForAccounts();
 
 		const settings: Settings | null = browser.autoarchive.askForLegacyPreferences(accounts);
-		try
-		{
-			if (settings)
-			{
+		try {
+			if (settings) {
 				log.info("got legacy preferences to convert");
 				await this.savePreferencesAndPublishForLogging(settings);
 				log.info("legacy preferences converted");
-			}
-			else
-			{
+			} else {
 				log.info("no legacy preferences to convert");
 				await this.publishCurrentPreferencesForLogging();
 				log.info("publishCurrentPreferencesForLogging done");
 			}
-		}
-		catch (e)
-		{
+		} catch (e) {
 			log.errorException(e);
 			throw e;
 		}
 	}
 
-	public async savePreferencesAndPublishForLogging(settings: Settings): Promise<void>
-	{
+	public async savePreferencesAndPublishForLogging(settings: Settings): Promise<void> {
 		log.info("going to save settings");
 
-		try
-		{
+		try {
 			//TODO: sometimes we get "Error: WebExtension context not found!", why?
 			await browser.storage.local.set({ settings: settings });
 			log.info("settings saved");
 			await this.publishCurrentPreferencesForLogging();
-		}
-		catch (e)
-		{
+		} catch (e) {
 			log.errorException(e);
 			throw e;
 		}
 	}
 
-	private async publishCurrentPreferencesForLogging(): Promise<void>
-	{
+	private async publishCurrentPreferencesForLogging(): Promise<void> {
 		const settings = await this.loadCurrentSettings();
 		log.info("loadCurrentSettings done, publish for logging");
-		try
-		{
+		try {
 			LogLevelInfoWebExtension.setGlobaleEnableInfoLogging(settings.globalSettings.enableInfoLogging);
-		}
-		catch (e)
-		{
+		} catch (e) {
 			//TODO: do not log and throw?
 			log.errorException(e);
 			throw e;

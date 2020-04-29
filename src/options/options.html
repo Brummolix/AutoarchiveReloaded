@@ -18,139 +18,143 @@ Copyright 2018-2020 Brummolix (AutoarchiveReloaded, https://github.com/Brummolix
     along with AutoarchiveReloaded.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <html>
-  <head>
-    <meta charset="utf-8">
-    <title>__MSG_settingsHeadline__</title>
-    <script type="application/javascript" src="libs/webextensions-lib-l10n/l10n.js"></script>
+	<head>
+		<meta charset="utf-8" />
+		<title>__MSG_settingsHeadline__</title>
+		<script type="application/javascript" src="libs/webextensions-lib-l10n/l10n.js"></script>
 
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-	<link rel="stylesheet" href="libs/bootstrap/css/bootstrap.min.css">
-	<link rel="stylesheet" href="libs/animate.css/animate.css">
-  </head>
+		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+		<link rel="stylesheet" href="libs/bootstrap/css/bootstrap.min.css" />
+		<link rel="stylesheet" href="libs/animate.css/animate.css" />
+	</head>
 
-  <body>
-    <div class="container">
-        <div class="m-3"></div>
-        <H3>__MSG_settingsHeadline__</H3>
-        <div class="card">
-        <div class="card-header">
-          <ul class="nav nav-tabs card-header-tabs" role="tablist" id="tablist">
-            <li class="nav-item">
-              <a class="nav-link active" data-toggle="tab" id="global-tab" href="#global" role="tab" aria-controls="home" aria-selected="true">__MSG_globalSettings__</a>
-            </li>
-            <li class="nav-item d-none" id="§§ID§§-tab">
-                <a class="nav-link" data-toggle="tab" id="§§ID§§-link-tab" href="#accountContent-§§ID§§" role="tab" aria-controls="profile" aria-selected="false">§§TITLE§§</a>
-            </li>
-          </ul>
-        </div>
-        <div class="tab-content" id="tabcontent">
-          <div id="global" class="tab-pane fade show active card-body" role="tabpanel" aria-labelledby="global-tab">
-            <form>
-              <fieldset class="form-group">
-                <div class="row">
-                  <legend class="col-form-label col-sm-2 pt-0">__MSG_archiveTypeTitle__</legend>
-                  <div class="col-sm-10">
-                    <div class="form-check">
-                      <input class="form-check-input" type="radio" name="archiveType" id="archiveTypeManual" value="manual">
-                      <label class="form-check-label" for="archiveTypeManual">__MSG_archiveTypeManual__</label>
-                    </div>
-                    <div class="form-check">
-                      <input class="form-check-input" type="radio" name="archiveType" id="archiveTypeStartup" value="startup">
-                      <label class="form-check-label" for="archiveTypeStartup">__MSG_archiveTypeStartup__</label>
-                    </div>
-                    <div class="pt-3" role="alert">__MSG_globalSettingsStartupDescription__</div>
-                  </div>
-                </div>
-              </fieldset>
-              <div class="form-group row">
-                <div class="col-sm-2">__MSG_logging__</div>
-                <div class="col-sm-10">      
-                  <div class="form-check">
-                    <input class="form-check-input" type="checkbox" name="enableInfoLogging" id="enableInfoLogging" value="enableInfoLogging">
-                    <label class="form-check-label" for="enableInfoLogging"> __MSG_enableInfoLoggingOption__</label>
-                  </div>
-                </div>
-              </div>
+	<body>
+		<div class="container">
+			<div class="m-3"></div>
+			<h3>__MSG_settingsHeadline__</h3>
+			<div class="card">
+				<div class="card-header">
+					<ul class="nav nav-tabs card-header-tabs" role="tablist" id="tablist">
+						<li class="nav-item">
+							<a class="nav-link active" data-toggle="tab" id="global-tab" href="#global" role="tab" aria-controls="home" aria-selected="true"
+								>__MSG_globalSettings__</a
+							>
+						</li>
+						<li class="nav-item d-none" id="§§ID§§-tab">
+							<a class="nav-link" data-toggle="tab" id="§§ID§§-link-tab" href="#accountContent-§§ID§§" role="tab" aria-controls="profile" aria-selected="false"
+								>§§TITLE§§</a
+							>
+						</li>
+					</ul>
+				</div>
+				<div class="tab-content" id="tabcontent">
+					<div id="global" class="tab-pane fade show active card-body" role="tabpanel" aria-labelledby="global-tab">
+						<form>
+							<fieldset class="form-group">
+								<div class="row">
+									<legend class="col-form-label col-sm-2 pt-0">__MSG_archiveTypeTitle__</legend>
+									<div class="col-sm-10">
+										<div class="form-check">
+											<input class="form-check-input" type="radio" name="archiveType" id="archiveTypeManual" value="manual" />
+											<label class="form-check-label" for="archiveTypeManual">__MSG_archiveTypeManual__</label>
+										</div>
+										<div class="form-check">
+											<input class="form-check-input" type="radio" name="archiveType" id="archiveTypeStartup" value="startup" />
+											<label class="form-check-label" for="archiveTypeStartup">__MSG_archiveTypeStartup__</label>
+										</div>
+										<div class="pt-3" role="alert">__MSG_globalSettingsStartupDescription__</div>
+									</div>
+								</div>
+							</fieldset>
+							<div class="form-group row">
+								<div class="col-sm-2">__MSG_logging__</div>
+								<div class="col-sm-10">
+									<div class="form-check">
+										<input class="form-check-input" type="checkbox" name="enableInfoLogging" id="enableInfoLogging" value="enableInfoLogging" />
+										<label class="form-check-label" for="enableInfoLogging"> __MSG_enableInfoLoggingOption__</label>
+									</div>
+								</div>
+							</div>
 						</form>
-						
-						<BR>
+
+						<br />
 						<div class="alert alert-primary" role="alert">__MSG_globalSettingsDescription__</div>
-          </div>
+					</div>
 
-          <div id="accountContent-§§ID§§" class="tab-pane fade card-body d-none" role="tabpanel" aria-labelledby="§§ID§§-link-tab">
-            <h5>__MSG_accountSettingTitle__</h5>
+					<div id="accountContent-§§ID§§" class="tab-pane fade card-body d-none" role="tabpanel" aria-labelledby="§§ID§§-link-tab">
+						<h5>__MSG_accountSettingTitle__</h5>
 
-            <div class="input-group mb-3">
-              <div class="input-group-prepend">
-                <div class="input-group-text">
-                  <input type="checkbox" id="archiveUnread-§§ID§§">
-                </div>
-                <span class="input-group-text">__MSG_archiveUnread__</span>
-              </div>
-              <input type="text" class="form-control col-lg-1" id="archiveUnreadDays-§§ID§§">
-              <div class="input-group-append">
-                <span class="input-group-text">__MSG_days__</span>
-              </div>
-            </div>
+						<div class="input-group mb-3">
+							<div class="input-group-prepend">
+								<div class="input-group-text">
+									<input type="checkbox" id="archiveUnread-§§ID§§" />
+								</div>
+								<span class="input-group-text">__MSG_archiveUnread__</span>
+							</div>
+							<input type="text" class="form-control col-lg-1" id="archiveUnreadDays-§§ID§§" />
+							<div class="input-group-append">
+								<span class="input-group-text">__MSG_days__</span>
+							</div>
+						</div>
 
-            <div class="input-group mb-3">
-              <div class="input-group-prepend">
-                <div class="input-group-text">
-                  <input type="checkbox" id="archiveStarred-§§ID§§">
-                </div>
-                <span class="input-group-text">__MSG_archiveStarred__</span>
-              </div>
-              <input type="text" class="form-control col-lg-1" id="archiveStarredDays-§§ID§§">
-              <div class="input-group-append">
-                <span class="input-group-text">__MSG_days__</span>
-              </div>
-            </div>
-              
-            <div class="input-group mb-3">
-              <div class="input-group-prepend">
-                <div class="input-group-text">
-                  <input type="checkbox" id="archiveTagged-§§ID§§">
-                </div>
-                <span class="input-group-text">__MSG_archiveTagged__</span>
-              </div>
-              <input type="text" class="form-control col-lg-1" id="archiveTaggedDays-§§ID§§">
-              <div class="input-group-append">
-                <span class="input-group-text">__MSG_days__</span>
-              </div>
-            </div>
+						<div class="input-group mb-3">
+							<div class="input-group-prepend">
+								<div class="input-group-text">
+									<input type="checkbox" id="archiveStarred-§§ID§§" />
+								</div>
+								<span class="input-group-text">__MSG_archiveStarred__</span>
+							</div>
+							<input type="text" class="form-control col-lg-1" id="archiveStarredDays-§§ID§§" />
+							<div class="input-group-append">
+								<span class="input-group-text">__MSG_days__</span>
+							</div>
+						</div>
 
-            <div class="input-group mb-3">
-              <div class="input-group-prepend">
-                <div class="input-group-text">
-                  <input type="checkbox" id="archiveMessages-§§ID§§">
-                </div>
-                <span class="input-group-text">__MSG_archiveMessages__</span>
-              </div>
-              <input type="text" class="form-control col-lg-1" id="archiveMessagesDays-§§ID§§">
-              <div class="input-group-append">
-                <span class="input-group-text">__MSG_days__</span>
-              </div>
-            </div>
-              
-            <div>__MSG_settingsDescription2__</div>
-          </div>
-        </div>
-      </div>
+						<div class="input-group mb-3">
+							<div class="input-group-prepend">
+								<div class="input-group-text">
+									<input type="checkbox" id="archiveTagged-§§ID§§" />
+								</div>
+								<span class="input-group-text">__MSG_archiveTagged__</span>
+							</div>
+							<input type="text" class="form-control col-lg-1" id="archiveTaggedDays-§§ID§§" />
+							<div class="input-group-append">
+								<span class="input-group-text">__MSG_days__</span>
+							</div>
+						</div>
 
-      <div class="m-3"></div>
-      <div>
-        <!-- TODO: disable button and only enable on changes-->
-        <button class="btn btn-primary" id="button" type="button">__MSG_saveSettings__</button>
+						<div class="input-group mb-3">
+							<div class="input-group-prepend">
+								<div class="input-group-text">
+									<input type="checkbox" id="archiveMessages-§§ID§§" />
+								</div>
+								<span class="input-group-text">__MSG_archiveMessages__</span>
+							</div>
+							<input type="text" class="form-control col-lg-1" id="archiveMessagesDays-§§ID§§" />
+							<div class="input-group-append">
+								<span class="input-group-text">__MSG_days__</span>
+							</div>
+						</div>
+
+						<div>__MSG_settingsDescription2__</div>
+					</div>
+				</div>
 			</div>
+
+			<div class="m-3"></div>
+			<div>
+				<!-- TODO: disable button and only enable on changes-->
+				<button class="btn btn-primary" id="button" type="button">__MSG_saveSettings__</button>
+			</div>
+
 			<div>&nbsp;</div>
 			<div class="alert alert-primary" role="alert">__MSG_usageHelp__</div>
 		</div>
-		
 
-  <script src="libs/jquery/jquery-3.4.1.slim.min.js"></script>
-	<script src="libs/bootstrap/js/bootstrap.bundle.min.js"></script>    
-	<script src="libs/bootstrap-notify/bootstrap-notify.min.js"></script>    
+		<script src="libs/jquery/jquery-3.4.1.slim.min.js"></script>
+		<script src="libs/bootstrap/js/bootstrap.bundle.min.js"></script>
+		<script src="libs/bootstrap-notify/bootstrap-notify.min.js"></script>
 
-	<script src="options.js"></script>
-  </body>
+		<script src="options.js"></script>
+	</body>
 </html>
