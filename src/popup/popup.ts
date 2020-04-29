@@ -20,8 +20,6 @@ Copyright 2019-2020 Brummolix (AutoarchiveReloaded, https://github.com/Brummolix
     along with AutoarchiveReloaded.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-/// <reference path="../sharedAll/thunderbird.d.ts" />
-
 import { GlobalStates } from "../sharedAll/GlobalStates";
 import { ArchiveManuallyMessageRequest, GetArchiveStatusMessageRequest, GetArchiveStatusResponse } from "../sharedAll/Messages";
 import { log } from "../sharedWebextension/Logger";

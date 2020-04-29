@@ -107,7 +107,7 @@ module.exports = {
             "error",
             "always"
         ],
-        "@typescript-eslint/triple-slash-reference": "off",
+        "@typescript-eslint/triple-slash-reference": "error",
         "@typescript-eslint/type-annotation-spacing": "error",
         "@typescript-eslint/unified-signatures": "error",
         "arrow-body-style": "error",

@@ -25,7 +25,7 @@ Development hints:
 		- it will install the module under node_modules (which is excluded from git)
 
 - module system
-	Typescript code uses import/export statements (except the hand-written Thunderbird d.ts files, they are only imported via /// <reference path)
+	Typescript code uses import/export statements
 	The code is translated from typescript to Js and then packed with webpack to single js files including all needed modules.
 - directory structure
 	src/sharedAll - contains sources used by *all* scripts

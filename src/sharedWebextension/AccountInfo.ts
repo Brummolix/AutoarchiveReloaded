@@ -17,7 +17,6 @@ Copyright 2012 Alexey Egorov (original version Autoarchive, http://code.google.c
     You should have received a copy of the GNU General Public License
     along with AutoarchiveReloaded.  If not, see <http://www.gnu.org/licenses/>.
 */
-/// <reference path="../sharedAll/thunderbird.d.ts" />
 
 import { AccountInfo } from "../sharedAll/interfaces";
 import {log} from "../sharedWebextension/Logger";

@@ -20,8 +20,6 @@ Copyright 2020 Brummolix (AutoarchiveReloaded, https://github.com/Brummolix/Auto
     along with AutoarchiveReloaded.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-/// <reference path="../sharedAll/thunderbird.d.ts" />
-
 import { assert } from "assertthat";
 import { FolderHelper } from "./FolderHelper";
 

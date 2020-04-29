@@ -29,8 +29,6 @@ Copyright 2019-2020 Brummolix (AutoarchiveReloaded, https://github.com/Brummolix
 
 /* eslint-disable max-classes-per-file */
 
-/// <reference path="../sharedAll/thunderbird.d.ts" />
-
 //general---------------------------------------------------------------------------------------------------------
 
 //define a Type "keyword"
