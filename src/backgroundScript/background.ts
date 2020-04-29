@@ -23,6 +23,9 @@ import {log} from "../sharedWebextension/Logger";
 import { OptionHelper } from "../sharedWebextension/optionHelper";
 import { MainFunctions } from "./MainFunctions";
 
+/**
+ * the main startup function of the background script
+ */
 async function startup(): Promise<void>
 {
 	try
@@ -41,6 +44,13 @@ async function startup(): Promise<void>
 	}
 }
 
+/**
+ * receive messages (commands) from the popup
+ *
+ * @param request - the data of the message
+ * @param sender the sender
+ * @param sendResponse the function to receive the response
+ */
 function handleMessage(request: ArchiveManuallyMessageRequest|GetArchiveStatusMessageRequest, sender: RuntimeMessageSender, sendResponse: RuntimeMessageResponseFunction): void {
 	switch (request.message)
 	{
