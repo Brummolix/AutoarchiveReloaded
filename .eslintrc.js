@@ -202,7 +202,6 @@ module.exports = {
             {
                 "rules": {
                     "import-spacing": true,
-                    "no-reference-import": true,
                     "whitespace": [
                         true,
                         "check-branch",
