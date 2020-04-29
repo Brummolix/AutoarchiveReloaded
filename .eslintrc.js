@@ -6,7 +6,8 @@ module.exports = {
     },
     "extends": [
         "plugin:@typescript-eslint/recommended",
-        "plugin:@typescript-eslint/recommended-requiring-type-checking"
+				"plugin:@typescript-eslint/recommended-requiring-type-checking",
+				"plugin:jsdoc/recommended"
     ],
     "parser": "@typescript-eslint/parser",
     "parserOptions": {
@@ -17,9 +18,14 @@ module.exports = {
         "@typescript-eslint",
 				"@typescript-eslint/tslint",
 				"prefer-arrow",
-				"eslint-plugin-import"
+				"eslint-plugin-import",
+				"jsdoc"
     ],
     "rules": {
+				"jsdoc/require-jsdoc": 0, // we can enable once we have filled in descriptions of all functions
+				"jsdoc/require-param": 0,
+				"jsdoc/require-param-type": 0,
+
         "@typescript-eslint/adjacent-overload-signatures": "error",
         "@typescript-eslint/array-type": "error",
         "@typescript-eslint/ban-types": "error",
@@ -196,7 +202,6 @@ module.exports = {
             {
                 "rules": {
                     "import-spacing": true,
-                    "jsdoc-format": true,
                     "no-reference-import": true,
                     "whitespace": [
                         true,
