@@ -18,7 +18,7 @@ Copyright 2020 Brummolix (AutoarchiveReloaded, https://github.com/Brummolix/Auto
 */
 
 export enum GlobalStates {
-	UNINITIALZED,
-	READY_FOR_WORK,
-	IN_PROGRESS,
+	uninitialized,
+	readyForWork,
+	inProgress,
 }

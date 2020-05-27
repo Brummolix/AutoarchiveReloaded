@@ -30,19 +30,19 @@ async function initialize(): Promise<void> {
 	const status: GlobalStates = response.status;
 
 	switch (status) {
-		case GlobalStates.UNINITIALZED: {
+		case GlobalStates.uninitialized: {
 			log.info("not initialized, cancel");
 			$("#text").text(browser.i18n.getMessage("waitForInit"));
 			$("#button").hide();
 			break;
 		}
-		case GlobalStates.IN_PROGRESS: {
+		case GlobalStates.inProgress: {
 			log.info("busy with other archive..., cancel");
 			$("#text").text(browser.i18n.getMessage("waitForArchive"));
 			$("#button").hide();
 			break;
 		}
-		case GlobalStates.READY_FOR_WORK: {
+		case GlobalStates.readyForWork: {
 			log.info("user can start archiving");
 			$("#text").text(browser.i18n.getMessage("dialogStartManualText"));
 			$("#button").show();

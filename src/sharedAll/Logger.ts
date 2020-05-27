@@ -20,8 +20,8 @@ Copyright 2018-2020 Brummolix (AutoarchiveReloaded, https://github.com/Brummolix
 import { LogLevelInfo } from "./LogLevelInfo";
 
 enum LogLevel {
-	LEVEL_INFO,
-	LEVEL_ERROR,
+	info,
+	error,
 }
 
 export class Logger {
@@ -32,11 +32,11 @@ export class Logger {
 	}
 
 	public info(str: string): void {
-		this.log(LogLevel.LEVEL_INFO, str);
+		this.log(LogLevel.info, str);
 	}
 
 	public error(str: string): void {
-		this.log(LogLevel.LEVEL_ERROR, str);
+		this.log(LogLevel.error, str);
 	}
 
 	public errorException(exception: Error, message?: string): void {
@@ -50,10 +50,10 @@ export class Logger {
 
 	private getLogLevelFromPref(): LogLevel {
 		if (this.logLevelInfo.enableInfoLogging) {
-			return LogLevel.LEVEL_INFO;
+			return LogLevel.info;
 		}
 
-		return LogLevel.LEVEL_ERROR;
+		return LogLevel.error;
 	}
 
 	private log(levelToLog: LogLevel, str: string): void {
@@ -67,7 +67,7 @@ export class Logger {
 	private logEntry(levelToLog: LogLevel, str: string): void {
 		const date = new Date();
 		let strToLog = date.toLocaleString() + " - AutoarchiveReloaded - ";
-		if (levelToLog === LogLevel.LEVEL_INFO) {
+		if (levelToLog === LogLevel.info) {
 			strToLog += "INFO";
 		} else {
 			strToLog += "ERROR";

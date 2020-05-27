@@ -27,7 +27,7 @@ import { Archiver } from "./Archiver";
 
 //global static startup/ui functions
 export class MainFunctions {
-	private static status: GlobalStates = GlobalStates.UNINITIALZED;
+	private static status: GlobalStates = GlobalStates.uninitialized;
 
 	public static async startupAndInitialzeAutomaticArchiving(): Promise<void> {
 		log.info("start...");
@@ -35,7 +35,7 @@ export class MainFunctions {
 		const appInfoLogger = new AppInfoLogger();
 		await appInfoLogger.log();
 
-		this.status = GlobalStates.READY_FOR_WORK;
+		this.status = GlobalStates.readyForWork;
 		log.info("ready for work");
 
 		const optionHelper: OptionHelper = new OptionHelper();
@@ -64,7 +64,7 @@ export class MainFunctions {
 
 	private static async onDoArchiveAutomatic(): Promise<void> {
 		log.info("try automatic archive");
-		if (this.status !== GlobalStates.READY_FOR_WORK) {
+		if (this.status !== GlobalStates.readyForWork) {
 			log.info("automatic archive busy, wait");
 			//busy: wait 5 seconds
 			setTimeout(this.onDoArchiveAutomatic.bind(this), 5000);
@@ -75,10 +75,10 @@ export class MainFunctions {
 
 	private static async onDoArchive(): Promise<void> {
 		log.info("start archiving");
-		this.status = GlobalStates.IN_PROGRESS;
+		this.status = GlobalStates.inProgress;
 		const autoarchiveReloaded = new Archiver();
 		await autoarchiveReloaded.archiveAccounts();
 		log.info("archive (searching messages to archive) done");
-		this.status = GlobalStates.READY_FOR_WORK;
+		this.status = GlobalStates.readyForWork;
 	}
 }
