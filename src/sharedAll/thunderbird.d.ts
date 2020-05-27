@@ -41,14 +41,14 @@ type RuntimeMessageListener = (
 
 declare interface RuntimeMessageListeners extends Listeners<RuntimeMessageListener> {}
 
-declare interface RuntimePortListener extends Listeners<(object: object) => void> {}
+declare interface RuntimePortListener extends Listeners<(object: Record<string, unknown>) => void> {}
 
 //https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/runtime/Port
 interface RuntimePort {
 	onMessage: RuntimePortListener;
 
 	disconnect(): void;
-	postMessage(object: object): void;
+	postMessage(object: Record<string, unknown>): void;
 }
 
 declare interface RuntimeConnectListener extends Listeners<(port: RuntimePort) => void> {}
@@ -83,8 +83,8 @@ declare interface Runtime {
 
 //https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/storage/StorageArea
 declare interface StorageType {
-	get(value: string | string[]): Promise<object>;
-	set(values: object): Promise<void>;
+	get(value: string | string[]): Promise<Record<string, unknown>>;
+	set(values: Record<string, unknown>): Promise<void>;
 }
 
 //https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/storage
@@ -119,6 +119,7 @@ declare interface BrowserWindowInfo {
 
 //https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/windows
 declare interface BrowserWindows {
+	// eslint-disable-next-line @typescript-eslint/naming-convention
 	WINDOW_ID_CURRENT: number;
 	readonly onCreated: BrowserWindowCreatedListeners;
 
@@ -152,7 +153,7 @@ declare interface Tab {
 declare interface BrowserTabs {
 	onCreated: Listeners<(tab: Tab) => void>;
 
-	query(queryInfo: TabInfo | {}): Promise<Tab[]>;
+	query(queryInfo: TabInfo): Promise<Tab[]>;
 }
 
 declare interface Internationalization {
@@ -287,7 +288,7 @@ declare interface MenuCreateProperties {
 	contexts?: ContextType[]; //List of contexts this menu item will appear in. Defaults to [‘page’] if not specified.
 	documentUrlPatterns?: string[]; //Lets you restrict the item to apply only to documents whose URL matches one of the given patterns. (This applies to frames as well.) For details on the format of a pattern, see Match Patterns.
 	enabled?: boolean; //Whether this context menu item is enabled or disabled. Defaults to true.
-	icons?: object;
+	icons?: Record<string, unknown>;
 	id?: string; //The unique ID to assign to this item. Mandatory for event pages. Cannot be the same as another ID for this extension.
 	onclick?: (info: OnClickData, tab?: Tab) => void; // A function that will be called back when the menu item is clicked. Event pages cannot use this.
 	parentId?: number | string; //The ID of a parent menu item; this makes the item a child of a previously added item.

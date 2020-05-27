@@ -33,7 +33,7 @@ export class DefaultSettings {
 		};
 	}
 
-	public convertPartialSettings(partialSettings: { [key: string]: any }): Settings {
+	public convertPartialSettings(partialSettings: { [key: string]: unknown }): Settings {
 		const defaultSettings: Settings = this.getDefaultSettings();
 		const concatedSettings: Settings = this.deepMerge(defaultSettings, partialSettings);
 

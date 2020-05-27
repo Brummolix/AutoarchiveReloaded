@@ -1,5 +1,5 @@
+/* eslint-disable @typescript-eslint/naming-convention */
 /* eslint-disable camelcase */
-/* eslint-disable @typescript-eslint/camelcase */
 
 /*!
 Copyright 2020 Brummolix (AutoarchiveReloaded, https://github.com/Brummolix/AutoarchiveReloaded )

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/naming-convention */
 /*!
 Copyright 2019-2020 Brummolix (AutoarchiveReloaded, https://github.com/Brummolix/AutoarchiveReloaded )
 
@@ -24,7 +25,6 @@ Copyright 2019-2020 Brummolix (AutoarchiveReloaded, https://github.com/Brummolix
 //Attention:
 //this types are not complete! I only added, what is used by AutoarchiveReloaded at the moment!
 
-/* eslint-disable @typescript-eslint/class-name-casing */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 
 /* eslint-disable max-classes-per-file */
@@ -279,7 +279,7 @@ declare namespace Components {
 		class nsIPrefBranch {
 			public getBoolPref(name: string, defaultValue: boolean | undefined): boolean;
 			public getCharPref(name: string, defaultValue: string | undefined): string;
-			public getChildList(startingAt: string, obj: object): string[];
+			public getChildList(startingAt: string, obj: Record<string, unknown>): string[];
 			public setBoolPref(name: string, value: boolean): void;
 		}
 	}
@@ -402,7 +402,7 @@ declare namespace Services {
 
 declare namespace ExtensionCommon {
 	abstract class ExtensionAPI {
-		public abstract getAPI(context: any): {};
+		public abstract getAPI(context: any): Record<string, unknown>;
 	}
 
 	class EventManager {

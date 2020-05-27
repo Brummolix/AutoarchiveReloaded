@@ -144,10 +144,10 @@ export class Archiver {
 			const mailAccount: MailAccount = await browser.accounts.get(folder.accountId);
 			log.info("start searching messages to archive in folder '" + folder.path + "' (" + folder.type + ") in account '" + mailAccount.name + "'");
 			const messages: MessageHeader[] = await this.searchMessagesToArchive(folder, settings);
-			log.info("message search done for '" + folder.name + "' in account '" + mailAccount.name + "' -> " + messages.length + " messages found to archive");
+			log.info(`message search done for '${folder.name}' in account '${mailAccount.name}' -> ${messages.length} messages found to archive`);
 
 			if (messages.length > 0) {
-				log.info("start real archiving of '" + folder.name + "' (" + messages.length + " messages) in account '" + mailAccount.name + "'");
+				log.info(`start real archiving of '${folder.name}' (${messages.length} messages) in account '${mailAccount.name}'`);
 				await this.archiveMessages(messages);
 			}
 		} catch (e) {

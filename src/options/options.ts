@@ -64,7 +64,7 @@ async function saveOptions(): Promise<void> {
 			{
 				// settings
 				type: "success",
-				// eslint-disable-next-line camelcase, @typescript-eslint/camelcase
+				// eslint-disable-next-line camelcase, @typescript-eslint/naming-convention
 				allow_dismiss: false,
 				placement: {
 					from: "top",

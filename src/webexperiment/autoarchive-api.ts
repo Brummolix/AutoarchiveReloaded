@@ -25,7 +25,7 @@ import { log, logLevelInfo } from "./Logger";
 //This class must be the default export, because the default is exported by webpack (see configuration) on a "var autoarchive"
 //(The only way Thunderbird wants it...)
 
-// eslint-disable-next-line @typescript-eslint/class-name-casing
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export default class autoarchive extends ExtensionCommon.ExtensionAPI {
 	private legacyOptions: LegacyOptions = new LegacyOptions();
 
