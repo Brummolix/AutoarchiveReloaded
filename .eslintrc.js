@@ -156,10 +156,15 @@ module.exports = {
 				leadingUnderscore: "allow",
 				trailingUnderscore: "allow",
 			},
-
 			{
 				selector: "typeLike",
 				format: ["PascalCase"],
+			},
+			//additionally make static constants uppercase
+			{
+				selector: "property",
+				modifiers: ["private", "static", "readonly"],
+				format: ["UPPER_CASE"],
 			},
 			//Enforce that interface names do not begin with an I
 			{
