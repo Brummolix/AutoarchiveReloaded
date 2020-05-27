@@ -51,9 +51,9 @@ async function initialize(): Promise<void> {
 	}
 }
 
-function onManualArchive(): void {
+async function onManualArchive(): Promise<void> {
 	const message: ArchiveManuallyMessageRequest = { message: "archiveManually" };
-	browser.runtime.sendMessage(message);
+	await browser.runtime.sendMessage(message);
 	window.close();
 }
 

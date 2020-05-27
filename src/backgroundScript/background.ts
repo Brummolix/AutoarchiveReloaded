@@ -60,11 +60,15 @@ function handleMessage(
 		}
 		case "archiveManually": {
 			log.info("user choosed to archive manually");
-			MainFunctions.onArchiveManually(); //without await...
+
+			// handleMessage does not work with async functions and it is OK to send the response immediately without waiting...
+			// eslint-disable-next-line @typescript-eslint/no-floating-promises
+			MainFunctions.onArchiveManually();
 			sendResponse(null);
 			break;
 		}
 	}
 }
 
+// eslint-disable-next-line @typescript-eslint/no-floating-promises -- global await is not possible but it works as nothing comes after this function...
 startup();
