@@ -19,6 +19,9 @@ Copyright 2018-2020 Brummolix (new version AutoarchiveReloaded, https://github.c
 
 //this is no typescript file!
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
+/* eslint-disable @typescript-eslint/no-unsafe-call */
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const webpackConfig = require("./webpack.config.js");
