@@ -56,7 +56,7 @@ async function saveOptions(): Promise<void> {
 
 		await optionHelper.savePreferencesAndPublishForLogging(settings);
 		//show toast
-		($ as any).notify(
+		$.notify(
 			{
 				// options
 				message: "__MSG_settingsSaved__",

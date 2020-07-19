@@ -8,6 +8,7 @@
     "license": "GPL-3.0-or-later",
     "dependencies": {},
     "devDependencies": {
+        "@types/bootstrap-notify": "^3.1.35",
         "@types/jquery": "^3.3.38",
         "@types/mocha": "^7.0.2",
         "@typescript-eslint/eslint-plugin": "^3.0.0",
