@@ -1,0 +1,10 @@
+html, body {
+	width: 450px;
+}
+
+#button{
+	margin-top:0px;
+	margin-left:10px;
+	margin-right:10px;
+	margin-bottom:10px;
+}
