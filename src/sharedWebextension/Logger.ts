@@ -24,6 +24,7 @@ export class LogLevelInfoWebExtension implements LogLevelInfo {
 	private static readonly ENABLE_INFO_LOGGING_NAME: string = "WebExtensionLoggerHelper_enableInfoLogging";
 
 	public static setGlobaleEnableInfoLogging(value: boolean): void {
+		// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
 		(browser.extension.getBackgroundPage() as any)[LogLevelInfoWebExtension.ENABLE_INFO_LOGGING_NAME] = value;
 
 		//webexperiment has different log setting...
@@ -31,7 +32,8 @@ export class LogLevelInfoWebExtension implements LogLevelInfo {
 	}
 
 	private static getGlobalEnableInfoLogging(): boolean {
-		return (browser.extension.getBackgroundPage() as any)[LogLevelInfoWebExtension.ENABLE_INFO_LOGGING_NAME];
+		// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+		return (browser.extension.getBackgroundPage() as any)[LogLevelInfoWebExtension.ENABLE_INFO_LOGGING_NAME] as boolean;
 	}
 
 	//this is very tricky!

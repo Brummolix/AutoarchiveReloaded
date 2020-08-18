@@ -83,7 +83,7 @@ declare interface Runtime {
 
 //https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/storage/StorageArea
 declare interface StorageType {
-	get(value: string | string[]): Promise<Record<string, unknown>>;
+	get(value: string | string[]): Promise<Record<string, Record<string, unknown>>>;
 	set(values: Record<string, unknown>): Promise<void>;
 }
 

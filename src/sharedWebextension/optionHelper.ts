@@ -30,7 +30,7 @@ export class OptionHelper {
 
 		try {
 			log.info("got info about accounts");
-			const result: any = await browser.storage.local.get("settings");
+			const result = await browser.storage.local.get("settings");
 			//settings read succesfully...
 			log.info("loaded settings from storage");
 			const oHandling: DefaultSettings = new DefaultSettings();

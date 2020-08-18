@@ -39,7 +39,7 @@ async function saveOptions(): Promise<void> {
 		$("#tabcontent")
 			.children()
 			.each((index: number, element: HTMLElement) => {
-				const accountId: string = $(element).data("accountId");
+				const accountId: string = $(element).data("accountId") as string;
 				if (accountId) {
 					settings.accountSettings[accountId] = {
 						bArchiveUnread: (getElementForAccount(accountId, "archiveUnread") as HTMLInputElement).checked,
