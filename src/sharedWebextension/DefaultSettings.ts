@@ -48,27 +48,28 @@ export class DefaultSettings {
 		return concatedSettings;
 	}
 
-	private deepMerge<T extends { [key: string]: any }>(defaultValues: T, valuesToMerge: { [key: string]: any }): T {
+	private deepMerge<T extends Record<string, any>>(defaultValues: T, valuesToMerge: Record<string, any>): T {
 		if (valuesToMerge === undefined || valuesToMerge === null) {
 			return defaultValues;
 		}
 
-		const clone: any = Object.assign({}, defaultValues);
+		const clone: Record<string, any> = Object.assign({}, defaultValues);
 		for (const key in valuesToMerge) {
 			if (valuesToMerge.hasOwnProperty(key)) {
-				const elem: any = valuesToMerge[key];
+				const elem: Record<string, any> = valuesToMerge[key] as Record<string, any>;
 				if (elem !== undefined && elem !== null) {
 					//do not use Object.keys here, as TB 64 gives keys also for strings and even numbers
 					if (typeof elem !== "object") {
 						clone[key] = elem;
 					} else {
+						// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
 						clone[key] = this.deepMerge(clone[key], elem);
 					}
 				}
 			}
 		}
 
-		return clone;
+		return clone as T;
 	}
 
 	private getDefaultSettings(): Settings {
