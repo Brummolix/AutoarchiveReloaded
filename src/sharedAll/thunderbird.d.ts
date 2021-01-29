@@ -149,11 +149,37 @@ declare interface Tab {
 	url?: string;
 }
 
-//https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/tabs
+//https://thunderbird-webextensions.readthedocs.io/en/68/tabs.html
+declare interface TabCreateProperties {
+	active?: boolean;
+	index?: number;
+	//selected?: boolean; (boolean) Unsupported. Whether the tab should become the selected tab in the window. Defaults to true
+	url?: string;
+	windowId?: number; // (integer) The window to create the new tab in. Defaults to the current window.
+}
+
+declare interface BrowserTab {
+	active: boolean; //Whether the tab is active in its window. (Does not necessarily mean the window is focused.)
+	highlighted: boolean; //Whether the tab is highlighted. Works as an alias of active
+	index: number; // (integer) The zero-based index of the tab within its window.
+	selected: boolean; // Unsupported. Whether the tab is selected.
+	favIconUrl?: string; // The URL of the tab’s favicon. This property is only present if the extension’s manifest includes the "tabs" permission. It may also be an empty string if the tab is loading.
+	height?: number; //(integer) The height of the tab in pixels.
+	id?: number; //(integer) The ID of the tab. Tab IDs are unique within a browser session. Under some circumstances a Tab may not be assigned an ID. Tab ID can also be set to TAB_ID_NONE for apps and devtools windows.
+	mailTab?: boolean; //(boolean) Whether the tab is a 3-pane tab.
+	status: string; //Either loading or complete.
+	title: string; // The title of the tab. This property is only present if the extension’s manifest includes the "tabs" permission.
+	url?: string; //The URL the tab is displaying. This property is only present if the extension’s manifest includes the "tabs" permission.
+	width?: number; //(integer) The width of the tab in pixels.
+	windowId?: number; //(integer) The ID of the window the tab is contained within.
+}
+
+//https://thunderbird-webextensions.readthedocs.io/en/latest/tabs.html
 declare interface BrowserTabs {
 	onCreated: Listeners<(tab: Tab) => void>;
 
 	query(queryInfo: TabInfo): Promise<Tab[]>;
+	create(createProperties: TabCreateProperties): Promise<BrowserTab>;
 }
 
 declare interface Internationalization {
