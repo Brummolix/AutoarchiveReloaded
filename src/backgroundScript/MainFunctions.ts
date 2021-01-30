@@ -62,14 +62,14 @@ export class MainFunctions {
 		await this.onDoArchive();
 	}
 
-	private static async onDoArchiveAutomatic(): Promise<void> {
+	private static onDoArchiveAutomatic(): void {
 		log.info("try automatic archive");
 		if (this.status !== GlobalStates.readyForWork) {
 			log.info("automatic archive busy, wait");
 			//busy: wait 5 seconds
 			setTimeout(this.onDoArchiveAutomatic.bind(this), 5000);
 		} else {
-			await this.onDoArchive();
+			void this.onDoArchive();
 		}
 	}
 
