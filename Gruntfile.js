@@ -28,7 +28,7 @@ const webpackConfig = require("./webpack.config.js");
 
 module.exports = (grunt) => {
 	const srcDir = "src/";
-	const outDir = "built/";
+	const outDir = "dist/";
 	const outDirExtracted = outDir + "/release/";
 	const outXpi = outDir + "/AutoArchiveReloaded.xpi";
 

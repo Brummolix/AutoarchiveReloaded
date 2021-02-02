@@ -3,7 +3,7 @@
 const theMode = "none";
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const path = require("path");
-const outputPath = path.resolve(__dirname, "./built/release/");
+const outputPath = path.resolve(__dirname, "./dist/release/");
 
 const tsLoaderRules = [
 	{
