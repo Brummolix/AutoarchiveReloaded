@@ -84,7 +84,6 @@ module.exports = (grunt) => {
 	grunt.loadNpmTasks("grunt-eslint");
 	grunt.loadNpmTasks("grunt-mocha-test");
 
-	// Default task(s).
+	//tasks
 	grunt.registerTask("default", ["clean", "copy", "webpack", "compress", "mochaTest", "eslint"]);
-	//grunt.registerTask("default", ["env:dev","clean", "copy", "webpack", "compress", "mochaTest", "eslint"]);
 };
