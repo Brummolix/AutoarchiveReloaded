@@ -32,8 +32,7 @@ Copyright 2018-2020 Brummolix (new version AutoarchiveReloaded, https://github.c
 		"strict": true,
 		"noImplicitReturns": true,
 		"noUnusedLocals": true,
-		//only for debug release
-		"removeComments": false,
+		"removeComments": true,
 
 		"forceConsistentCasingInFileNames": true
 	}

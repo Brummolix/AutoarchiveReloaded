@@ -5,23 +5,39 @@ const theMode = "none";
 const path = require("path");
 const outputPath = path.resolve(__dirname, "./built/release/");
 
+const tsLoaderRules = [
+	{
+		test: /\.tsx?$/,
+		use: "ts-loader",
+		exclude: /node_modules/,
+	},
+];
+const extensions = [".tsx", ".ts", ".js"];
+
 module.exports = [
 	{
 		name: "webextension", //all "standard" webextension scripts
 		mode: theMode,
 		entry: {
-			background: "./built/compile/backgroundScript/background.js",
-			options: "./built/compile/options/options.js",
-			popup: "./built/compile/popup/popup.js",
+			background: "./src/backgroundScript/background.ts",
+			options: "./src/options/options.ts",
+			popup: "./src/popup/popup.ts",
 		},
 		output: {
 			path: outputPath,
 		},
+		module: {
+			rules: tsLoaderRules,
+		},
+		resolve: {
+			extensions: extensions,
+		},
 	},
 	{
-		name: "experiment", //the experiment needs a different output configuration
+		//the experiment needs a slightly different output configuration
+		name: "experiment",
 		mode: theMode,
-		entry: "./built/compile/webexperiment/autoarchive-api.js",
+		entry: "./src/webexperiment/autoarchive-api.ts",
 		output: {
 			filename: "autoarchive-api.js",
 			path: outputPath,
@@ -29,6 +45,29 @@ module.exports = [
 			//export the default class under the variable "autoarchive"!
 			library: "autoarchive",
 			libraryExport: "default",
+		},
+		module: {
+			rules: tsLoaderRules,
+		},
+		resolve: {
+			extensions: extensions,
+		},
+	},
+	{
+		//Tests will be created in a different dir
+		name: "tests", //all "tests"
+		mode: theMode,
+		entry: {
+			test: "./src/alltests.js",
+		},
+		module: {
+			rules: tsLoaderRules,
+		},
+		resolve: {
+			extensions: extensions,
+			fallback: {
+				assert: require.resolve("assert/"),
+			},
 		},
 	},
 ];

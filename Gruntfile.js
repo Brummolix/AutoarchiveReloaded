@@ -49,20 +49,12 @@ module.exports = (grunt) => {
 				],
 			},
 		},
-		ts: {
-			debug: {
-				tsconfig: "./tsconfig.json",
-			},
-			release: {
-				tsconfig: "./tsconfig.release.json",
-			},
-		},
 		mochaTest: {
 			test: {
 				options: {
 					reporter: "spec",
 				},
-				src: ["./built/compile/**/*.test.js"],
+				src: ["./dist/test.js"],
 			},
 		},
 		webpack: {
@@ -87,14 +79,12 @@ module.exports = (grunt) => {
 
 	grunt.loadNpmTasks("grunt-contrib-copy");
 	grunt.loadNpmTasks("grunt-contrib-clean");
-	grunt.loadNpmTasks("grunt-ts");
 	grunt.loadNpmTasks("grunt-contrib-compress");
 	grunt.loadNpmTasks("grunt-webpack");
 	grunt.loadNpmTasks("grunt-eslint");
 	grunt.loadNpmTasks("grunt-mocha-test");
 
 	// Default task(s).
-	grunt.registerTask("default", ["clean", "copy", "ts:debug", "webpack", "compress", "mochaTest", "eslint"]);
-
-	grunt.registerTask("release", ["clean", "copy", "ts:release", "webpack", "compress", "mochaTest", "eslint"]);
+	grunt.registerTask("default", ["clean", "copy", "webpack", "compress", "mochaTest", "eslint"]);
+	//grunt.registerTask("default", ["env:dev","clean", "copy", "webpack", "compress", "mochaTest", "eslint"]);
 };
