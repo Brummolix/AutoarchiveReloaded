@@ -11,8 +11,11 @@
 			"request": "launch",
 			"program": "${workspaceRoot}/node_modules/mocha/bin/_mocha",
 			"args": ["${file}"],
-			"cwd": "${workspaceRoot}",
-			"protocol": "inspector"
+			"cwd": "${workspaceRoot}/src",
+			"protocol": "inspector",
+			"env": {
+				"TS_NODE_FILES": "true" //otherwise ts-node (for mocha tests) does not load the d.ts files, see https://github.com/TypeStrong/ts-node#help-my-types-are-missing
+			}
 		}
 	]
 }
