@@ -205,8 +205,8 @@ type FolderType = "inbox" | "sent" | "trash" | "junk" | "outbox" | "drafts" | "t
 declare interface MailFolder {
 	accountId: string;
 	path: string;
-	name: string;
-	type: FolderType;
+	name?: string;
+	type?: FolderType;
 	subFolders?: MailFolder[]; //this is only available starting with TB v74, before the MailFolder returned by MailAccount.folders contained ALL folders recursively
 }
 
@@ -229,11 +229,13 @@ declare interface MessageHeader {
 	recipients: string[];
 	subject: string;
 	tags: string[];
+	junk?: boolean; //[Added in TB 74]
+	junkScore: number; //[Added in TB 74]
 }
 
 //https://thunderbird-webextensions.readthedocs.io/en/latest/messages.html#messagelist
 declare interface MessageList {
-	id: string;
+	id: string; //id for continueList
 	messages: MessageHeader[];
 }
 
@@ -245,6 +247,29 @@ declare interface MessageTag {
 	tag: string; //Human-readable tag name
 }
 
+//https://webextension-api.thunderbird.net/en/78/messages.html#messages-tagsdetail
+declare interface TagsDetail {
+	mode: "all" | "any"; //Whether all of the tag filters must apply, or any of them.
+	tags: any; //Object keys are tags to filter on, values are true if the message must have the tag, or false if it must not have the tag. For a list of available tags, call the listTags() method.
+}
+
+//https://webextension-api.thunderbird.net/en/78/messages.html#query-queryinfo
+declare interface MessageQueryInfo {
+	author?: string; //Returns only messages with this value matching the author.
+	body?: string; //	Returns only messages with this value in the body of the mail.
+	flagged?: boolean; //	Returns only flagged (or unflagged if false) messages.
+	folder?: MailFolder; //Returns only messages from the specified folder. The accountsRead permission is required.
+	fromDate?: Date; //	Returns only messages with a date after this value.
+	fromMe?: boolean; //	Returns only messages with the author matching any configured identity.
+	fullText?: string; //	Returns only messages with this value somewhere in the mail (subject, body or author).
+	recipients?: string; //	Returns only messages with this value matching one or more recipients.
+	subject?: string; //	Returns only messages with this value matching the subject.
+	tags?: TagsDetail; // [Added in TB 74], Returns only messages with the specified tags. For a list of available tags, call the listTags method. Querying for messages that must not have a tag does not work.
+	toDate?: Date; //	Returns only messages with a date before this value.
+	toMe?: boolean; //	Returns only messages with one or more recipients matching any configured identity.
+	unread?: boolean; //	Returns only unread (or read if false) messages.
+}
+
 //https://thunderbird-webextensions.readthedocs.io/en/latest/messages.html
 declare interface Messages {
 	list(folder: MailFolder): Promise<MessageList>;
@@ -253,9 +278,42 @@ declare interface Messages {
 	listTags(): Promise<MessageTag>;
 
 	//move(messageIds: number[], destination: MailFolder); //return type?
-	//copy(messageIds: number[], destination: MailFolder); //return type?
-	//delete(messageIds: number[], ?skipTrash:boolean); //return type?
+	copy(messageIds: number[], destination: MailFolder): Promise<void>;
+	delete(messageIds: number[], skipTrash?: boolean): Promise<void>; //return type?
 	archive(messageIds: number[]): Promise<void>;
+
+	query(queryInfo: MessageQueryInfo): Promise<MessageList>;
+	getRaw(messageId: number): Promise<string>;
+	getFull(messageId: number): Promise<MessagePart>;
+
+	onNewMailReceived: Listeners<(folder: MailFolder, messages: MessageList) => void>; //[Added in TB 75]
+}
+
+//https://thunderbird-webextensions.readthedocs.io/en/latest/messages.html#messages-messagepart
+/**Represents an email message “part”, which could be the whole message */
+declare interface MessagePart {
+	/**
+	 * the content of the part
+	 */
+	body?: string;
+	contentType?: string;
+	/**
+	 * An object of part headers, with the header name as key, and an array of header values as value
+	 */
+	headers?: Record<string, string[]>;
+	/**
+	 * Name of the part, if it is a file
+	 */
+	name?: string;
+	partName?: string;
+	/**
+	 * any sub-parts of this part
+	 */
+	parts?: MessagePart[];
+	/**
+	 * an integer
+	 */
+	size?: number;
 }
 
 declare interface AutoarchiveWebExperiment {
@@ -264,6 +322,9 @@ declare interface AutoarchiveWebExperiment {
 	setInfoLogging(value: boolean): void;
 }
 
+/**
+ * The different contexts a menu can appear in. Specifying all is equivalent to the combination of all other contexts excluding tab and tools_menu.
+ */
 type ContextType =
 	| "all"
 	| "page"
@@ -278,7 +339,9 @@ type ContextType =
 	| "browser_action"
 	| "tab"
 	| "message_list"
-	| "folder_pane";
+	| "folder_pane"
+	| "compose_attachments" //Added in TB 83, backported to TB 78.5.0
+	| "tools_menu"; //Added in TB 88
 
 type ItemType = "normal" | "checkbox" | "radio" | "separator";
 
@@ -308,6 +371,8 @@ declare interface OnClickData {
 	wasChecked?: boolean; //A flag indicating the state of a checkbox or radio item before it was clicked.
 }
 
+type MenuOnClickHandler = (info: OnClickData, tab?: Tab) => void;
+
 declare interface MenuCreateProperties {
 	checked?: boolean; //The initial state of a checkbox or radio item: true for selected and false for unselected. Only one radio item can be selected at a time in a given group of radio items.
 	command?: string; //Specifies a command to issue for the context click. Currently supports internal command _execute_browser_action.
@@ -316,7 +381,7 @@ declare interface MenuCreateProperties {
 	enabled?: boolean; //Whether this context menu item is enabled or disabled. Defaults to true.
 	icons?: Record<string, unknown>;
 	id?: string; //The unique ID to assign to this item. Mandatory for event pages. Cannot be the same as another ID for this extension.
-	onclick?: (info: OnClickData, tab?: Tab) => void; // A function that will be called back when the menu item is clicked. Event pages cannot use this.
+	onclick?: MenuOnClickHandler; // A function that will be called back when the menu item is clicked. Event pages cannot use this.
 	parentId?: number | string; //The ID of a parent menu item; this makes the item a child of a previously added item.
 	targetUrlPatterns?: string[]; //Similar to documentUrlPatterns, but lets you filter based on the src attribute of img/audio/video tags and the href of anchor tags.
 	title?: string; //The text to be displayed in the item; this is required unless type is ‘separator’. When the context is ‘selection’, you can use %s within the string to show the selected text. For example, if this parameter’s value is “Translate ‘%s’ to Pig Latin” and the user selects the word “cool”, the context menu item for the selection is “Translate ‘cool’ to Pig Latin”.
@@ -325,14 +390,128 @@ declare interface MenuCreateProperties {
 	visible: boolean; //Whether the item is visible in the menu.
 }
 
+//https://thunderbird-webextensions.readthedocs.io/en/latest/menus.html#update-id-updateproperties
+declare interface MenuUpdateProperties {
+	checked?: boolean;
+	contexts?: ContextType[];
+	documentUrlPatterns?: string[];
+	enabled?: boolean;
+	icons?: Record<string, unknown>;
+	onclick?: MenuOnClickHandler;
+	/**
+	 * integer,
+	 * Note: You cannot change an item to be a child of one of its own descendants.
+	 */
+	parentId?: number | string;
+	targetUrlPatterns?: string[];
+	title?: string;
+	type?: ItemType;
+	viewTypes?: ViewType[];
+	/**
+	 * Whether the item is visible in the menu.
+	 */
+	visible?: boolean;
+}
+
+//https://thunderbird-webextensions.readthedocs.io/en/latest/menus.html
 declare interface Menus {
-	//returns "The ID of the newly created item."
+	/**
+	 * returns "The ID of the newly created item."
+	 */
 	create(createProperties: MenuCreateProperties, callback?: () => void): Promise<number | string>;
 
-	//update(id, updateProperties)
+	/**
+	 * Updates a previously created context menu item.
+	 *
+	 * Required permissions: menus
+	 *
+	 * @param id The ID of the item to update.
+	 * @param updateProperties The properties to update. Accepts the same values as the create function.
+	 */
+	update(id: number | string, updateProperties: MenuUpdateProperties): void;
+	/**
+	 * Updates the extension items in the shown menu, including changes that have been made since the menu was shown.
+	 * Has no effect if the menu is hidden. Rebuilding a shown menu is an expensive operation, only invoke this method when necessary.
+	 * Required permissions: menus
+	 */
+	refresh(): void;
+
 	remove(menuItemId: number | string): void;
 	removeAll(): void;
 	//overrideContext(contextOptions)
+
+	/**
+	 * Fired when a menu is shown. The extension can add, modify or remove menu items and call menus.refresh() to update the menu.
+	 */
+	onShown: Listeners<(info: OnShownData, tab?: Tab) => void>;
+	onClicked: Listeners<MenuOnClickHandler>;
+	onHidden: Listeners<() => void>;
+}
+
+//https://thunderbird-webextensions.readthedocs.io/en/latest/menus.html#onshown-info-tab
+/**
+ * Information about the context of the menu action and the created menu items. For more information about each property, see OnClickData.
+ * Some properties are only included if the extension has host permission for the given context,
+ * for example activeTab for content tabs, compose for compose tabs and messagesRead for message display tabs.
+ */
+declare interface OnShownData {
+	/**
+	 * A list of all contexts that apply to the menu.
+	 */
+	contexts: ContextType[];
+	editable: boolean;
+	/**
+	 * array of None(?), a list of IDs of the menu items that were shown
+	 */
+	menuIds: (string | number)[];
+	/**
+	 * [Added in TB 83]
+	 * The selected attachments of a message being composed. The compose permission is required.
+	 */
+	attachments?: ComposeAttachment[];
+	/**
+	 * Host permission is required.
+	 */
+	frameUrl?: string;
+	/**
+	 * Host permission is required.
+	 */
+	linkText?: string;
+	/**
+	 * Host permission is required.
+	 */
+	linkUrl?: string;
+	mediaType?: string;
+	/**
+	 * Host permission is required.
+	 */
+	pageUrl?: string;
+	/**
+	 * The selected folder, if the context menu was opened in the folder pane. The accountsRead permission is required.
+	 */
+	selectedFolder?: MailFolder;
+	/**
+	 * The selected messages, if the context menu was opened in the message list. The messagesRead permission is required.
+	 */
+	selectedMessages?: MessageList;
+	/**
+	 * Host permission is required.
+	 */
+	selectionText?: string;
+	/**
+	 * Host permission is required.
+	 */
+	srcUrl?: string;
+	/**
+	 * integer
+	 */
+	targetElementId?: number;
+	viewType?: ViewType;
+}
+
+//https://thunderbird-webextensions.readthedocs.io/en/latest/compose.html#compose-composeattachment
+declare interface ComposeAttachment {
+	//fill if needed
 }
 
 declare interface Browser {
