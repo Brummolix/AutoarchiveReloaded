@@ -6,7 +6,6 @@
         "url": "https://github.com/Brummolix/AutoarchiveReloaded/"
     },
     "license": "GPL-3.0-or-later",
-    "dependencies": {},
     "devDependencies": {
         "@types/bootstrap-notify": "^3.1.35",
         "@types/jquery": "^3.5.5",
