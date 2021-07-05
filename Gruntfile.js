@@ -1,5 +1,5 @@
 /*!
-Copyright 2018-2020 Brummolix (new version AutoarchiveReloaded, https://github.com/Brummolix/AutoarchiveReloaded )
+Copyright 2018-2021 Brummolix (new version AutoarchiveReloaded, https://github.com/Brummolix/AutoarchiveReloaded )
 
  This file is part of AutoarchiveReloaded.
 
