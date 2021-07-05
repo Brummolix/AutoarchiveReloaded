@@ -66,21 +66,9 @@ export class OptionHelper {
 	}
 
 	public async initializePreferencesAtStartup(): Promise<void> {
-		log.info("start conversion of legacy preferences (if any)");
-
-		const accounts: AccountInfo[] = await AccountInfoProvider.askForAccounts();
-
-		const settings: Settings | null = browser.autoarchive.askForLegacyPreferences(accounts);
 		try {
-			if (settings) {
-				log.info("got legacy preferences to convert");
-				await this.savePreferencesAndPublishForLogging(settings);
-				log.info("legacy preferences converted");
-			} else {
-				log.info("no legacy preferences to convert");
-				await this.publishCurrentPreferencesForLogging();
-				log.info("publishCurrentPreferencesForLogging done");
-			}
+			await this.publishCurrentPreferencesForLogging();
+			log.info("publishCurrentPreferencesForLogging done");
 		} catch (e) {
 			log.errorException(e);
 			throw e;

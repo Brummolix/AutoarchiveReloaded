@@ -32,16 +32,5 @@
 		"default_popup": "popup.html"
 	},
 
-	"default_locale": "en",
-
-	"experiment_apis": {
-		"autoarchive": {
-			"schema": "autoarchive-api.json",
-			"parent": {
-				"scopes": ["addon_parent"],
-				"paths": [["autoarchive"]],
-				"script": "autoarchive-api.js"
-			}
-		}
-	}
+	"default_locale": "en"
 }

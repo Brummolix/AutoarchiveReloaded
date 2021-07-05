@@ -316,12 +316,6 @@ declare interface MessagePart {
 	size?: number;
 }
 
-declare interface AutoarchiveWebExperiment {
-	// tslint:disable-next-line: array-type
-	askForLegacyPreferences(accounts: import("../sharedAll/interfaces").AccountInfo[]): import("../sharedAll/interfaces").Settings | null;
-	setInfoLogging(value: boolean): void;
-}
-
 /**
  * The different contexts a menu can appear in. Specifying all is equivalent to the combination of all other contexts excluding tab and tools_menu.
  */
@@ -526,8 +520,6 @@ declare interface Browser {
 	accounts: Accounts;
 	messages: Messages;
 	menus: Menus;
-
-	autoarchive: AutoarchiveWebExperiment;
 }
 
 declare const browser: Browser;

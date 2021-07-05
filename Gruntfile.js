@@ -43,7 +43,6 @@ module.exports = (grunt) => {
 					{ expand: true, cwd: "resources/", src: ["**"], dest: outDirExtracted },
 					{ expand: true, cwd: srcDir + "/backgroundScript/", src: ["**", "!**/*.ts", "!**/tsconfig*.json"], dest: outDirExtracted },
 					{ expand: true, cwd: srcDir + "/options/", src: ["**", "!**/*.ts", "!**/tsconfig*.json"], dest: outDirExtracted },
-					{ expand: true, cwd: srcDir + "/webexperiment/", src: ["**", "!**/*.ts", "!**/tsconfig*.json"], dest: outDirExtracted },
 					{ expand: true, cwd: srcDir + "/popup/", src: ["**", "!**/*.ts", "!**/tsconfig*.json"], dest: outDirExtracted },
 					{ expand: true, src: ["./licence.txt", "./README.md"], dest: outDirExtracted },
 				],

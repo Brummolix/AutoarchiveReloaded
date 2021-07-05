@@ -34,26 +34,6 @@ module.exports = [
 		},
 	},
 	{
-		//the experiment needs a slightly different output configuration
-		name: "experiment",
-		mode: theMode,
-		entry: "./src/webexperiment/autoarchive-api.ts",
-		output: {
-			filename: "autoarchive-api.js",
-			path: outputPath,
-
-			//export the default class under the variable "autoarchive"!
-			library: "autoarchive",
-			libraryExport: "default",
-		},
-		module: {
-			rules: tsLoaderRules,
-		},
-		resolve: {
-			extensions: extensions,
-		},
-	},
-	{
 		//Tests will be created in a different dir
 		name: "tests", //all "tests"
 		mode: theMode,

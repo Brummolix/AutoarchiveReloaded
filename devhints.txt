@@ -34,6 +34,4 @@ Development hints:
 		uses sharedAll and sharedWebextension
 	src/backgroundScript - contains the sources for the backgroundScript
 		uses sharedAll and sharedWebextension
-	src/webexperiment - contains the sources for the webexperiment API (stuff which is not yet supported by the webextension api)
-		uses sharedAll
 	src/resources - contains all files that are needed additionally
