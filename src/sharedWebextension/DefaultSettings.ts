@@ -17,7 +17,7 @@ Copyright 2018-2020 Brummolix (AutoarchiveReloaded, https://github.com/Brummolix
     along with AutoarchiveReloaded.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import { AccountSettings, GlobalSettings, Settings } from "../sharedAll/interfaces";
+import { AccountSettings, GlobalSettings, Settings } from "./interfaces";
 
 export class DefaultSettings {
 	public getDefaultAccountSettings(): AccountSettings {

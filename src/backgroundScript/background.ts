@@ -18,8 +18,8 @@ Copyright 2019-2020 Brummolix (AutoarchiveReloaded, https://github.com/Brummolix
 */
 
 /* eslint-disable prefer-arrow/prefer-arrow-functions */
-import { ArchiveManuallyMessageRequest, GetArchiveStatusMessageRequest } from "../sharedAll/Messages";
-import { log } from "../sharedWebextension/Logger";
+import { ArchiveManuallyMessageRequest, GetArchiveStatusMessageRequest } from "../sharedWebextension/Messages";
+import { log } from "../sharedWebextension/LoggerWebextension";
 import { OptionHelper } from "../sharedWebextension/optionHelper";
 import { MainFunctions } from "./MainFunctions";
 

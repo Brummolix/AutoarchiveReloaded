@@ -1,5 +1,5 @@
 /*!
-Copyright 2019-2020 Brummolix (new version AutoarchiveReloaded, https://github.com/Brummolix/AutoarchiveReloaded )
+Copyright 2018-2020 Brummolix (AutoarchiveReloaded, https://github.com/Brummolix/AutoarchiveReloaded )
 
  This file is part of AutoarchiveReloaded.
 
@@ -17,32 +17,67 @@ Copyright 2019-2020 Brummolix (new version AutoarchiveReloaded, https://github.c
     along with AutoarchiveReloaded.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import { LogLevelInfo } from "../sharedAll/LogLevelInfo";
-import { Logger } from "../sharedAll/Logger";
+import { LogLevelInfo } from "./LogLevelInfo";
 
-export class LogLevelInfoWebExtension implements LogLevelInfo {
-	private static readonly ENABLE_INFO_LOGGING_NAME: string = "WebExtensionLoggerHelper_enableInfoLogging";
-
-	public static setGlobaleEnableInfoLogging(value: boolean): void {
-		// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-		(browser.extension.getBackgroundPage() as any)[LogLevelInfoWebExtension.ENABLE_INFO_LOGGING_NAME] = value;
-	}
-
-	private static getGlobalEnableInfoLogging(): boolean {
-		// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-		return (browser.extension.getBackgroundPage() as any)[LogLevelInfoWebExtension.ENABLE_INFO_LOGGING_NAME] as boolean;
-	}
-
-	//this is very tricky!
-	//there exist multiple loggers (one in background scripts and one in option page)
-	//but they should use the same setting for info logging
-	//on the other hand the whole logging handling should be easy and not rely on a lot of things (option handling, read values asynchonously from storage and so on)
-	//therefore we always use the value from a global variable of the background script
-	//additionally the option helper (or someone else) can set the setting via setGlobaleEnableInfoLogging (it will set the variable in the backround scripts)
-	//-> in this way we can have as many loggers as we want, as soon as the settings are available they can set the global value
-	public get enableInfoLogging(): boolean {
-		return LogLevelInfoWebExtension.getGlobalEnableInfoLogging();
-	}
+enum LogLevel {
+	info,
+	error,
 }
 
-export const log: Logger = new Logger(new LogLevelInfoWebExtension());
+export class Logger {
+	private logLevelInfo: LogLevelInfo;
+
+	public constructor(logLevelInfo: LogLevelInfo) {
+		this.logLevelInfo = logLevelInfo;
+	}
+
+	public info(str: string): void {
+		this.log(LogLevel.info, str);
+	}
+
+	public error(str: string): void {
+		this.log(LogLevel.error, str);
+	}
+
+	public errorException(exception: Error, message?: string): void {
+		if (message === undefined) {
+			this.error("Exception occured");
+		} else {
+			this.error(message);
+		}
+		this.logAny(exception);
+	}
+
+	private getLogLevelFromPref(): LogLevel {
+		if (this.logLevelInfo.enableInfoLogging) {
+			return LogLevel.info;
+		}
+
+		return LogLevel.error;
+	}
+
+	private log(levelToLog: LogLevel, str: string): void {
+		if (levelToLog < this.getLogLevelFromPref()) {
+			return;
+		}
+
+		this.logEntry(levelToLog, str);
+	}
+
+	private logEntry(levelToLog: LogLevel, str: string): void {
+		const date = new Date();
+		let strToLog = date.toLocaleString() + " - AutoarchiveReloaded - ";
+		if (levelToLog === LogLevel.info) {
+			strToLog += "INFO";
+		} else {
+			strToLog += "ERROR";
+		}
+		strToLog += ": " + str;
+
+		this.logAny(strToLog);
+	}
+
+	private logAny(value: any): void {
+		console.log(value);
+	}
+}

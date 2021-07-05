@@ -28,10 +28,9 @@ Development hints:
 	Typescript code uses import/export statements
 	The code is translated from typescript to Js and then packed with webpack to single js files including all needed modules.
 - directory structure
-	src/sharedAll - contains sources used by *all* scripts
 	src/sharedWebextension - contains all sources used by the webextension scripts
 	src/options - contains the sources for the option page
-		uses sharedAll and sharedWebextension
+		uses sharedWebextension
 	src/backgroundScript - contains the sources for the backgroundScript
-		uses sharedAll and sharedWebextension
+		uses sharedWebextension
 	src/resources - contains all files that are needed additionally

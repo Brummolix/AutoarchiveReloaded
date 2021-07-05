@@ -19,7 +19,7 @@ along with AutoarchiveReloaded.  If not, see <http://www.gnu.org/licenses/>.
 */
 
 import { AccountIterator } from "../sharedWebextension/AccountIterator";
-import { log } from "../sharedWebextension/Logger";
+import { log } from "../sharedWebextension/LoggerWebextension";
 
 export class AppInfoLogger {
 	public async log(): Promise<void> {

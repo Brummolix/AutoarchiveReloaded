@@ -18,8 +18,8 @@ Copyright 2012 Alexey Egorov (original version Autoarchive, http://code.google.c
     along with AutoarchiveReloaded.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import { AccountSettings } from "../sharedAll/interfaces";
-import { log } from "../sharedWebextension/Logger";
+import { AccountSettings } from "../sharedWebextension/interfaces";
+import { log } from "../sharedWebextension/LoggerWebextension";
 
 export class SettingsHelper {
 	public static isArchivingSomething(accountSettings: AccountSettings): boolean {

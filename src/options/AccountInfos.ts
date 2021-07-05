@@ -18,7 +18,7 @@ Copyright 2012 Alexey Egorov (original version Autoarchive, http://code.google.c
     along with AutoarchiveReloaded.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import { AccountInfo, AccountSettings } from "../sharedAll/interfaces";
+import { AccountInfo, AccountSettings } from "../sharedWebextension/interfaces";
 
 export interface AccountInfos {
 	account: AccountInfo;

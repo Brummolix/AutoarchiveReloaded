@@ -17,10 +17,10 @@ Copyright 2018-2020 Brummolix (AutoarchiveReloaded, https://github.com/Brummolix
     along with AutoarchiveReloaded.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import { AccountInfo, Settings } from "../sharedAll/interfaces";
+import { AccountInfo, Settings } from "./interfaces";
 import { AccountInfoProvider } from "./AccountInfo";
 import { DefaultSettings } from "./DefaultSettings";
-import { log, LogLevelInfoWebExtension } from "./Logger";
+import { log, LogLevelInfoWebExtension } from "./LoggerWebextension";
 
 export class OptionHelper {
 	public async loadCurrentSettings(): Promise<Settings> {

@@ -18,8 +18,8 @@ Copyright 2012 Alexey Egorov (original version Autoarchive, http://code.google.c
     along with AutoarchiveReloaded.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import { AccountInfo } from "../sharedAll/interfaces";
-import { log } from "../sharedWebextension/Logger";
+import { AccountInfo } from "./interfaces";
+import { log } from "../sharedWebextension/LoggerWebextension";
 import { AccountIterator } from "./AccountIterator";
 
 export class AccountInfoProvider {

@@ -18,9 +18,9 @@ Copyright 2012 Alexey Egorov (original version Autoarchive, http://code.google.c
     along with AutoarchiveReloaded.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import { AccountSettings, Settings } from "../sharedAll/interfaces";
+import { AccountSettings, Settings } from "../sharedWebextension/interfaces";
 import { AccountIterator } from "../sharedWebextension/AccountIterator";
-import { log } from "../sharedWebextension/Logger";
+import { log } from "../sharedWebextension/LoggerWebextension";
 import { OptionHelper } from "../sharedWebextension/optionHelper";
 import { SettingsHelper } from "./SettingsHelper";
 import { FolderHelper } from "./FolderHelper";

@@ -19,9 +19,9 @@ Copyright 2018-2020 Brummolix (AutoarchiveReloaded, https://github.com/Brummolix
     along with AutoarchiveReloaded.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import { ArchiveType, AccountInfo, Settings } from "../sharedAll/interfaces";
+import { ArchiveType, AccountInfo, Settings } from "../sharedWebextension/interfaces";
 import { AccountInfoProvider } from "../sharedWebextension/AccountInfo";
-import { log } from "../sharedWebextension/Logger";
+import { log } from "../sharedWebextension/LoggerWebextension";
 import { OptionHelper } from "../sharedWebextension/optionHelper";
 import { AccountInfos } from "./AccountInfos";
 

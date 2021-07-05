@@ -20,9 +20,9 @@ Copyright 2019-2020 Brummolix (AutoarchiveReloaded, https://github.com/Brummolix
     along with AutoarchiveReloaded.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import { GlobalStates } from "../sharedAll/GlobalStates";
-import { ArchiveManuallyMessageRequest, GetArchiveStatusMessageRequest, GetArchiveStatusResponse } from "../sharedAll/Messages";
-import { log } from "../sharedWebextension/Logger";
+import { GlobalStates } from "../sharedWebextension/GlobalStates";
+import { ArchiveManuallyMessageRequest, GetArchiveStatusMessageRequest, GetArchiveStatusResponse } from "../sharedWebextension/Messages";
+import { log } from "../sharedWebextension/LoggerWebextension";
 
 async function initialize(): Promise<void> {
 	const message: GetArchiveStatusMessageRequest = { message: "getArchiveStatus" };

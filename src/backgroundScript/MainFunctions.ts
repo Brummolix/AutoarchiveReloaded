@@ -18,9 +18,9 @@ Copyright 2012 Alexey Egorov (original version Autoarchive, http://code.google.c
     along with AutoarchiveReloaded.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import { GlobalStates } from "../sharedAll/GlobalStates";
-import { Settings } from "../sharedAll/interfaces";
-import { log } from "../sharedWebextension/Logger";
+import { GlobalStates } from "../sharedWebextension/GlobalStates";
+import { Settings } from "../sharedWebextension/interfaces";
+import { log } from "../sharedWebextension/LoggerWebextension";
 import { OptionHelper } from "../sharedWebextension/optionHelper";
 import { AppInfoLogger } from "./AppInfoLogger";
 import { Archiver } from "./Archiver";
