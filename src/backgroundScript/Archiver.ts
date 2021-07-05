@@ -33,11 +33,9 @@ export class Archiver {
 			const optionHelper: OptionHelper = new OptionHelper();
 			const settings: Settings = await optionHelper.loadCurrentSettings();
 
-			await AccountIterator.forEachAccount(
-				async (account: MailAccount, isAccountArchivable: boolean): Promise<void> => {
-					await this.archiveAccount(account, isAccountArchivable, settings);
-				}
-			);
+			await AccountIterator.forEachAccount(async (account: MailAccount, isAccountArchivable: boolean): Promise<void> => {
+				await this.archiveAccount(account, isAccountArchivable, settings);
+			});
 		} catch (e) {
 			log.errorException(e);
 			throw e;
@@ -69,9 +67,11 @@ export class Archiver {
 			const foldersToArchive: MailFolder[] = [];
 
 			for (const folder of folders) {
-				log.info("Check folder " + folder.name + " (" + folder.type + ")");
+				const folderName = folder.name || "";
+				const folderType = folder.type || "";
+				log.info(`Check folder ${folderName} (${folderType})`);
 				if (this.folderShallBeIgnored(folder, folders)) {
-					log.info("ignore folder '" + folder.path + "' (" + folder.type + ")");
+					log.info(`ignore folder '${folder.path}' (${folderType})`);
 				} else {
 					foldersToArchive.push(folder);
 				}
@@ -97,7 +97,7 @@ export class Archiver {
 		return this.folderShallBeIgnored(parent, allFoldersOfAccount);
 	}
 
-	private folderTypeShallBeIgnored(folderType: FolderType): boolean {
+	private folderTypeShallBeIgnored(folderType?: FolderType): boolean {
 		//Do not archive some special folders (and also no subfolders in there)
 		//inbox - yes
 		//sent - yes, sure
@@ -142,12 +142,14 @@ export class Archiver {
 	private async archiveFolder(folder: MailFolder, settings: AccountSettings): Promise<void> {
 		try {
 			const mailAccount: MailAccount = await browser.accounts.get(folder.accountId);
-			log.info("start searching messages to archive in folder '" + folder.path + "' (" + folder.type + ") in account '" + mailAccount.name + "'");
+			const folderTye = folder.type || "";
+			log.info(`start searching messages to archive in folder '${folder.path}' (${folderTye}) in account '${mailAccount.name}'`);
 			const messages: MessageHeader[] = await this.searchMessagesToArchive(folder, settings);
-			log.info(`message search done for '${folder.name}' in account '${mailAccount.name}' -> ${messages.length} messages found to archive`);
+			const folderName = folder.name || "";
+			log.info(`message search done for '${folderName}' in account '${mailAccount.name}' -> ${messages.length} messages found to archive`);
 
 			if (messages.length > 0) {
-				log.info(`start real archiving of '${folder.name}' (${messages.length} messages) in account '${mailAccount.name}'`);
+				log.info(`start real archiving of '${folderName}' (${messages.length} messages) in account '${mailAccount.name}'`);
 				await this.archiveMessages(messages);
 			}
 		} catch (e) {
