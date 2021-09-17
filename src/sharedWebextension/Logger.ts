@@ -39,7 +39,7 @@ export class Logger {
 		this.log(LogLevel.error, str);
 	}
 
-	public errorException(exception: Error, message?: string): void {
+	public errorException(exception: unknown, message?: string): void {
 		if (message === undefined) {
 			this.error("Exception occured");
 		} else {
