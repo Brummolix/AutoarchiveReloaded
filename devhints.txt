@@ -7,16 +7,10 @@ Development hints:
 
 - how to install?
 	- install Visual Studio code
-	- install some special build tools (windows only, installs Visual Studio Build and Python)
-		(I think with the current node installer this step is no longer needed, as the installer installs the build tools if you tick the checkbox at install)
-		- open elevated shell/powershell
-		- run "npm install --global --production windows-build-tools"
-			(this is needed for the node-gyp package which is needed by the grunt-contrib-compress package which is needed for the grunt build
-			see also https://github.com/nodejs/node-gyp)
+	- install node (on windows also make sure to to install the native build tools that comes with the node installer)
 	- install needed node packages
 		- open shell at project dir or open terminal in visual studio code
 		- run "npm install"
-		- if this fails on windows because of node-gyp then you should again use an elevated terminal (because the install of grunt-contrib-compress will build something on the fly with Visual Studio build)
 	- now you should be able to build with grunt and/or visual studio code
 
 - how to install a new npm/grunt module?
