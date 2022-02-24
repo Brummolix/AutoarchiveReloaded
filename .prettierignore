@@ -1,2 +1,3 @@
 /src/options/libs/**/*.css
 /src/options/libs/**/*.js
+package.json
