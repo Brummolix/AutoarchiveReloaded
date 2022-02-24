@@ -2,7 +2,7 @@
 //TODO: temporarily or permanently?
 
 /*!
-Copyright 2019-2021 Brummolix (AutoarchiveReloaded, https://github.com/Brummolix/AutoarchiveReloaded )
+Copyright 2019-2022 Brummolix (AutoarchiveReloaded, https://github.com/Brummolix/AutoarchiveReloaded )
 
  This file is part of AutoarchiveReloaded.
 
