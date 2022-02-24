@@ -1,5 +1,5 @@
 /*!
-Copyright 2013-2021 Brummolix (new version AutoarchiveReloaded, https://github.com/Brummolix/AutoarchiveReloaded )
+Copyright 2013-2022 Brummolix (new version AutoarchiveReloaded, https://github.com/Brummolix/AutoarchiveReloaded )
 Copyright 2012 Alexey Egorov (original version Autoarchive, http://code.google.com/p/autoarchive/ )
 
  This file is part of AutoarchiveReloaded.
@@ -38,7 +38,8 @@ export class AccountIterator {
 			account.type === "rss" ||
 			account.type === "nntp" ||
 			account.type === "exquilla" ||
-			account.type === "none"
+			account.type === "none" ||
+			account.type === "owl" //OWL for exchange, see https://www.beonex.com/owl/, see #72
 		);
 	}
 }
