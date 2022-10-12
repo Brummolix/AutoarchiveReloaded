@@ -18,7 +18,7 @@
 	"settingsSaved": { "message": "Settings saved." },
 
 	"settingsDescription2": {
-		"message": "Please also remember: Beside this options you also have to set up the Thunderbird archive settings under 'Copies & Folders'! Note: These settings are not available for feed accounts (e.g. RSS) or local folders. You can archive them only with default settings (or die set the globalen configs 'mail.identity.default.archive_granularity' / 'mail.identity.default.archive_keep_folder_structure' manually)."
+		"message": "Please also remember: Beside this options you also have to set up the Thunderbird archive settings under 'Copies & Folders'! Note: These settings are not available for feed accounts (e.g. RSS) or local folders. You can archive them only with default settings (or use the global configs 'mail.identity.default.archive_granularity' / 'mail.identity.default.archive_keep_folder_structure' manually)."
 	},
 
 	"archiveMessages": { "message": "Archive all other messages older than " },
