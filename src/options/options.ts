@@ -50,6 +50,12 @@ async function saveOptions(): Promise<void> {
 						daysTagged: Number((getElementForAccount(accountId, "archiveTaggedDays") as HTMLInputElement).value),
 						bArchiveOther: (getElementForAccount(accountId, "archiveMessages") as HTMLInputElement).checked,
 						daysOther: Number((getElementForAccount(accountId, "archiveMessagesDays") as HTMLInputElement).value),
+						bArchiveTrashFolders: (getElementForAccount(accountId, "archiveTrashFolders") as HTMLInputElement).checked,
+						bArchiveJunkFolders: (getElementForAccount(accountId, "archiveJunkFolders") as HTMLInputElement).checked,
+						bArchiveOutboxFolders: (getElementForAccount(accountId, "archiveOutboxFolders") as HTMLInputElement).checked,
+						bArchiveDraftFolders: (getElementForAccount(accountId, "archiveDraftFolders") as HTMLInputElement).checked,
+						bArchiveTemplateFolders: (getElementForAccount(accountId, "archiveTemplateFolders") as HTMLInputElement).checked,
+						bArchiveArchiveFolders: (getElementForAccount(accountId, "archiveArchiveFolders") as HTMLInputElement).checked,
 					};
 				}
 			});
@@ -134,6 +140,12 @@ async function restoreOptions(): Promise<void> {
 		(getElementForAccount(accountId, "archiveTaggedDays") as HTMLInputElement).value = accountSetting.daysTagged.toString();
 		(getElementForAccount(accountId, "archiveMessages") as HTMLInputElement).checked = accountSetting.bArchiveOther;
 		(getElementForAccount(accountId, "archiveMessagesDays") as HTMLInputElement).value = accountSetting.daysOther.toString();
+		(getElementForAccount(accountId, "archiveTrashFolders") as HTMLInputElement).checked = accountSetting.bArchiveTrashFolders;
+		(getElementForAccount(accountId, "archiveJunkFolders") as HTMLInputElement).checked = accountSetting.bArchiveJunkFolders;
+		(getElementForAccount(accountId, "archiveOutboxFolders") as HTMLInputElement).checked = accountSetting.bArchiveOutboxFolders;
+		(getElementForAccount(accountId, "archiveDraftFolders") as HTMLInputElement).checked = accountSetting.bArchiveDraftFolders;
+		(getElementForAccount(accountId, "archiveTemplateFolders") as HTMLInputElement).checked = accountSetting.bArchiveTemplateFolders;
+		(getElementForAccount(accountId, "archiveArchiveFolders") as HTMLInputElement).checked = accountSetting.bArchiveArchiveFolders;
 	});
 }
 

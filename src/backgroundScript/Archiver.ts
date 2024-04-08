@@ -49,7 +49,7 @@ export class Archiver {
 			SettingsHelper.log(account.name, accountSettings);
 			if (SettingsHelper.isArchivingSomething(accountSettings)) {
 				log.info("getting folders to archive in account '" + account.name + "'");
-				const foldersToArchive = this.getFoldersToArchive(FolderHelper.getFoldersRecursivly(account.folders));
+				const foldersToArchive = this.getFoldersToArchive(FolderHelper.getFoldersRecursivly(account.folders), accountSettings);
 				for (const folder of foldersToArchive) {
 					await this.archiveFolder(folder, accountSettings);
 				}
@@ -62,7 +62,7 @@ export class Archiver {
 	}
 
 	//note: virtual folders (like Gmail has) are reported to archive but a later call to folder.list will fail...
-	private getFoldersToArchive(folders: MailFolder[]): MailFolder[] {
+	private getFoldersToArchive(folders: MailFolder[], accountSettings: AccountSettings): MailFolder[] {
 		try {
 			const foldersToArchive: MailFolder[] = [];
 
@@ -70,7 +70,7 @@ export class Archiver {
 				const folderName = folder.name || "";
 				const folderType = folder.type || "";
 				log.info(`Check folder ${folderName} (${folderType})`);
-				if (this.folderShallBeIgnored(folder, folders)) {
+				if (this.folderShallBeIgnored(folder, folders, accountSettings)) {
 					log.info(`ignore folder '${folder.path}' (${folderType})`);
 				} else {
 					foldersToArchive.push(folder);
@@ -84,8 +84,8 @@ export class Archiver {
 		}
 	}
 
-	private folderShallBeIgnored(folder: MailFolder, allFoldersOfAccount: MailFolder[]): boolean {
-		if (this.folderTypeShallBeIgnored(folder.type)) {
+	private folderShallBeIgnored(folder: MailFolder, allFoldersOfAccount: MailFolder[], accountSettings: AccountSettings): boolean {
+		if (this.folderTypeShallBeIgnored(accountSettings, folder.type)) {
 			return true;
 		}
 
@@ -94,10 +94,10 @@ export class Archiver {
 			return false;
 		}
 
-		return this.folderShallBeIgnored(parent, allFoldersOfAccount);
+		return this.folderShallBeIgnored(parent, allFoldersOfAccount, accountSettings);
 	}
 
-	private folderTypeShallBeIgnored(folderType?: FolderType): boolean {
+	private folderTypeShallBeIgnored(accountSettings: AccountSettings, folderType?: FolderType): boolean {
 		//Do not archive some special folders (and also no subfolders in there)
 		//inbox - yes
 		//sent - yes, sure
@@ -112,15 +112,27 @@ export class Archiver {
 		//if this bug is solved, we may also remove the strange catch in archiveFolder
 		//virtual - no, it is virtual :)
 
-		//undefined - yes, normal folder
-		return (
-			folderType === "trash" ||
-			folderType === "junk" ||
-			folderType === "outbox" ||
-			folderType === "drafts" ||
-			folderType === "templates" ||
-			folderType === "archives"
-		);
+		switch (folderType) {
+			case undefined:
+				//undefined - yes, normal folder
+				return false;
+			case "inbox":
+				return false;
+			case "sent":
+				return false;
+			case "trash":
+				return !accountSettings.bArchiveTrashFolders;
+			case "junk":
+				return !accountSettings.bArchiveJunkFolders;
+			case "outbox":
+				return !accountSettings.bArchiveOutboxFolders;
+			case "drafts":
+				return !accountSettings.bArchiveDraftFolders;
+			case "templates":
+				return !accountSettings.bArchiveTemplateFolders;
+			case "archives":
+				return !accountSettings.bArchiveArchiveFolders;
+		}
 	}
 
 	private getFolderParent(folder: MailFolder, allFoldersOfAccount: MailFolder[]): MailFolder | undefined {

@@ -30,6 +30,12 @@ export class DefaultSettings {
 			daysTagged: 360,
 			bArchiveUnread: false,
 			daysUnread: 360,
+			bArchiveTrashFolders: false,
+			bArchiveJunkFolders: false,
+			bArchiveOutboxFolders: false,
+			bArchiveDraftFolders: false,
+			bArchiveTemplateFolders: false,
+			bArchiveArchiveFolders: false,
 		};
 	}
 

@@ -32,6 +32,12 @@ export interface AccountSettings {
 	daysTagged: number;
 	bArchiveUnread: boolean;
 	daysUnread: number;
+	bArchiveTrashFolders: boolean;
+	bArchiveJunkFolders: boolean;
+	bArchiveOutboxFolders: boolean;
+	bArchiveDraftFolders: boolean;
+	bArchiveTemplateFolders: boolean;
+	bArchiveArchiveFolders: boolean;
 }
 
 export interface AccountSettingsArray {

@@ -25,6 +25,16 @@
 	"archiveTagged": { "message": "Archive tagged (with keywords) messages older than " },
 	"archiveStarred": { "message": "Archive messages marked (with a star) older than " },
 	"archiveUnread": { "message": "Archive unread messages older than " },
+	"specialFolderSettings": { "message": "Special folders" },
+	"specialFolderSettingsDescription": {
+		"message": "The following folder types will be ignored, normally. If you want to include them, you can enable them. (The settings from above, about read mails and so on, will be used analogous.)"
+	},
+	"archiveTrashFolders": { "message": "Archive trash folders, too" },
+	"archiveJunkFolders": { "message": "Archive junk folders, too" },
+	"archiveOutboxFolders": { "message": "Archive outbox folders, too" },
+	"archiveDraftFolders": { "message": "Archive draft folders, too" },
+	"archiveTemplateFolders": { "message": "Archive template  folders, too" },
+	"archiveArchiveFolders": { "message": "Archive archive folders, too (...Yes, I am sure I want to archive archive folders to somewhere...)" },
 
 	"days": { "message": "days" },
 	"globalSettings": { "message": "General" },
