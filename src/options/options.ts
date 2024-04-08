@@ -1,7 +1,7 @@
 /* eslint-disable prefer-arrow/prefer-arrow-functions */
 
 /*!
-Copyright 2018-2022 Brummolix (AutoarchiveReloaded, https://github.com/Brummolix/AutoarchiveReloaded )
+Copyright 2018-2024 Brummolix (AutoarchiveReloaded, https://github.com/Brummolix/AutoarchiveReloaded )
 
  This file is part of AutoarchiveReloaded.
 
