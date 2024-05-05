@@ -138,61 +138,89 @@ Copyright 2018-2024 Brummolix (AutoarchiveReloaded, https://github.com/Brummolix
 
 						<div>__MSG_settingsDescription2__</div>
 						<div class="m-3"></div>
-						<h5>__MSG_specialFolderSettings__</h5>
-						<div>__MSG_specialFolderSettingsDescription__</div>
 
-						<div class="input-group mb-3">
-							<div class="input-group-prepend">
-								<div class="input-group-text">
-									<input type="checkbox" id="archiveTrashFolders-§§ID§§" />
+						<div class="accordion" id="accordionSpecialFolders-§§ID§§">
+							<div class="card">
+								<div class="card-header" id="specialFoldersHeading-§§ID§§">
+									<h2 class="mb-0">
+										<button
+											class="btn btn-link btn-block text-left"
+											type="button"
+											data-toggle="collapse"
+											data-target="#collapseSpecialFolders-§§ID§§"
+											aria-expanded="true"
+											aria-controls="collapseSpecialFolders-§§ID§§"
+										>
+											__MSG_specialFolderSettings__
+										</button>
+									</h2>
 								</div>
-								<span class="input-group-text">__MSG_archiveTrashFolders__</span>
-							</div>
-						</div>
-						<div class="input-group mb-3">
-							<div class="input-group-prepend">
-								<div class="input-group-text">
-									<input type="checkbox" id="archiveJunkFolders-§§ID§§" />
+								<div
+									id="collapseSpecialFolders-§§ID§§"
+									class="collapse"
+									aria-labelledby="specialFoldersHeading-§§ID§§"
+									data-parent="#accordionSpecialFolders-§§ID§§"
+								>
+									<div class="card-body">
+										<div>__MSG_specialFolderSettingsDescription__</div>
+										<div class="m-3"></div>
+										<div class="input-group mb-3">
+											<div class="input-group-prepend">
+												<div class="input-group-text">
+													<input type="checkbox" id="archiveTrashFolders-§§ID§§" />
+												</div>
+												<span class="input-group-text">__MSG_archiveTrashFolders__</span>
+											</div>
+										</div>
+										<div class="input-group mb-3">
+											<div class="input-group-prepend">
+												<div class="input-group-text">
+													<input type="checkbox" id="archiveJunkFolders-§§ID§§" />
+												</div>
+												<span class="input-group-text">__MSG_archiveJunkFolders__</span>
+											</div>
+										</div>
+										<div class="input-group mb-3">
+											<div class="input-group-prepend">
+												<div class="input-group-text">
+													<input type="checkbox" id="archiveOutboxFolders-§§ID§§" />
+												</div>
+												<span class="input-group-text">__MSG_archiveOutboxFolders__</span>
+											</div>
+										</div>
+										<div class="input-group mb-3">
+											<div class="input-group-prepend">
+												<div class="input-group-text">
+													<input type="checkbox" id="archiveDraftFolders-§§ID§§" />
+												</div>
+												<span class="input-group-text">__MSG_archiveDraftFolders__</span>
+											</div>
+										</div>
+										<div class="input-group mb-3">
+											<div class="input-group-prepend">
+												<div class="input-group-text">
+													<input type="checkbox" id="archiveTemplateFolders-§§ID§§" />
+												</div>
+												<span class="input-group-text">__MSG_archiveTemplateFolders__</span>
+											</div>
+										</div>
+										<div class="input-group mb-3">
+											<div class="input-group-prepend">
+												<div class="input-group-text">
+													<input type="checkbox" id="archiveArchiveFolders-§§ID§§" />
+												</div>
+												<span class="input-group-text">__MSG_archiveArchiveFolders__</span>
+											</div>
+										</div>
+									</div>
 								</div>
-								<span class="input-group-text">__MSG_archiveJunkFolders__</span>
-							</div>
-						</div>
-						<div class="input-group mb-3">
-							<div class="input-group-prepend">
-								<div class="input-group-text">
-									<input type="checkbox" id="archiveOutboxFolders-§§ID§§" />
-								</div>
-								<span class="input-group-text">__MSG_archiveOutboxFolders__</span>
-							</div>
-						</div>
-						<div class="input-group mb-3">
-							<div class="input-group-prepend">
-								<div class="input-group-text">
-									<input type="checkbox" id="archiveDraftFolders-§§ID§§" />
-								</div>
-								<span class="input-group-text">__MSG_archiveDraftFolders__</span>
-							</div>
-						</div>
-						<div class="input-group mb-3">
-							<div class="input-group-prepend">
-								<div class="input-group-text">
-									<input type="checkbox" id="archiveTemplateFolders-§§ID§§" />
-								</div>
-								<span class="input-group-text">__MSG_archiveTemplateFolders__</span>
-							</div>
-						</div>
-						<div class="input-group mb-3">
-							<div class="input-group-prepend">
-								<div class="input-group-text">
-									<input type="checkbox" id="archiveArchiveFolders-§§ID§§" />
-								</div>
-								<span class="input-group-text">__MSG_archiveArchiveFolders__</span>
+								<!-- we need an empty card, otherwise the layout in bootstrap is not correct-->
+								<div class="card"></div>
 							</div>
 						</div>
 					</div>
 				</div>
 			</div>
-
 			<div class="m-3"></div>
 			<div>
 				<!-- TODO: disable button and only enable on changes-->
