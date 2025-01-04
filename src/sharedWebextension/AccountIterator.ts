@@ -39,7 +39,8 @@ export class AccountIterator {
 			account.type === "nntp" ||
 			account.type === "exquilla" ||
 			account.type === "none" ||
-			account.type === "owl" //OWL for exchange, see https://www.beonex.com/owl/, see #72
+			account.type === "owl" || //OWL for exchange, see https://www.beonex.com/owl/, see #72
+			account.type === "extension:owl" //OWL from Chouette plugin, see https://github.com/Brummolix/AutoarchiveReloaded/issues/95, see #95
 		);
 	}
 }
