@@ -2,7 +2,7 @@
 /* eslint-disable camelcase */
 
 /*!
-Copyright 2020-2024 Brummolix (AutoarchiveReloaded, https://github.com/Brummolix/AutoarchiveReloaded )
+Copyright 2020-2026 Brummolix (AutoarchiveReloaded, https://github.com/Brummolix/AutoarchiveReloaded )
 
  This file is part of AutoarchiveReloaded.
 
