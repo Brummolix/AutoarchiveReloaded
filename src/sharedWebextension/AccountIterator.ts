@@ -1,5 +1,5 @@
 /*!
-Copyright 2013-2024 Brummolix (new version AutoarchiveReloaded, https://github.com/Brummolix/AutoarchiveReloaded )
+Copyright 2013-2026 Brummolix (new version AutoarchiveReloaded, https://github.com/Brummolix/AutoarchiveReloaded )
 Copyright 2012 Alexey Egorov (original version Autoarchive, http://code.google.com/p/autoarchive/ )
 
  This file is part of AutoarchiveReloaded.
@@ -27,20 +27,29 @@ export class AccountIterator {
 	}
 
 	private static isAccountArchivable(account: MailAccount): boolean {
-		//TODO: Is there still an exquilla type?
+		//Is there still an exquilla type?
 
 		//IRC accounts will not be listed... and we would ignore them anyhow
 		//"nntp" is a newsgroup account, "rss" a newsfeed account > we archive them, too (even if an rss account does not have real archive settings)
 		//a local folder is "none"
-		return (
-			account.type === "pop3" ||
-			account.type === "imap" ||
-			account.type === "rss" ||
-			account.type === "nntp" ||
-			account.type === "exquilla" ||
-			account.type === "none" ||
-			account.type === "owl" || //OWL for exchange, see https://www.beonex.com/owl/, see #72
-			account.type === "extension:owl" //OWL from Chouette plugin, see https://github.com/Brummolix/AutoarchiveReloaded/issues/95, see #95
-		);
+
+		//recent versions of TB have change the types? ews, local vs. none
+		//extensions also add types
+
+		//as we had effort in the past to maintain a list, without any value
+		//we do not check the type any more
+
+		return true;
+
+		// return (
+		// 	account.type === "pop3" ||
+		// 	account.type === "imap" ||
+		// 	account.type === "rss" ||
+		// 	account.type === "nntp" ||
+		// 	account.type === "exquilla" ||
+		// 	account.type === "none" ||
+		// 	account.type === "owl" || //OWL for exchange, see https://www.beonex.com/owl/, see #72
+		// 	account.type === "extension:owl" //OWL from Chouette plugin, see https://github.com/Brummolix/AutoarchiveReloaded/issues/95, see #95
+		// );
 	}
 }
