@@ -42,7 +42,6 @@ async function startup(): Promise<void> {
 
 /**
  * receive messages (commands) from the popup
- *
  * @param request - the data of the message
  * @param sender the sender
  * @param sendResponse the function to receive the response

@@ -2,4 +2,5 @@ module.exports = {
 	printWidth: 160,
 	endOfLine: "auto",
 	useTabs: true,
+	"trailingComma" : "es5",
 };

@@ -19,37 +19,10 @@ Copyright 2012 Alexey Egorov (original version Autoarchive, http://code.google.c
 */
 
 export class AccountIterator {
-	public static async forEachAccount(forEachDo: (account: MailAccount, isAccountArchivable: boolean) => Promise<void> | void): Promise<void> {
+	public static async forEachAccount(forEachDo: (account: MailAccount) => Promise<void> | void): Promise<void> {
 		const accounts: MailAccount[] = await browser.accounts.list();
 		for (const account of accounts) {
-			await forEachDo(account, this.isAccountArchivable(account));
+			await forEachDo(account);
 		}
-	}
-
-	private static isAccountArchivable(account: MailAccount): boolean {
-		//Is there still an exquilla type?
-
-		//IRC accounts will not be listed... and we would ignore them anyhow
-		//"nntp" is a newsgroup account, "rss" a newsfeed account > we archive them, too (even if an rss account does not have real archive settings)
-		//a local folder is "none"
-
-		//recent versions of TB have change the types? ews, local vs. none
-		//extensions also add types
-
-		//as we had effort in the past to maintain a list, without any value
-		//we do not check the type any more
-
-		return true;
-
-		// return (
-		// 	account.type === "pop3" ||
-		// 	account.type === "imap" ||
-		// 	account.type === "rss" ||
-		// 	account.type === "nntp" ||
-		// 	account.type === "exquilla" ||
-		// 	account.type === "none" ||
-		// 	account.type === "owl" || //OWL for exchange, see https://www.beonex.com/owl/, see #72
-		// 	account.type === "extension:owl" //OWL from Chouette plugin, see https://github.com/Brummolix/AutoarchiveReloaded/issues/95, see #95
-		// );
 	}
 }

@@ -41,10 +41,8 @@ export class AccountInfoProvider {
 	public static async askForAccounts(): Promise<AccountInfo[]> {
 		try {
 			const nsAccounts: MailAccount[] = [];
-			await AccountIterator.forEachAccount((account: MailAccount, isAccountArchivable: boolean) => {
-				if (isAccountArchivable) {
-					nsAccounts.push(account);
-				}
+			await AccountIterator.forEachAccount((account: MailAccount) => {
+				nsAccounts.push(account);
 			});
 
 			nsAccounts.sort((a: MailAccount, b: MailAccount) => {

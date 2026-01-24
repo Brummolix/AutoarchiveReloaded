@@ -49,9 +49,8 @@ export class AppInfoLogger {
 
 	private async logAccountInfo(): Promise<void> {
 		try {
-			await AccountIterator.forEachAccount((account: MailAccount, isAccountArchivable: boolean) => {
-				// eslint-disable-next-line @typescript-eslint/restrict-template-expressions
-				log.info(`Account Info: '${account.name}'; type: ${account.type}; id: ${account.id}; isAccountArchivable: ${isAccountArchivable}`);
+			await AccountIterator.forEachAccount((account: MailAccount) => {
+				log.info(`Account Info: '${account.name}'; type: ${account.type}; id: ${account.id}`);
 			});
 		} catch (e) {
 			log.errorException(e);

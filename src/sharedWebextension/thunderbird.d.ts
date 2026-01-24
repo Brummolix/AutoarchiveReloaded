@@ -17,8 +17,6 @@ Copyright 2018-2026 Brummolix (AutoarchiveReloaded, https://github.com/Brummolix
     along with AutoarchiveReloaded.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-/* eslint-disable @typescript-eslint/no-empty-interface */
-
 //Attention this file should have NO global imports! Only local imports like import("./something").type are allowed
 //otherwise TS creates code with import instead of simpy using the stuff
 //see https://stackoverflow.com/questions/39040108/import-class-in-definition-file-d-ts
@@ -39,9 +37,9 @@ type RuntimeMessageListener = (
 	sendResponse: RuntimeMessageResponseFunction
 ) => void;
 
-declare interface RuntimeMessageListeners extends Listeners<RuntimeMessageListener> {}
+type RuntimeMessageListeners = Listeners<RuntimeMessageListener>;
 
-declare interface RuntimePortListener extends Listeners<(object: Record<string, unknown>) => void> {}
+type RuntimePortListener = Listeners<(object: Record<string, unknown>) => void>;
 
 //https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/runtime/Port
 interface RuntimePort {
@@ -51,9 +49,9 @@ interface RuntimePort {
 	postMessage(object: Record<string, unknown>): void;
 }
 
-declare interface RuntimeConnectListener extends Listeners<(port: RuntimePort) => void> {}
+type RuntimeConnectListener = Listeners<(port: RuntimePort) => void>;
 
-declare interface RuntimeSuspendListener extends Listeners<() => void> {}
+type RuntimeSuspendListener = Listeners<() => void>;
 
 //https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/runtime/getBrowserInfo
 declare interface BrowserInfo {
@@ -110,7 +108,7 @@ declare interface Listeners<T> {
 	hasListener(listener: T): boolean;
 }
 
-declare interface BrowserWindowCreatedListeners extends Listeners<(window: BrowserWindow) => void> {}
+type BrowserWindowCreatedListeners = Listeners<(window: BrowserWindow) => void>;
 
 declare interface BrowserWindowInfo {
 	populate?: boolean; //If true, the windows.Window object will have a tabs property that contains a list of tabs.Tab objects representing the tabs in the window. The Tab objects only contain the url, title and favIconUrl properties if the extension's manifest file includes the "tabs" permission.
@@ -417,9 +415,7 @@ declare interface Menus {
 
 	/**
 	 * Updates a previously created context menu item.
-	 *
 	 * Required permissions: menus
-	 *
 	 * @param id The ID of the item to update.
 	 * @param updateProperties The properties to update. Accepts the same values as the create function.
 	 */
@@ -506,7 +502,9 @@ declare interface OnShownData {
 
 //https://thunderbird-webextensions.readthedocs.io/en/latest/compose.html#compose-composeattachment
 declare interface ComposeAttachment {
-	//fill if needed
+	id: number;
+	name?: string;
+	size?: number;
 }
 
 declare interface Browser {

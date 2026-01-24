@@ -33,8 +33,8 @@ export class Archiver {
 			const optionHelper: OptionHelper = new OptionHelper();
 			const settings: Settings = await optionHelper.loadCurrentSettings();
 
-			await AccountIterator.forEachAccount(async (account: MailAccount, isAccountArchivable: boolean): Promise<void> => {
-				await this.archiveAccount(account, isAccountArchivable, settings);
+			await AccountIterator.forEachAccount(async (account: MailAccount): Promise<void> => {
+				await this.archiveAccount(account, settings);
 			});
 		} catch (e) {
 			log.errorException(e);
@@ -42,22 +42,19 @@ export class Archiver {
 		}
 	}
 
-	private async archiveAccount(account: MailAccount, isAccountArchivable: boolean, settings: Settings): Promise<void> {
+	private async archiveAccount(account: MailAccount, settings: Settings): Promise<void> {
 		log.info("check account '" + account.name + "'");
-		if (isAccountArchivable) {
-			const accountSettings = settings.accountSettings[account.id];
-			SettingsHelper.log(account.name, accountSettings);
-			if (SettingsHelper.isArchivingSomething(accountSettings)) {
-				log.info("getting folders to archive in account '" + account.name + "'");
-				const foldersToArchive = this.getFoldersToArchive(FolderHelper.getFoldersRecursivly(account.folders), accountSettings);
-				for (const folder of foldersToArchive) {
-					await this.archiveFolder(folder, accountSettings);
-				}
-			} else {
-				log.info("autoarchive disabled, ignore account '" + account.name + "'");
+
+		const accountSettings = settings.accountSettings[account.id];
+		SettingsHelper.log(account.name, accountSettings);
+		if (SettingsHelper.isArchivingSomething(accountSettings)) {
+			log.info("getting folders to archive in account '" + account.name + "'");
+			const foldersToArchive = this.getFoldersToArchive(FolderHelper.getFoldersRecursivly(account.folders), accountSettings);
+			for (const folder of foldersToArchive) {
+				await this.archiveFolder(folder, accountSettings);
 			}
 		} else {
-			log.info("ignore account '" + account.name + "'");
+			log.info("autoarchive disabled, ignore account '" + account.name + "'");
 		}
 	}
 

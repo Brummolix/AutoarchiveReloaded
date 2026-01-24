@@ -27,7 +27,6 @@ export class SettingsHelper {
 	}
 
 	public static getMinAge(accountSettings: AccountSettings): number {
-		// eslint-disable-next-line id-blacklist
 		let minAge = Number.MAX_VALUE;
 		if (accountSettings.bArchiveOther) {
 			minAge = Math.min(accountSettings.daysOther, minAge);
