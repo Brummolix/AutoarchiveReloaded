@@ -12,6 +12,7 @@ Development hints:
 		- open shell at project dir or open terminal in visual studio code
 		- run "npm install"
 	- now you should be able to build with grunt and/or visual studio code
+		npx grunt
 
 - how to install a new npm/grunt module?
 	npm install MODULENAME --save-dev
