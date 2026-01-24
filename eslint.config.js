@@ -27,8 +27,7 @@ const compat = new FlatCompat({
 });
 
 module.exports = defineConfig([{
-        ignores: ["src/alltestss.js"], //does not work in github actions for whatever reason
-    },{
+    ignores: ["src/alltestss.js"], //does not work in github actions for whatever reason
     languageOptions: {
         globals: {
             ...globals.browser,
