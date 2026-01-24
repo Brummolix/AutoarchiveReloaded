@@ -9,7 +9,7 @@
     "devDependencies": {
         "@types/bootstrap-notify": "^3.1.35",
         "@types/jquery": "^3.5.5",
-        "@types/mocha": "^9.1.0",
+        "@types/mocha": "^10.0.10",
         "@typescript-eslint/eslint-plugin": "^5.12.1",
         "@typescript-eslint/parser": "^5.0.0",
         "assert": "^2.0.0",
@@ -28,7 +28,7 @@
         "grunt-eslint": "^24.0.0",
         "grunt-mocha-test": "^0.13.3",
         "grunt-webpack": "^5.0.0",
-        "mocha": "^11.1.0",
+        "mocha": "^11.7.5",
         "prettier": "^2.5.1",
         "ts-loader": "^9.2.6",
         "ts-node": "^10.5.0",
