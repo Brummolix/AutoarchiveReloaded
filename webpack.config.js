@@ -13,6 +13,7 @@ const tsLoaderRules = [
 	},
 ];
 const extensions = [".tsx", ".ts", ".js"];
+const glob = require("glob");
 
 module.exports = [
 	{
@@ -38,7 +39,7 @@ module.exports = [
 		name: "tests", //all "tests"
 		mode: theMode,
 		entry: {
-			test: "./src/alltests.js",
+			test: glob.sync("./src/**/*.test.ts"),
 		},
 		module: {
 			rules: tsLoaderRules,
