@@ -2,7 +2,7 @@ Development hints:
 
 - typescript is used to translate files to javascript
 - npm is used to install needed dependencies
-- grunt is used to build everything
+- npm is used to build everything
 - Visual Studio Code can be used for editing
 
 - how to install?
@@ -11,13 +11,8 @@ Development hints:
 	- install needed node packages
 		- open shell at project dir or open terminal in visual studio code
 		- run "npm install"
-	- now you should be able to build with grunt and/or visual studio code
-		npx grunt
-
-- how to install a new npm/grunt module?
-	npm install MODULENAME --save-dev
-		- it will refresh package.json und package-lock.json
-		- it will install the module under node_modules (which is excluded from git)
+	- now you should be able to build on command line and/or visual studio code
+		npm run build
 
 - module system
 	Typescript code uses import/export statements

@@ -6,6 +6,15 @@
         "url": "https://github.com/Brummolix/AutoarchiveReloaded/"
     },
     "license": "GPL-3.0-or-later",
+    "scripts": {
+        "build:clean": "rimraf dist",
+        "build:copy": "cpx resources/**/* dist/release && cpx src/backgroundScript/**/*.{js,json,html,css,txt} dist/release && cpx src/options/**/*.{js,json,html,css,txt} dist/release && cpx src/popup/**/*.{js,json,html,css,v} dist/release && cpx licence.txt dist/release && cpx README.md dist/release",
+        "build:webpack": "webpack --config webpack.config.js",
+        "build:buildXpi": "cd dist/release && bestzip ../../dist/AutoArchiveReloaded.xpi ./*",
+        "build:test": "mocha ./dist/test.js --ignore \"node_modules/**",
+        "build:lint": "eslint \"src/**/*.{ts,js}\" --ignore-pattern \"src/**/libs/**/*.js\"",
+        "build": "npm run build:clean && npm run build:copy && npm run build:webpack && npm run build:buildXpi && npm run build:test && npm run build:lint"
+    },
     "devDependencies": {
         "@eslint/compat": "^2.0.1",
         "@eslint/eslintrc": "^3.3.3",
@@ -17,6 +26,8 @@
         "@typescript-eslint/parser": "^8.57.2",
         "assert": "^2.1.0",
         "assertthat": "^6.4.0",
+        "bestzip": "^2.2.3",
+        "cpx": "^1.5.0",
         "eslint": "^9.39.2",
         "eslint-config-prettier": "^10.1.8",
         "eslint-plugin-import": "^2.32.0",
@@ -24,19 +35,13 @@
         "eslint-plugin-prefer-arrow": "^1.2.3",
         "eslint-plugin-prettier": "^5.5.5",
         "globals": "^17.1.0",
-        "grunt": "^1.6.1",
-        "grunt-cli": "^1.5.0",
-        "grunt-contrib-clean": "^2.0.1",
-        "grunt-contrib-compress": "^2.0.0",
-        "grunt-contrib-copy": "^1.0.0",
-        "grunt-eslint": "^26.0.0",
-        "grunt-mocha-test": "^0.13.3",
-        "grunt-webpack": "^7.0.1",
         "mocha": "^11.7.5",
         "prettier": "^3.8.1",
+        "rimraf": "^6.1.3",
         "ts-loader": "^9.5.4",
         "ts-node": "^10.9.2",
         "typescript": "^5.9.3",
-        "webpack": "^5.104.1"
+        "webpack": "^5.104.1",
+        "webpack-cli": "^7.0.2"
     }
 }

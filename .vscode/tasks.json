@@ -4,13 +4,18 @@
 	"version": "2.0.0",
 	"tasks": [
 		{
-			"type": "grunt",
-			"task": "default",
+			"type": "npm",
+			"script": "build",
 			"group": {
 				"kind": "build",
 				"isDefault": true
 			},
-			"problemMatcher": ["$tsc", "$tslint4"]
+			"problemMatcher": [
+				"$tsc",
+				"$eslint-compact"
+			],
+			"label": "npm: build",
+			"detail": "npm run build:clean && npm run build:copy && npm run build:webpack && npm run build:buildXpi && npm run build:test && npm run build:lint"
 		}
 	]
 }
