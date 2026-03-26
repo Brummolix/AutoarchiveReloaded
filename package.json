@@ -11,7 +11,7 @@
         "build:copy": "cpx \"resources/**/*\" \"dist/release\" && cpx \"src/backgroundScript/**/*.{js,json,html,css,txt}\" \"dist/release\" && cpx \"src/options/**/*.{js,json,html,css,txt}\" \"dist/release\" && cpx \"src/popup/**/*.{js,json,html,css,v}\" \"dist/release\" && cpx \"licence.txt\" \"dist/release\" && cpx \"README.md\" \"dist/release\"",
         "build:webpack": "webpack --config webpack.config.js",
         "build:buildXpi": "cd dist/release && bestzip ../../dist/AutoArchiveReloaded.xpi ./*",
-        "build:test": "mocha ./dist/test.js --ignore \"node_modules/**",
+        "build:test": "mocha ./dist/test.js --ignore \"node_modules/**\"",
         "build:lint": "eslint \"src/**/*.{ts,js}\" --ignore-pattern \"src/**/libs/**/*.js\"",
         "build": "npm run build:clean && npm run build:copy && npm run build:webpack && npm run build:buildXpi && npm run build:test && npm run build:lint"
     },
