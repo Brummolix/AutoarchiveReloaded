@@ -39,7 +39,7 @@ module.exports = [
 		name: "tests", //all "tests"
 		mode: theMode,
 		entry: {
-			test: glob.sync("./src/**/*.test.ts"),
+			test: glob.sync("./src/**/*.test.ts").map(file => "./" + file),
 		},
 		module: {
 			rules: tsLoaderRules,
