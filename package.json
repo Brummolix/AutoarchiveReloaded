@@ -8,7 +8,7 @@
     "license": "GPL-3.0-or-later",
     "scripts": {
         "build:clean": "rimraf dist",
-        "build:copy": "cpx resources/**/* dist/release && cpx src/backgroundScript/**/*.{js,json,html,css,txt} dist/release && cpx src/options/**/*.{js,json,html,css,txt} dist/release && cpx src/popup/**/*.{js,json,html,css,v} dist/release && cpx licence.txt dist/release && cpx README.md dist/release",
+        "build:copy": "cpx \"resources/**/*\" \"dist/release\" && cpx \"src/backgroundScript/**/*.{js,json,html,css,txt}\" \"dist/release\" && cpx \"src/options/**/*.{js,json,html,css,txt}\" \"dist/release\" && cpx \"src/popup/**/*.{js,json,html,css,v}\" \"dist/release\" && cpx \"licence.txt\" \"dist/release\" && cpx \"README.md\" \"dist/release\"",
         "build:webpack": "webpack --config webpack.config.js",
         "build:buildXpi": "cd dist/release && bestzip ../../dist/AutoArchiveReloaded.xpi ./*",
         "build:test": "mocha ./dist/test.js --ignore \"node_modules/**",
