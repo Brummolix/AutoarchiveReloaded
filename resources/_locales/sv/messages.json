@@ -1,0 +1,107 @@
+{
+	"addOnDescription": {
+		"message": "Arkiverar automatiskt gamla meddelanden"
+	},
+	"addOnAuthor": {
+		"message": "Brummolix (originalversion skapad av Alexey Egorov)"
+	},
+	"settingsHeadline": {
+		"message": "Inställningar för AutoarchiveReloaded"
+	},
+	"globalSettingsDescription": {
+		"message": "Se även inställningarna för varje konto. Utan dem arkiveras ingenting automatiskt."
+	},
+	"archiveTypeTitle": {
+		"message": "Tidpunkt för automatisk arkivering"
+	},
+	"archiveTypeManual": {
+		"message": "endast manuellt (via verktygsfältet) – rekommenderas"
+	},
+	"archiveTypeStartup": {
+		"message": "vid varje start av Thunderbird (och därefter en gång per dag)"
+	},
+	"enableInfoLoggingOption": {
+		"message": "aktivera utökad loggning (i felkonsolen)"
+	},
+	"globalSettingsStartupDescription": {
+		"message": "Automatisk arkivering efter att Thunderbird har startat rekommenderas inte för IMAP-konton, eftersom problem kan uppstå om anslutningen till servern/internet saknas (meddelanden kan arkiveras två gånger)."
+	},
+	"saveSettings": {
+		"message": "Spara inställningar"
+	},
+	"usageHelp": {
+		"message": "Du kan starta automatisk arkivering manuellt via en egen ikon i verktygsfältet. Om ikonen inte finns där behöver du lägga till den en gång. Högerklicka på verktygsfältet på Thunderbirds huvudflik och välj ”Anpassa”. Leta reda på ikonen för Autoarchive och dra den till verktygsfältet."
+	},
+	"settingsSaved": {
+		"message": "Inställningarna har sparats."
+	},
+	"settingsDescription2": {
+		"message": "Kom också ihåg: Utöver dessa alternativ måste du även konfigurera Thunderbirds arkivinställningar under ”Kopior och mappar”! Obs! Dessa inställningar är inte tillgängliga för flödeskonton (t.ex. RSS) eller lokala mappar. Du kan endast arkivera dem med standardinställningarna (eller manuellt använda de globala inställningarna ”mail.identity.default.archive_granularity” / ”mail.identity.default.archive_keep_folder_structure”)."
+	},
+	"archiveMessages": {
+		"message": "Arkivera alla andra meddelanden äldre än "
+	},
+	"archiveTagged": {
+		"message": "Arkivera etiketterade meddelanden (med nyckelord) äldre än "
+	},
+	"archiveStarred": {
+		"message": "Arkivera stjärnmarkerade meddelanden äldre än "
+	},
+	"archiveUnread": {
+		"message": "Arkivera olästa meddelanden äldre än "
+	},
+	"specialFolderSettings": {
+		"message": "Särskilda mappar"
+	},
+	"specialFolderSettingsDescription": {
+		"message": "Följande mapptyper ignoreras normalt. Om du vill inkludera dem kan du aktivera dem. (Inställningarna ovan, för lästa meddelanden och liknande, används på motsvarande sätt.)"
+	},
+	"archiveTrashFolders": {
+		"message": "Arkivera även papperskorgsmappar"
+	},
+	"archiveJunkFolders": {
+		"message": "Arkivera även skräppostmappar"
+	},
+	"archiveOutboxFolders": {
+		"message": "Arkivera även utkorgsmappar"
+	},
+	"archiveDraftFolders": {
+		"message": "Arkivera även utkastmappar"
+	},
+	"archiveTemplateFolders": {
+		"message": "Arkivera även mallmappar"
+	},
+	"archiveArchiveFolders": {
+		"message": "Arkivera även arkivmappar (...Ja, jag är säker på att jag vill arkivera arkivmappar någon annanstans...)"
+	},
+	"days": {
+		"message": "dagar"
+	},
+	"globalSettings": {
+		"message": "Allmänt"
+	},
+	"logging": {
+		"message": "Loggning"
+	},
+	"accountSettingTitle": {
+		"message": "specifika inställningar för kontot §§TITLE§§"
+	},
+	"toolbarArchive": {
+		"message": "Autoarkivera..."
+	},
+	"toolbarArchiveTooltip": {
+		"message": "Autoarkivera nu"
+	},
+	"waitForInit": {
+		"message": "Vänta tills AutoarchiveReloaded har initierats. Försök igen senare."
+	},
+	"waitForArchive": {
+		"message": "Vänta tills den pågående automatiska arkiveringen är klar. Försök igen senare."
+	},
+	"dialogStartManualText": {
+		"message": "För att arkivera meddelanden i IMAP-konton behöver du en internetanslutning (eller en anslutning till IMAP-servern). Annars kan meddelanden dupliceras på grund av ett fel i Thunderbird. Fortsätta (om internetanslutning finns)?"
+	},
+	"buttonArchive": {
+		"message": "Autoarkivera nu"
+	}
+}
