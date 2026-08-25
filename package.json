@@ -13,7 +13,9 @@
         "build:buildXpi": "cd dist/release && bestzip ../../dist/AutoArchiveReloaded.xpi ./*",
         "build:test": "vitest run",
         "build:lint": "eslint \"src/**/*.{ts,js,tsx}\" --ignore-pattern \"src/**/libs/**/*.js\"",
-        "build": "npm run build:clean && npm run build:copy && npm run build:webpack && npm run build:buildXpi && npm run build:test && npm run build:lint"
+        "build": "npm run build:clean && npm run build:copy && npm run build:webpack && npm run build:buildXpi && npm run build:test && npm run build:lint",
+        "build-quick": "npm run build:clean && npm run build:copy && npm run build:webpack && npm run build:buildXpi",
+        "prettier-fix": "prettier --write \"src/**/*.{ts,js,tsx}\""
     },
     "devDependencies": {
         "@eslint/compat": "^2.0.1",
