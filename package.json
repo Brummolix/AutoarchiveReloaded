@@ -11,7 +11,7 @@
         "build:copy": "cpx \"resources/**/*\" \"dist/release\" && cpx \"src/backgroundScript/**/*.{js,json,html,css,txt}\" \"dist/release\" && cpx \"src/options/**/*.{js,json,html,css,txt}\" \"dist/release\" && cpx \"src/popup/**/*.{js,json,html,css,v}\" \"dist/release\" && cpx \"licence.txt\" \"dist/release\" && cpx \"README.md\" \"dist/release\"",
         "build:webpack": "webpack --config webpack.config.js",
         "build:buildXpi": "cd dist/release && bestzip ../../dist/AutoArchiveReloaded.xpi ./*",
-        "build:test": "mocha ./dist/test.js --ignore \"node_modules/**\"",
+        "build:test": "vitest run",
         "build:lint": "eslint \"src/**/*.{ts,js}\" --ignore-pattern \"src/**/libs/**/*.js\"",
         "build": "npm run build:clean && npm run build:copy && npm run build:webpack && npm run build:buildXpi && npm run build:test && npm run build:lint"
     },
@@ -21,11 +21,9 @@
         "@eslint/js": "^9.39.2",
         "@types/bootstrap-notify": "^3.1.38",
         "@types/jquery": "^3.5.33",
-        "@types/mocha": "^10.0.10",
         "@typescript-eslint/eslint-plugin": "^8.57.2",
         "@typescript-eslint/parser": "^8.57.2",
         "assert": "^2.1.0",
-        "assertthat": "^6.5.2",
         "bestzip": "^2.2.3",
         "cpx2": "^8.0.0",
         "eslint": "^9.39.2",
@@ -35,14 +33,13 @@
         "eslint-plugin-prefer-arrow": "^1.2.3",
         "eslint-plugin-prettier": "^5.5.5",
         "globals": "^17.4.0",
-        "mocha": "^11.7.5",
         "prettier": "^3.8.1",
         "rimraf": "^6.1.3",
         "ts-loader": "^9.5.4",
         "ts-node": "^10.9.2",
         "typescript": "^5.9.3",
+        "vitest": "^4.1.11",
         "webpack": "^5.105.4",
-        "webpack-cli": "^7.0.2",
-        "glob": "^13.0.6"
+        "webpack-cli": "^7.0.2"
     }
 }

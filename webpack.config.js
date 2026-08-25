@@ -13,7 +13,6 @@ const tsLoaderRules = [
 	},
 ];
 const extensions = [".tsx", ".ts", ".js"];
-const glob = require("glob");
 
 module.exports = [
 	{
@@ -33,22 +32,5 @@ module.exports = [
 		resolve: {
 			extensions: extensions,
 		},
-	},
-	{
-		//Tests will be created in a different dir
-		name: "tests", //all "tests"
-		mode: theMode,
-		entry: {
-			test: glob.sync("./src/**/*.test.ts").map(file => "./" + file),
-		},
-		module: {
-			rules: tsLoaderRules,
-		},
-		resolve: {
-			extensions: extensions,
-			fallback: {
-				assert: require.resolve("assert/"),
-			},
-		},
-	},
+	}
 ];

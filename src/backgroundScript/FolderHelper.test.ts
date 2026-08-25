@@ -20,12 +20,12 @@ Copyright 2020-2026 Brummolix (AutoarchiveReloaded, https://github.com/Brummolix
     along with AutoarchiveReloaded.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import { assert } from "assertthat";
+import { expect, suite, test } from "vitest";
 import { FolderHelper } from "./FolderHelper";
 
-describe("FolderHelper", () => {
-	describe("#getFoldersRecursivly()", () => {
-		it("should work with <TB74 folders (no subfolders) ", () => {
+suite("FolderHelper", () => {
+	suite("#getFoldersRecursivly()", () => {
+		test("should work with <TB74 folders (no subfolders) ", () => {
 			const folder1: MailFolder = {
 				accountId: "",
 				path: "",
@@ -41,10 +41,10 @@ describe("FolderHelper", () => {
 			const folders: MailFolder[] = [folder1, folder2];
 			const allfolders = FolderHelper.getFoldersRecursivly(folders);
 
-			assert.that(allfolders).is.equalTo([folder1, folder2]);
+			expect(allfolders).toEqual([folder1, folder2]);
 		});
 
-		it("should work with TB74 folders (subfolders)", () => {
+		test("should work with TB74 folders (subfolders)", () => {
 			const subFolder1_1: MailFolder = {
 				accountId: "",
 				path: "",
@@ -99,7 +99,7 @@ describe("FolderHelper", () => {
 			const folders: MailFolder[] = [folder1, folder2, folder3];
 			const allfolders = FolderHelper.getFoldersRecursivly(folders);
 
-			assert.that(allfolders).is.equalTo([folder1, subFolder1_1, subfolder1_2, folder2, subfolder2_1, subfolder2_1_1, subfolder2_1_2, folder3]);
+			expect(allfolders).toEqual([folder1, subFolder1_1, subfolder1_2, folder2, subfolder2_1, subfolder2_1_1, subfolder2_1_2, folder3]);
 		});
 	});
 });
