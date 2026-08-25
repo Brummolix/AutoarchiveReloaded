@@ -24,6 +24,8 @@ import { AccountInfoProvider } from "../sharedWebextension/AccountInfo";
 import { log } from "../sharedWebextension/LoggerWebextension";
 import { OptionHelper } from "../sharedWebextension/optionHelper";
 import { AccountInfos } from "./AccountInfos";
+import { createRoot } from "react-dom/client";
+import { ReactDemo } from "./ReactDemo";
 
 async function saveOptions(): Promise<void> {
 	try {
@@ -176,6 +178,8 @@ async function onLoad(): Promise<void> {
 	try {
 		await restoreOptions();
 		$("#button").click(saveOptions);
+
+		renderReact();
 	} catch (e) {
 		log.errorException(e);
 		throw e;
@@ -184,3 +188,11 @@ async function onLoad(): Promise<void> {
 const optionHelper: OptionHelper = new OptionHelper();
 // eslint-disable-next-line @typescript-eslint/no-misused-promises
 $(onLoad);
+
+function renderReact(): void {
+	const domNode = document.getElementById("react");
+	if (domNode != null) {
+		const root = createRoot(domNode);
+		root.render(<ReactDemo />);
+	}
+}

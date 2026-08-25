@@ -5,13 +5,9 @@ const theMode = "none";
 const path = require("path");
 const outputPath = path.resolve(__dirname, "./dist/release/");
 
-const tsLoaderRules = [
-	{
-		test: /\.tsx?$/,
-		use: "ts-loader",
-		exclude: /node_modules/,
-	},
-];
+const { defineReactCompilerLoaderOption, reactCompilerLoader } = require('react-compiler-webpack');
+const webpack = require('webpack');
+
 const extensions = [".tsx", ".ts", ".js"];
 
 module.exports = [
@@ -20,17 +16,38 @@ module.exports = [
 		mode: theMode,
 		entry: {
 			background: "./src/backgroundScript/background.ts",
-			options: "./src/options/options.ts",
+			options: "./src/options/options.tsx",
 			popup: "./src/popup/popup.ts",
 		},
 		output: {
 			path: outputPath,
 		},
 		module: {
-			rules: tsLoaderRules,
+			rules: [{
+				test: /\.[mc]?[jt]sx?$/i,
+				exclude: /node_modules/,
+				use: [
+					{
+						loader: reactCompilerLoader,
+						options: defineReactCompilerLoaderOption({
+							// React Compiler options goes here
+						})
+					},
+					// babel-loader, swc-loader, esbuild-loader, or anything you like to transpile JSX should go here.
+					// If you are using rspack, the rspack's built-in react transformation is sufficient.
+					{
+						loader: 'ts-loader'
+					},
+				]
+			}],
 		},
 		resolve: {
 			extensions: extensions,
 		},
+		plugins: [
+			new webpack.DefinePlugin({
+				'process.env.NODE_ENV': JSON.stringify('production'),
+			})
+		]
 	}
 ];
