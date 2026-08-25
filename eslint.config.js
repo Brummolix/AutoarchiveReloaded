@@ -1,6 +1,4 @@
-const {
-    defineConfig,globalIgnores
-} = require("eslint/config");
+const {defineConfig} = require("eslint/config");
 
 const globals = require("globals");
 const tsParser = require("@typescript-eslint/parser");
@@ -9,6 +7,7 @@ const preferArrow = require("eslint-plugin-prefer-arrow");
 const _import = require("eslint-plugin-import");
 const jsdoc = require("eslint-plugin-jsdoc");
 const prettier = require("eslint-plugin-prettier");
+const reactHooks = require('eslint-plugin-react-hooks');
 
 const {
     fixupPluginRules,
@@ -47,6 +46,7 @@ module.exports = defineConfig([{
         "plugin:jsdoc/recommended",
         "prettier",
         "plugin:prettier/recommended",
+        "plugin:react-hooks/recommended"
     ),
 
     plugins: {
@@ -55,6 +55,7 @@ module.exports = defineConfig([{
         import: fixupPluginRules(_import),
         jsdoc,
         prettier,
+        reactHooks
     },
 
     rules: {
@@ -145,7 +146,6 @@ module.exports = defineConfig([{
         "no-var": "error",
         "object-shorthand": "off",
         "one-var": ["error", "never"],
-        "prefer-arrow/prefer-arrow-functions": "error",
         "prefer-const": "error",
         "quote-props": ["error", "consistent-as-needed"],
         radix: "error",
@@ -167,6 +167,9 @@ module.exports = defineConfig([{
             format: ["camelCase"],
             leadingUnderscore: "allow",
             trailingUnderscore: "allow",
+        }, {
+            "selector": "function",
+            "format": ["camelCase", "PascalCase"]
         }, {
             selector: "variable",
             format: ["camelCase", "UPPER_CASE"],

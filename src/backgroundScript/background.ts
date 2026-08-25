@@ -17,7 +17,6 @@ Copyright 2019-2026 Brummolix (AutoarchiveReloaded, https://github.com/Brummolix
     along with AutoarchiveReloaded.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-/* eslint-disable prefer-arrow/prefer-arrow-functions */
 import { ArchiveManuallyMessageRequest, GetArchiveStatusMessageRequest } from "../sharedWebextension/Messages";
 import { log } from "../sharedWebextension/LoggerWebextension";
 import { OptionHelper } from "../sharedWebextension/optionHelper";
