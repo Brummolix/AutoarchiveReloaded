@@ -522,3 +522,15 @@ declare interface Browser {
 }
 
 declare const browser: Browser;
+
+//see https://developer.chrome.com/docs/extensions/reference/api/i18n?hl=de
+interface I18n {
+	//see https://developer.chrome.com/docs/extensions/reference/api/i18n?hl=de#method-getMessage
+	getMessage(messageName: string, substitutions?: any, options?: object): string;
+}
+
+declare interface Chrome {
+	i18n: I18n;
+}
+
+declare const chrome: Chrome;
