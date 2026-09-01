@@ -21,8 +21,8 @@ import { AccountInfo, Settings } from "../sharedWebextension/interfaces";
 import { AccountInfoProvider } from "../sharedWebextension/AccountInfo";
 import { log } from "../sharedWebextension/LoggerWebextension";
 import { OptionHelper } from "../sharedWebextension/optionHelper";
-import { createRoot } from "react-dom/client";
 import { OptionsPage } from "./OptionsPage";
+import { createReactRoot } from "../sharedWebextension/createReactRoot";
 
 async function saveOptions(settings: Settings): Promise<void> {
 	try {
@@ -58,16 +58,9 @@ async function getAccountsSorted(settings: Settings): Promise<AccountInfo[]> {
 
 async function onLoad(): Promise<void> {
 	try {
-		const domNode = document.getElementById("react");
-		if (domNode == null) {
-			log.error("no element react");
-			return;
-		}
 		const settings: Settings = await optionHelper.loadCurrentSettings();
 		const accountsSorted = await getAccountsSorted(settings);
-
-		const root = createRoot(domNode);
-		root.render(<OptionsPage accounts={accountsSorted} settings={settings} onSave={saveOptions} />);
+		createReactRoot().render(<OptionsPage accounts={accountsSorted} settings={settings} onSave={saveOptions} />);
 	} catch (e) {
 		log.errorException(e);
 		throw e;
