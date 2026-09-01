@@ -18,7 +18,7 @@ Copyright 2018-2026 Brummolix (AutoarchiveReloaded, https://github.com/Brummolix
 */
 
 import { ReactElement, useState } from "react";
-import { localize } from "./localize";
+import { localize } from "../sharedWebextension/localize";
 import { AccountInfo, AccountSettingsArray, ArchiveType, Settings } from "../sharedWebextension/interfaces";
 import "animate.css";
 
