@@ -20,8 +20,11 @@ Copyright 2019-2026 Brummolix (AutoarchiveReloaded, https://github.com/Brummolix
 import { GlobalStates } from "../sharedWebextension/GlobalStates";
 import { ArchiveManuallyMessageRequest, GetArchiveStatusMessageRequest, GetArchiveStatusResponse } from "../sharedWebextension/Messages";
 import { log } from "../sharedWebextension/LoggerWebextension";
+import { ReactElement } from "react";
+import { createReactRoot } from "../sharedWebextension/createReactRoot";
+import { localize } from "../sharedWebextension/localize";
 
-async function initialize(): Promise<void> {
+async function initialize(): Promise<GlobalStates> {
 	const message: GetArchiveStatusMessageRequest = { message: "getArchiveStatus" };
 	const response: GetArchiveStatusResponse = await browser.runtime.sendMessage(message);
 	const status: GlobalStates = response.status;
@@ -29,23 +32,18 @@ async function initialize(): Promise<void> {
 	switch (status) {
 		case GlobalStates.uninitialized: {
 			log.info("not initialized, cancel");
-			$("#text").text(browser.i18n.getMessage("waitForInit"));
-			$("#button").hide();
 			break;
 		}
 		case GlobalStates.inProgress: {
 			log.info("busy with other archive..., cancel");
-			$("#text").text(browser.i18n.getMessage("waitForArchive"));
-			$("#button").hide();
 			break;
 		}
 		case GlobalStates.readyForWork: {
 			log.info("user can start archiving");
-			$("#text").text(browser.i18n.getMessage("dialogStartManualText"));
-			$("#button").show();
 			break;
 		}
 	}
+	return status;
 }
 
 async function onManualArchive(): Promise<void> {
@@ -54,10 +52,39 @@ async function onManualArchive(): Promise<void> {
 	window.close();
 }
 
+function Popup(props: { status: GlobalStates }): ReactElement {
+	return (
+		<>
+			<div></div>
+			<div id="text" className="alert alert-warning" role="alert">
+				{((): string => {
+					switch (props.status) {
+						case GlobalStates.uninitialized:
+							return localize("waitForInit");
+						case GlobalStates.inProgress:
+							return localize("waitForArchive");
+						case GlobalStates.readyForWork:
+							return localize("dialogStartManualText");
+					}
+				})()}
+			</div>
+			{props.status === GlobalStates.readyForWork && (
+				<div>
+					{/*eslint-disable-next-line @typescript-eslint/no-misused-promises*/}
+					<button id="button" type="button" className="btn btn-primary btn-lg" onClick={onManualArchive}>
+						{localize("buttonArchive")}
+					</button>
+				</div>
+			)}
+			<div></div>
+		</>
+	);
+}
+
 async function onLoad(): Promise<void> {
 	try {
-		await initialize();
-		$("#button").click(onManualArchive);
+		const status = await initialize();
+		createReactRoot().render(<Popup status={status} />);
 	} catch (e) {
 		log.errorException(e);
 		throw e;
@@ -65,4 +92,4 @@ async function onLoad(): Promise<void> {
 }
 
 // eslint-disable-next-line @typescript-eslint/no-misused-promises
-$(onLoad);
+window.addEventListener("load", onLoad);

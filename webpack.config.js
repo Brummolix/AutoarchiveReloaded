@@ -17,7 +17,7 @@ module.exports = [
 		entry: {
 			background: "./src/backgroundScript/background.ts",
 			options: "./src/options/options.tsx",
-			popup: "./src/popup/popup.ts",
+			popup: "./src/popup/popup.tsx",
 		},
 		output: {
 			path: outputPath,
