@@ -72,7 +72,9 @@
 		"message": "Arkivera även mallmappar"
 	},
 	"archiveArchiveFolders": {
-		"message": "Arkivera även arkivmappar (...Ja, jag är säker på att jag vill arkivera arkivmappar någon annanstans...)"
+		"message": "Arkivera även arkivmappar"
+	},"archiveArchiveFoldersHint": {
+		"message": "(...Ja, jag är säker på att jag vill arkivera arkivmappar någon annanstans...)"
 	},
 	"days": {
 		"message": "dagar"

@@ -36,7 +36,10 @@
 	"archiveDraftFolders": { "message": "Auch Entwürfe Ordner archivieren" },
 	"archiveTemplateFolders": { "message": "Auch Vorlagen Ordner archivieren" },
 	"archiveArchiveFolders": {
-		"message": "Auch Archiv Ordner archivieren (...Ja, ich bin wirklich sicher, dass ich Archiv Ordner irgendwohin archivieren will...)"
+		"message": "Auch Archiv Ordner archivieren"
+	},
+	"archiveArchiveFoldersHint": {
+		"message": "(...Ja, ich bin wirklich sicher, dass ich Archiv Ordner irgendwohin archivieren will...)"
 	},
 
 	"days": { "message": "Tage" },

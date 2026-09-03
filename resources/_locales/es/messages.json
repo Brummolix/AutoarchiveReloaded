@@ -34,7 +34,8 @@
 	"archiveOutboxFolders": { "message": "Archive outbox folders, too" },
 	"archiveDraftFolders": { "message": "Archive draft folders, too" },
 	"archiveTemplateFolders": { "message": "Archive template  folders, too" },
-	"archiveArchiveFolders": { "message": "Archive archive folders, too (...Yes, I am sure I want to archive archive folders to somewhere...)" },
+	"archiveArchiveFolders": { "message": "Archive archive folders, too" },
+	"archiveArchiveFoldersHint": { "message": "(...Yes, I am sure I want to archive archive folders to somewhere...)" },
 
 	"days": { "message": "días" },
 	"globalSettings": { "message": "General" },

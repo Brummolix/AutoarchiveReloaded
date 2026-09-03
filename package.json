@@ -21,8 +21,6 @@
         "@eslint/compat": "^2.0.1",
         "@eslint/eslintrc": "^3.3.3",
         "@eslint/js": "^9.39.2",
-        "@types/bootstrap-notify": "^3.1.38",
-        "@types/jquery": "^3.5.33",
         "@types/react": "^19.2.18",
         "@types/react-dom": "^19.2.5",
         "@typescript-eslint/eslint-plugin": "^8.57.2",
@@ -50,6 +48,7 @@
     },
     "dependencies": {
         "animate.css": "^4.1.1",
+        "bootstrap": "^5.3.8",
         "react": "^19.2.8",
         "react-dom": "^19.2.8"
     }

@@ -73,7 +73,7 @@ export function OptionsPage(props: { accounts: AccountInfo[]; settings: Settings
 				<div className="card-header">
 					<ul className="nav nav-tabs card-header-tabs" role="tablist" id="tablist">
 						<li className="nav-item">
-							<a className="nav-link active" data-toggle="tab" id="global-tab" href="#global" role="tab" aria-controls="home" aria-selected="true">
+							<a className="nav-link active" data-bs-toggle="tab" id="global-tab" href="#global" role="tab" aria-controls="home" aria-selected="true">
 								{localize("globalSettings")}
 							</a>
 						</li>
@@ -81,7 +81,7 @@ export function OptionsPage(props: { accounts: AccountInfo[]; settings: Settings
 							<li className="nav-item" id={account.accountId + "-tab"}>
 								<a
 									className="nav-link"
-									data-toggle="tab"
+									data-bs-toggle="tab"
 									id={`${account.accountId}-link-tab`}
 									href={`#accountContent-${account.accountId}`}
 									role="tab"
@@ -97,31 +97,30 @@ export function OptionsPage(props: { accounts: AccountInfo[]; settings: Settings
 				<div className="tab-content" id="tabcontent">
 					<div id="global" className="tab-pane fade show active card-body" role="tabpanel" aria-labelledby="global-tab">
 						<form>
-							<fieldset className="form-group">
-								<div className="row">
-									<legend className="col-form-label col-sm-2 pt-0">{localize("archiveTypeTitle")}</legend>
-									<div className="col-sm-10">
-										<Radio
-											name="archiveType"
-											id="archiveTypeManual"
-											value="manual"
-											checked={props.settings.globalSettings.archiveType === "manual"}
-											labelId="archiveTypeManual"
-										/>
-										<Radio
-											name="archiveType"
-											id="archiveTypeStartup"
-											value="startup"
-											checked={props.settings.globalSettings.archiveType === "startup"}
-											labelId="archiveTypeStartup"
-										/>
-										<div className="pt-3" role="alert">
-											{localize("globalSettingsStartupDescription")}
-										</div>
+							<fieldset className="row">
+								<legend className="col-form-label col-sm-2 pt-0">{localize("archiveTypeTitle")}</legend>
+								<div className="col-sm-10">
+									<Radio
+										name="archiveType"
+										id="archiveTypeManual"
+										value="manual"
+										checked={props.settings.globalSettings.archiveType === "manual"}
+										labelId="archiveTypeManual"
+									/>
+									<Radio
+										name="archiveType"
+										id="archiveTypeStartup"
+										value="startup"
+										checked={props.settings.globalSettings.archiveType === "startup"}
+										labelId="archiveTypeStartup"
+									/>
+									<div className="pt-3" role="alert">
+										{localize("globalSettingsStartupDescription")}
 									</div>
 								</div>
 							</fieldset>
-							<div className="form-group row">
+							<br />
+							<div className="row">
 								<div className="col-sm-2">{localize("logging")}</div>
 								<div className="col-sm-10">
 									<Checkbox
@@ -193,28 +192,26 @@ export function OptionsPage(props: { accounts: AccountInfo[]; settings: Settings
 							<div className="m-3"></div>
 
 							<div className="accordion" id={"accordionSpecialFolders-" + account.accountId}>
-								<div className="card">
-									<div className="card-header" id={"specialFoldersHeading-" + account.accountId}>
-										<h2 className="mb-0">
-											<button
-												className="btn btn-link btn-block text-left"
-												type="button"
-												data-toggle="collapse"
-												data-target={"#collapseSpecialFolders-" + account.accountId}
-												aria-expanded="true"
-												aria-controls={"collapseSpecialFolders-" + account.accountId}
-											>
-												{localize("specialFolderSettings")}
-											</button>
-										</h2>
-									</div>
+								<div className="accordion-item">
+									<h2 className="accordion-header" id={"specialFoldersHeading-" + account.accountId}>
+										<button
+											className="accordion-button collapsed"
+											type="button"
+											data-bs-toggle="collapse"
+											data-bs-target={"#collapseSpecialFolders-" + account.accountId}
+											aria-expanded="false"
+											aria-controls={"collapseSpecialFolders-" + account.accountId}
+										>
+											{localize("specialFolderSettings")}
+										</button>
+									</h2>
 									<div
 										id={"collapseSpecialFolders-" + account.accountId}
-										className="collapse"
+										className="accordion-collapse collapse"
 										aria-labelledby={"specialFoldersHeading-" + account.accountId}
-										data-parent={"#accordionSpecialFolders-" + account.accountId}
+										data-bs-parent={"#accordionSpecialFolders-" + account.accountId}
 									>
-										<div className="card-body">
+										<div className="accordion-body">
 											<div>{localize("specialFolderSettingsDescription")}</div>
 											<div className="m-3"></div>
 											<div className="input-group mb-3">
@@ -262,13 +259,12 @@ export function OptionsPage(props: { accounts: AccountInfo[]; settings: Settings
 													accountId={account.accountId}
 													id="archiveArchiveFolders"
 													labelId="archiveArchiveFolders"
+													labelId2="archiveArchiveFoldersHint"
 													checked={props.settings.accountSettings[account.accountId].bArchiveArchiveFolders}
 												/>
 											</div>
 										</div>
 									</div>
-									{/*we need an empty card, otherwise the layout in bootstrap is not correct*/}
-									<div className="card"></div>
 								</div>
 							</div>
 						</div>
@@ -347,33 +343,37 @@ function CheckWithDays(props: { accountId: string; id: string; labelId: string; 
 	const inputCheckboxId = props.id + "-" + props.accountId;
 	return (
 		<>
-			<div className="input-group-prepend">
-				<div className="input-group-text">
-					<input type="checkbox" id={inputCheckboxId} defaultChecked={props.checked} />
-				</div>
-				<label className="input-group-text" htmlFor={inputCheckboxId}>
-					{localize(props.labelId)}
-				</label>
+			<div className="input-group-text">
+				<input className="form-check-input" type="checkbox" id={inputCheckboxId} defaultChecked={props.checked} />
 			</div>
-			<input type="text" className="form-control col-lg-1" id={props.id + "Days-" + props.accountId} defaultValue={props.days.toString()} />
-			<div className="input-group-append">
-				<span className="input-group-text">{localize("days")}</span>
+			<label className="input-group-text" htmlFor={inputCheckboxId}>
+				{localize(props.labelId)}
+			</label>
+			<div className="input-group-text col-lg-1 col-md-2 col-sm-2">
+				<input type="text" className="form-control" id={props.id + "Days-" + props.accountId} defaultValue={props.days.toString()} />
 			</div>
+			<span className="input-group-text">{localize("days")}</span>
 		</>
 	);
 }
 
-function CheckboxNice(props: { accountId: string; id: string; checked: boolean; labelId: string }): ReactElement {
+function CheckboxNice(props: { accountId: string; id: string; checked: boolean; labelId: string; labelId2?: string }): ReactElement {
 	const inputId = props.id + "-" + props.accountId;
 	return (
-		<div className="input-group-prepend">
+		<>
 			<div className="input-group-text">
-				<input type="checkbox" id={inputId} defaultChecked={props.checked} />
+				<input className="form-check-input" type="checkbox" id={inputId} defaultChecked={props.checked} />
 			</div>
-			<label className="input-group-text" htmlFor={inputId}>
+			<label className="input-group-text text-start" htmlFor={inputId}>
 				{localize(props.labelId)}
+				{props.labelId2 && (
+					<>
+						<br />
+						{localize(props.labelId2)}
+					</>
+				)}
 			</label>
-		</div>
+		</>
 	);
 }
 

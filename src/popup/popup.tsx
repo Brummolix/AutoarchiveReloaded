@@ -23,6 +23,9 @@ import { log } from "../sharedWebextension/LoggerWebextension";
 import { ReactElement } from "react";
 import { createReactRoot } from "../sharedWebextension/createReactRoot";
 import { localize } from "../sharedWebextension/localize";
+import "../../node_modules/bootstrap/dist/js/bootstrap.bundle.min.js";
+import "../../node_modules/bootstrap/dist/css/bootstrap.min.css";
+import "./popup.css";
 
 async function initialize(): Promise<GlobalStates> {
 	const message: GetArchiveStatusMessageRequest = { message: "getArchiveStatus" };

@@ -23,6 +23,8 @@ import { log } from "../sharedWebextension/LoggerWebextension";
 import { OptionHelper } from "../sharedWebextension/optionHelper";
 import { OptionsPage } from "./OptionsPage";
 import { createReactRoot } from "../sharedWebextension/createReactRoot";
+import "../../node_modules/bootstrap/dist/js/bootstrap.bundle.min.js";
+import "../../node_modules/bootstrap/dist/css/bootstrap.min.css";
 
 async function saveOptions(settings: Settings): Promise<void> {
 	try {
