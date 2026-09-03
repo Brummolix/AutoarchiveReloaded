@@ -25,6 +25,7 @@ import { OptionsPage } from "./OptionsPage";
 import { createReactRoot } from "../sharedWebextension/createReactRoot";
 import "../../node_modules/bootstrap/dist/js/bootstrap.bundle.min.js";
 import "../../node_modules/bootstrap/dist/css/bootstrap.min.css";
+import { localize } from "../sharedWebextension/localize";
 
 async function saveOptions(settings: Settings): Promise<void> {
 	try {
@@ -62,7 +63,12 @@ async function onLoad(): Promise<void> {
 	try {
 		const settings: Settings = await optionHelper.loadCurrentSettings();
 		const accountsSorted = await getAccountsSorted(settings);
-		createReactRoot().render(<OptionsPage accounts={accountsSorted} settings={settings} onSave={saveOptions} />);
+		createReactRoot().render(
+			<>
+				<title>{localize("settingsHeadline")}</title>
+				<OptionsPage accounts={accountsSorted} settings={settings} onSave={saveOptions} />
+			</>
+		);
 	} catch (e) {
 		log.errorException(e);
 		throw e;
