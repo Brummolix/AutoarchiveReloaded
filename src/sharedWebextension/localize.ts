@@ -18,5 +18,5 @@ Copyright 2018-2026 Brummolix (AutoarchiveReloaded, https://github.com/Brummolix
 */
 
 export function localize(key: string): string {
-	return chrome.i18n.getMessage(key);
+	return browser.i18n.getMessage(key);
 }
